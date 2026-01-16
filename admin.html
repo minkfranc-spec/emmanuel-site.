@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Administration - Projet EMMANUEL</title>
+    <style>
+        body { font-family: sans-serif; background: #2c3e50; color: white; padding: 20px; }
+        .admin-box { background: white; color: #333; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
+        input, textarea, select { width: 100%; margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        button { background: #27ae60; color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="admin-box">
+        <h2>Gestion du Contenu</h2>
+        <input type="password" id="pass" placeholder="Entrez votre code secret">
+        
+        <hr>
+        
+        <label>Titre du document</label>
+        <input type="text" id="titre" placeholder="Ex: Ma Prière du Matin">
+        
+        <label>Catégorie</label>
+        <select id="cat">
+            <option value="Foi">Foi</option>
+            <option value="Priere">Prière</option>
+            <option value="Autre">Autre (Dynamique)</option>
+        </select>
+        
+        <label>Lien de l'image (Cloud)</label>
+        <input type="text" id="img" placeholder="URL de l'image sauvegardée">
+        
+        <label>Texte du document</label>
+        <textarea id="texte" rows="5"></textarea>
+        
+        <button onclick="valider()">Publier sur le site</button>
+    </div>
+
+    <script>
+        function valider() {
+            const code = document.getElementById('pass').value;
+            if(code === "Mink2026!") {
+                alert("Bravo Génie ! Document envoyé vers le Cloud.");
+                // Ici nous connecterons la base de données demain
+            } else {
+                alert("Code incorrect !");
+            }
+        }
+    </script>
+</body>
+</html>
