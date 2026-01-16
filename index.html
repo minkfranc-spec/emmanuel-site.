@@ -2,18 +2,47 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>EMMANUEL - En Construction</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet EMMANUEL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f4f8; color: #2d3748; margin: 0; }
-        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-        h1 { color: #2b6cb0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
+        h1 { color: #2c3e50; }
+        .counter { background: #2c3e50; color: white; padding: 10px 20px; border-radius: 50px; display: inline-block; margin: 20px 0; font-weight: bold; }
+        .contact-section { margin-top: 30px; display: flex; flex-direction: column; gap: 15px; }
+        .btn { padding: 15px; border-radius: 10px; text-decoration: none; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
+        .btn-whatsapp { background-color: #25D366; }
+        .btn-email { background-color: #3498db; }
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
     </style>
 </head>
 <body>
-    <div class="card">
+    <div class="container">
         <h1>Projet EMMANUEL</h1>
-        <p>Le site est en cours de déploiement par François.</p>
+        <p>Le site est en cours de développement par François.</p>
         <p><strong>Gloire à Dieu !</strong></p>
+
+        <div class="counter">
+            <i class="fas fa-eye"></i> Visiteurs : <span id="count">Chargement...</span>
+        </div>
+
+        <div class="contact-section">
+            <a href="https://wa.me/237678356844" class="btn btn-whatsapp">
+                <i class="fab fa-whatsapp"></i> Contactez-moi sur WhatsApp
+            </a>
+            <a href="mailto:minkfranc@gmail.com" class="btn btn-email">
+                <i class="fas fa-envelope"></i> Envoyez-moi un Email
+            </a>
+        </div>
     </div>
+
+    <script>
+        // Simulation simple du compteur pour ce soir
+        let count = localStorage.getItem('visites') || 0;
+        count++;
+        localStorage.setItem('visites', count);
+        document.getElementById('count').innerText = count;
+    </script>
 </body>
 </html>
