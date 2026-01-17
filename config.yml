@@ -1,6 +1,7 @@
 backend:
   name: github
   repo: minkfranc-spec/emmanuel-site
+  base_url: https://api.netlify.com # Garde cette ligne, elle sert de pont
 
 media_folder: "images"
 public_folder: "/images"
