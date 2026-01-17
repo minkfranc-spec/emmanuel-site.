@@ -1,42 +1,23 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Admin - Projet EMMANUEL</title>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <style>
-        body { font-family: sans-serif; background: #2c3e50; color: white; padding: 20px; text-align: center; }
-        .box { background: white; color: #333; padding: 25px; border-radius: 15px; max-width: 500px; margin: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        input, textarea { width: 100%; margin: 10px 0; padding: 12px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
-        .btn { background: #27ae60; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestionnaire de Contenu - Projet EMMANUEL</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-    <div id="admin-interface" class="box">
-        <h2>Centre de Contrôle 🔐</h2>
-        <input type="text" id="titre" placeholder="Titre du message">
-        <textarea id="texte" rows="6" placeholder="Écrivez votre message ici..."></textarea>
-        <button class="btn" onclick="envoyerVersGitHub()">PUBLIER MAINTENANT</button>
-        <br><br>
-        <button onclick="netlifyIdentity.logout()" style="color:red; background:none; border:none; cursor:pointer;">Se déconnecter</button>
-    </div>
-
-    <script>
-        if (!netlifyIdentity.currentUser()) { netlifyIdentity.open(); }
-
-        function envoyerVersGitHub() {
-            const titre = document.getElementById('titre').value;
-            const texte = document.getElementById('texte').value;
-            
-            if (!titre || !texte) { alert("Veuillez remplir les deux cases."); return; }
-
-            // Cette partie prépare ton message pour GitHub
-            const contenu = `{"titre": "${titre}", "texte": "${texte}", "date": "${new Date().toLocaleDateString()}"}`;
-            const url = `https://github.com/minkfranc-spec/emmanuel-site/edit/main/data.json`;
-            
-            alert("Bravo François ! Tu vas être redirigé vers GitHub. Clique simplement sur le bouton vert 'Commit changes' pour valider ta parole de foi.");
-            window.open(url, '_blank');
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
         }
-    </script>
+      });
+    }
+  </script>
 </body>
 </html>
