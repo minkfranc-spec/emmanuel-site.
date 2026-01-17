@@ -2,38 +2,58 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Projet EMMANUEL</title>
     <style>
-        body { font-family: sans-serif; background: #2c3e50; color: white; padding: 20px; text-align: center; }
-        .admin-box { background: white; color: #333; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
-        input, textarea, select { width: 90%; margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        button { background: #27ae60; color: white; border: none; padding: 15px; width: 95%; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #2c3e50; color: white; padding: 20px; text-align: center; }
+        .admin-box { background: white; color: #333; padding: 25px; border-radius: 15px; max-width: 450px; margin: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        h2 { color: #2c3e50; margin-bottom: 20px; }
+        input, textarea, select { width: 100%; margin: 10px 0; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { background: #27ae60; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #219150; transform: translateY(-2px); }
+        .status { margin-top: 15px; font-size: 14px; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="admin-box">
-        <h2>Centre de Contrôle</h2>
-        <input type="password" id="pass" placeholder="Code Secret">
+        <h2>Centre de Contrôle 🔐</h2>
+        <input type="password" id="pass" placeholder="Votre Code Secret">
         <hr>
-        <input type="text" id="titre" placeholder="Titre du message">
+        <input type="text" id="titre" placeholder="Titre du message (ex: Ma Prière)">
         <select id="cat">
-            <option value="Foi">Foi</option>
-            <option value="Priere">Prière</option>
-            <option value="Dynamique">Autre catégorie</option>
+            <option value="Foi">Catégorie : Foi</option>
+            <option value="Priere">Catégorie : Prière</option>
         </select>
-        <textarea id="texte" rows="5" placeholder="Votre message ici..."></textarea>
-        <button onclick="envoyerVersCloud()">PUBLIER MAINTENANT</button>
+        <textarea id="texte" rows="6" placeholder="Écrivez votre message de foi ici..."></textarea>
+        <button onclick="preparerPublication()">PUBLIER SUR LE SITE</button>
+        <div id="status" class="status"></div>
     </div>
 
     <script>
-        function envoyerVersCloud() {
+        function preparerPublication() {
             const code = document.getElementById('pass').value;
-            if(code === "Mink2026!") {
-                // Cette partie enverra les données vers data.json
-                alert("Connexion au coffre-fort réussie ! Document en cours d'envoi...");
-            } else {
-                alert("Code incorrect !");
+            const titre = document.getElementById('titre').value;
+            const texte = document.getElementById('texte').value;
+            const status = document.getElementById('status');
+
+            if(code !== "Mink2026!") {
+                alert("❌ Code incorrect !");
+                return;
             }
+
+            if(!titre || !texte) {
+                alert("⚠️ Veuillez remplir le titre et le texte.");
+                return;
+            }
+
+            status.style.color = "#27ae60";
+            status.innerHTML = "✅ Authentification réussie !<br>Préparation de l'envoi vers data.json...";
+            
+            // Simulation de l'envoi pour l'étape de validation
+            setTimeout(() => {
+                alert("Bravo Génie ! Les données sont prêtes pour le coffre-fort.");
+                console.log("Données à envoyer :", {titre, texte});
+            }, 1000);
         }
     </script>
 </body>
