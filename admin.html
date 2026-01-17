@@ -2,47 +2,39 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - Projet EMMANUEL</title>
+    <title>Admin - EMMANUEL</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #2c3e50; color: white; padding: 20px; text-align: center; }
-        .container { background: #34495e; padding: 20px; border-radius: 15px; max-width: 700px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        input, textarea { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; font-size: 16px; }
-        textarea { height: 200px; }
-        button { background: #27ae60; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 18px; }
-        button:hover { background: #2ecc71; }
-        #resultat-bloc { background: #ecf0f1; color: #2c3e50; padding: 15px; border-radius: 8px; margin-top: 20px; display: none; text-align: left; }
-        pre { white-space: pre-wrap; word-wrap: break-word; font-size: 14px; }
-        .copy-info { color: #f1c40f; font-weight: bold; margin-top: 10px; display: none; }
+        body { font-family: sans-serif; padding: 20px; background: #2c3e50; color: white; text-align: center; }
+        .form { background: white; color: #333; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
+        input, textarea { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { background: #27ae60; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        #resultat { background: #000; color: #00ff00; padding: 15px; margin-top: 20px; border-radius: 5px; text-align: left; font-family: monospace; overflow-x: auto; display: none; }
     </style>
 </head>
 <body>
-    <h1>✍️ Rédiger pour EMMANUEL</h1>
-    <div class="container">
-        <input type="text" id="titre" placeholder="Titre du message (ex: LE BOUCLIER)">
-        <textarea id="texte" placeholder="Écris ton message ici normalement (fais des retours à la ligne comme tu veux)"></textarea>
-        <button onclick="genererCode()">GÉNÉRER LE CODE POUR GITHUB</button>
-
-        <div id="resultat-bloc">
-            <p><strong>Copie tout le texte ci-dessous :</strong></p>
-            <pre id="code-genere"></pre>
-        </div>
-        <p class="copy-info" id="info">✅ Code prêt ! Copie-le et colle-le dans ton fichier data.json sur GitHub.</p>
+    <h1>Publier sur EMMANUEL</h1>
+    <div class="form">
+        <input type="text" id="titre" placeholder="Titre du message">
+        <input type="text" id="categorie" placeholder="Catégorie (ex: FOI, GUÉRISON, FAMILLE)">
+        <textarea id="texte" rows="10" placeholder="Votre message ici..."></textarea>
+        <input type="text" id="date" placeholder="Date (ex: 17/01/2026)">
+        <button onclick="generer()">Générer le code</button>
     </div>
+    <div id="resultat"></div>
 
     <script>
-        function genererCode() {
-            const titre = document.getElementById('titre').value;
-            let texte = document.getElementById('texte').value;
-            const date = new Date().toLocaleDateString('fr-FR');
-
-            // Transformation automatique des retours à la ligne pour JSON
-            const textePropre = texte.replace(/\n/g, "\\n");
-
-            const finalCode = `[\n  {\n    "titre": "${titre}",\n    "texte": "${textePropre}",\n    "date": "${date}"\n  }\n]`;
+        function generer() {
+            const t = document.getElementById('titre').value;
+            const c = document.getElementById('categorie').value || "Enseignement";
+            const txt = document.getElementById('texte').value;
+            const d = document.getElementById('date').value;
             
-            document.getElementById('code-genere').innerText = finalCode;
-            document.getElementById('resultat-bloc').style.display = 'block';
-            document.getElementById('info').style.display = 'block';
+            // On récupère les anciens messages (simulation pour te donner le bloc JSON complet)
+            const nouveau = { titre: t, categorie: c, texte: txt, date: d };
+            
+            document.getElementById('resultat').style.display = 'block';
+            document.getElementById('resultat').innerText = JSON.stringify([nouveau], null, 4);
+            alert("Code généré ! Copie-le et remplace le contenu de data.json");
         }
     </script>
 </body>
