@@ -1,7 +1,6 @@
 backend:
   name: github
   repo: minkfranc-spec/emmanuel-site
-  base_url: https://api.netlify.com # Garde cette ligne, elle sert de pont
 
 media_folder: "images"
 public_folder: "/images"
@@ -13,8 +12,6 @@ collections:
     extension: "json"
     format: "json"
     create: true
-    identifier_field: "titre"
     fields:
-      - {label: "Titre du message", name: "titre", widget: "string"}
-      - {label: "Contenu spirituel", name: "texte", widget: "text"}
-      - {label: "Date de publication", name: "date", widget: "string"}
+      - {label: "Titre", name: "titre", widget: "string"}
+      - {label: "Texte", name: "texte", widget: "text"}
