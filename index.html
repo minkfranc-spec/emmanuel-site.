@@ -2,47 +2,52 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>EMMANUEL</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
 
     <style>
+        * {
+            box-sizing: border-box; /* Force tous les éléments à rester dans leur boîte */
+        }
         body { 
             font-family: 'Segoe UI', sans-serif; 
             background: #f4f7f6; 
             text-align: center; 
             padding: 10px; 
             margin: 0;
-            /* Empêche le défilement horizontal désagréable */
-            overflow-x: hidden; 
+            overflow-x: hidden; /* Interdit le défilement horizontal */
+            width: 100vw; /* Fixe la largeur à celle de l'écran */
         }
         .intro-text {
-            max-width: 90%;
+            width: 95%;
             margin: 0 auto 20px auto;
-            font-size: 1em; /* Texte d'intro un peu plus grand */
+            font-size: 1.05em;
             color: #5d6d7e;
             line-height: 1.5;
             font-style: italic;
         }
         .message-card { 
             background: white; 
-            padding: 18px; 
+            padding: 20px; 
             border-radius: 12px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.06); 
-            max-width: 95%; /* S'adapte à la largeur du téléphone sans couper */
+            width: 96%; /* Utilise presque toute la largeur disponible */
+            max-width: 600px;
             margin: 15px auto; 
             text-align: left; 
-            border-left: 5px solid #2c3e50;
-            box-sizing: border-box; /* Indispensable pour que le texte ne dépasse pas */
+            border-left: 6px solid #2c3e50;
+            word-wrap: break-word; /* Coupe les mots s'ils sont trop longs */
+            overflow-wrap: break-word;
         }
         .category-tag { 
             background: #e74c3c; 
             color: white; 
-            padding: 4px 12px; 
+            padding: 5px 12px; 
             border-radius: 15px; 
-            font-size: 0.8em; 
+            font-size: 0.85em; 
             font-weight: bold; 
             text-transform: uppercase; 
             margin-bottom: 10px; 
@@ -51,10 +56,9 @@
         h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; font-size: 1.8em; margin: 15px 0 5px 0; }
         h3 { color: #2c3e50; margin: 0 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 1.3em; }
         .message-text { 
-            font-size: 1.15em; /* Texte des messages agrandi pour une lecture facile */
+            font-size: 1.2em; /* Taille agrandie selon ton souhait */
             color: #333; 
             line-height: 1.6;
-            word-wrap: break-word; /* Force le texte à rester dans la boîte */
         }
         .date { color: #bdc3c7; font-size: 0.85em; display: block; margin-top: 15px; text-align: right; }
         .whatsapp-btn { position: fixed; bottom: 15px; right: 15px; z-index: 1000; }
@@ -75,7 +79,7 @@
 
     <div class="whatsapp-btn">
         <a href="https://wa.me/237678356844" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="55" height="55" alt="WhatsApp">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="60" height="60" alt="WhatsApp">
         </a>
     </div>
 
