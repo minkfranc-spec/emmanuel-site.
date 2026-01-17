@@ -1,7 +1,7 @@
 backend:
   name: github
   repo: minkfranc-spec/emmanuel-site
-  base_url: https://painless-github-auth.up.railway.app
+  base_url: https://decap-cms-github-proxy.vercel.app
 media_folder: "images"
 public_folder: "/images"
 
