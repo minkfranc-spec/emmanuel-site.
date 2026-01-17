@@ -2,39 +2,58 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - EMMANUEL</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #2c3e50; color: white; text-align: center; }
-        .form { background: white; color: #333; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
-        input, textarea { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
-        button { background: #27ae60; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-        #resultat { background: #000; color: #00ff00; padding: 15px; margin-top: 20px; border-radius: 5px; text-align: left; font-family: monospace; overflow-x: auto; display: none; }
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #2c3e50; color: white; text-align: center; }
+        .form { background: white; color: #333; padding: 25px; border-radius: 15px; max-width: 500px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        h1 { margin-bottom: 25px; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #eee; border-radius: 8px; box-sizing: border-box; font-size: 1em; }
+        input:focus, textarea:focus { border-color: #27ae60; outline: none; }
+        /* Nouveau style pour le champ image */
+        #image { background-color: #f0f8ff; border-color: #3498db; }
+        button { background: #27ae60; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold; width: 100%; margin-top: 20px; transition: background 0.3s; }
+        button:hover { background: #219a52; }
+        #resultat { background: #1e272e; color: #2ecc71; padding: 20px; margin-top: 30px; border-radius: 8px; text-align: left; font-family: 'Courier New', monospace; overflow-x: auto; display: none; white-space: pre-wrap; }
     </style>
 </head>
 <body>
     <h1>Publier sur EMMANUEL</h1>
     <div class="form">
-        <input type="text" id="titre" placeholder="Titre du message">
-        <input type="text" id="categorie" placeholder="Catégorie (ex: FOI, GUÉRISON, FAMILLE)">
-        <textarea id="texte" rows="10" placeholder="Votre message ici..."></textarea>
-        <input type="text" id="date" placeholder="Date (ex: 17/01/2026)">
-        <button onclick="generer()">Générer le code</button>
+        <input type="text" id="titre" placeholder="Titre du message (ex: LA PAIX DE DIEU)">
+        <input type="text" id="categorie" placeholder="Catégorie (ex: FOI, ENCOURAGEMENT)">
+        <input type="text" id="image" placeholder="Lien de l'image (ex: https://i.postimg.cc/...)">
+        <textarea id="texte" rows="12" placeholder="Votre message ici..."></textarea>
+        <input type="text" id="date" placeholder="Date (ex: 18/01/2026)">
+        <button onclick="generer()">Générer le code à copier</button>
     </div>
     <div id="resultat"></div>
 
     <script>
         function generer() {
+            // On récupère toutes les valeurs
             const t = document.getElementById('titre').value;
             const c = document.getElementById('categorie').value || "Enseignement";
+            const i = document.getElementById('image').value; // On récupère le lien de l'image
             const txt = document.getElementById('texte').value;
             const d = document.getElementById('date').value;
             
-            // On récupère les anciens messages (simulation pour te donner le bloc JSON complet)
-            const nouveau = { titre: t, categorie: c, texte: txt, date: d };
+            // Création de l'objet message
+            const nouveauMessage = { 
+                titre: t, 
+                categorie: c,
+                image: i, // On ajoute l'image dans les données
+                texte: txt, 
+                date: d 
+            };
             
-            document.getElementById('resultat').style.display = 'block';
-            document.getElementById('resultat').innerText = JSON.stringify([nouveau], null, 4);
-            alert("Code généré ! Copie-le et remplace le contenu de data.json");
+            // Affichage du résultat
+            const resultatDiv = document.getElementById('resultat');
+            resultatDiv.style.display = 'block';
+            // On met des crochets [] autour pour faciliter l'ajout dans data.json
+            resultatDiv.innerText = JSON.stringify([nouveauMessage], null, 4);
+            
+            alert("Code généré ! Copiez TOUT le contenu du cadre noir ci-dessous et collez-le au DÉBUT de votre fichier data.json (après le premier crochet [ ).");
         }
     </script>
 </body>
