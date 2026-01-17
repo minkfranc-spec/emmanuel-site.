@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMMANUEL</title>
     
     <meta property="og:title" content="EMMANUEL">
@@ -11,20 +12,31 @@
 
     <style>
         body { 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background: #f4f7f6; 
             background-image: linear-gradient(rgba(244, 247, 246, 0.9), rgba(244, 247, 246, 0.9)), url('https://www.transparenttextures.com/patterns/cubes.png');
             text-align: center; 
-            padding: 20px; 
+            padding: 15px; 
+            margin: 0;
         }
-        .message-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 600px; margin: 30px auto; text-align: left; border-left: 6px solid #2c3e50; line-height: 1.7; }
-        h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 4px; font-weight: 800; margin-bottom: 5px; }
-        .subtitle { color: #7f8c8d; font-style: italic; margin-bottom: 40px; }
-        h3 { color: #2c3e50; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 12px; font-size: 1.4em; }
-        .date { color: #bdc3c7; font-size: 0.85em; display: block; margin-top: 20px; text-align: right; }
-        .whatsapp-btn { position: fixed; bottom: 25px; right: 25px; z-index: 1000; transition: transform 0.3s; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2)); }
-        .whatsapp-btn:hover { transform: scale(1.15); }
-        .badge-visites { margin-top: 50px; padding: 20px; background: #2c3e50; color: white; display: inline-block; border-radius: 50px; font-size: 0.9em; padding: 10px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .message-card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+            max-width: 100%; 
+            margin: 20px auto; 
+            text-align: left; 
+            border-left: 6px solid #2c3e50; 
+            line-height: 1.6;
+        }
+        h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 3px; font-weight: 800; font-size: 1.8em; margin: 20px 0 5px 0; }
+        .subtitle { color: #7f8c8d; font-style: italic; margin-bottom: 30px; font-size: 1em; }
+        h3 { color: #2c3e50; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; font-size: 1.2em; }
+        .message-text { font-size: 1.1em; color: #333; }
+        .date { color: #bdc3c7; font-size: 0.85em; display: block; margin-top: 15px; text-align: right; }
+        .whatsapp-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1000; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+        .badge-visites { margin: 40px auto; padding: 10px 20px; background: #2c3e50; color: white; display: inline-block; border-radius: 50px; font-size: 0.85em; }
     </style>
 </head>
 <body>
@@ -37,7 +49,7 @@
 
     <div class="whatsapp-btn">
         <a href="https://wa.me/237678356844" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="65" height="65" alt="WhatsApp">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="55" height="55" alt="WhatsApp">
         </a>
     </div>
 
@@ -56,7 +68,7 @@
                     container.innerHTML += `
                         <div class="message-card">
                             <h3>${msg.titre}</h3>
-                            <p style="white-space: pre-wrap;">${msg.texte}</p>
+                            <p class="message-text" style="white-space: pre-wrap;">${msg.texte}</p>
                             <span class="date">Publié le ${msg.date}</span>
                         </div>
                     `;
