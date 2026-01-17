@@ -1,0 +1,20 @@
+backend:
+ backend:
+  name: github
+  repo: minkfranc-spec/emmanuel-site
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "messages"
+    label: "Mes Messages"
+    folder: "/"
+    extension: "json"
+    format: "json"
+    create: true
+    identifier_field: "titre"
+    fields:
+      - {label: "Titre du message", name: "titre", widget: "string"}
+      - {label: "Contenu spirituel", name: "texte", widget: "text"}
+      - {label: "Date de publication", name: "date", widget: "string"}
