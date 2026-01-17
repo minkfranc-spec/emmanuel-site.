@@ -4,79 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>EMMANUEL</title>
-    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
-
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; scroll-behavior: smooth; }
         body { 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
             background: #f4f7f6; 
             text-align: center; 
-            padding: 10px; 
-            margin: 0;
-            overflow-x: hidden; 
-            width: 100vw;
+            padding: 10px; margin: 0; overflow-x: hidden; width: 100vw;
+        }
+        h1 { 
+            color: #2c3e50; text-transform: uppercase; letter-spacing: 4px; 
+            font-weight: 900; font-size: 2em; margin: 20px 0 5px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         .intro-text {
-            width: 95%;
-            margin: 0 auto 20px auto;
-            font-size: 1.05em;
-            color: #5d6d7e;
-            line-height: 1.5;
-            font-style: italic;
+            width: 90%; margin: 0 auto 25px auto; font-size: 1.05em;
+            color: #7f8c8d; line-height: 1.5; font-style: italic;
         }
         .message-card { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06); 
-            width: 96%; 
-            max-width: 600px;
-            margin: 15px auto; 
-            text-align: left; 
-            border-left: 6px solid #2c3e50;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
+            background: white; padding: 20px; border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 96%; max-width: 600px;
+            margin: 20px auto; text-align: left; border-left: 6px solid #2c3e50;
+            animation: fadeIn 0.8s ease-in; /* Animation douce */
         }
-        /* STYLE DU CADRE IMAGE */
-        .message-image-container {
-            text-align: center; /* Centre l'image */
-            margin-bottom: 20px; /* Espace sous l'image */
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .message-image-container { text-align: center; margin-bottom: 20px; }
         .message-image {
-            max-width: 100%; /* S'adapte au téléphone */
-            height: auto;
-            border-radius: 8px; /* Coins arrondis */
-            border: 4px solid #ecf0f1; /* Le fameux "petit cadre" gris clair */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Légère ombre pour le relief */
+            max-width: 100%; height: auto; border-radius: 10px;
+            border: 4px solid #f8f9fa; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .category-tag { 
-            background: #e74c3c; color: white; padding: 5px 12px; border-radius: 15px; font-size: 0.85em; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: inline-block;
+            background: #e74c3c; color: white; padding: 5px 12px; border-radius: 20px; 
+            font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; display: inline-block;
         }
-        h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; font-size: 1.8em; margin: 15px 0 5px 0; }
-        h3 { color: #2c3e50; margin: 0 0 15px 0; border-bottom: 1px solid #eee; padding-bottom: 10px; font-size: 1.3em; }
-        .message-text { 
-            font-size: 1.2em;
-            color: #333; 
-            line-height: 1.6;
+        h3 { color: #2c3e50; margin: 0 0 15px 0; font-size: 1.35em; line-height: 1.3; }
+        .message-text { font-size: 1.2em; color: #34495e; line-height: 1.7; margin-bottom: 15px; }
+        
+        /* Bouton Copier */
+        .copy-btn {
+            background: #ecf0f1; border: none; padding: 8px 15px; border-radius: 5px;
+            color: #7f8c8d; font-size: 0.85em; cursor: pointer; font-weight: bold;
         }
+        .copy-btn:active { background: #dcdde1; }
+
         .date { color: #bdc3c7; font-size: 0.85em; display: block; margin-top: 15px; text-align: right; }
-        .whatsapp-btn { position: fixed; bottom: 15px; right: 15px; z-index: 1000; }
-        .badge-visites { margin: 30px auto; padding: 10px 18px; background: #2c3e50; color: white; display: inline-block; border-radius: 50px; font-size: 0.85em; }
+        .whatsapp-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1000; transition: transform 0.2s; }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+        .badge-visites { margin: 40px auto; padding: 10px 20px; background: #2c3e50; color: white; display: inline-block; border-radius: 50px; }
+        
+        /* Bouton Retour en haut */
+        #scrollTop {
+            display: none; position: fixed; bottom: 90px; right: 25px; 
+            background: rgba(44, 62, 80, 0.7); color: white; border: none;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>EMMANUEL</h1>
+    <h1 id="top">EMMANUEL</h1>
     <div class="intro-text">Plateforme non-dénominationnelle unissant la Parole de Dieu, de la Genèse à l'Apocalypse, pour nous conduire vers le Salut sans critique ni jugement.</div>
+    
     <div id="flux-messages"><p>Chargement de la Parole...</p></div>
-    <div class="whatsapp-btn"><a href="https://wa.me/237678356844" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="60" height="60" alt="WhatsApp"></a></div>
-    <div class="badge-visites"><img src="https://counter8.optistats.ovh/private/compteurphp.php?c=emmanuel2026" border="0" alt="Visites" style="vertical-align: middle;"><span style="margin-left: 10px;">visites</span></div>
+
+    <button onclick="window.scrollTo(0,0)" id="scrollTop">↑</button>
+
+    <div class="whatsapp-btn">
+        <a href="https://wa.me/237678356844" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="60" height="60" alt="WhatsApp">
+        </a>
+    </div>
+
+    <div class="badge-visites">
+        <img src="https://counter8.optistats.ovh/private/compteurphp.php?c=emmanuel2026" border="0" alt="Visites" style="vertical-align: middle;">
+        <span style="margin-left: 10px;">visites bénies</span>
+    </div>
 
     <script>
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+
+        // Afficher/Cacher bouton retour en haut
+        window.onscroll = function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                document.getElementById("scrollTop").style.display = "block";
+            } else {
+                document.getElementById("scrollTop").style.display = "none";
+            }
+        };
+
+        function copierTexte(bouton, texte) {
+            navigator.clipboard.writeText(texte).then(() => {
+                const original = bouton.innerText;
+                bouton.innerText = "Copié !";
+                bouton.style.color = "#27ae60";
+                setTimeout(() => { bouton.innerText = original; bouton.style.color = "#7f8c8d"; }, 2000);
+            });
+        }
 
         fetch('data.json')
             .then(response => response.json())
@@ -84,21 +110,19 @@
                 const container = document.getElementById('flux-messages');
                 container.innerHTML = ''; 
                 data.forEach(msg => {
-                    // C'EST ICI QUE LA MAGIE OPÈRE :
-                    // On prépare le code de l'image SEULEMENT SI il y a un lien dans 'msg.image'
-                    let imageHTML = '';
-                    if (msg.image) {
-                        imageHTML = `<div class="message-image-container"><img src="${msg.image}" class="message-image" alt="Image illustratif"></div>`;
-                    }
-
-                    container.innerHTML += `
-                        <div class="message-card">
-                            <span class="category-tag">${msg.categorie || 'Enseignement'}</span>
-                            <h3>${msg.titre}</h3>
-                            ${imageHTML} <p class="message-text" style="white-space: pre-wrap;">${msg.texte}</p>
-                            <span class="date">Publié le ${msg.date}</span>
-                        </div>
+                    let imageHTML = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" alt="Méditation"></div>` : '';
+                    
+                    const card = document.createElement('div');
+                    card.className = 'message-card';
+                    card.innerHTML = `
+                        <span class="category-tag">${msg.categorie || 'Enseignement'}</span>
+                        <h3>${msg.titre}</h3>
+                        ${imageHTML}
+                        <p class="message-text">${msg.texte}</p>
+                        <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`')}\`)">📋 Copier le texte</button>
+                        <span class="date">Publié le ${msg.date}</span>
                     `;
+                    container.appendChild(card);
                 });
             });
     </script>
