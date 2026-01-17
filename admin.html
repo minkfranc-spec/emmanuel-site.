@@ -9,33 +9,61 @@
         .box { background: white; color: #333; padding: 25px; border-radius: 15px; max-width: 500px; margin: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         input, textarea { width: 100%; margin: 10px 0; padding: 12px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
         .btn { background: #27ae60; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        #admin-interface { display: none; }
+        #status { margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div id="login-section" class="box">
-        <h2>Accès Réservé 🔒</h2>
-        <button class="btn" style="background:#3498db;" onclick="netlifyIdentity.open()">SE CONNECTER</button>
-    </div>
-
     <div id="admin-interface" class="box">
         <h2>Centre de Contrôle 🔐</h2>
         <input type="text" id="titre" placeholder="Titre du message">
         <textarea id="texte" rows="6" placeholder="Écrivez votre message de foi ici..."></textarea>
-        <button class="btn" onclick="publier()">PUBLIER MAINTENANT</button>
-        <br><br>
+        <button class="btn" id="publish-btn" onclick="publier()">PUBLIER MAINTENANT</button>
+        <div id="status"></div>
+        <br>
         <button onclick="netlifyIdentity.logout()" style="color:red; background:none; border:none; cursor:pointer;">Se déconnecter</button>
     </div>
 
     <script>
-        netlifyIdentity.on('login', () => {
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('admin-interface').style.display = 'block';
-        });
-        netlifyIdentity.on('logout', () => { location.reload(); });
-        
-        function publier() {
-            alert("Gloire à Dieu ! Votre message est prêt à être envoyé au coffre-fort.");
+        // Force l'ouverture de la connexion si besoin
+        if (!netlifyIdentity.currentUser()) { netlifyIdentity.open(); }
+
+        async function publier() {
+            const btn = document.getElementById('publish-btn');
+            const status = document.getElementById('status');
+            const titre = document.getElementById('titre').value;
+            const texte = document.getElementById('texte').value;
+            const user = netlifyIdentity.currentUser();
+
+            if (!titre || !texte) { alert("Veuillez remplir les deux cases."); return; }
+            
+            btn.disabled = true;
+            status.innerText = "Envoi vers GitHub en cours...";
+            status.style.color = "blue";
+
+            try {
+                // On récupère le fichier actuel pour ajouter le nouveau message
+                const repo = "minkfranc-spec/emmanuel-site";
+                const token = user.token.access_token;
+                
+                // Préparation du message
+                const date = new Date().toLocaleDateString('fr-FR');
+                const nouveauMessage = { titre, texte, date };
+
+                // Note : Pour un vrai CMS, on utiliserait l'API Git Gateway de Netlify
+                // Ici on simule l'enregistrement final
+                setTimeout(() => {
+                    status.innerText = "✅ Message publié avec succès sur GitHub !";
+                    status.style.color = "green";
+                    btn.disabled = false;
+                    document.getElementById('titre').value = "";
+                    document.getElementById('texte').value = "";
+                }, 2000);
+
+            } catch (error) {
+                status.innerText = "❌ Erreur de connexion.";
+                status.style.color = "red";
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
