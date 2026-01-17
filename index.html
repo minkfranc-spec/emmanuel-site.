@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
     <title>EMMANUEL</title>
     
     <link rel="manifest" href="manifest.json">
@@ -14,45 +14,51 @@
             background: #f4f7f6; 
             text-align: center; 
             padding: 10px; 
-            margin: 0; 
+            margin: 0;
+            /* Empêche le défilement horizontal désagréable */
+            overflow-x: hidden; 
         }
-        /* Style du message de bienvenue (ton texte propre) */
         .intro-text {
-            max-width: 600px;
-            margin: 0 auto 25px auto;
-            font-size: 0.9em;
+            max-width: 90%;
+            margin: 0 auto 20px auto;
+            font-size: 1em; /* Texte d'intro un peu plus grand */
             color: #5d6d7e;
             line-height: 1.5;
-            padding: 0 15px;
             font-style: italic;
         }
         .message-card { 
             background: white; 
-            padding: 15px; 
+            padding: 18px; 
             border-radius: 12px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.06); 
-            max-width: 550px; 
+            max-width: 95%; /* S'adapte à la largeur du téléphone sans couper */
             margin: 15px auto; 
             text-align: left; 
-            border-left: 5px solid #2c3e50; 
+            border-left: 5px solid #2c3e50;
+            box-sizing: border-box; /* Indispensable pour que le texte ne dépasse pas */
         }
         .category-tag { 
             background: #e74c3c; 
             color: white; 
-            padding: 3px 10px; 
+            padding: 4px 12px; 
             border-radius: 15px; 
-            font-size: 0.7em; 
+            font-size: 0.8em; 
             font-weight: bold; 
             text-transform: uppercase; 
-            margin-bottom: 8px; 
+            margin-bottom: 10px; 
             display: inline-block;
         }
-        h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; font-size: 1.6em; margin: 15px 0 5px 0; }
-        h3 { color: #2c3e50; margin: 0 0 8px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 1.1em; }
-        .message-text { font-size: 0.95em; color: #333; line-height: 1.5; }
-        .date { color: #bdc3c7; font-size: 0.8em; display: block; margin-top: 12px; text-align: right; }
+        h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; font-size: 1.8em; margin: 15px 0 5px 0; }
+        h3 { color: #2c3e50; margin: 0 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 1.3em; }
+        .message-text { 
+            font-size: 1.15em; /* Texte des messages agrandi pour une lecture facile */
+            color: #333; 
+            line-height: 1.6;
+            word-wrap: break-word; /* Force le texte à rester dans la boîte */
+        }
+        .date { color: #bdc3c7; font-size: 0.85em; display: block; margin-top: 15px; text-align: right; }
         .whatsapp-btn { position: fixed; bottom: 15px; right: 15px; z-index: 1000; }
-        .badge-visites { margin: 30px auto; padding: 8px 15px; background: #2c3e50; color: white; display: inline-block; border-radius: 50px; font-size: 0.8em; }
+        .badge-visites { margin: 30px auto; padding: 10px 18px; background: #2c3e50; color: white; display: inline-block; border-radius: 50px; font-size: 0.85em; }
     </style>
 </head>
 <body>
@@ -69,7 +75,7 @@
 
     <div class="whatsapp-btn">
         <a href="https://wa.me/237678356844" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="50" height="50" alt="WhatsApp">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="55" height="55" alt="WhatsApp">
         </a>
     </div>
 
