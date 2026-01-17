@@ -1,11 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Centre de Contrôle - Projet EMMANUEL</title>
+    <meta charset="UTF-8">
+    <title>Admin - Projet EMMANUEL</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #2c3e50; color: white; padding: 20px; text-align: center; }
+        .container { background: #34495e; padding: 20px; border-radius: 15px; max-width: 700px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        input, textarea { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; font-size: 16px; }
+        textarea { height: 200px; }
+        button { background: #27ae60; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 18px; }
+        button:hover { background: #2ecc71; }
+        #resultat-bloc { background: #ecf0f1; color: #2c3e50; padding: 15px; border-radius: 8px; margin-top: 20px; display: none; text-align: left; }
+        pre { white-space: pre-wrap; word-wrap: break-word; font-size: 14px; }
+        .copy-info { color: #f1c40f; font-weight: bold; margin-top: 10px; display: none; }
+    </style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <h1>✍️ Rédiger pour EMMANUEL</h1>
+    <div class="container">
+        <input type="text" id="titre" placeholder="Titre du message (ex: LE BOUCLIER)">
+        <textarea id="texte" placeholder="Écris ton message ici normalement (fais des retours à la ligne comme tu veux)"></textarea>
+        <button onclick="genererCode()">GÉNÉRER LE CODE POUR GITHUB</button>
+
+        <div id="resultat-bloc">
+            <p><strong>Copie tout le texte ci-dessous :</strong></p>
+            <pre id="code-genere"></pre>
+        </div>
+        <p class="copy-info" id="info">✅ Code prêt ! Copie-le et colle-le dans ton fichier data.json sur GitHub.</p>
+    </div>
+
+    <script>
+        function genererCode() {
+            const titre = document.getElementById('titre').value;
+            let texte = document.getElementById('texte').value;
+            const date = new Date().toLocaleDateString('fr-FR');
+
+            // Transformation automatique des retours à la ligne pour JSON
+            const textePropre = texte.replace(/\n/g, "\\n");
+
+            const finalCode = `[\n  {\n    "titre": "${titre}",\n    "texte": "${textePropre}",\n    "date": "${date}"\n  }\n]`;
+            
+            document.getElementById('code-genere').innerText = finalCode;
+            document.getElementById('resultat-bloc').style.display = 'block';
+            document.getElementById('info').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
