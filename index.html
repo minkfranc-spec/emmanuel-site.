@@ -9,7 +9,6 @@
         h1 { color: #2c3e50; }
         h3 { color: #2c3e50; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .date { color: #7f8c8d; font-size: 0.8em; display: block; margin-top: 15px; }
-        /* Style pour le bouton WhatsApp */
         .whatsapp-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1000; transition: transform 0.3s; }
         .whatsapp-btn:hover { transform: scale(1.1); }
     </style>
@@ -33,7 +32,6 @@
     </div>
 
     <script>
-        // Lecture du fichier data.json
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
