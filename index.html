@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMMANUEL</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+
+    <meta property="og:title" content="EMMANUEL">
+    <meta property="og:description" content="La parole de Dieu pour aujourd'hui.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://emmanuel-site.vercel.app">
+
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; text-align: center; padding: 15px; margin: 0; }
         .message-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 600px; margin: 20px auto; text-align: left; border-left: 6px solid #2c3e50; position: relative; }
@@ -17,8 +26,12 @@
     </style>
 </head>
 <body>
+
     <h1>EMMANUEL</h1>
-    <div id="flux-messages"><p>Chargement des messages...</p></div>
+    
+    <div id="flux-messages">
+        <p>Chargement des messages d'espoir...</p>
+    </div>
 
     <div class="whatsapp-btn">
         <a href="https://wa.me/237678356844" target="_blank">
@@ -32,6 +45,12 @@
     </div>
 
     <script>
+        // Enregistrement du Service Worker pour l'application
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        // Chargement des messages
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
