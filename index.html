@@ -1,59 +1,44 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projet EMMANUEL</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #f4f7f6; margin: 0; padding: 20px; }
-        .container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; text-align: center; padding: 20px; }
+        .message-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; margin: 20px auto; text-align: left; border-left: 5px solid #2c3e50; }
         h1 { color: #2c3e50; }
-        .counter { background: #2c3e50; color: white; padding: 10px 20px; border-radius: 50px; display: inline-block; margin: 20px 0; font-weight: bold; }
-        .contact-section { margin-top: 30px; display: flex; flex-direction: column; gap: 15px; }
-        .btn { padding: 15px; border-radius: 10px; text-decoration: none; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
-        .btn-whatsapp { background-color: #25D366; }
-        .btn-email { background-color: #3498db; }
-        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+        .date { color: #7f8c8d; font-size: 0.8em; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Projet EMMANUEL</h1>
-        <p>Le site est en cours de développement par François.</p>
-        <p><strong>Gloire à Dieu !</strong></p>
-<div id="accueil" style="padding: 20px; background: #f9f9f9; border-radius: 10px; margin: 20px 0; color: #333; text-align: left;">
-    <h3 style="color: #2c3e50;">Bienvenue à la Porte de la Vérité</h3>
-    <p>Le Projet EMMANUEL n'est pas une dénomination religieuse. Nous sommes une main tendue, un espace de partage pour tous ceux qui cherchent sincèrement la présence de Dieu dans leur vie.</p>
-    <p>Notre message est unique et indivisible : il s'aligne fidèlement sur la Parole, de la Genèse à l'Apocalypse. Ici, nous ne critiquons aucune religion ni aucun courant. Nous nous concentrons sur l'essentiel : la rencontre personnelle avec le Créateur.</p>
-    <p>Si ton cœur a soif de vérité et que tu veux avancer dans ta marche spirituelle, cette porte est la tienne. Nous sommes disponibles et à ton écoute pour tout contact.</p>
-</div>
-        <div class="counter">
-            <i class="fas fa-eye"></i> Visiteurs : <span id="count">Chargement...</span>
-        </div>
+    <h1>Projet EMMANUEL</h1>
+    <p>La parole de Dieu pour aujourd'hui :</p>
 
-       <div class="contact-section">
-    <a href="https://whatsapp.com/channel/0029Vb6kPbbCRs1vmdcIa53M" class="btn" style="background-color: #f39c12; margin-bottom: 10px; display: block; text-decoration: none; color: white; padding: 15px; border-radius: 8px; font-weight: bold;">
-        <i class="fas fa-bell"></i> Rejoindre ma Chaîne Officielle ✨
-    </a>
-
-    <a href="https://wa.me/237678356844" class="btn btn-whatsapp">
-        <i class="fab fa-whatsapp"></i> Contactez-moi sur WhatsApp
-    </a>
-    
-    <a href="mailto:minkfranc@gmail.com" class="btn btn-email">
-        <i class="fas fa-envelope"></i> Envoyez-moi un Email
-    </a>
-</div>
+    <div id="flux-messages">
+        <p>Chargement des messages d'espoir...</p>
     </div>
 
     <script>
-        // Simulation simple du compteur pour ce soir
-        let count = localStorage.getItem('visites') || 0;
-        count++;
-        localStorage.setItem('visites', count);
-        document.getElementById('count').innerText = count;
+        // Ce script va lire ton fichier data.json sur GitHub
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('flux-messages');
+                container.innerHTML = ''; // On vide le chargement
+                data.forEach(msg => {
+                    container.innerHTML += `
+                        <div class="message-card">
+                            <h3>${msg.titre}</h3>
+                            <p>${msg.texte}</p>
+                            <span class="date">Publié le ${msg.date}</span>
+                        </div>
+                    `;
+                });
+            })
+            .catch(err => {
+                document.getElementById('flux-messages').innerHTML = "<p>Prêt pour votre première publication !</p>";
+            });
     </script>
 </body>
 </html>
