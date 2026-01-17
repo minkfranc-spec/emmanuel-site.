@@ -1,6 +1,7 @@
 backend:
-  name: git-gateway
-  branch: main
+ backend:
+  name: github
+  repo: minkfranc-spec/emmanuel-site
 
 media_folder: "images"
 public_folder: "/images"
