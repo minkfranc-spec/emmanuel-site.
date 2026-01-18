@@ -2,18 +2,29 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
     <title>EMMANUEL | La Parole de Dieu</title>
 
     <style>
-        /* L'ARMURE ANTI-DÉBORDEMENT */
+        /* VERROUILLAGE TOTAL DU BALANCEMENT */
         html, body {
             overflow-x: hidden; /* Interdit le défilement horizontal */
             width: 100%;
             margin: 0;
             padding: 0;
-            position: relative;
+            position: fixed; /* Empêche le rebond sur certains navigateurs */
+            height: 100%;
+        }
+
+        /* Permet le défilement vertical uniquement */
+        .main-wrapper {
+            position: absolute;
+            top: 0; bottom: 0; left: 0; right: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            width: 100%;
+            -webkit-overflow-scrolling: touch; /* Défilement fluide sur iPhone */
         }
 
         * { box-sizing: border-box; scroll-behavior: smooth; }
@@ -23,9 +34,6 @@
             background: #f0f2f5; 
             text-align: center; 
             color: #2c3e50;
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Force tout à rester au centre */
         }
 
         h1 { 
@@ -46,18 +54,16 @@
             border: 1px solid #dcdde1; font-size: 16px; outline: none;
         }
 
-        /* CARTES SÉCURISÉES POUR LE ZOOM */
+        /* CARTES SÉCURISÉES */
         .message-card { 
             background: white; padding: 18px; border-radius: 12px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
-            width: 92%; /* Largeur flexible */
-            max-width: 500px; /* Limite pour les grands écrans */
+            width: 92%; 
+            max-width: 500px; 
             margin: 15px auto; 
             text-align: left; 
             border-left: 5px solid #2c3e50;
-            overflow-wrap: break-word; /* Casse les mots trop longs */
-            word-wrap: break-word;
-            hyphens: auto;
+            word-wrap: break-word; /* Casse les mots longs pour éviter de pousser les bords */
         }
         
         .message-image-container { width: 100%; text-align: center; margin-bottom: 15px; }
@@ -91,29 +97,29 @@
         .whatsapp-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
         .whatsapp-btn img { width: 55px; height: 55px; }
         
-        #scrollTop {
-            display: none; position: fixed; bottom: 90px; right: 25px; 
-            background: #2c3e50; color: white; border: none;
-            width: 45px; height: 45px; border-radius: 50%; cursor: pointer; opacity: 0.8;
-        }
-
-        .badge-visites { margin: 30px 0; padding-bottom: 20px; }
+        .badge-visites { margin: 30px 0; padding-bottom: 40px; }
     </style>
 </head>
 <body>
 
-    <h1>EMMANUEL</h1>
-    <div class="intro-text">La Parole de Dieu unie, pour le Salut de tous.</div>
-    
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un enseignement..." onkeyup="filtrerMessages()">
-    </div>
+    <div class="main-wrapper">
+        <h1>EMMANUEL</h1>
+        <div class="intro-text">La Parole de Dieu unie, pour le Salut de tous.</div>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher..." onkeyup="filtrerMessages()">
+        </div>
 
-    <div id="flux-messages" style="width: 100%;">
-        <p>Chargement des messages...</p>
-    </div>
+        <div id="flux-messages">
+            <p>Chargement des messages...</p>
+        </div>
 
-    <button onclick="window.scrollTo(0,0)" id="scrollTop">↑</button>
+        <div class="badge-visites">
+            <a href="https://info.flagcounter.com/8Q9j">
+                <img src="https://s11.flagcounter.com/count2/8Q9j/bg_F0F2F5/txt_2C3E50/border_F0F2F5/columns_2/maxflags_10/viewers_0/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+            </a>
+        </div>
+    </div>
 
     <div class="whatsapp-btn">
         <a href="https://wa.me/237678356844" target="_blank">
@@ -121,20 +127,7 @@
         </a>
     </div>
 
-    <div class="badge-visites">
-        <a href="https://info.flagcounter.com/8Q9j">
-            <img src="https://s11.flagcounter.com/count2/8Q9j/bg_F0F2F5/txt_2C3E50/border_F0F2F5/columns_2/maxflags_10/viewers_0/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
-        </a>
-    </div>
-
     <script>
-        // Detection du scroll pour le bouton retour en haut
-        window.onscroll = function() {
-            let btn = document.getElementById("scrollTop");
-            if (document.documentElement.scrollTop > 300) { btn.style.display = "block"; } 
-            else { btn.style.display = "none"; }
-        };
-
         function filtrerMessages() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.getElementsByClassName('message-card');
