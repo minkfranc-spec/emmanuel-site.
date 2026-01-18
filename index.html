@@ -17,78 +17,79 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
     
-   <style>
+  <style>
         * { box-sizing: border-box; scroll-behavior: smooth; }
         body { 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background: #f4f7f6; text-align: center; 
-            padding: 5px; margin: 0; overflow-x: hidden; width: 100vw;
+            background: #f0f2f5; /* Fond légèrement plus gris pour faire ressortir les cartes blanches */
+            text-align: center; 
+            padding: 10px 0; margin: 0; overflow-x: hidden; width: 100vw;
             color: #2c3e50;
         }
         h1 { 
             color: #2c3e50; text-transform: uppercase; letter-spacing: 3px; 
-            font-weight: 900; font-size: 1.8em; margin: 20px 0 5px 0;
+            font-weight: 900; font-size: 1.6em; margin: 20px 0 5px 0;
         }
         .intro-text {
-            width: 95%; margin: 0 auto 20px auto; font-size: 0.95em;
+            width: 85%; margin: 0 auto 20px auto; font-size: 0.9em;
             color: #7f8c8d; line-height: 1.4;
         }
 
-        /* BARRE DE RECHERCHE PLUS LARGE */
+        /* BARRE DE RECHERCHE PLUS FINE */
         .search-container {
-            width: 98%; max-width: 800px; margin: 10px auto 20px auto;
+            width: 90%; max-width: 600px; margin: 10px auto 20px auto;
         }
         .search-input {
-            width: 100%; padding: 12px 20px; border-radius: 10px;
-            border: 1px solid #bdc3c7; font-size: 16px; outline: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            width: 100%; padding: 10px 15px; border-radius: 8px;
+            border: 1px solid #dcdde1; font-size: 15px; outline: none;
         }
 
-        /* CARTES PLUS GRANDES ET TEXTE PLUS SOLIDE */
+        /* CARTES RÉDUITES POUR VOIR LES BORDURES DU SITE */
         .message-card { 
-            background: white; padding: 18px; border-radius: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
-            width: 98%; max-width: 800px; /* Plus large pour contenir plus de texte */
-            margin: 15px auto; text-align: left; 
-            border-left: 5px solid #2c3e50;
+            background: white; padding: 15px; border-radius: 10px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); 
+            width: 92%; /* Laisse 4% de vide de chaque côté pour la beauté des bordures */
+            max-width: 550px; 
+            margin: 12px auto; text-align: left; 
+            border-left: 4px solid #2c3e50;
             animation: fadeIn 0.5s ease-in;
         }
         
-        .message-image-container { text-align: center; margin-bottom: 15px; }
+        .message-image-container { text-align: center; margin-bottom: 12px; }
         .message-image {
-            width: 100%; max-width: 100%; height: auto; border-radius: 8px;
+            width: 100%; border-radius: 6px;
         }
 
         .category-tag { 
-            background: #e74c3c; color: white; padding: 4px 10px; border-radius: 4px; 
-            font-size: 0.75em; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: inline-block;
+            background: #e74c3c; color: white; padding: 3px 8px; border-radius: 3px; 
+            font-size: 0.7em; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: inline-block;
         }
 
-        h3 { color: #2c3e50; margin: 0 0 12px 0; font-size: 1.3em; line-height: 1.2; }
+        h3 { color: #2c3e50; margin: 0 0 10px 0; font-size: 1.15em; line-height: 1.2; }
         
-        /* PARAGRAPHES SOLIDES ET AERES */
+        /* POLICE RÉDUITE ET ÉLÉGANTE */
         .message-text { 
-            font-size: 1.15em; /* Taille optimale pour mobile */
-            color: #1a1a1a; /* Noir plus profond pour mieux lire */
-            line-height: 1.75; /* Espace entre les lignes pour respirer */
-            margin-bottom: 15px; 
+            font-size: 1.05em; /* Taille plus fine et élégante */
+            color: #2f3640; 
+            line-height: 1.6; /* Respire sans être trop écarté */
+            margin-bottom: 12px; 
             white-space: pre-wrap; 
             word-wrap: break-word;
-            text-align: justify; /* Pour que les bords soient droits et propres */
+            text-align: justify; 
         }
         
         .copy-btn {
-            background: #f8f9fa; border: 1px solid #dcdde1; padding: 10px; border-radius: 6px;
-            color: #2c3e50; font-size: 0.9em; cursor: pointer; font-weight: bold; width: 100%;
+            background: #f1f2f6; border: none; padding: 8px; border-radius: 5px;
+            color: #57606f; font-size: 0.85em; cursor: pointer; font-weight: bold; width: 100%;
         }
         
-        .date { color: #bdc3c7; font-size: 0.8em; display: block; text-align: right; margin-top: 10px; }
+        .date { color: #bdc3c7; font-size: 0.75em; display: block; text-align: right; margin-top: 8px; }
         
         /* BOUTON WHATSAPP */
         .whatsapp-btn { position: fixed; bottom: 15px; right: 15px; z-index: 1000; }
-        .whatsapp-btn img { width: 55px; height: 55px; }
+        .whatsapp-btn img { width: 50px; height: 50px; }
         
-        .badge-visites { margin: 30px auto; padding: 10px; }
+        .badge-visites { margin: 25px auto; padding: 10px; }
     </style>
 </head>
 <body>
