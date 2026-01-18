@@ -92,4 +92,95 @@
         #scrollTop {
             display: none; position: fixed; bottom: 95px; right: 25px; 
             background: rgba(44, 62, 80, 0.9); color: white; border: none;
-            width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size:
+            width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size: 24px; z-index: 999;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="top">EMMANUEL</h1>
+    <div class="intro-text">Plateforme non-dénominationnelle unissant la Parole de Dieu, de la Genèse à l'Apocalypse.</div>
+    
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un message ou un thème..." onkeyup="filtrerMessages()">
+    </div>
+
+    <div id="flux-messages"><p>Chargement de la Parole...</p></div>
+
+    <button onclick="window.scrollTo(0,0)" id="scrollTop">↑</button>
+
+    <div class="whatsapp-btn">
+        <a href="https://wa.me/237678356844" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="65" height="65" alt="WhatsApp">
+        </a>
+    </div>
+
+    <div class="badge-visites">
+        <p style="margin-bottom: 10px; font-weight: bold; font-size: 0.9em;">AUDIENCE EMMANUEL</p>
+        <a href="https://info.flagcounter.com/8Q9j">
+            <img src="https://s11.flagcounter.com/count2/8Q9j/bg_2C3E50/txt_FFFFFF/border_2C3E50/columns_2/maxflags_10/viewers_0/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+        </a>
+    </div>
+
+    <script>
+        // Enregistrement du Service Worker pour PWA
+        if ('serviceWorker' in navigator) { 
+            navigator.serviceWorker.register('sw.js').catch(err => console.log("SW non enregistré", err)); 
+        }
+
+        // Affichage du bouton retour en haut
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                document.getElementById("scrollTop").style.display = "block";
+            } else {
+                document.getElementById("scrollTop").style.display = "none";
+            }
+        };
+
+        // Fonction pour copier le texte
+        function copierTexte(bouton, texte) {
+            navigator.clipboard.writeText(texte).then(() => {
+                const original = bouton.innerHTML;
+                bouton.innerHTML = "✅ Message copié !";
+                setTimeout(() => { bouton.innerHTML = original; }, 2500);
+            });
+        }
+
+        // Fonction de filtrage (Recherche)
+        function filtrerMessages() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('message-card');
+            for (let card of cards) {
+                let texte = card.innerText.toLowerCase();
+                card.style.display = texte.includes(input) ? "block" : "none";
+            }
+        }
+
+        // Chargement des messages depuis data.json
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('flux-messages');
+                container.innerHTML = ''; 
+                data.forEach(msg => {
+                    let imageHTML = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" alt="Méditation"></div>` : '';
+                    
+                    const card = document.createElement('div');
+                    card.className = 'message-card';
+                    card.innerHTML = `
+                        <span class="category-tag">${msg.categorie || 'Enseignement'}</span>
+                        <h3>${msg.titre}</h3>
+                        ${imageHTML}
+                        <div class="message-text">${msg.texte}</div>
+                        <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
+                        <span class="date">Publié le ${msg.date}</span>
+                    `;
+                    container.appendChild(card);
+                });
+            })
+            .catch(err => {
+                document.getElementById('flux-messages').innerHTML = "<p>Erreur de chargement des messages.</p>";
+            });
+    </script>
+</body>
+</html>
