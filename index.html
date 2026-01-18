@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>EMMANUEL</title>
+    
+    <title>EMMANUEL - La Parole de Dieu sans jugement</title>
+    <meta name="description" content="Plateforme non-dénominationnelle unissant la Parole de Dieu, de la Genèse à l'Apocalypse. Enseignements bibliques pour le Salut.">
+    <meta name="keywords" content="Bible, Jésus, Salut, Enseignement biblique, Dieu, Emmanuel, Cameroun">
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
+    
     <style>
         * { box-sizing: border-box; scroll-behavior: smooth; }
         body { 
@@ -21,6 +26,19 @@
             width: 90%; margin: 0 auto 25px auto; font-size: 1.05em;
             color: #7f8c8d; line-height: 1.5; font-style: italic;
         }
+
+        /* BARRE DE RECHERCHE */
+        .search-container {
+            width: 96%; max-width: 600px; margin: 10px auto 25px auto;
+        }
+        .search-input {
+            width: 100%; padding: 14px 25px; border-radius: 30px;
+            border: 2px solid #2c3e50; font-size: 16px; outline: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        .search-input:focus { border-color: #e74c3c; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+
         .message-card { 
             background: white; padding: 20px; border-radius: 15px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 96%; max-width: 600px;
@@ -40,47 +58,55 @@
         }
         h3 { color: #2c3e50; margin: 0 0 15px 0; font-size: 1.4em; line-height: 1.3; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
         
-        /* LA CORRECTION EST ICI */
         .message-text { 
-            font-size: 1.25em; 
-            color: #34495e; 
-            line-height: 1.7; 
-            margin-bottom: 20px;
-            white-space: pre-wrap; /* INDISPENSABLE POUR LES PARAGRAPHES */
-            word-wrap: break-word;
+            font-size: 1.25em; color: #34495e; line-height: 1.7; 
+            margin-bottom: 20px; white-space: pre-wrap; word-wrap: break-word;
         }
         
         .copy-btn {
-            background: #f8f9fa; border: 1px solid #dcdde1; padding: 10px 15px; border-radius: 8px;
-            color: #7f8c8d; font-size: 0.9em; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px;
+            background: #f8f9fa; border: 1px solid #dcdde1; padding: 12px; border-radius: 8px;
+            color: #7f8c8d; font-size: 0.95em; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px;
+            transition: 0.3s;
         }
+        .copy-btn:hover { background: #2c3e50; color: white; }
+        
         .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 10px; }
         .whatsapp-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
-        .badge-visites { margin: 40px auto; padding: 10px 20px; background: #2c3e50; color: white; display: inline-block; border-radius: 50px; }
+        
+        .badge-visites { 
+            margin: 40px auto; padding: 15px 25px; background: #2c3e50; 
+            color: white; display: inline-block; border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
         #scrollTop {
             display: none; position: fixed; bottom: 95px; right: 25px; 
-            background: rgba(44, 62, 80, 0.8); color: white; border: none;
-            width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 22px; z-index: 999;
+            background: rgba(44, 62, 80, 0.9); color: white; border: none;
+            width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size: 24px; z-index: 999;
         }
     </style>
 </head>
 <body>
 
     <h1 id="top">EMMANUEL</h1>
-    <div class="intro-text">Plateforme non-dénominationnelle unissant la Parole de Dieu, de la Genèse à l'Apocalypse, pour nous conduire vers le Salut sans critique ni jugement.</div>
+    <div class="intro-text">Plateforme non-dénominationnelle unissant la Parole de Dieu, de la Genèse à l'Apocalypse.</div>
     
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un message ou un thème..." onkeyup="filtrerMessages()">
+    </div>
+
     <div id="flux-messages"><p>Chargement de la Parole...</p></div>
 
     <button onclick="window.scrollTo(0,0)" id="scrollTop">↑</button>
 
     <div class="whatsapp-btn">
         <a href="https://wa.me/237678356844" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="60" height="60" alt="WhatsApp">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="65" height="65" alt="WhatsApp">
         </a>
     </div>
 
     <div class="badge-visites">
-        <img src="https://counter8.optistats.ovh/private/compteurphp.php?c=emmanuel2026" border="0" alt="Visites" style="vertical-align: middle;">
+        <img src="https://counter8.optistats.ovh/private/compteurphp.php?c=emmanuel2026" border="0" alt="visites" style="vertical-align: middle;">
         <span style="margin-left: 10px;">visites bénies</span>
     </div>
 
@@ -101,6 +127,16 @@
                 bouton.innerHTML = "✅ Message copié !";
                 setTimeout(() => { bouton.innerHTML = original; }, 2500);
             });
+        }
+
+        // FONCTION DE RECHERCHE
+        function filtrerMessages() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('message-card');
+            for (let card of cards) {
+                let texte = card.innerText.toLowerCase();
+                card.style.display = texte.includes(input) ? "block" : "none";
+            }
         }
 
         fetch('data.json')
