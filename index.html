@@ -2,62 +2,71 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     
-    <title>EMMANUEL | La Parole de Dieu de la Genèse à l'Apocalypse</title>
-    <meta name="description" content="Découvrez EMMANUEL, une plateforme chrétienne non-dénominationnelle. Partage de la Parole de Dieu, enseignements bibliques pour le Salut, paix et réconciliation au Cameroun et dans le monde.">
-    <meta name="keywords" content="Bible, Jésus-Christ, Salut, Méditation chrétienne, Versets bibliques, Enseignement sans jugement, Emmanuel site, Foi chrétienne">
+    <title>EMMANUEL | La Parole de Dieu</title>
+    <meta name="description" content="Plateforme chrétienne unissant la Parole de Dieu pour le Salut. Enseignements bibliques profonds et messages de paix.">
 
     <meta property="og:title" content="EMMANUEL - La Parole qui Unie">
-    <meta property="og:description" content="Un havre de paix spirituelle pour méditer la Bible sans critique ni jugement.">
     <meta property="og:image" content="https://i.postimg.cc/Nj4z32R6/unity-peace-compressed.jpg">
-    <meta property="og:url" content="https://emmanuel-site.vercel.app">
     <meta property="og:type" content="website">
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
     
-  <style>
+    <style>
         * { box-sizing: border-box; scroll-behavior: smooth; }
+        
         body { 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background: #f0f2f5; /* Fond légèrement plus gris pour faire ressortir les cartes blanches */
+            background: #f0f2f5; /* Fond gris clair pour faire ressortir les cartes */
             text-align: center; 
-            padding: 10px 0; margin: 0; overflow-x: hidden; width: 100vw;
+            padding: 10px 0; 
+            margin: 0; 
+            overflow-x: hidden; /* Sécurité anti-débordement */
+            width: 100%;
+            max-width: 100vw;
             color: #2c3e50;
         }
+
         h1 { 
             color: #2c3e50; text-transform: uppercase; letter-spacing: 3px; 
             font-weight: 900; font-size: 1.6em; margin: 20px 0 5px 0;
         }
+
         .intro-text {
             width: 85%; margin: 0 auto 20px auto; font-size: 0.9em;
             color: #7f8c8d; line-height: 1.4;
         }
 
-        /* BARRE DE RECHERCHE PLUS FINE */
+        /* BARRE DE RECHERCHE FINE */
         .search-container {
             width: 90%; max-width: 600px; margin: 10px auto 20px auto;
         }
         .search-input {
             width: 100%; padding: 10px 15px; border-radius: 8px;
             border: 1px solid #dcdde1; font-size: 15px; outline: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
-        /* CARTES RÉDUITES POUR VOIR LES BORDURES DU SITE */
+        /* CARTES AVEC BELLES BORDURES */
         .message-card { 
             background: white; padding: 15px; border-radius: 10px; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.06); 
-            width: 92%; /* Laisse 4% de vide de chaque côté pour la beauté des bordures */
+            width: 92%; /* Laisse 4% de chaque côté */
             max-width: 550px; 
-            margin: 12px auto; text-align: left; 
+            margin: 12px auto; 
+            text-align: left; 
             border-left: 4px solid #2c3e50;
             animation: fadeIn 0.5s ease-in;
+            word-break: break-word; /* Sécurité pour le zoom */
         }
         
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
         .message-image-container { text-align: center; margin-bottom: 12px; }
         .message-image {
-            width: 100%; border-radius: 6px;
+            width: 100%; height: auto; border-radius: 6px;
         }
 
         .category-tag { 
@@ -65,40 +74,49 @@
             font-size: 0.7em; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: inline-block;
         }
 
-        h3 { color: #2c3e50; margin: 0 0 10px 0; font-size: 1.15em; line-height: 1.2; }
+        h3 { color: #2c3e50; margin: 0 0 10px 0; font-size: 1.15em; line-height: 1.2; border-bottom: 1px solid #f8f9fa; padding-bottom: 5px; }
         
-        /* POLICE RÉDUITE ET ÉLÉGANTE */
+        /* POLICE ÉLÉGANTE ET JUSTIFIÉE */
         .message-text { 
-            font-size: 1.05em; /* Taille plus fine et élégante */
+            font-size: 1.05em; 
             color: #2f3640; 
-            line-height: 1.6; /* Respire sans être trop écarté */
+            line-height: 1.6; 
             margin-bottom: 12px; 
             white-space: pre-wrap; 
             word-wrap: break-word;
-            text-align: justify; 
+            text-align: justify; /* Aligné des deux côtés */
         }
         
         .copy-btn {
-            background: #f1f2f6; border: none; padding: 8px; border-radius: 5px;
+            background: #f1f2f6; border: none; padding: 10px; border-radius: 5px;
             color: #57606f; font-size: 0.85em; cursor: pointer; font-weight: bold; width: 100%;
+            transition: 0.2s;
         }
+        .copy-btn:active { background: #2c3e50; color: white; }
         
         .date { color: #bdc3c7; font-size: 0.75em; display: block; text-align: right; margin-top: 8px; }
         
         /* BOUTON WHATSAPP */
         .whatsapp-btn { position: fixed; bottom: 15px; right: 15px; z-index: 1000; }
-        .whatsapp-btn img { width: 50px; height: 50px; }
+        .whatsapp-btn img { width: 50px; height: 50px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2)); }
         
-        .badge-visites { margin: 25px auto; padding: 10px; }
+        /* BOUTON RETOUR EN HAUT */
+        #scrollTop {
+            display: none; position: fixed; bottom: 80px; right: 20px; 
+            background: rgba(44, 62, 80, 0.8); color: white; border: none;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 999;
+        }
+
+        .badge-visites { margin: 25px auto; padding: 10px; display: inline-block; }
     </style>
 </head>
 <body>
 
     <h1 id="top">EMMANUEL</h1>
-    <div class="intro-text">Plateforme non-dénominationnelle unissant la Parole de Dieu, de la Genèse à l'Apocalypse.</div>
+    <div class="intro-text">Plateforme unissant la Parole de Dieu, de la Genèse à l'Apocalypse.</div>
     
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un message ou un thème..." onkeyup="filtrerMessages()">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un message..." onkeyup="filtrerMessages()">
     </div>
 
     <div id="flux-messages"><p>Chargement de la Parole...</p></div>
@@ -107,75 +125,68 @@
 
     <div class="whatsapp-btn">
         <a href="https://wa.me/237678356844" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="65" height="65" alt="WhatsApp">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
         </a>
     </div>
 
     <div class="badge-visites">
-        <p style="margin-bottom: 10px; font-weight: bold; font-size: 0.9em;">AUDIENCE EMMANUEL</p>
         <a href="https://info.flagcounter.com/8Q9j">
-            <img src="https://s11.flagcounter.com/count2/8Q9j/bg_2C3E50/txt_FFFFFF/border_2C3E50/columns_2/maxflags_10/viewers_0/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+            <img src="https://s11.flagcounter.com/count2/8Q9j/bg_F0F2F5/txt_2C3E50/border_F0F2F5/columns_2/maxflags_10/viewers_0/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
         </a>
     </div>
 
     <script>
-        // Enregistrement du Service Worker pour PWA
-        if ('serviceWorker' in navigator) { 
-            navigator.serviceWorker.register('sw.js').catch(err => console.log("SW non enregistré", err)); 
-        }
-
-        // Affichage du bouton retour en haut
+        // Gestion du défilement
         window.onscroll = function() {
+            let btn = document.getElementById("scrollTop");
             if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                document.getElementById("scrollTop").style.display = "block";
+                btn.style.display = "block";
             } else {
-                document.getElementById("scrollTop").style.display = "none";
+                btn.style.display = "none";
             }
         };
 
-        // Fonction pour copier le texte
-        function copierTexte(bouton, texte) {
-            navigator.clipboard.writeText(texte).then(() => {
-                const original = bouton.innerHTML;
-                bouton.innerHTML = "✅ Message copié !";
-                setTimeout(() => { bouton.innerHTML = original; }, 2500);
-            });
-        }
-
-        // Fonction de filtrage (Recherche)
+        // Fonction de recherche
         function filtrerMessages() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.getElementsByClassName('message-card');
             for (let card of cards) {
-                let texte = card.innerText.toLowerCase();
-                card.style.display = texte.includes(input) ? "block" : "none";
+                card.style.display = card.innerText.toLowerCase().includes(input) ? "block" : "none";
             }
         }
 
-        // Chargement des messages depuis data.json
+        // Copie de texte
+        function copierTexte(bouton, texte) {
+            navigator.clipboard.writeText(texte).then(() => {
+                const memo = bouton.innerHTML;
+                bouton.innerHTML = "✅ Copié !";
+                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
+            });
+        }
+
+        // Chargement des données
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('flux-messages');
                 container.innerHTML = ''; 
-                data.forEach(msg => {
-                    let imageHTML = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" alt="Méditation"></div>` : '';
-                    
+                data.reverse().forEach(msg => {
+                    let img = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image"></div>` : '';
                     const card = document.createElement('div');
                     card.className = 'message-card';
                     card.innerHTML = `
                         <span class="category-tag">${msg.categorie || 'Enseignement'}</span>
                         <h3>${msg.titre}</h3>
-                        ${imageHTML}
+                        ${img}
                         <div class="message-text">${msg.texte}</div>
-                        <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
-                        <span class="date">Publié le ${msg.date}</span>
+                        <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier le message</button>
+                        <span class="date">Le ${msg.date}</span>
                     `;
                     container.appendChild(card);
                 });
             })
-            .catch(err => {
-                document.getElementById('flux-messages').innerHTML = "<p>Erreur de chargement des messages.</p>";
+            .catch(() => {
+                document.getElementById('flux-messages').innerHTML = "<p>Erreur de connexion.</p>";
             });
     </script>
 </body>
