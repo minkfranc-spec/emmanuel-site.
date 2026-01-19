@@ -19,27 +19,22 @@
         .search-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #dcdde1; font-size: 16px; outline: none; transition: 0.3s; }
         .search-input:focus { border-color: #2c3e50; box-shadow: 0 0 8px rgba(44, 62, 80, 0.1); }
 
-        /* 2. EFFET DE SURVOL SUR LES CARTES (Professionnel) */
         .message-card { 
             background: white; padding: 18px; border-radius: 12px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
             width: 92%; max-width: 500px; margin: 15px auto; text-align: left; 
             border-left: 5px solid #2c3e50;
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Fluidité */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
-        .message-card:hover { 
-            transform: translateY(-5px); /* La carte se soulève */
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12); /* L'ombre s'agrandit */
-        }
+        .message-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
 
         .message-image-container { width: 100%; text-align: center; margin-bottom: 15px; }
         .message-image { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 0 auto; }
         .category-tag { background: #e74c3c; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: inline-block; }
         h3 { color: #2c3e50; margin: 0 0 12px 0; font-size: 1.2em; line-height: 1.3; }
         .message-text { font-size: 1.05em; color: #1a1a1a; line-height: 1.7; margin-bottom: 15px; white-space: pre-wrap; text-align: justify; }
-        .copy-btn { background: #f1f2f6; border: none; padding: 12px; border-radius: 6px; color: #2c3e50; font-size: 0.9em; cursor: pointer; font-weight: bold; width: 100%; transition: background 0.2s; }
-        .copy-btn:active { background: #dcdde1; }
+        .copy-btn { background: #f1f2f6; border: none; padding: 12px; border-radius: 6px; color: #2c3e50; font-size: 0.9em; cursor: pointer; font-weight: bold; width: 100%; }
         
         .date { color: #bdc3c7; font-size: 0.8em; display: block; text-align: right; margin-top: 10px; }
         
@@ -78,10 +73,13 @@
     </div>
 
     <div class="flag-counter-box">
-        <div style="font-size: 0.8em; font-weight: bold; margin-bottom: 10px;">STATISTIQUES DE PRÉSENCE</div>
+        <div style="font-size: 0.8em; font-weight: bold; margin-bottom: 10px; text-transform: uppercase;">Statistiques de Présence</div>
         <a href="https://info.flagcounter.com/ivJp">
             <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_Vues+par+pays/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
         </a>
+        <p style="font-size: 0.75em; color: #7f8c8d; margin-top: 12px; font-style: italic;">
+            Le compteur se renouvelle toutes les 15 minutes. Merci de votre présence.
+        </p>
     </div>
 
     <script>
