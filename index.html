@@ -6,84 +6,62 @@
     <title>EMMANUEL | La Parole de Dieu</title>
 
     <style>
-        /* RESET & STABILITÉ */
+        /* RESET & STYLE GÉNÉRAL */
         * { box-sizing: border-box; scroll-behavior: smooth; }
-        
         html, body {
             margin: 0; padding: 0; width: 100%; overflow-x: hidden;
             background: #f0f2f5; color: #2c3e50;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-
         body { text-align: center; }
 
-        h1 { 
-            color: #2c3e50; text-transform: uppercase; letter-spacing: 3px; 
-            font-weight: 900; font-size: 1.6em; margin: 25px 0 5px 0;
-        }
+        /* ENTÊTE */
+        header { background: #2c3e50; color: white; padding: 30px 0; margin-bottom: 20px; }
+        h1 { margin: 0; text-transform: uppercase; letter-spacing: 3px; font-weight: 900; font-size: 1.8em; }
+        .subtitle { color: #bdc3c7; font-style: italic; margin-top: 5px; }
 
-        .intro-text {
-            width: 85%; margin: 0 auto 20px auto; font-size: 0.95em;
-            color: #7f8c8d; line-height: 1.5; font-style: italic;
-        }
-
-        .search-container {
-            width: 90%; max-width: 500px; margin: 10px auto 20px auto;
-        }
+        /* RECHERCHE */
+        .search-container { width: 90%; max-width: 500px; margin: 0 auto 20px auto; }
         .search-input {
             width: 100%; padding: 12px; border-radius: 8px;
             border: 1px solid #dcdde1; font-size: 16px; outline: none;
         }
 
+        /* CARTES DE MESSAGES */
         .message-card { 
-            background: white; padding: 18px; border-radius: 12px; 
+            background: white; padding: 20px; border-radius: 12px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
-            width: 92%; max-width: 500px; 
+            width: 92%; max-width: 550px; 
             margin: 15px auto; text-align: left; 
             border-left: 5px solid #2c3e50;
-            word-wrap: break-word;
         }
-        
-        .message-image-container { width: 100%; text-align: center; margin-bottom: 15px; }
-        .message-image { max-width: 100%; height: auto; border-radius: 8px; }
-
         .category-tag { 
             background: #e74c3c; color: white; padding: 4px 10px; border-radius: 4px; 
-            font-size: 0.75em; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: inline-block;
+            font-size: 0.75em; font-weight: bold; margin-bottom: 10px; display: inline-block;
         }
-
-        h3 { color: #2c3e50; margin: 0 0 12px 0; font-size: 1.2em; line-height: 1.3; }
+        .message-text { font-size: 1.05em; line-height: 1.7; white-space: pre-wrap; margin-bottom: 15px; }
         
-        .message-text { 
-            font-size: 1.05em; color: #1a1a1a; line-height: 1.7; 
-            margin-bottom: 15px; white-space: pre-wrap; text-align: justify;
-        }
-        
+        /* BOUTON COPIER */
         .copy-btn {
             background: #f1f2f6; border: none; padding: 12px; border-radius: 6px;
             color: #2c3e50; font-size: 0.9em; cursor: pointer; font-weight: bold; width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        
-        .date { color: #bdc3c7; font-size: 0.8em; display: block; text-align: right; margin-top: 10px; }
-        
+
+        /* COMPTEUR (Ton style préféré) */
+        .flag-counter-box {
+            background: white; padding: 25px; border-radius: 15px;
+            margin: 40px auto; width: 92%; max-width: 500px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        /* WIDGETS FIXES */
         .whatsapp-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
         .whatsapp-btn img { width: 55px; height: 55px; }
-        
         #scrollTop {
             display: none; position: fixed; bottom: 85px; right: 25px; 
             background: #2c3e50; color: white; border: none;
-            width: 45px; height: 45px; border-radius: 50%; cursor: pointer; 
-            z-index: 999; font-size: 20px; font-weight: bold;
-        }
-
-        /* STYLE DU COMPTEUR */
-        .flag-counter-wrapper {
-            margin: 40px auto;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            display: inline-block;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-weight: bold;
         }
     </style>
 </head>
@@ -91,14 +69,16 @@
 
     <button onclick="window.scrollTo(0,0)" id="scrollTop">↑</button>
 
-    <h1>EMMANUEL</h1>
-    <div class="intro-text">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
-    
+    <header>
+        <h1>EMMANUEL</h1>
+        <p class="subtitle">"Dieu avec nous"</p>
+    </header>
+
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un enseignement..." onkeyup="filtrerMessages()">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un message..." onkeyup="filtrerMessages()">
     </div>
 
-    <div id="flux-messages"><p>Chargement des messages...</p></div>
+    <div id="flux-messages"><p>Chargement des enseignements...</p></div>
 
     <div class="whatsapp-btn">
         <a href="https://wa.me/237678356844" target="_blank">
@@ -106,20 +86,21 @@
         </a>
     </div>
 
-    <div class="flag-counter-wrapper">
+    <div class="flag-counter-box">
         <a href="https://info.flagcounter.com/ivJp">
             <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_CCCCCC/columns_3/maxflags_12/viewers_Presences+par+pays/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
         </a>
-        <p style="font-size: 0.8em; color: #7f8c8d; margin-top: 10px;">Total des présences sur le site</p>
+        <p style="font-size: 0.85em; color: #7f8c8d; margin-top: 15px;">Total des présences sur le site</p>
     </div>
 
     <script>
+        // Gestion du bouton retour en haut
         window.onscroll = function() {
             let btn = document.getElementById("scrollTop");
-            if (document.documentElement.scrollTop > 300) { btn.style.display = "block"; } 
-            else { btn.style.display = "none"; }
+            btn.style.display = (document.documentElement.scrollTop > 300) ? "block" : "none";
         };
 
+        // Fonction de recherche
         function filtrerMessages() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.getElementsByClassName('message-card');
@@ -128,38 +109,40 @@
             }
         }
 
+        // Fonction de copie
         function copierTexte(bouton, texte) {
             navigator.clipboard.writeText(texte).then(() => {
-                const memo = bouton.innerHTML;
+                const original = bouton.innerHTML;
                 bouton.innerHTML = "✅ Message Copié !";
-                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
+                bouton.style.background = "#d1f2eb";
+                setTimeout(() => { 
+                    bouton.innerHTML = original; 
+                    bouton.style.background = "#f1f2f6";
+                }, 2000);
             });
         }
 
-        // Chargement automatique depuis data.json
+        // Chargement des données
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('flux-messages');
                 container.innerHTML = ''; 
                 data.reverse().forEach(msg => {
-                    let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image"></div>` : '';
                     const card = document.createElement('div');
                     card.className = 'message-card';
                     card.innerHTML = `
-                        <span class="category-tag">${msg.categorie || 'Bible'}</span>
-                        <h3>${msg.titre}</h3>
-                        ${imageHtml}
+                        <span class="category-tag">${msg.categorie || 'Parole'}</span>
+                        <h3 style="margin-top:0;">${msg.titre}</h3>
                         <div class="message-text">${msg.texte}</div>
                         <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
-                        <span class="date">Publié le ${msg.date}</span>
+                        <p style="font-size:0.75em; color:#bdc3c7; text-align:right; margin-top:10px;">Publié le ${msg.date}</p>
                     `;
                     container.appendChild(card);
                 });
             })
-            .catch((err) => {
-                console.error(err);
-                document.getElementById('flux-messages').innerHTML = "<p>Erreur lors du chargement des enseignements.</p>";
+            .catch(err => {
+                document.getElementById('flux-messages').innerHTML = "<p>Erreur de connexion aux messages.</p>";
             });
     </script>
 </body>
