@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMMANUEL - La Présence Divine</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Sécurité : si le fichier CSS ne charge pas, on garde un minimum de style */
+        body { font-family: 'Poppins', sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 0; }
+        header { background: #2c3e50; color: white; text-align: center; padding: 2rem 0; }
+        #container { max-width: 800px; margin: 20px auto; padding: 20px; }
+        footer { text-align: center; padding: 20px; background: #eee; margin-top: 50px; }
+    </style>
 </head>
 <body>
 
@@ -20,7 +27,7 @@
         <div class="footer-content">
             <p>© 2024 EMMANUEL - La Parole qui Restaure</p>
             
-            <div id="compteur-div" style="margin-top: 30px; display: flex; justify-content: center;">
+            <div id="compteur-div" style="margin-top: 20px; display: flex; justify-content: center;">
                 <a href="https://info.flagcounter.com/ivJp">
                     <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_CCCCCC/columns_3/maxflags_12/viewers_Prsences+par+pays/labels_0/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
                 </a>
@@ -28,6 +35,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
 </body>
 </html>
