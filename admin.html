@@ -10,8 +10,9 @@
         h1 { margin-bottom: 25px; }
         input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #eee; border-radius: 8px; box-sizing: border-box; font-size: 1em; }
         input:focus, textarea:focus { border-color: #27ae60; outline: none; }
-        /* Nouveau style pour le champ image */
         #image { background-color: #f0f8ff; border-color: #3498db; }
+        /* Style spécial pour l'ID */
+        #id_message { background-color: #fff3e0; border-color: #ff9800; font-weight: bold; }
         button { background: #27ae60; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold; width: 100%; margin-top: 20px; transition: background 0.3s; }
         button:hover { background: #219a52; }
         #resultat { background: #1e272e; color: #2ecc71; padding: 20px; margin-top: 30px; border-radius: 8px; text-align: left; font-family: 'Courier New', monospace; overflow-x: auto; display: none; white-space: pre-wrap; }
@@ -20,40 +21,53 @@
 <body>
     <h1>Publier sur EMMANUEL</h1>
     <div class="form">
+        <input type="number" id="id_message" placeholder="ID du message (ex: 4)">
         <input type="text" id="titre" placeholder="Titre du message (ex: LA PAIX DE DIEU)">
         <input type="text" id="categorie" placeholder="Catégorie (ex: FOI, ENCOURAGEMENT)">
         <input type="text" id="image" placeholder="Lien de l'image (ex: https://i.postimg.cc/...)">
         <textarea id="texte" rows="12" placeholder="Votre message ici..."></textarea>
-        <input type="text" id="date" placeholder="Date (ex: 18/01/2026)">
+        <input type="text" id="date" id="date_input">
         <button onclick="generer()">Générer le code à copier</button>
     </div>
     <div id="resultat"></div>
 
     <script>
+        // Met la date du jour automatiquement au chargement
+        window.onload = function() {
+            const today = new Date();
+            const dateStr = today.getDate().toString().padStart(2, '0') + '/' + 
+                          (today.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                          today.getFullYear();
+            document.getElementById('date').value = dateStr;
+        };
+
         function generer() {
-            // On récupère toutes les valeurs
+            const id = parseInt(document.getElementById('id_message').value);
             const t = document.getElementById('titre').value;
             const c = document.getElementById('categorie').value || "Enseignement";
-            const i = document.getElementById('image').value; // On récupère le lien de l'image
+            const i = document.getElementById('image').value;
             const txt = document.getElementById('texte').value;
             const d = document.getElementById('date').value;
+
+            if(!id) { alert("N'oublie pas de mettre l'ID ! (ex: 4 pour demain)"); return; }
             
-            // Création de l'objet message
+            // Création de l'objet avec l'ID inclus
             const nouveauMessage = { 
-                titre: t, 
+                id: id,
                 categorie: c,
-                image: i, // On ajoute l'image dans les données
+                titre: t, 
+                image: i,
                 texte: txt, 
                 date: d 
             };
             
-            // Affichage du résultat
             const resultatDiv = document.getElementById('resultat');
             resultatDiv.style.display = 'block';
-            // On met des crochets [] autour pour faciliter l'ajout dans data.json
-            resultatDiv.innerText = JSON.stringify([nouveauMessage], null, 4);
             
-            alert("Code généré ! Copiez TOUT le contenu du cadre noir ci-dessous et collez-le au DÉBUT de votre fichier data.json (après le premier crochet [ ).");
+            // On affiche le code sans les crochets [] pour que tu puisses l'insérer facilement dans ta liste existante
+            resultatDiv.innerText = JSON.stringify(nouveauMessage, null, 4) + ",";
+            
+            alert("Code généré avec l'ID " + id + " ! Copie le bloc et colle-le dans data.json");
         }
     </script>
 </body>
