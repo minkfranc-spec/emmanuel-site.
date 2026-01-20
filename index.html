@@ -6,47 +6,46 @@
     <title>EMMANUEL | La Parole de Dieu</title>
     
     <meta name="google-site-verification" content="gaQ30eL1VaKMwWBH9c58lor6KQaAbMn0xHqRCVxJ0Kc" />
-    <meta name="description" content="Un havre de paix spirituelle. Recevez chaque jour un enseignement biblique pour nourrir votre foi.">
-    
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2906/2906144.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn-icons-png.flaticon.com/512/2906/2906144.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2906/2906144.png">
     <meta name="theme-color" content="#ffffff">
 
     <style>
-        /* --- STYLES GÉNÉRAUX --- */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; background: #f0f2f5; color: #2c3e50; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { text-align: center; }
-        h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 3px; font-weight: 900; font-size: 1.6em; margin: 25px 0 5px 0; }
-        .intro-text { width: 85%; margin: 0 auto 20px auto; font-size: 0.95em; color: #7f8c8d; line-height: 1.5; font-style: italic; }
         
-        /* --- ÉCRAN DE CHARGEMENT (OISEAU) --- */
+        /* --- ÉCRAN DE CHARGEMENT --- */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 2000;
             display: flex; justify-content: center; align-items: center; flex-direction: column;
-            transition: opacity 0.5s ease-out;
+            transition: opacity 0.6s ease;
         }
-        .bird-loader { width: 100px; height: auto; }
-        .loading-text { margin-top: 20px; color: #7f8c8d; font-style: italic; }
+        .bird-loader { width: 120px; height: auto; }
 
+        /* --- EN-TÊTE --- */
+        h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 3px; font-weight: 900; font-size: 1.6em; margin: 25px 0 5px 0; }
+        .intro-text { width: 85%; margin: 0 auto 20px auto; font-size: 0.95em; color: #7f8c8d; line-height: 1.5; font-style: italic; }
+        
         /* --- RECHERCHE --- */
         .search-container { width: 90%; max-width: 500px; margin: 10px auto 20px auto; }
-        .search-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #dcdde1; font-size: 16px; outline: none; transition: 0.3s; }
-        .search-input:focus { border-color: #2c3e50; box-shadow: 0 0 8px rgba(44, 62, 80, 0.1); }
+        .search-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #dcdde1; font-size: 16px; outline: none; }
 
-        /* --- CARTES DES MESSAGES --- */
+        /* --- CARTES (L'effet qui bouge est ici) --- */
         .message-card { 
             background: white; padding: 18px; border-radius: 12px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
             width: 92%; max-width: 500px; margin: 15px auto; text-align: left; 
             border-left: 5px solid #2c3e50;
-            /* CORRECTION ICI : Transition fluide sur le mouvement et l'ombre */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease; /* Fluidité du mouvement */
             cursor: pointer;
         }
-        /* L'effet de survol qui fait bouger la carte */
-        .message-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        /* Effet au passage de la souris ou au toucher */
+        .message-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15); 
+        }
 
         .message-image-container { width: 100%; text-align: center; margin-bottom: 15px; }
         .message-image { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 0 auto; }
@@ -56,20 +55,20 @@
         .copy-btn { background: #f1f2f6; border: none; padding: 12px; border-radius: 6px; color: #2c3e50; font-size: 0.9em; cursor: pointer; font-weight: bold; width: 100%; }
         .date { color: #bdc3c7; font-size: 0.8em; display: block; text-align: right; margin-top: 10px; }
         
-        /* --- BOUTONS FLOTTANTS & FOOTER --- */
-        .whatsapp-btn { position: fixed; bottom: 30px; right: 20px; z-index: 1000; transition: transform 0.3s; }
-        .whatsapp-btn:hover { transform: scale(1.1); }
+        /* --- BOUTONS FLOTTANTS --- */
+        .whatsapp-btn { position: fixed; bottom: 30px; right: 20px; z-index: 1000; }
         .whatsapp-btn img { width: 55px; height: 55px; }
-        #scrollTop { display: none; position: fixed; bottom: 100px; right: 25px; background: #2c3e50; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; z-index: 999; font-size: 20px; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        #scrollTop { display: none; position: fixed; bottom: 100px; right: 25px; background: #2c3e50; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; z-index: 999; font-size: 20px; }
         
+        /* --- COMPTEUR --- */
         .flag-counter-box { background: white; padding: 20px; border-radius: 15px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #dcdde1; }
     </style>
 </head>
 <body>
 
     <div id="loading-screen">
-        <img src="https://i.gifer.com/origin/3f/3fcf565ccc553afcfd89858c97304705_w200.gif" alt="Chargement..." class="bird-loader">
-        <p class="loading-text">Préparation du sanctuaire...</p>
+        <img src="https://i.gifer.com/origin/3f/3fcf565ccc553afcfd89858c97304705_w200.gif" class="bird-loader" alt="Chargement">
+        <p style="color:#7f8c8d; margin-top:15px; font-style:italic;">Bienvenue à EMMANUEL...</p>
     </div>
 
     <button onclick="window.scrollTo(0,0)" id="scrollTop">↑</button>
@@ -92,19 +91,17 @@
     <div style="height: 30px;"></div>
     <div class="flag-counter-box">
         <div style="font-size: 0.85em; font-weight: bold; margin-bottom: 12px; text-transform: uppercase; color: #2c3e50;">
-            👥 Communauté des Lecteurs Fidèles
+            👥 Communauté des Lecteurs
         </div>
         <a href="https://info.flagcounter.com/ivJp">
-            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_Lecteurs+par+pays/labels_1/nbre+de+vues_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_Lecteurs/labels_1/Vues_1/flags_0/percent_0/" alt="Flag Counter" border="0">
         </a>
-        <p style="font-size: 0.75em; color: #7f8c8d; margin-top: 12px; font-style: italic;">
-            Le compteur affiche nos lecteurs réguliers et se renouvelle toutes les 15 minutes.
-        </p>
+        <p style="font-size: 0.75em; color: #7f8c8d; margin-top: 12px;">Mise à jour toutes les 15 minutes.</p>
     </div>
-    <div style="height: 120px;"></div>
+
+    <div style="height: 130px;"></div>
 
     <script>
-        // Gestion du bouton de retour en haut
         window.onscroll = function() {
             let btn = document.getElementById("scrollTop");
             if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
@@ -114,7 +111,6 @@
             }
         };
 
-        // Fonction de recherche
         function filtrerMessages() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.getElementsByClassName('message-card');
@@ -123,7 +119,6 @@
             }
         }
 
-        // Fonction de copie du texte
         function copierTexte(bouton, texte) {
             navigator.clipboard.writeText(texte).then(() => {
                 const memo = bouton.innerHTML;
@@ -132,61 +127,52 @@
             });
         }
 
-       // Fonction principale de chargement avec gestion de l'écran d'attente
-       async function chargerMessages() {
-        const container = document.getElementById('flux-messages');
-        const loadingScreen = document.getElementById('loading-screen');
-        
-        try {
-            // On récupère les données
-            const response = await fetch('data.json?v=' + Date.now());
-            if (!response.ok) throw new Error();
-            const data = await response.json();
-            
-            container.innerHTML = ''; 
-            const maintenant = new Date();
-            
-            // Filtrage strict sur la date et l'heure (01h30)
-            const messagesAffiches = data.filter(msg => {
-                const [annee, mois, jour] = msg.date.split('-').map(Number);
-                const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0); 
-                return maintenant >= dateParution;
-            });
-
-            if (messagesAffiches.length === 0) {
-                container.innerHTML = "<p style='margin-top:30px;'>Le prochain enseignement sera disponible à 01h30. Soyez bénis. 🙏</p>";
-            } else {
-                // Affichage des messages triés
-                messagesAffiches.sort((a, b) => b.id - a.id).forEach(msg => {
-                    const d = new Date(msg.date);
-                    const dateAffichee = d.toLocaleDateString('fr-FR');
-                    let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" onerror="this.style.display='none'"></div>` : '';
-                    const card = document.createElement('div');
-                    card.className = 'message-card';
-                    card.innerHTML = `
-                        <span class="category-tag">${msg.categorie}</span>
-                        <h3>${msg.titre}</h3>
-                        ${imageHtml}
-                        <div class="message-text">${msg.texte}</div>
-                        <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
-                        <span class="date">Publié le ${dateAffichee}</span>
-                    `;
-                    container.appendChild(card);
+        async function chargerMessages() {
+            const container = document.getElementById('flux-messages');
+            const loader = document.getElementById('loading-screen');
+            try {
+                const response = await fetch('data.json?v=' + Date.now());
+                const data = await response.json();
+                
+                container.innerHTML = ''; 
+                const maintenant = new Date();
+                
+                const messagesAffiches = data.filter(msg => {
+                    const [annee, mois, jour] = msg.date.split('-').map(Number);
+                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0); 
+                    return maintenant >= dateParution;
                 });
+
+                if (messagesAffiches.length === 0) {
+                    container.innerHTML = "<p>Le prochain enseignement arrive bientôt. 🙏</p>";
+                } else {
+                    messagesAffiches.sort((a, b) => b.id - a.id).forEach(msg => {
+                        const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
+                        let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" onerror="this.style.display='none'"></div>` : '';
+                        const card = document.createElement('div');
+                        card.className = 'message-card';
+                        card.innerHTML = `
+                            <span class="category-tag">${msg.categorie}</span>
+                            <h3>${msg.titre}</h3>
+                            ${imageHtml}
+                            <div class="message-text">${msg.texte}</div>
+                            <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
+                            <span class="date">Publié le ${dateAffichee}</span>
+                        `;
+                        container.appendChild(card);
+                    });
+                }
+            } catch (err) {
+                container.innerHTML = "<p>Erreur de connexion au serveur.</p>";
+            } finally {
+                // On enlève l'oiseau quand c'est chargé
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => { loader.style.display = 'none'; }, 600);
+                }, 800);
             }
-        } catch (err) {
-            container.innerHTML = "<p style='color:red; margin-top:30px;'>Erreur de chargement des enseignements.</p>";
-        } finally {
-            // QUOI QU'IL ARRIVE (succès ou erreur), on cache l'écran de chargement
-            // On attend un tout petit peu (500ms) pour que l'animation soit fluide
-             setTimeout(() => {
-                loadingScreen.style.opacity = '0';
-                // On supprime complètement l'écran après la transition
-                setTimeout(() => { loadingScreen.style.display = 'none'; }, 500);
-             }, 500);
         }
-    }
-        // Lancement du chargement
+        
         chargerMessages();
     </script>
 </body>
