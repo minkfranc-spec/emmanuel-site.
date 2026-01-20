@@ -6,95 +6,76 @@
     <title>EMMANUEL | La Parole de Dieu</title>
     
     <meta name="google-site-verification" content="gaQ30eL1VaKMwWBH9c58lor6KQaAbMn0xHqRCVxJ0Kc" />
-    
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2619/2619313.png">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2619/2619313.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2906/2906144.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2906/2906144.png">
 
     <style>
-        /* --- STYLES GÉNÉRAUX --- */
         * { box-sizing: border-box; scroll-behavior: smooth; }
-        html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; background: #f8f9fa; color: #2c3e50; font-family: 'Playfair Display', serif, 'Segoe UI', serif; }
+        html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; background: #f0f2f5; color: #2c3e50; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { text-align: center; }
         
-        /* --- ÉCRAN DE CHARGEMENT TEXTE DESIGN --- */
+        /* --- ÉCRAN DE CHARGEMENT (COLOMBE) --- */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #ffffff; z-index: 2000;
-            display: flex; justify-content: center; align-items: center;
-            transition: opacity 0.8s ease-in-out;
+            background: white; z-index: 2000;
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+            transition: opacity 0.6s ease;
         }
-        .welcome-loader {
-            font-size: 1.8em;
-            font-weight: 300;
-            letter-spacing: 5px;
-            color: #b8860b; /* Couleur dorée sombre */
-            text-transform: uppercase;
-            animation: fadeInOut 2s infinite ease-in-out;
-            border-bottom: 1px solid #b8860b;
-            padding-bottom: 10px;
-        }
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: scale(0.95); }
-            50% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.05); }
-        }
+        .bird-loader { width: 180px; height: auto; }
 
-        /* --- EN-TÊTE --- */
-        h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 4px; font-weight: 900; font-size: 1.8em; margin: 30px 0 5px 0; }
-        .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1em; color: #95a5a6; line-height: 1.6; font-style: italic; }
+        h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 3px; font-weight: 900; font-size: 1.6em; margin: 25px 0 5px 0; }
+        .intro-text { width: 85%; margin: 0 auto 20px auto; font-size: 0.95em; color: #7f8c8d; line-height: 1.5; font-style: italic; }
         
-        /* --- RECHERCHE --- */
-        .search-container { width: 90%; max-width: 500px; margin: 10px auto 25px auto; }
-        .search-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #e0e0e0; font-size: 16px; outline: none; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .search-container { width: 90%; max-width: 500px; margin: 10px auto 20px auto; }
+        .search-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #dcdde1; font-size: 16px; outline: none; }
 
         /* --- CARTES MESSAGES --- */
         .message-card { 
-            background: white; padding: 22px; border-radius: 15px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            width: 92%; max-width: 520px; margin: 20px auto; text-align: left; 
-            border-top: 4px solid #b8860b; /* Rappel du doré */
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            background: white; padding: 18px; border-radius: 12px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
+            width: 92%; max-width: 500px; margin: 15px auto; text-align: left; 
+            border-left: 5px solid #2c3e50;
+            transition: all 0.3s ease; 
             cursor: pointer;
         }
-        .message-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .message-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.15); }
 
-        .message-image-container { width: 100%; text-align: center; margin-bottom: 18px; }
-        .message-image { max-width: 100%; height: auto; border-radius: 10px; display: block; margin: 0 auto; }
-        .category-tag { background: #2c3e50; color: white; padding: 5px 12px; border-radius: 5px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; display: inline-block; letter-spacing: 1px; }
-        h3 { color: #2c3e50; margin: 0 0 15px 0; font-size: 1.3em; line-height: 1.4; }
-        .message-text { font-size: 1.05em; color: #2f3640; line-height: 1.8; margin-bottom: 20px; white-space: pre-wrap; text-align: justify; }
-        .copy-btn { background: #f8f9fa; border: 1px solid #eee; padding: 14px; border-radius: 8px; color: #2c3e50; font-size: 0.9em; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
-        .copy-btn:hover { background: #2c3e50; color: white; }
-        .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 15px; }
+        .message-image-container { width: 100%; text-align: center; margin-bottom: 15px; }
+        .message-image { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 0 auto; }
+        .category-tag { background: #e74c3c; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: inline-block; }
+        h3 { color: #2c3e50; margin: 0 0 12px 0; font-size: 1.2em; line-height: 1.3; }
+        .message-text { font-size: 1.05em; color: #1a1a1a; line-height: 1.7; margin-bottom: 15px; white-space: pre-wrap; text-align: justify; }
+        .copy-btn { background: #f1f2f6; border: none; padding: 12px; border-radius: 6px; color: #2c3e50; font-size: 0.9em; cursor: pointer; font-weight: bold; width: 100%; }
+        .date { color: #bdc3c7; font-size: 0.8em; display: block; text-align: right; margin-top: 10px; }
         
-        /* --- BOUTONS FLOTTANTS --- */
+        /* --- BOUTONS FLOTTANTS (VOTRE 10/10) --- */
         .floating-container { position: fixed; right: 20px; z-index: 1000; display: flex; align-items: center; text-decoration: none; }
         .whatsapp-link { bottom: 30px; }
         .scroll-link { bottom: 100px; display: none; } 
 
         .btn-label { 
-            background: rgba(44, 62, 80, 0.95); color: white; 
-            padding: 6px 15px; border-radius: 20px; 
-            font-size: 13px; font-weight: 500; margin-right: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: rgba(44, 62, 80, 0.9); color: white; 
+            padding: 5px 12px; border-radius: 20px; 
+            font-size: 12px; font-weight: bold; margin-right: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        .whatsapp-btn img { width: 52px; height: 52px; transition: 0.3s; }
-        .whatsapp-btn img:hover { transform: scale(1.1); }
+        .whatsapp-btn img { width: 50px; height: 50px; }
         .scroll-btn { 
             background: #2c3e50; color: white; border: none; 
-            width: 48px; height: 48px; border-radius: 50%; 
-            cursor: pointer; font-size: 22px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 45px; height: 45px; border-radius: 50%; 
+            cursor: pointer; font-size: 20px; font-weight: bold;
         }
         
-        /* --- COMPTEUR --- */
-        .flag-counter-box { background: white; padding: 25px; border-radius: 20px; margin: 50px auto; width: 92%; max-width: 500px; border: 1px solid #efefef; }
+        /* --- BLOC COMPTEUR --- */
+        .flag-counter-box { background: white; padding: 20px; border-radius: 15px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #dcdde1; }
     </style>
 </head>
 <body>
 
     <div id="loading-screen">
-        <div class="welcome-loader">Bienvenue à EMMANUEL</div>
+        <img src="https://i.gifer.com/origin/3f/3fcf565ccc553afcfd89858c97304705_w200.gif" class="bird-loader" alt="Chargement">
+        <p style="color:#7f8c8d; margin-top:10px; font-style:italic;">Ouverture du sanctuaire...</p>
     </div>
 
     <a href="javascript:window.scrollTo(0,0)" class="floating-container scroll-link" id="scrollTopLink">
@@ -118,13 +99,13 @@
 
     <div style="height: 30px;"></div>
     <div class="flag-counter-box">
-        <div style="font-size: 0.9em; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; color: #b8860b; letter-spacing: 1px;">
+        <div style="font-size: 0.85em; font-weight: bold; margin-bottom: 12px; text-transform: uppercase; color: #2c3e50;">
             👥 COMMUNAUTÉ EMMANUEL
         </div>
         <a href="https://info.flagcounter.com/ivJp">
             <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_Lecteurs+par+pays/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
         </a>
-        <p style="font-size: 0.8em; color: #95a5a6; margin-top: 15px;">Mise à jour toutes les 15 minutes.</p>
+        <p style="font-size: 0.75em; color: #7f8c8d; margin-top: 12px;">Mise à jour toutes les 15 minutes.</p>
     </div>
 
     <div style="height: 130px;"></div>
@@ -171,7 +152,7 @@
                 });
 
                 if (messagesAffiches.length === 0) {
-                    container.innerHTML = "<p style='margin-top:30px;'>Le prochain enseignement sera disponible à 01h30. 🙏</p>";
+                    container.innerHTML = "<p>Le prochain enseignement sera disponible à 01h30. 🙏</p>";
                 } else {
                     messagesAffiches.sort((a, b) => b.id - a.id).forEach(msg => {
                         const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
@@ -192,11 +173,10 @@
             } catch (err) {
                 container.innerHTML = "<p>Chargement...</p>";
             } finally {
-                // Temps de chargement ultra-rapide (1.5 seconde)
                 setTimeout(() => {
                     loader.style.opacity = '0';
-                    setTimeout(() => { loader.style.display = 'none'; }, 800);
-                }, 1500);
+                    setTimeout(() => { loader.style.display = 'none'; }, 600);
+                }, 1000);
             }
         }
         chargerMessages();
