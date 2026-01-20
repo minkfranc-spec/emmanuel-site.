@@ -1,111 +1,69 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - EMMANUEL (Gestionnaire)</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #2c3e50; color: white; text-align: center; }
-        .form { background: white; color: #333; padding: 25px; border-radius: 15px; max-width: 500px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        h1 { margin-bottom: 25px; }
-        label { display: block; text-align: left; font-weight: bold; margin-top: 10px; color: #7f8c8d; }
-        input, textarea { width: 100%; padding: 12px; margin: 5px 0 15px 0; border: 2px solid #eee; border-radius: 8px; box-sizing: border-box; font-size: 1em; }
-        input:focus, textarea:focus { border-color: #27ae60; outline: none; }
-        #id_message { background-color: #fff3e0; border-color: #ff9800; font-weight: bold; width: 80px; text-align: center; }
-        button { background: #27ae60; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold; width: 100%; margin-top: 20px; transition: background 0.3s; }
-        button:hover { background: #219a52; }
-        
-        /* Styles pour le container de stockage */
-        .stockage-container { max-width: 800px; margin: 40px auto; background: #1e272e; padding: 20px; border-radius: 15px; border: 2px dashed #2ecc71; text-align: left; }
-        h2 { color: #2ecc71; font-size: 1.2em; margin-top: 0; display: flex; justify-content: space-between; align-items: center; }
-        #reserve { color: #ecf0f1; font-family: 'Courier New', monospace; white-space: pre-wrap; font-size: 0.9em; }
-        .btn-clear { background: #e74c3c; padding: 5px 10px; font-size: 0.7em; cursor: pointer; border-radius: 5px; border: none; color: white; }
-    </style>
-</head>
-<body>
-    <h1>Publier sur EMMANUEL</h1>
-    
-    <div class="form">
-        <label>ID du message :</label>
-        <input type="number" id="id_message">
-        <label>Titre :</label>
-        <input type="text" id="titre" placeholder="Titre...">
-        <label>Catégorie :</label>
-        <input type="text" id="categorie" placeholder="FOI, PAIX...">
-        <label>Lien Image :</label>
-        <input type="text" id="image" placeholder="https://i.postimg.cc/...">
-        <label>Message :</label>
-        <textarea id="texte" rows="8" placeholder="Contenu..."></textarea>
-        <label>Date :</label>
-        <input type="text" id="date">
-        <button onclick="generer()">Ajouter à la réserve 📦</button>
-    </div>
+<script>
+    // Configuration de la date automatique au format AAAA-MM-JJ
+    window.onload = function() {
+        const aujourdhui = new Date().toISOString().split('T')[0];
+        document.getElementById('date').value = aujourdhui;
+    };
 
-    <div class="stockage-container">
-        <h2>
-            📦 TA RÉSERVE DE MESSAGES PRÊTS
-            <button class="btn-clear" onclick="viderReserve()">Vider la réserve</button>
-        </h2>
-        <div id="reserve">// Tes messages apparaîtront ici les uns après les autres...</div>
-    </div>
+    function genererJSON() {
+        const id = document.getElementById('id').value;
+        // On force le titre en MAJUSCULES ici
+        const titre = document.getElementById('titre').value.toUpperCase();
+        const categorie = document.getElementById('categorie').value.toUpperCase();
+        const image = document.getElementById('image').value;
+        const texte = document.getElementById('texte').value;
+        const date = document.getElementById('date').value;
 
-    <script>
-        window.onload = function() {
-            const today = new Date();
-            const dateStr = today.getDate().toString().padStart(2, '0') + '/' + 
-                          (today.getMonth() + 1).toString().padStart(2, '0') + '/' + 
-                          today.getFullYear();
-            document.getElementById('date').value = dateStr;
+        if(!id || !titre || !texte || !date) {
+            alert("Remplis tous les champs mon ami !");
+            return;
+        }
 
-            let dernierID = localStorage.getItem('dernierID') || 3;
-            document.getElementById('id_message').value = parseInt(dernierID) + 1;
-            
-            // Charger la réserve sauvegardée si elle existe
-            const reserveSauvee = localStorage.getItem('reserveMessages');
-            if(reserveSauvee) document.getElementById('reserve').innerText = reserveSauvee;
+        const nouveauMessage = {
+            "id": parseInt(id),
+            "titre": titre,
+            "categorie": categorie,
+            "image": image,
+            "texte": texte,
+            "date": date
         };
 
-        function generer() {
-            const id = document.getElementById('id_message').value;
-            const t = document.getElementById('titre').value;
-            const c = document.getElementById('categorie').value || "Enseignement";
-            const i = document.getElementById('image').value;
-            const txt = document.getElementById('texte').value;
-            const d = document.getElementById('date').value;
+        // Récupérer la réserve actuelle
+        let reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
+        
+        // Ajouter au début de la liste
+        reserve.unshift(nouveauMessage);
+        
+        // Sauvegarder
+        localStorage.setItem('reserve_emmanuel', JSON.stringify(reserve));
+        
+        afficherReserve();
+        
+        // Préparer l'ID suivant automatiquement
+        document.getElementById('id').value = parseInt(id) + 1;
+        document.getElementById('titre').value = "";
+        document.getElementById('image').value = "";
+        document.getElementById('texte').value = "";
+    }
 
-            const nouveauMessage = { 
-                id: parseInt(id),
-                categorie: c,
-                titre: t, 
-                image: i,
-                texte: txt, 
-                date: d 
-            };
-            
-            localStorage.setItem('dernierID', id);
-
-            // Ajouter à la réserve sans effacer le reste
-            const reserveDiv = document.getElementById('reserve');
-            if(reserveDiv.innerText.startsWith("//")) reserveDiv.innerText = "";
-            
-            const nouveauCode = JSON.stringify(nouveauMessage, null, 4) + ",\n\n";
-            reserveDiv.innerText = nouveauCode + reserveDiv.innerText; // On ajoute le nouveau en haut de la réserve
-            
-            // Sauvegarder la réserve dans le navigateur
-            localStorage.setItem('reserveMessages', reserveDiv.innerText);
-
-            alert("Message ID " + id + " ajouté à ta réserve en bas !");
-            
-            // Préparer l'ID suivant automatiquement pour ton prochain message
-            document.getElementById('id_message').value = parseInt(id) + 1;
+    function afficherReserve() {
+        const reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
+        const zoneNoire = document.getElementById('resultat-json');
+        
+        if(reserve.length > 0) {
+            // Affiche le JSON propre pour le copier-coller
+            zoneNoire.value = JSON.stringify(reserve, null, 2);
         }
+    }
 
-        function viderReserve() {
-            if(confirm("Veux-tu vraiment vider toute ta réserve ?")) {
-                document.getElementById('reserve').innerText = "// Tes messages apparaîtront ici...";
-                localStorage.removeItem('reserveMessages');
-            }
+    function viderReserve() {
+        if(confirm("Veux-tu vraiment vider ta réserve ?")) {
+            localStorage.removeItem('reserve_emmanuel');
+            document.getElementById('resultat-json').value = "";
+            location.reload();
         }
-    </script>
-</body>
-</html>
+    }
+    
+    // Charger la réserve au démarrage
+    afficherReserve();
+</script>
