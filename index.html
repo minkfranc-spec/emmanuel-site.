@@ -11,11 +11,11 @@
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1042/1042618.png">
 
     <style>
-        /* --- DESIGN SYSTÈME RAFFINÉ --- */
+        /* --- DESIGN SYSTÈME --- */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; background: #ffffff; color: #1a1a1a; font-family: 'Times New Roman', Times, serif; }
         
-        /* --- ÉCRAN DE BIENVENUE PRESTIGE --- */
+        /* --- ÉCRAN DE BIENVENUE RAFFINÉ --- */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff; z-index: 2000;
@@ -31,51 +31,52 @@
         .welcome-loader h2 {
             font-weight: 300; letter-spacing: 8px; color: #d4af37;
             margin: 0; text-transform: uppercase; font-size: 1.5em;
-            animation: fadeInText 2s ease-in-out;
-        }
-        @keyframes fadeInText {
-            0% { letter-spacing: 2px; opacity: 0; }
-            100% { letter-spacing: 8px; opacity: 1; }
+            animation: tracking-in-expand 1.5s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
         }
 
-        /* --- TITRES ET TEXTES --- */
-        h1 { color: #1a1a1a; text-transform: uppercase; letter-spacing: 6px; font-weight: 400; font-size: 2.2em; margin: 40px 0 10px 0; }
-        .intro-text { width: 80%; margin: 0 auto 35px auto; font-size: 1.1em; color: #888; font-style: italic; line-height: 1.6; }
+        @keyframes tracking-in-expand {
+            0% { letter-spacing: -0.5em; opacity: 0; }
+            40% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* --- CONTENU --- */
+        h1 { color: #1a1a1a; text-transform: uppercase; letter-spacing: 5px; font-weight: 400; font-size: 2em; margin: 40px 0 10px 0; }
+        .intro-text { width: 80%; margin: 0 auto 30px auto; font-size: 1.1em; color: #888; font-style: italic; }
         
-        .search-container { width: 90%; max-width: 500px; margin: 0 auto 40px auto; }
-        .search-input { width: 100%; padding: 15px; border: none; border-bottom: 1px solid #e0e0e0; font-size: 16px; outline: none; text-align: center; transition: 0.4s; background: transparent; }
+        .search-container { width: 90%; max-width: 500px; margin: 0 auto 30px auto; }
+        .search-input { width: 100%; padding: 15px; border: none; border-bottom: 1px solid #e0e0e0; font-size: 16px; outline: none; text-align: center; transition: 0.3s; }
         .search-input:focus { border-bottom: 1px solid #d4af37; }
 
         /* --- CARTES MESSAGES LUXE --- */
         .message-card { 
-            background: #ffffff; padding: 35px; border-radius: 2px; 
-            box-shadow: 0 15px 45px rgba(0,0,0,0.03); 
-            width: 92%; max-width: 600px; margin: 30px auto; text-align: left; 
-            border-left: 3px solid #d4af37;
-            transition: all 0.5s ease;
+            background: #ffffff; padding: 30px; border-radius: 4px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05); 
+            width: 92%; max-width: 550px; margin: 25px auto; text-align: left; 
+            border-left: 2px solid #d4af37;
+            transition: all 0.4s ease;
         }
-        .message-card:hover { transform: translateY(-8px); box-shadow: 0 25px 60px rgba(0,0,0,0.08); }
+        .message-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
 
-        .category-tag { color: #d4af37; font-size: 0.85em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; display: inline-block; letter-spacing: 3px; }
-        h3 { color: #1a1a1a; margin: 0 0 20px 0; font-size: 1.5em; font-weight: 400; line-height: 1.4; }
-        .message-text { font-size: 1.15em; color: #333; line-height: 2; margin-bottom: 30px; white-space: pre-wrap; text-align: justify; }
+        .category-tag { color: #d4af37; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; display: inline-block; letter-spacing: 2px; }
+        h3 { color: #1a1a1a; margin: 0 0 20px 0; font-size: 1.4em; font-weight: 400; line-height: 1.4; }
+        .message-text { font-size: 1.1em; color: #333; line-height: 1.9; margin-bottom: 25px; white-space: pre-wrap; text-align: justify; }
         
-        .copy-btn { background: none; border: 1px solid #d4af37; padding: 14px; color: #d4af37; font-size: 0.9em; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; width: 100%; transition: 0.3s; }
+        .copy-btn { background: none; border: 1px solid #d4af37; padding: 12px; color: #d4af37; font-size: 0.9em; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; width: 100%; transition: 0.3s; }
         .copy-btn:hover { background: #d4af37; color: white; }
-        .date { color: #ccc; font-size: 0.8em; display: block; text-align: right; margin-top: 25px; }
+        .date { color: #ccc; font-size: 0.8em; display: block; text-align: right; margin-top: 20px; }
         
-        /* --- BOUTONS FLOTTANTS --- */
+        /* --- BOUTONS --- */
         .floating-container { position: fixed; right: 20px; z-index: 1000; display: flex; align-items: center; text-decoration: none; }
         .whatsapp-link { bottom: 30px; }
         .scroll-link { bottom: 100px; display: none; } 
-        .btn-label { background: #1a1a1a; color: white; padding: 7px 16px; border-radius: 2px; font-size: 11px; text-transform: uppercase; margin-right: 12px; letter-spacing: 1px; }
-        .whatsapp-btn img { width: 50px; height: 50px; transition: 0.3s; }
-        .whatsapp-btn img:hover { transform: scale(1.1); }
-        .scroll-btn { background: #d4af37; color: white; border: none; width: 45px; height: 45px; cursor: pointer; font-size: 20px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .btn-label { background: #1a1a1a; color: white; padding: 6px 15px; border-radius: 2px; font-size: 11px; text-transform: uppercase; margin-right: 12px; letter-spacing: 1px; }
+        .whatsapp-btn img { width: 50px; height: 50px; }
+        .scroll-btn { background: #d4af37; color: white; border: none; width: 45px; height: 45px; cursor: pointer; font-size: 20px; }
         
         /* --- COMPTEUR RAFFINÉ --- */
-        .flag-counter-box { margin: 80px auto 40px auto; padding: 40px 20px; border-top: 1px solid #f0f0f0; width: 90%; max-width: 500px; }
-        .counter-title { font-size: 0.9em; letter-spacing: 4px; color: #d4af37; margin-bottom: 25px; text-transform: uppercase; font-weight: bold; }
+        .flag-counter-box { margin: 60px auto; padding: 30px; border-top: 1px solid #eee; width: 90%; max-width: 500px; }
+        .counter-title { font-size: 0.8em; letter-spacing: 3px; color: #d4af37; margin-bottom: 20px; text-transform: uppercase; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -135,7 +136,7 @@
         function copierTexte(bouton, texte) {
             navigator.clipboard.writeText(texte).then(() => {
                 const memo = bouton.innerHTML;
-                bouton.innerHTML = "L'ENSEIGNEMENT EST COPIÉ";
+                bouton.innerHTML = "MESSAGE COPIÉ";
                 setTimeout(() => { bouton.innerHTML = memo; }, 2000);
             });
         }
@@ -156,11 +157,11 @@
                 });
 
                 if (messagesAffiches.length === 0) {
-                    container.innerHTML = "<p style='margin-top:50px; color:#d4af37;'>L'enseignement du jour arrive à 01h30. 🙏</p>";
+                    container.innerHTML = "<p>L'enseignement du jour arrive à 01h30. 🙏</p>";
                 } else {
                     messagesAffiches.sort((a, b) => b.id - a.id).forEach(msg => {
                         const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
-                        let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" style="max-width:100%; border-radius:4px; margin-bottom:20px;" onerror="this.style.display='none'"></div>` : '';
+                        let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" onerror="this.style.display='none'"></div>` : '';
                         const card = document.createElement('div');
                         card.className = 'message-card';
                         card.innerHTML = `
@@ -168,16 +169,15 @@
                             <h3>${msg.titre}</h3>
                             ${imageHtml}
                             <div class="message-text">${msg.texte}</div>
-                            <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">Partager cet Enseignement</button>
+                            <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">Partager l'enseignement</button>
                             <span class="date">Publié le ${dateAffichee}</span>
                         `;
                         container.appendChild(card);
                     });
                 }
             } catch (err) {
-                container.innerHTML = "<p>Chargement en cours...</p>";
+                container.innerHTML = "<p>Chargement...</p>";
             } finally {
-                // Temps de présence du logo de bienvenue (2 secondes pour le raffinement)
                 setTimeout(() => {
                     loader.style.opacity = '0';
                     setTimeout(() => { loader.style.display = 'none'; }, 1000);
