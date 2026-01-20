@@ -7,84 +7,94 @@
     
     <meta name="google-site-verification" content="gaQ30eL1VaKMwWBH9c58lor6KQaAbMn0xHqRCVxJ0Kc" />
     
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1042/1042618.png">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1042/1042618.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2619/2619313.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2619/2619313.png">
 
     <style>
-        /* --- DESIGN SYSTÈME --- */
+        /* --- STYLES GÉNÉRAUX --- */
         * { box-sizing: border-box; scroll-behavior: smooth; }
-        html, body { margin: 0; padding: 0; width: 100%; background: #ffffff; color: #1a1a1a; font-family: 'Times New Roman', Times, serif; }
+        html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; background: #f8f9fa; color: #2c3e50; font-family: 'Playfair Display', serif, 'Segoe UI', serif; }
+        body { text-align: center; }
         
-        /* --- ÉCRAN DE BIENVENUE RAFFINÉ --- */
+        /* --- ÉCRAN DE CHARGEMENT TEXTE DESIGN --- */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff; z-index: 2000;
             display: flex; justify-content: center; align-items: center;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 0.8s ease-in-out;
         }
         .welcome-loader {
-            text-align: center;
-            border-top: 1px solid #d4af37;
-            border-bottom: 1px solid #d4af37;
-            padding: 20px 40px;
+            font-size: 1.8em;
+            font-weight: 300;
+            letter-spacing: 5px;
+            color: #b8860b; /* Couleur dorée sombre */
+            text-transform: uppercase;
+            animation: fadeInOut 2s infinite ease-in-out;
+            border-bottom: 1px solid #b8860b;
+            padding-bottom: 10px;
         }
-        .welcome-loader h2 {
-            font-weight: 300; letter-spacing: 8px; color: #d4af37;
-            margin: 0; text-transform: uppercase; font-size: 1.5em;
-            animation: tracking-in-expand 1.5s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
-        }
-
-        @keyframes tracking-in-expand {
-            0% { letter-spacing: -0.5em; opacity: 0; }
-            40% { opacity: 0.6; }
-            100% { opacity: 1; }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.05); }
         }
 
-        /* --- CONTENU --- */
-        h1 { color: #1a1a1a; text-transform: uppercase; letter-spacing: 5px; font-weight: 400; font-size: 2em; margin: 40px 0 10px 0; }
-        .intro-text { width: 80%; margin: 0 auto 30px auto; font-size: 1.1em; color: #888; font-style: italic; }
+        /* --- EN-TÊTE --- */
+        h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 4px; font-weight: 900; font-size: 1.8em; margin: 30px 0 5px 0; }
+        .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1em; color: #95a5a6; line-height: 1.6; font-style: italic; }
         
-        .search-container { width: 90%; max-width: 500px; margin: 0 auto 30px auto; }
-        .search-input { width: 100%; padding: 15px; border: none; border-bottom: 1px solid #e0e0e0; font-size: 16px; outline: none; text-align: center; transition: 0.3s; }
-        .search-input:focus { border-bottom: 1px solid #d4af37; }
+        /* --- RECHERCHE --- */
+        .search-container { width: 90%; max-width: 500px; margin: 10px auto 25px auto; }
+        .search-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #e0e0e0; font-size: 16px; outline: none; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
 
-        /* --- CARTES MESSAGES LUXE --- */
+        /* --- CARTES MESSAGES --- */
         .message-card { 
-            background: #ffffff; padding: 30px; border-radius: 4px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05); 
-            width: 92%; max-width: 550px; margin: 25px auto; text-align: left; 
-            border-left: 2px solid #d4af37;
-            transition: all 0.4s ease;
+            background: white; padding: 22px; border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            width: 92%; max-width: 520px; margin: 20px auto; text-align: left; 
+            border-top: 4px solid #b8860b; /* Rappel du doré */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer;
         }
-        .message-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+        .message-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
 
-        .category-tag { color: #d4af37; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; display: inline-block; letter-spacing: 2px; }
-        h3 { color: #1a1a1a; margin: 0 0 20px 0; font-size: 1.4em; font-weight: 400; line-height: 1.4; }
-        .message-text { font-size: 1.1em; color: #333; line-height: 1.9; margin-bottom: 25px; white-space: pre-wrap; text-align: justify; }
+        .message-image-container { width: 100%; text-align: center; margin-bottom: 18px; }
+        .message-image { max-width: 100%; height: auto; border-radius: 10px; display: block; margin: 0 auto; }
+        .category-tag { background: #2c3e50; color: white; padding: 5px 12px; border-radius: 5px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; display: inline-block; letter-spacing: 1px; }
+        h3 { color: #2c3e50; margin: 0 0 15px 0; font-size: 1.3em; line-height: 1.4; }
+        .message-text { font-size: 1.05em; color: #2f3640; line-height: 1.8; margin-bottom: 20px; white-space: pre-wrap; text-align: justify; }
+        .copy-btn { background: #f8f9fa; border: 1px solid #eee; padding: 14px; border-radius: 8px; color: #2c3e50; font-size: 0.9em; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        .copy-btn:hover { background: #2c3e50; color: white; }
+        .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 15px; }
         
-        .copy-btn { background: none; border: 1px solid #d4af37; padding: 12px; color: #d4af37; font-size: 0.9em; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; width: 100%; transition: 0.3s; }
-        .copy-btn:hover { background: #d4af37; color: white; }
-        .date { color: #ccc; font-size: 0.8em; display: block; text-align: right; margin-top: 20px; }
-        
-        /* --- BOUTONS --- */
+        /* --- BOUTONS FLOTTANTS --- */
         .floating-container { position: fixed; right: 20px; z-index: 1000; display: flex; align-items: center; text-decoration: none; }
         .whatsapp-link { bottom: 30px; }
         .scroll-link { bottom: 100px; display: none; } 
-        .btn-label { background: #1a1a1a; color: white; padding: 6px 15px; border-radius: 2px; font-size: 11px; text-transform: uppercase; margin-right: 12px; letter-spacing: 1px; }
-        .whatsapp-btn img { width: 50px; height: 50px; }
-        .scroll-btn { background: #d4af37; color: white; border: none; width: 45px; height: 45px; cursor: pointer; font-size: 20px; }
+
+        .btn-label { 
+            background: rgba(44, 62, 80, 0.95); color: white; 
+            padding: 6px 15px; border-radius: 20px; 
+            font-size: 13px; font-weight: 500; margin-right: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .whatsapp-btn img { width: 52px; height: 52px; transition: 0.3s; }
+        .whatsapp-btn img:hover { transform: scale(1.1); }
+        .scroll-btn { 
+            background: #2c3e50; color: white; border: none; 
+            width: 48px; height: 48px; border-radius: 50%; 
+            cursor: pointer; font-size: 22px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
         
-        /* --- COMPTEUR RAFFINÉ --- */
-        .flag-counter-box { margin: 60px auto; padding: 30px; border-top: 1px solid #eee; width: 90%; max-width: 500px; }
-        .counter-title { font-size: 0.8em; letter-spacing: 3px; color: #d4af37; margin-bottom: 20px; text-transform: uppercase; font-weight: bold; }
+        /* --- COMPTEUR --- */
+        .flag-counter-box { background: white; padding: 25px; border-radius: 20px; margin: 50px auto; width: 92%; max-width: 500px; border: 1px solid #efefef; }
     </style>
 </head>
 <body>
 
     <div id="loading-screen">
-        <div class="welcome-loader">
-            <h2>EMMANUEL</h2>
-        </div>
+        <div class="welcome-loader">Bienvenue à EMMANUEL</div>
     </div>
 
     <a href="javascript:window.scrollTo(0,0)" class="floating-container scroll-link" id="scrollTopLink">
@@ -101,19 +111,23 @@
     <div class="intro-text">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
     
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un enseignement..." onkeyup="filtrerMessages()">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un message..." onkeyup="filtrerMessages()">
     </div>
 
     <div id="flux-messages"></div>
 
+    <div style="height: 30px;"></div>
     <div class="flag-counter-box">
-        <div class="counter-title">Lecteurs réguliers par pays</div>
+        <div style="font-size: 0.9em; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; color: #b8860b; letter-spacing: 1px;">
+            👥 COMMUNAUTÉ EMMANUEL
+        </div>
         <a href="https://info.flagcounter.com/ivJp">
-            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_Lecteurs/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_Lecteurs+par+pays/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
         </a>
+        <p style="font-size: 0.8em; color: #95a5a6; margin-top: 15px;">Mise à jour toutes les 15 minutes.</p>
     </div>
 
-    <div style="height: 120px;"></div>
+    <div style="height: 130px;"></div>
 
     <script>
         window.onscroll = function() {
@@ -136,7 +150,7 @@
         function copierTexte(bouton, texte) {
             navigator.clipboard.writeText(texte).then(() => {
                 const memo = bouton.innerHTML;
-                bouton.innerHTML = "MESSAGE COPIÉ";
+                bouton.innerHTML = "✅ Message Copié !";
                 setTimeout(() => { bouton.innerHTML = memo; }, 2000);
             });
         }
@@ -157,7 +171,7 @@
                 });
 
                 if (messagesAffiches.length === 0) {
-                    container.innerHTML = "<p>L'enseignement du jour arrive à 01h30. 🙏</p>";
+                    container.innerHTML = "<p style='margin-top:30px;'>Le prochain enseignement sera disponible à 01h30. 🙏</p>";
                 } else {
                     messagesAffiches.sort((a, b) => b.id - a.id).forEach(msg => {
                         const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
@@ -169,7 +183,7 @@
                             <h3>${msg.titre}</h3>
                             ${imageHtml}
                             <div class="message-text">${msg.texte}</div>
-                            <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">Partager l'enseignement</button>
+                            <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
                             <span class="date">Publié le ${dateAffichee}</span>
                         `;
                         container.appendChild(card);
@@ -178,10 +192,11 @@
             } catch (err) {
                 container.innerHTML = "<p>Chargement...</p>";
             } finally {
+                // Temps de chargement ultra-rapide (1.5 seconde)
                 setTimeout(() => {
                     loader.style.opacity = '0';
-                    setTimeout(() => { loader.style.display = 'none'; }, 1000);
-                }, 2000);
+                    setTimeout(() => { loader.style.display = 'none'; }, 800);
+                }, 1500);
             }
         }
         chargerMessages();
