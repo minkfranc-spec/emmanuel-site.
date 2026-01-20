@@ -14,14 +14,14 @@
         html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; background: #f0f2f5; color: #2c3e50; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { text-align: center; }
         
-        /* --- ÉCRAN DE CHARGEMENT (OISEAU) --- */
+        /* --- ÉCRAN DE CHARGEMENT (COLOMBE) --- */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 2000;
             display: flex; justify-content: center; align-items: center; flex-direction: column;
             transition: opacity 0.6s ease;
         }
-        .bird-loader { width: 150px; height: auto; }
+        .bird-loader { width: 180px; height: auto; }
 
         h1 { color: #2c3e50; text-transform: uppercase; letter-spacing: 3px; font-weight: 900; font-size: 1.6em; margin: 25px 0 5px 0; }
         .intro-text { width: 85%; margin: 0 auto 20px auto; font-size: 0.95em; color: #7f8c8d; line-height: 1.5; font-style: italic; }
@@ -29,7 +29,7 @@
         .search-container { width: 90%; max-width: 500px; margin: 10px auto 20px auto; }
         .search-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #dcdde1; font-size: 16px; outline: none; }
 
-        /* --- CARTES QUI BOUGENT --- */
+        /* --- CARTES MESSAGES --- */
         .message-card { 
             background: white; padding: 18px; border-radius: 12px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
@@ -48,11 +48,10 @@
         .copy-btn { background: #f1f2f6; border: none; padding: 12px; border-radius: 6px; color: #2c3e50; font-size: 0.9em; cursor: pointer; font-weight: bold; width: 100%; }
         .date { color: #bdc3c7; font-size: 0.8em; display: block; text-align: right; margin-top: 10px; }
         
-        /* --- BOUTONS FLOTTANTS AVEC TEXTE --- */
+        /* --- BOUTONS FLOTTANTS (VOTRE 10/10) --- */
         .floating-container { position: fixed; right: 20px; z-index: 1000; display: flex; align-items: center; text-decoration: none; }
-        
         .whatsapp-link { bottom: 30px; }
-        .scroll-link { bottom: 100px; display: none; } /* Caché au début */
+        .scroll-link { bottom: 100px; display: none; } 
 
         .btn-label { 
             background: rgba(44, 62, 80, 0.9); color: white; 
@@ -68,13 +67,14 @@
             cursor: pointer; font-size: 20px; font-weight: bold;
         }
         
+        /* --- BLOC COMPTEUR --- */
         .flag-counter-box { background: white; padding: 20px; border-radius: 15px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #dcdde1; }
     </style>
 </head>
 <body>
 
     <div id="loading-screen">
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJhcjBnbHFlZHJreHlodnB6N2F0eDZiaXl4eDZiaXl4eDZiaXl4ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/vNol1G6zvsH5QcQj9J/giphy.gif" class="bird-loader" alt="Chargement">
+        <img src="https://i.gifer.com/origin/3f/3fcf565ccc553afcfd89858c97304705_w200.gif" class="bird-loader" alt="Chargement">
         <p style="color:#7f8c8d; margin-top:10px; font-style:italic;">Ouverture du sanctuaire...</p>
     </div>
 
@@ -100,10 +100,10 @@
     <div style="height: 30px;"></div>
     <div class="flag-counter-box">
         <div style="font-size: 0.85em; font-weight: bold; margin-bottom: 12px; text-transform: uppercase; color: #2c3e50;">
-            👥 Communauté EMMANUEL
+            👥 COMMUNAUTÉ EMMANUEL
         </div>
         <a href="https://info.flagcounter.com/ivJp">
-            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_Vues/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_Lecteurs+par+pays/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
         </a>
         <p style="font-size: 0.75em; color: #7f8c8d; margin-top: 12px;">Mise à jour toutes les 15 minutes.</p>
     </div>
@@ -171,7 +171,7 @@
                     });
                 }
             } catch (err) {
-                container.innerHTML = "<p>Erreur de chargement.</p>";
+                container.innerHTML = "<p>Chargement...</p>";
             } finally {
                 setTimeout(() => {
                     loader.style.opacity = '0';
