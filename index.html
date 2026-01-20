@@ -111,56 +111,49 @@
     }
 
     async function chargerMessages() {
-        const container = document.getElementById('flux-messages');
-        try {
-            const response = await fetch('data.json?v=' + Date.now());
-            if (!response.ok) throw new Error();
-            const data = await response.json();
+    const container = document.getElementById('flux-messages');
+    try {
+        const response = await fetch('data.json?v=' + Date.now());
+        if (!response.ok) throw new Error();
+        const data = await response.json();
+        
+        container.innerHTML = ''; 
+        
+        const maintenant = new Date();
+        
+        // --- RÉGLAGE TEST : 22h30 ---
+        const messagesAffiches = data.filter(msg => {
+            const dateMsg = new Date(msg.date);
+            dateMsg.setHours(22, 30, 0, 0); // Le message "naît" à 22h30
             
-            container.innerHTML = ''; 
-            
-            // --- LOGIQUE D'AUTOMATISATION (1h du matin) ---
-            const maintenant = new Date();
-            // On crée un point de repère : Aujourd'hui à 01:00:00
-            const heureLimite = new Date();
-            heureLimite.setHours(1, 0, 0, 0);
+            return dateMsg <= maintenant;
+        });
 
-            const messagesAffiches = data.filter(msg => {
-                const dateMsg = new Date(msg.date);
-                dateMsg.setHours(1, 0, 0, 0); // On fixe le message à 1h du matin
-                
-                // Si la date du message est passée OU si c'est aujourd'hui après 1h
-                return dateMsg <= maintenant;
-            });
-
-            if (messagesAffiches.length === 0) {
-                container.innerHTML = "<p>Le prochain enseignement sera disponible à 01h00. 🙏</p>";
-                return;
-            }
-
-            messagesAffiches.reverse().forEach(msg => {
-                // Formater la date pour l'affichage (DD/MM/YYYY)
-                const d = new Date(msg.date);
-                const dateAffichee = d.toLocaleDateString('fr-FR');
-
-                let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" onerror="this.style.display='none'"></div>` : '';
-                const card = document.createElement('div');
-                card.className = 'message-card';
-                card.innerHTML = `
-                    <span class="category-tag">${msg.categorie}</span>
-                    <h3>${msg.titre}</h3>
-                    ${imageHtml}
-                    <div class="message-text">${msg.texte}</div>
-                    <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
-                    <span class="date">Publié le ${dateAffichee}</span>
-                `;
-                container.appendChild(card);
-            });
-        } catch (err) {
-            container.innerHTML = "<p>Les enseignements arrivent bientôt. Merci de votre patience.</p>";
+        if (messagesAffiches.length === 0) {
+            container.innerHTML = "<p>Le prochain enseignement sera disponible à 22h30. 🙏</p>";
+            return;
         }
-    }
 
+        messagesAffiches.reverse().forEach(msg => {
+            const d = new Date(msg.date);
+            const dateAffichee = d.toLocaleDateString('fr-FR');
+            let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" onerror="this.style.display='none'"></div>` : '';
+            const card = document.createElement('div');
+            card.className = 'message-card';
+            card.innerHTML = `
+                <span class="category-tag">${msg.categorie}</span>
+                <h3>${msg.titre}</h3>
+                ${imageHtml}
+                <div class="message-text">${msg.texte}</div>
+                <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
+                <span class="date">Publié le ${dateAffichee}</span>
+            `;
+            container.appendChild(card);
+        });
+    } catch (err) {
+        container.innerHTML = "<p>Chargement...</p>";
+    }
+}
     chargerMessages();
 </script>
 </body>
