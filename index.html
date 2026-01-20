@@ -82,47 +82,50 @@
             });
         }
 
-        async function chargerMessages() {
-            const container = document.getElementById('flux-messages');
-            try {
-                const response = await fetch('data.json?v=' + Date.now());
-                if (!response.ok) throw new Error();
-                const data = await response.json();
+       async function chargerMessages() {
+        const container = document.getElementById('flux-messages');
+        try {
+            const response = await fetch('data.json?v=' + Date.now());
+            if (!response.ok) throw new Error();
+            const data = await response.json();
+            
+            container.innerHTML = ''; 
+            const maintenant = new Date();
+            
+            const messagesAffiches = data.filter(msg => {
+                // On crée la date de parution précise : Jour du message à 01h30
+                const [annee, mois, jour] = msg.date.split('-').map(Number);
+                const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0); 
                 
-                container.innerHTML = ''; 
-                const maintenant = new Date();
-                
-                const messagesAffiches = data.filter(msg => {
-                    const dateMsg = new Date(msg.date);
-                    dateMsg.setHours(1, 30, 0, 0); 
-                    return dateMsg <= maintenant;
-                });
+                // Le message ne s'affiche QUE si l'instant présent est après cette date précise
+                return maintenant >= dateParution;
+            });
 
-                if (messagesAffiches.length === 0) {
-                    container.innerHTML = "<p>Le prochain enseignement sera disponible à 01h30. Soyez bénis. 🙏</p>";
-                    return;
-                }
-
-                messagesAffiches.sort((a, b) => b.id - a.id).forEach(msg => {
-                    const d = new Date(msg.date);
-                    const dateAffichee = d.toLocaleDateString('fr-FR');
-                    let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" onerror="this.style.display='none'"></div>` : '';
-                    const card = document.createElement('div');
-                    card.className = 'message-card';
-                    card.innerHTML = `
-                        <span class="category-tag">${msg.categorie}</span>
-                        <h3>${msg.titre}</h3>
-                        ${imageHtml}
-                        <div class="message-text">${msg.texte}</div>
-                        <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
-                        <span class="date">Publié le ${dateAffichee}</span>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (err) {
-                container.innerHTML = "<p>Erreur de chargement. Vérifiez votre fichier data.json.</p>";
+            if (messagesAffiches.length === 0) {
+                container.innerHTML = "<p>Le prochain enseignement sera disponible à 01h30. Soyez bénis. 🙏</p>";
+                return;
             }
+
+            messagesAffiches.sort((a, b) => b.id - a.id).forEach(msg => {
+                const d = new Date(msg.date);
+                const dateAffichee = d.toLocaleDateString('fr-FR');
+                let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" onerror="this.style.display='none'"></div>` : '';
+                const card = document.createElement('div');
+                card.className = 'message-card';
+                card.innerHTML = `
+                    <span class="category-tag">${msg.categorie}</span>
+                    <h3>${msg.titre}</h3>
+                    ${imageHtml}
+                    <div class="message-text">${msg.texte}</div>
+                    <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
+                    <span class="date">Publié le ${dateAffichee}</span>
+                `;
+                container.appendChild(card);
+            });
+        } catch (err) {
+            container.innerHTML = "<p>Chargement des enseignements...</p>";
         }
+    }
         
         chargerMessages();
     </script>
