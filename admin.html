@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMIN - EMMANUEL</title>
+    <title>ADMIN - EMMANUEL (AUTO-ORDRE)</title>
     <style>
-        body { font-family: sans-serif; background: #1e272e; color: white; padding: 20px; text-align: center; }
-        .container { max-width: 600px; margin: auto; background: #2f3640; padding: 20px; border-radius: 10px; }
-        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; font-size: 16px; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #1e272e; color: white; padding: 20px; text-align: center; }
+        .container { max-width: 650px; margin: auto; background: #2f3640; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        label { display: block; text-align: left; font-size: 0.85em; color: #fbc531; margin-top: 15px; font-weight: bold; text-transform: uppercase; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 5px; border-radius: 6px; border: 1px solid #485460; background: #1e272e; color: white; font-size: 16px; }
+        input:focus, textarea:focus { border-color: #fbc531; outline: none; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 20px; transition: 0.3s; }
         .btn-add { background: #44bd32; color: white; }
-        .btn-clear { background: #e84118; color: white; margin-top: 20px; }
-        textarea#resultat-json { background: #000; color: #00ff00; font-family: monospace; height: 250px; margin-top: 20px; }
-        label { display: block; text-align: left; font-size: 0.9em; color: #fbc531; margin-top: 5px; }
+        .btn-add:hover { background: #26de81; }
+        .btn-clear { background: #eb4d4b; color: white; margin-top: 30px; font-size: 0.8em; width: auto; padding: 10px 20px; }
+        textarea#resultat-json { background: #000; color: #00ff00; font-family: 'Consolas', monospace; height: 350px; margin-top: 20px; font-size: 13px; border: 2px solid #485460; }
+        h2 { margin-top: 0; color: #ffffff; letter-spacing: 2px; }
+        .info-copy { font-size: 0.8em; color: #95a5a6; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -20,44 +24,51 @@
     <div class="container">
         <h2>🛠 PILOTAGE EMMANUEL</h2>
         
-        <label>ID du message (ex: 4)</label>
+        <label>ID du message (Automatique)</label>
         <input type="number" id="id" placeholder="ID">
         
-        <label>Titre (S'affichera en MAJUSCULES)</label>
-        <input type="text" id="titre" placeholder="TITRE DU MESSAGE">
+        <label>Titre du message (S'affichera en MAJUSCULES)</label>
+        <input type="text" id="titre" placeholder="LE TITRE ICI">
         
         <label>Catégorie</label>
-        <input type="text" id="categorie" placeholder="EX: FOI, ENCOURAGEMENT">
+        <input type="text" id="categorie" placeholder="EX: RÉVÉLATION, FOI">
         
-        <label>Lien de l'image (Postimages)</label>
-        <input type="text" id="image" placeholder="Lien direct https://...">
+        <label>Lien de l'image (Postimg Direct Link)</label>
+        <input type="text" id="image" placeholder="https://i.postimg.cc/...">
         
-        <label>Texte du message</label>
-        <textarea id="texte" placeholder="Écris ton message ici..." rows="6"></textarea>
+        <label>Texte de l'enseignement</label>
+        <textarea id="texte" placeholder="Écris ou colle ton texte ici..." rows="8"></textarea>
         
         <label>Date de publication (Format AAAA-MM-JJ)</label>
         <input type="text" id="date" placeholder="2026-01-21">
 
-        <button class="btn-add" onclick="genererJSON()">📦 AJOUTER À LA RÉSERVE</button>
+        <button class="btn-add" onclick="genererJSON()">📦 AJOUTER & ORDONNER</button>
         
-        <hr>
-        <h3>📥 TA RÉSERVE (COPIE CE CODE)</h3>
-        <textarea id="resultat-json" readonly placeholder="Le code JSON apparaîtra ici..."></textarea>
+        <div class="info-copy">👇 Sélectionne tout (Ctrl+A) et colle dans ton data.json</div>
+        <textarea id="resultat-json" readonly></textarea>
         
-        <button class="btn-clear" onclick="viderReserve()">🗑 VIDER TOUTE LA RÉSERVE</button>
+        <button class="btn-clear" onclick="viderReserve()">🗑 VIDER LA RÉSERVE</button>
     </div>
 
     <script>
-        // Met la date du jour automatiquement au format AAAA-MM-JJ
+        // Au chargement, on initialise l'ID et la date
         window.onload = function() {
             const aujourdhui = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = aujourdhui;
+            
+            // On cherche le dernier ID dans la réserve pour suggérer le suivant
+            const reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
+            if (reserve.length > 0) {
+                const maxId = Math.max(...reserve.map(m => m.id));
+                document.getElementById('id').value = maxId + 1;
+            } else {
+                document.getElementById('id').value = 4; // On commence à 4 si vide
+            }
             afficherReserve();
         };
 
         function genererJSON() {
             const id = document.getElementById('id').value;
-            // FORCE LES MAJUSCULES ICI
             const titre = document.getElementById('titre').value.toUpperCase();
             const categorie = document.getElementById('categorie').value.toUpperCase();
             const image = document.getElementById('image').value;
@@ -65,7 +76,7 @@
             const date = document.getElementById('date').value;
 
             if(!id || !titre || !texte || !date) {
-                alert("Attention François, remplis tous les champs !");
+                alert("Erreur : Tous les champs sont obligatoires !");
                 return;
             }
 
@@ -80,34 +91,40 @@
 
             let reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
             
-            // On l'ajoute à la liste
-            reserve.unshift(nouveauMessage);
+            // On ajoute le nouveau message
+            reserve.push(nouveauMessage);
+            
+            // --- TRI MAGIQUE ---
+            // On trie pour que l'ID le plus grand soit toujours en premier (en haut)
+            reserve.sort((a, b) => b.id - a.id);
+            
             localStorage.setItem('reserve_emmanuel', JSON.stringify(reserve));
             
             afficherReserve();
             
-            // Prépare le prochain
+            // On prépare le formulaire pour le message suivant
             document.getElementById('id').value = parseInt(id) + 1;
             document.getElementById('titre').value = "";
             document.getElementById('image').value = "";
             document.getElementById('texte').value = "";
-            alert("Message ID " + id + " ajouté avec succès !");
+            
+            alert("Message " + id + " ajouté et classé !");
         }
 
         function afficherReserve() {
             const reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
             const zoneNoire = document.getElementById('resultat-json');
             if(reserve.length > 0) {
+                // On affiche le JSON complet avec crochets [ ]
                 zoneNoire.value = JSON.stringify(reserve, null, 2);
-            } else {
-                zoneNoire.value = "";
             }
         }
 
         function viderReserve() {
-            if(confirm("Veux-tu vraiment vider ta réserve ?")) {
+            if(confirm("Attention : Cela va supprimer toute ta réserve actuelle ! Continuer ?")) {
                 localStorage.removeItem('reserve_emmanuel');
-                afficherReserve();
+                document.getElementById('resultat-json').value = "";
+                location.reload();
             }
         }
     </script>
