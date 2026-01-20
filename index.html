@@ -39,4 +39,92 @@
     <div class="intro-text">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
     
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un message..." onkeyup="
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un message..." onkeyup="filtrerMessages()">
+    </div>
+
+    <div id="flux-messages"><p>Chargement des enseignements...</p></div>
+
+    <div class="whatsapp-btn">
+        <a href="https://wa.me/237678356844" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+        </a>
+    </div>
+
+    <div class="flag-counter-box">
+        <a href="https://info.flagcounter.com/ivJp">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_Vues+par+pays/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+        </a>
+    </div>
+
+    <script>
+        window.onscroll = function() {
+            let btn = document.getElementById("scrollTop");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.style.display = "block";
+            } else {
+                btn.style.display = "none";
+            }
+        };
+
+        function filtrerMessages() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('message-card');
+            for (let card of cards) {
+                card.style.display = card.innerText.toLowerCase().includes(input) ? "block" : "none";
+            }
+        }
+
+        function copierTexte(bouton, texte) {
+            navigator.clipboard.writeText(texte).then(() => {
+                const memo = bouton.innerHTML;
+                bouton.innerHTML = "✅ Message Copié !";
+                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
+            });
+        }
+
+        async function chargerMessages() {
+            const container = document.getElementById('flux-messages');
+            try {
+                const response = await fetch('data.json?v=' + Date.now());
+                if (!response.ok) throw new Error();
+                const data = await response.json();
+                
+                container.innerHTML = ''; 
+                const maintenant = new Date();
+                
+                const messagesAffiches = data.filter(msg => {
+                    const dateMsg = new Date(msg.date);
+                    dateMsg.setHours(1, 30, 0, 0); 
+                    return dateMsg <= maintenant;
+                });
+
+                if (messagesAffiches.length === 0) {
+                    container.innerHTML = "<p>Le prochain enseignement sera disponible à 01h30. Soyez bénis. 🙏</p>";
+                    return;
+                }
+
+                messagesAffiches.sort((a, b) => b.id - a.id).forEach(msg => {
+                    const d = new Date(msg.date);
+                    const dateAffichee = d.toLocaleDateString('fr-FR');
+                    let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" onerror="this.style.display='none'"></div>` : '';
+                    const card = document.createElement('div');
+                    card.className = 'message-card';
+                    card.innerHTML = `
+                        <span class="category-tag">${msg.categorie}</span>
+                        <h3>${msg.titre}</h3>
+                        ${imageHtml}
+                        <div class="message-text">${msg.texte}</div>
+                        <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copier pour partager</button>
+                        <span class="date">Publié le ${dateAffichee}</span>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = "<p>Erreur de chargement. Vérifiez votre fichier data.json.</p>";
+            }
+        }
+        
+        chargerMessages();
+    </script>
+</body>
+</html>
