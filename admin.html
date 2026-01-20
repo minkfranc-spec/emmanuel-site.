@@ -1,69 +1,115 @@
-<script>
-    // Configuration de la date automatique au format AAAA-MM-JJ
-    window.onload = function() {
-        const aujourdhui = new Date().toISOString().split('T')[0];
-        document.getElementById('date').value = aujourdhui;
-    };
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN - EMMANUEL</title>
+    <style>
+        body { font-family: sans-serif; background: #1e272e; color: white; padding: 20px; text-align: center; }
+        .container { max-width: 600px; margin: auto; background: #2f3640; padding: 20px; border-radius: 10px; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; font-size: 16px; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
+        .btn-add { background: #44bd32; color: white; }
+        .btn-clear { background: #e84118; color: white; margin-top: 20px; }
+        textarea#resultat-json { background: #000; color: #00ff00; font-family: monospace; height: 250px; margin-top: 20px; }
+        label { display: block; text-align: left; font-size: 0.9em; color: #fbc531; margin-top: 5px; }
+    </style>
+</head>
+<body>
 
-    function genererJSON() {
-        const id = document.getElementById('id').value;
-        // On force le titre en MAJUSCULES ici
-        const titre = document.getElementById('titre').value.toUpperCase();
-        const categorie = document.getElementById('categorie').value.toUpperCase();
-        const image = document.getElementById('image').value;
-        const texte = document.getElementById('texte').value;
-        const date = document.getElementById('date').value;
+    <div class="container">
+        <h2>🛠 PILOTAGE EMMANUEL</h2>
+        
+        <label>ID du message (ex: 4)</label>
+        <input type="number" id="id" placeholder="ID">
+        
+        <label>Titre (S'affichera en MAJUSCULES)</label>
+        <input type="text" id="titre" placeholder="TITRE DU MESSAGE">
+        
+        <label>Catégorie</label>
+        <input type="text" id="categorie" placeholder="EX: FOI, ENCOURAGEMENT">
+        
+        <label>Lien de l'image (Postimages)</label>
+        <input type="text" id="image" placeholder="Lien direct https://...">
+        
+        <label>Texte du message</label>
+        <textarea id="texte" placeholder="Écris ton message ici..." rows="6"></textarea>
+        
+        <label>Date de publication (Format AAAA-MM-JJ)</label>
+        <input type="text" id="date" placeholder="2026-01-21">
 
-        if(!id || !titre || !texte || !date) {
-            alert("Remplis tous les champs mon ami !");
-            return;
-        }
+        <button class="btn-add" onclick="genererJSON()">📦 AJOUTER À LA RÉSERVE</button>
+        
+        <hr>
+        <h3>📥 TA RÉSERVE (COPIE CE CODE)</h3>
+        <textarea id="resultat-json" readonly placeholder="Le code JSON apparaîtra ici..."></textarea>
+        
+        <button class="btn-clear" onclick="viderReserve()">🗑 VIDER TOUTE LA RÉSERVE</button>
+    </div>
 
-        const nouveauMessage = {
-            "id": parseInt(id),
-            "titre": titre,
-            "categorie": categorie,
-            "image": image,
-            "texte": texte,
-            "date": date
+    <script>
+        // Met la date du jour automatiquement au format AAAA-MM-JJ
+        window.onload = function() {
+            const aujourdhui = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = aujourdhui;
+            afficherReserve();
         };
 
-        // Récupérer la réserve actuelle
-        let reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
-        
-        // Ajouter au début de la liste
-        reserve.unshift(nouveauMessage);
-        
-        // Sauvegarder
-        localStorage.setItem('reserve_emmanuel', JSON.stringify(reserve));
-        
-        afficherReserve();
-        
-        // Préparer l'ID suivant automatiquement
-        document.getElementById('id').value = parseInt(id) + 1;
-        document.getElementById('titre').value = "";
-        document.getElementById('image').value = "";
-        document.getElementById('texte').value = "";
-    }
+        function genererJSON() {
+            const id = document.getElementById('id').value;
+            // FORCE LES MAJUSCULES ICI
+            const titre = document.getElementById('titre').value.toUpperCase();
+            const categorie = document.getElementById('categorie').value.toUpperCase();
+            const image = document.getElementById('image').value;
+            const texte = document.getElementById('texte').value;
+            const date = document.getElementById('date').value;
 
-    function afficherReserve() {
-        const reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
-        const zoneNoire = document.getElementById('resultat-json');
-        
-        if(reserve.length > 0) {
-            // Affiche le JSON propre pour le copier-coller
-            zoneNoire.value = JSON.stringify(reserve, null, 2);
-        }
-    }
+            if(!id || !titre || !texte || !date) {
+                alert("Attention François, remplis tous les champs !");
+                return;
+            }
 
-    function viderReserve() {
-        if(confirm("Veux-tu vraiment vider ta réserve ?")) {
-            localStorage.removeItem('reserve_emmanuel');
-            document.getElementById('resultat-json').value = "";
-            location.reload();
+            const nouveauMessage = {
+                "id": parseInt(id),
+                "titre": titre,
+                "categorie": categorie,
+                "image": image,
+                "texte": texte,
+                "date": date
+            };
+
+            let reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
+            
+            // On l'ajoute à la liste
+            reserve.unshift(nouveauMessage);
+            localStorage.setItem('reserve_emmanuel', JSON.stringify(reserve));
+            
+            afficherReserve();
+            
+            // Prépare le prochain
+            document.getElementById('id').value = parseInt(id) + 1;
+            document.getElementById('titre').value = "";
+            document.getElementById('image').value = "";
+            document.getElementById('texte').value = "";
+            alert("Message ID " + id + " ajouté avec succès !");
         }
-    }
-    
-    // Charger la réserve au démarrage
-    afficherReserve();
-</script>
+
+        function afficherReserve() {
+            const reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
+            const zoneNoire = document.getElementById('resultat-json');
+            if(reserve.length > 0) {
+                zoneNoire.value = JSON.stringify(reserve, null, 2);
+            } else {
+                zoneNoire.value = "";
+            }
+        }
+
+        function viderReserve() {
+            if(confirm("Veux-tu vraiment vider ta réserve ?")) {
+                localStorage.removeItem('reserve_emmanuel');
+                afficherReserve();
+            }
+        }
+    </script>
+</body>
+</html>
