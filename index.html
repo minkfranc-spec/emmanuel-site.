@@ -63,7 +63,7 @@
         h3 { color: #2c3e50; margin: 0 0 15px 0; font-size: 1.3em; line-height: 1.4; font-weight: 800; }
         
         .message-image-container { width: 100%; text-align: center; margin-bottom: 20px; overflow: hidden; border-radius: 10px; }
-        .message-image { max-width: 100%; height: auto; transition: transform 0.5s ease; }
+        .message-image { max-width: 100%; height: auto; display: block; margin: 0 auto; }
 
         .message-text { font-size: 1.1em; color: #34495e; line-height: 1.8; margin-bottom: 25px; white-space: pre-wrap; text-align: justify; }
         
@@ -96,7 +96,7 @@
             cursor: pointer; font-size: 24px; transition: 0.4s;
         }
         
-        /* --- BLOC COMPTEUR (CORRIGÉ) --- */
+        /* --- BLOC COMPTEUR (FINAL) --- */
         .flag-counter-box { 
             background: white; padding: 30px; border-radius: 20px; 
             margin: 60px auto; width: 92%; max-width: 500px; 
@@ -107,10 +107,10 @@
         .counter-subtitle { font-size: 0.85em; font-weight: bold; color: #d4af37; margin-bottom: 20px; text-transform: uppercase; }
         
         .counter-image-wrapper {
-            margin: 20px auto; width: 100%; min-height: 50px; 
+            margin: 20px auto; width: 100%; min-height: 40px; 
             display: flex; justify-content: center; align-items: center;
         }
-        .counter-image-wrapper img { display: block !important; max-width: 100%; height: auto; }
+        .counter-image-wrapper img { display: block !important; max-width: 100%; height: auto; border: none; }
 
         .update-text { font-size: 0.75em; color: #bdc3c7; margin-top: 15px; font-style: italic; }
     </style>
@@ -140,18 +140,17 @@
 
     <div id="flux-messages"></div>
 
-   <div class="flag-counter-box">
-    <div class="counter-title">COMMUNAUTÉ EMMANUEL</div>
-    <div class="counter-subtitle">LECTEURS RÉGULIERS PAR PAYS ET VUES</div>
-    
-    <div class="counter-image-wrapper">
-        <a href="https://info.flagcounter.com/ivJp" target="_blank">
-            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_%20/labels_1/pageviews_1/flags_0/percent_0/" 
-                 alt="Statistiques" border="0" style="display: block; margin: 0 auto;">
-        </a>
-    </div>
-    
-    <p class="update-text">Mise à jour toutes les 15 minutes.</p>
+    <div class="flag-counter-box">
+        <div class="counter-title">COMMUNAUTÉ EMMANUEL</div>
+        <div class="counter-subtitle">LECTEURS RÉGULIERS PAR PAYS ET VUES</div>
+        
+        <div class="counter-image-wrapper">
+            <a href="https://info.flagcounter.com/ivJp" target="_blank">
+                <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Statistiques" border="0">
+            </a>
+        </div>
+        
+        <p class="update-text">Mise à jour toutes les 15 minutes.</p>
     </div>
 
     <div style="height: 130px;"></div>
