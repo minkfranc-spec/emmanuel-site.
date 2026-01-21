@@ -96,7 +96,7 @@
             cursor: pointer; font-size: 24px; transition: 0.4s;
         }
         
-        /* --- BLOC COMPTEUR (CORRIGÉ) --- */
+        /* --- BLOC COMPTEUR (OPTIMISÉ) --- */
         .flag-counter-box { 
             background: white; padding: 30px; border-radius: 20px; 
             margin: 60px auto; width: 92%; max-width: 500px; 
@@ -105,6 +105,22 @@
         }
         .counter-title { font-size: 1.1em; font-weight: 900; color: #1a1a1a; margin-bottom: 5px; text-transform: uppercase; }
         .counter-subtitle { font-size: 0.85em; font-weight: bold; color: #d4af37; margin-bottom: 20px; text-transform: uppercase; }
+        
+        /* Ajout du style spécifique pour forcer l'affichage de l'image */
+        .counter-image-wrapper {
+            margin: 20px auto; 
+            width: 100%; 
+            min-height: 100px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+        .counter-image-wrapper img {
+            display: block !important;
+            max-width: 100%;
+            height: auto;
+        }
+
         .update-text { font-size: 0.75em; color: #bdc3c7; margin-top: 15px; font-style: italic; }
     </style>
 </head>
@@ -137,10 +153,10 @@
         <div class="counter-title">COMMUNAUTÉ EMMANUEL</div>
         <div class="counter-subtitle">LECTEURS RÉGULIERS PAR PAYS ET VUES</div>
         
-        <div style="margin: 20px auto; width: 100%; min-height: 90px; display: flex; justify-content: center; align-items: center;">
+        <div class="counter-image-wrapper">
             <a href="https://info.flagcounter.com/ivJp" target="_blank">
-                <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_%20/labels_1/pageviews_1/flags_0/percent_0/" 
-                     alt="Statistiques" border="0" style="max-width: 100%; height: auto; display: block;">
+                <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_Vues+par+pays/labels_1/pageviews_1/flags_0/percent_0/" 
+                     alt="Flag Counter" border="0">
             </a>
         </div>
         
