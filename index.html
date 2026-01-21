@@ -10,12 +10,11 @@
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1042/1042618.png">
 
     <style>
-        /* --- BASE & DESIGN ÉPURÉ --- */
+        /* --- DESIGN ÉPURÉ EMMANUEL --- */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; background: #fdfdfd; color: #2c3e50; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { text-align: center; }
         
-        /* --- ÉCRAN DE BIENVENUE --- */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 2000;
@@ -35,7 +34,6 @@
         h1 { color: #1a1a1a; text-transform: uppercase; letter-spacing: 4px; font-weight: 900; font-size: 1.8em; margin: 35px 0 5px 0; }
         .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1em; color: #95a5a6; font-style: italic; }
         
-        /* --- RECHERCHE --- */
         .search-container { width: 90%; max-width: 500px; margin: 10px auto 30px auto; }
         .search-input { 
             width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #eee; 
@@ -44,7 +42,6 @@
         }
         .search-input:focus { border-color: #d4af37; box-shadow: 0 4px 20px rgba(212,175,55,0.1); transform: scale(1.01); }
 
-        /* --- CARTES MESSAGES --- */
         .message-card { 
             background: white; padding: 25px; border-radius: 16px; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.04); 
@@ -61,10 +58,8 @@
         }
 
         h3 { color: #2c3e50; margin: 0 0 15px 0; font-size: 1.3em; line-height: 1.4; font-weight: 800; }
-        
         .message-image-container { width: 100%; text-align: center; margin-bottom: 20px; overflow: hidden; border-radius: 10px; }
         .message-image { max-width: 100%; height: auto; display: block; margin: 0 auto; }
-
         .message-text { font-size: 1.1em; color: #34495e; line-height: 1.8; margin-bottom: 25px; white-space: pre-wrap; text-align: justify; }
         
         .copy-btn { 
@@ -74,14 +69,11 @@
             transition: all 0.3s ease;
         }
         .copy-btn:hover { background: #d4af37; color: white; transform: translateY(-3px); }
-
         .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 20px; }
         
-        /* --- BOUTONS FLOTTANTS --- */
         .floating-container { position: fixed; right: 20px; z-index: 1000; display: flex; align-items: center; text-decoration: none; transition: all 0.3s ease; }
         .whatsapp-link { bottom: 30px; }
         .scroll-link { bottom: 105px; display: none; } 
-
         .btn-label { 
             background: #1a1a1a; color: white; padding: 8px 16px; border-radius: 20px; 
             font-size: 13px; font-weight: bold; margin-right: 10px;
@@ -89,14 +81,9 @@
         }
         .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
         .whatsapp-btn img { width: 60px; height: 60px; }
-
-        .scroll-btn { 
-            background: #1a1a1a; color: white; border: none; 
-            width: 55px; height: 55px; border-radius: 50%; 
-            cursor: pointer; font-size: 24px; transition: 0.4s;
-        }
+        .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; }
         
-        /* --- BLOC COMPTEUR (FINAL) --- */
+        /* BLOC COMPTEUR */
         .flag-counter-box { 
             background: white; padding: 30px; border-radius: 20px; 
             margin: 60px auto; width: 92%; max-width: 500px; 
@@ -105,21 +92,13 @@
         }
         .counter-title { font-size: 1.1em; font-weight: 900; color: #1a1a1a; margin-bottom: 5px; text-transform: uppercase; }
         .counter-subtitle { font-size: 0.85em; font-weight: bold; color: #d4af37; margin-bottom: 20px; text-transform: uppercase; }
-        
-        .counter-image-wrapper {
-            margin: 20px auto; width: 100%; min-height: 40px; 
-            display: flex; justify-content: center; align-items: center;
-        }
-        .counter-image-wrapper img { display: block !important; max-width: 100%; height: auto; border: none; }
-
+        .counter-image-wrapper { margin: 20px auto; display: flex; justify-content: center; }
         .update-text { font-size: 0.75em; color: #bdc3c7; margin-top: 15px; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen">
-        <div class="welcome-text">Bienvenue à EMMANUEL</div>
-    </div>
+    <div id="loading-screen"><div class="welcome-text">Bienvenue à EMMANUEL</div></div>
 
     <a href="javascript:window.scrollTo(0,0)" class="floating-container scroll-link" id="scrollTopLink">
         <span class="btn-label">Retour en haut</span>
@@ -143,13 +122,11 @@
     <div class="flag-counter-box">
         <div class="counter-title">COMMUNAUTÉ EMMANUEL</div>
         <div class="counter-subtitle">LECTEURS RÉGULIERS PAR PAYS ET VUES</div>
-        
         <div class="counter-image-wrapper">
             <a href="https://info.flagcounter.com/ivJp" target="_blank">
-                <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Statistiques" border="0">
+                <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Statistiques" border="0" style="display: block;">
             </a>
         </div>
-        
         <p class="update-text">Mise à jour toutes les 15 minutes.</p>
     </div>
 
@@ -201,7 +178,7 @@
                 } else {
                     messagesAffiches.sort((a, b) => b.id - a.id).forEach(msg => {
                         const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
-                        let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image" onerror="this.style.display='none'"></div>` : '';
+                        let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image"></div>` : '';
                         const card = document.createElement('div');
                         card.className = 'message-card';
                         card.innerHTML = `
