@@ -68,14 +68,22 @@
 
         .message-text { font-size: 1.1em; color: #34495e; line-height: 1.8; margin-bottom: 25px; white-space: pre-wrap; text-align: justify; }
         
-        /* BOUTON COPIER VIVANT */
+        /* --- BOUTON COPIER STYLE "FANTÔME" ÉLÉGANT --- */
+        /* C'est la seule partie modifiée */
         .copy-btn { 
-            background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); border: none; 
-            padding: 16px; border-radius: 10px; color: white; font-size: 0.95em; 
+            background: transparent; /* Fond transparent */
+            border: 2px solid #d4af37; /* Bordure dorée exacte */
+            color: #d4af37; /* Texte doré */
+            padding: 14px; border-radius: 10px; font-size: 0.95em; 
             cursor: pointer; font-weight: bold; width: 100%; 
-            transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(212,175,55,0.2);
+            transition: all 0.3s ease;
         }
-        .copy-btn:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(212,175,55,0.3); filter: brightness(1.1); }
+        .copy-btn:hover { 
+            background: #d4af37; /* Se remplit au survol */
+            color: white; /* Texte devient blanc */
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
         .copy-btn:active { transform: scale(0.98); }
 
         .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 20px; }
