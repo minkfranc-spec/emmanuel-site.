@@ -68,19 +68,14 @@
 
         .message-text { font-size: 1.1em; color: #34495e; line-height: 1.8; margin-bottom: 25px; white-space: pre-wrap; text-align: justify; }
         
-        /* --- BOUTON COPIER STYLE "FANTÔME" ÉLÉGANT --- */
-        /* C'est la seule partie modifiée */
         .copy-btn { 
-            background: transparent; /* Fond transparent */
-            border: 2px solid #d4af37; /* Bordure dorée exacte */
-            color: #d4af37; /* Texte doré */
+            background: transparent; border: 2px solid #d4af37; color: #d4af37; 
             padding: 14px; border-radius: 10px; font-size: 0.95em; 
             cursor: pointer; font-weight: bold; width: 100%; 
             transition: all 0.3s ease;
         }
         .copy-btn:hover { 
-            background: #d4af37; /* Se remplit au survol */
-            color: white; /* Texte devient blanc */
+            background: #d4af37; color: white; 
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
         }
@@ -88,7 +83,7 @@
 
         .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 20px; }
         
-        /* --- BOUTONS FLOTTANTS DYNAMIQUES --- */
+        /* --- BOUTONS FLOTTANTS --- */
         .floating-container { position: fixed; right: 20px; z-index: 1000; display: flex; align-items: center; text-decoration: none; transition: all 0.3s ease; }
         .whatsapp-link { bottom: 30px; }
         .scroll-link { bottom: 105px; display: none; } 
@@ -142,14 +137,13 @@
 
     <div id="flux-messages"></div>
 
- <div class="flag-counter-box" style="text-align: center;">
+    <div class="flag-counter-box" style="text-align: center;">
         <div class="counter-title">COMMUNAUTÉ EMMANUEL</div>
-        
         <div class="counter-subtitle">Lecteurs réguliers par pays et vues</div>
         
-        <div style="margin: 20px auto; width: 100%;">
+        <div style="margin: 20px auto; width: 100%; min-height: 80px;">
             <a href="https://info.flagcounter.com/ivJp" target="_blank">
-                <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_0/labels_1/pageviews_1/flags_0/percent_0/" 
+                <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_%20/labels_1/pageviews_1/flags_0/percent_0/" 
                      alt="Statistiques Emmanuel" 
                      border="0" 
                      style="max-width: 100%; height: auto; display: inline-block;">
@@ -159,12 +153,6 @@
         <p style="font-size: 0.75em; color: #bdc3c7; margin-top: 15px; font-style: italic;">
             Mise à jour toutes les 15 minutes.
         </p>
-    </div>
-        
-        <p style="font-size: 0.75em; color: #bdc3c7; margin-top: 15px; font-style: italic;">
-            Mise à jour toutes les 15 minutes.
-        </p>
-    </div>
     </div>
 
     <div style="height: 130px;"></div>
