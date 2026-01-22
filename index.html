@@ -49,6 +49,9 @@
         .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 5px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.9em; font-weight: 700; color: #34495e; transition: 0.3s; text-align: left; }
         .titre-archive-item:hover { background: #fcf8e8; border-color: #d4af37; transform: translateX(5px); }
 
+        /* Animation pour l'apparition des titres */
+        .reveal-list { animation: slideUpFade 0.5s ease forwards; }
+
         .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 30px auto; transition: 0.3s; }
         .archive-main-btn:hover { background: #d4af37; transform: scale(1.05); }
 
@@ -64,6 +67,7 @@
         .flag-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; color: #95a5a6; margin-top: 10px; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -109,7 +113,6 @@
         let tousLesMessages = [];
         const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
-        // DICTIONNAIRE DE SYNONYMES
         const synonymesEmmanuel = {
             "dieu": ["seigneur", "père", "éternel", "créateur", "tout-puissant"],
             "jésus": ["christ", "sauveur", "messie", "agneau", "rédempteur"],
@@ -154,7 +157,6 @@
             container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
         }
 
-        // --- MOTEUR DE RECHERCHE INTELLIGENT AVEC SYNONYMES ET PERTINENCE ---
         function rechercherMessages() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const container = document.getElementById('flux-messages');
@@ -172,24 +174,16 @@
             const resultats = tousLesMessages.map(msg => {
                 const texteComplet = (msg.titre + " " + msg.categorie + " " + msg.texte).toLowerCase();
                 let scoreTotal = 0;
-                
                 motsAChercher.forEach(mot => {
                     const occurrences = texteComplet.split(mot).length - 1;
-                    // Le mot exact compte double par rapport aux synonymes
                     scoreTotal += (mot === query) ? (occurrences * 2) : occurrences;
                 });
-
                 return { ...msg, score: scoreTotal };
             });
 
             const filtered = resultats
                 .filter(msg => msg.score > 0)
-                .sort((a, b) => {
-                    if (b.score !== a.score) {
-                        return b.score - a.score; // Plus de répétitions en premier
-                    }
-                    return b.id - a.id; // Puis le plus récent
-                });
+                .sort((a, b) => (b.score !== a.score) ? b.score - a.score : b.id - a.id);
 
             if (filtered.length === 0) {
                 container.innerHTML = "<p style='margin:40px 0; color:#95a5a6;'>Aucun enseignement ne correspond à cette recherche. 🙏</p>";
@@ -208,8 +202,11 @@
         function afficherTitresDuMois(numMois, btn) {
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            
             const listeContainer = document.getElementById('titres-liste');
             const detailContainer = document.getElementById('message-detail');
+            
+            listeContainer.classList.remove('reveal-list');
             detailContainer.innerHTML = ''; 
             
             const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois)
@@ -221,6 +218,9 @@
                 listeContainer.innerHTML = filtered.map(msg => 
                     `<div class="titre-archive-item" onclick="voirDetail(${msg.id})">📖 ${msg.titre}</div>`
                 ).join('');
+                
+                void listeContainer.offsetWidth; // Trigger reflow pour l'animation
+                listeContainer.classList.add('reveal-list');
             }
         }
 
@@ -232,7 +232,8 @@
         }
 
         function revenirALaListe(numMois) {
-            afficherTitresDuMois(numMois, document.querySelectorAll('.month-btn')[numMois-1]);
+            const btn = document.querySelectorAll('.month-btn')[numMois-1];
+            afficherTitresDuMois(numMois, btn);
         }
 
         function creerCard(msg) {
@@ -253,7 +254,6 @@
         function decoderEtCopier(bouton, base64) {
             const texteOriginal = decodeURIComponent(escape(atob(base64)));
             const texteClair = texteOriginal.replace(/\*\*/g, '');
-
             navigator.clipboard.writeText(texteClair).then(() => {
                 const memo = bouton.innerHTML;
                 bouton.innerHTML = "✨ PAROLE COPIÉE !";
@@ -264,20 +264,29 @@
                     bouton.style.background = "transparent";
                     bouton.style.color = "#d4af37";
                 }, 2000);
-            }).catch(err => {
-                console.error("Erreur de copie", err);
             });
         }
 
         function toggleArchives() {
             const s = document.getElementById('archiveSection');
             const btn = document.getElementById('btnToggleArchive');
+            const liste = document.getElementById('titres-liste');
+            const detail = document.getElementById('message-detail');
+
             if (s.style.display === 'block') {
                 s.style.display = 'none';
                 btn.innerHTML = "📂 Consulter les Archives";
+                // Nettoyage au moment de la fermeture
+                liste.innerHTML = '';
+                detail.innerHTML = '';
+                document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             } else {
                 s.style.display = 'block';
                 btn.innerHTML = "❌ Fermer les Archives";
+                // Assurer que c'est vide à l'ouverture (neutre)
+                liste.innerHTML = '';
+                detail.innerHTML = '';
+                document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             }
         }
 
