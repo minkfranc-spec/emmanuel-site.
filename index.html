@@ -5,34 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMMANUEL | La Parole de Dieu</title>
 
+    <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/p9p39r.jpg">
+    <link rel="apple-touch-icon" href="https://files.catbox.moe/p9p39r.jpg">
+
     <meta property="og:title" content="EMMANUEL | La Parole de Dieu">
     <meta property="og:description" content="La Lumière qui éclaire chaque pas sur le chemin de la Vie.">
     <meta property="og:image" content="https://files.catbox.moe/p9p39r.jpg"> 
     <meta property="og:url" content="https://emmanuel-site.vercel.app">
     <meta property="og:type" content="website">
 
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1042/1042618.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
         /* --- STYLE GLOBAL --- */
         * { box-sizing: border-box; scroll-behavior: smooth; }
-        html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; }
+        html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
         
-        /* ÉCRAN D'ACCUEIL ANIMÉ */
+        /* ÉCRAN D'ACCUEIL AVEC EFFET D'APPARITION */
         #loading-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: white; z-index: 2000; display: flex; 
             justify-content: center; align-items: center; 
-            transition: opacity 1s ease-in-out; /* Sortie en douceur */
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .welcome-text { 
             font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; 
             color: #d4af37; letter-spacing: 6px; text-transform: uppercase; 
             border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; 
-            padding: 20px 40px; animation: pulse 2s infinite;
+            padding: 20px 40px;
+            animation: welcomeEffect 2.5s ease-out forwards;
+            opacity: 0;
         }
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        @keyframes welcomeEffect {
+            0% { opacity: 0; transform: scale(0.8); letter-spacing: 20px; filter: blur(10px); }
+            100% { opacity: 1; transform: scale(1); letter-spacing: 6px; filter: blur(0); }
+        }
+
+        /* ANIMATION DE DANSE DES BLOCS */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+            70% { transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
 
         h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.7em; margin: 35px 0 5px 0; }
         .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
@@ -41,7 +56,6 @@
         .search-box { width: 92%; max-width: 540px; margin: 0 auto 20px auto; position: relative; }
         .search-input { width: 100%; padding: 15px 45px 15px 20px; border-radius: 30px; border: 1px solid #eee; font-family: 'Montserrat', sans-serif; outline: none; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .search-input:focus { border-color: #d4af37; box-shadow: 0 4px 20px rgba(212,175,55,0.1); }
-        .search-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: #d4af37; font-size: 1.2em; }
 
         /* BOUTONS FLOTTANTS */
         .floating-container { position: fixed; right: 20px; z-index: 1000; display: flex; align-items: center; text-decoration: none; transition: 0.3s; }
@@ -53,38 +67,33 @@
         .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; }
 
         /* ARCHIVES */
-        .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; animation: fadeIn 0.6s ease; }
+        .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; }
         .month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 10px 2px; border-radius: 8px; cursor: pointer; font-size: 9px; font-weight: 700; text-transform: uppercase; transition: 0.3s; }
-        .month-btn.active { background: #d4af37; color: white; box-shadow: 0 4px 10px rgba(212,175,55,0.3); }
+        .month-btn.active { background: #d4af37; color: white; box-shadow: 0 4px 12px rgba(212,175,55,0.4); }
 
-        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 5px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.9em; font-weight: 700; color: #34495e; transition: 0.3s; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 5px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.9em; font-weight: 700; color: #34495e; transition: 0.3s; text-align: left; animation: popIn 0.4s ease forwards; }
         .titre-archive-item:hover { background: #fcf8e8; border-color: #d4af37; transform: translateX(5px); }
-
-        .reveal-list { animation: slideUpFade 0.5s ease forwards; }
 
         .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 30px auto; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .archive-main-btn:hover { background: #d4af37; transform: scale(1.05); }
 
-        /* CARDS MESSAGES (Restaurées) */
+        /* CARDS MESSAGES QUI DANSENT */
         .message-card { 
             background: white; padding: 30px; border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.06); /* Ombre plus profonde */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06); 
             width: 92%; max-width: 540px; margin: 25px auto; 
             text-align: left; border-top: 6px solid #d4af37; 
-            animation: fadeIn 0.5s ease; 
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
         }
-        h3 { font-family: 'Montserrat', sans-serif; color: #2c3e50; text-align: center; margin: 15px 0; line-height: 1.3; }
+        h3 { font-family: 'Montserrat', sans-serif; color: #2c3e50; text-align: center; margin: 15px 0; }
         .message-text { font-size: 1.15em; line-height: 1.7; text-align: justify; white-space: pre-wrap; color: #34495e; }
         
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; transition: 0.3s; margin: 15px 0; }
         .copy-btn:hover { background: #d4af37; color: white; }
         .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 20px; font-style: italic; }
 
-        .flag-counter-box { background: white; padding: 30px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .flag-counter-box { background: white; padding: 30px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
     </style>
 </head>
 <body>
@@ -105,7 +114,6 @@
 
     <div class="search-box">
         <input type="text" class="search-input" id="searchInput" placeholder="Rechercher un enseignement..." onkeyup="rechercherMessages()">
-        <span class="search-icon">🔍</span>
     </div>
     
     <div id="flux-messages"></div>
@@ -128,17 +136,6 @@
     <script>
         let tousLesMessages = [];
         const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-
-        const synonymesEmmanuel = {
-            "dieu": ["seigneur", "père", "éternel", "créateur", "tout-puissant"],
-            "jésus": ["christ", "sauveur", "messie", "agneau", "rédempteur"],
-            "esprit": ["saint-esprit", "paraclet", "souffle", "consolateur"],
-            "paix": ["sérénité", "repos", "tranquillité", "calme"],
-            "grâce": ["faveur", "don", "bénédiction", "miséricorde"],
-            "parole": ["enseignement", "écriture", "évangile", "bible"],
-            "foi": ["croyance", "confiance", "fidélité", "assurance"],
-            "amour": ["charité", "affection", "bienveillance"]
-        };
 
         window.onscroll = function() {
             let btn = document.getElementById("scrollTopLink");
@@ -163,14 +160,13 @@
 
                 afficherAccueil();
                 genererBoutonsMois();
-            } catch (err) { console.error("Erreur de chargement"); }
+            } catch (err) { console.error("Erreur"); }
             
-            // SORTIE DOUCE DU LOADING SCREEN
             setTimeout(() => { 
                 const loader = document.getElementById('loading-screen');
                 loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 1000);
-            }, 1800);
+                setTimeout(() => { loader.style.display = 'none'; }, 1200);
+            }, 2500);
         }
 
         function afficherAccueil() {
@@ -183,22 +179,8 @@
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const container = document.getElementById('flux-messages');
             if (query === "") { afficherAccueil(); return; }
-
-            let motsAChercher = [query];
-            if (synonymesEmmanuel[query]) { motsAChercher = motsAChercher.concat(synonymesEmmanuel[query]); }
-
-            const resultats = tousLesMessages.map(msg => {
-                const texteComplet = (msg.titre + " " + msg.categorie + " " + msg.texte).toLowerCase();
-                let scoreTotal = 0;
-                motsAChercher.forEach(mot => {
-                    const occurrences = texteComplet.split(mot).length - 1;
-                    scoreTotal += (mot === query) ? (occurrences * 2) : occurrences;
-                });
-                return { ...msg, score: scoreTotal };
-            });
-
-            const filtered = resultats.filter(msg => msg.score > 0).sort((a, b) => (b.score !== a.score) ? b.score - a.score : b.id - a.id);
-            container.innerHTML = filtered.length === 0 ? "<p>Aucun résultat 🙏</p>" : filtered.map(msg => creerCard(msg)).join('');
+            const filtered = tousLesMessages.filter(msg => (msg.titre + msg.texte).toLowerCase().includes(query));
+            container.innerHTML = filtered.map(msg => creerCard(msg)).join('');
         }
 
         function genererBoutonsMois() {
@@ -218,14 +200,18 @@
 
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            listeContainer.classList.remove('reveal-list');
             detailContainer.innerHTML = ''; 
             
             const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois).sort((a, b) => a.id - b.id);
-            listeContainer.innerHTML = filtered.length === 0 ? "<p>Bientôt disponible 🙏</p>" : filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id})">📖 ${msg.titre}</div>`).join('');
+            listeContainer.innerHTML = filtered.map(msg => `<div class="titre-archive-item">📖 ${msg.titre}</div>`).map((html, i) => {
+                return html.replace('class="', `style="animation-delay:${i*0.05}s" class="`);
+            }).join('');
             
-            void listeContainer.offsetWidth; 
-            listeContainer.classList.add('reveal-list');
+            // Re-lier les clics
+            const items = listeContainer.querySelectorAll('.titre-archive-item');
+            filtered.forEach((msg, i) => {
+                items[i].onclick = () => voirDetail(msg.id);
+            });
         }
 
         function voirDetail(id) {
