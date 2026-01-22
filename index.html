@@ -21,31 +21,31 @@
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
         
-        /* ÉCRAN D'ACCUEIL AVEC EFFET D'APPARITION */
+        /* ÉCRAN D'ACCUEIL AVEC EFFET D'APPARITION MAGIQUE */
         #loading-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: white; z-index: 2000; display: flex; 
             justify-content: center; align-items: center; 
-            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 1s ease-in-out;
         }
         .welcome-text { 
             font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; 
             color: #d4af37; letter-spacing: 6px; text-transform: uppercase; 
             border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; 
             padding: 20px 40px;
-            animation: welcomeEffect 2.5s ease-out forwards;
+            animation: welcomeEntry 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
             opacity: 0;
         }
 
-        @keyframes welcomeEffect {
-            0% { opacity: 0; transform: scale(0.8); letter-spacing: 20px; filter: blur(10px); }
-            100% { opacity: 1; transform: scale(1); letter-spacing: 6px; filter: blur(0); }
+        @keyframes welcomeEntry {
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); letter-spacing: 15px; filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); letter-spacing: 6px; filter: blur(0); }
         }
 
-        /* ANIMATION DE DANSE DES BLOCS */
-        @keyframes popIn {
-            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
-            70% { transform: scale(1.02); }
+        /* ANIMATION DE DANSE DES BLOCS (Rebond) */
+        @keyframes blockDance {
+            0% { opacity: 0; transform: scale(0.8) translateY(40px); }
+            60% { transform: scale(1.05) translateY(-5px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
@@ -66,25 +66,13 @@
         .whatsapp-btn img { width: 60px; height: 60px; }
         .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; }
 
-        /* ARCHIVES */
-        .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; }
-        .month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 10px 2px; border-radius: 8px; cursor: pointer; font-size: 9px; font-weight: 700; text-transform: uppercase; transition: 0.3s; }
-        .month-btn.active { background: #d4af37; color: white; box-shadow: 0 4px 12px rgba(212,175,55,0.4); }
-
-        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 5px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.9em; font-weight: 700; color: #34495e; transition: 0.3s; text-align: left; animation: popIn 0.4s ease forwards; }
-        .titre-archive-item:hover { background: #fcf8e8; border-color: #d4af37; transform: translateX(5px); }
-
-        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 30px auto; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .archive-main-btn:hover { background: #d4af37; transform: scale(1.05); }
-
-        /* CARDS MESSAGES QUI DANSENT */
+        /* CARDS MESSAGES (Avec Danse) */
         .message-card { 
             background: white; padding: 30px; border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.06); 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
             width: 92%; max-width: 540px; margin: 25px auto; 
             text-align: left; border-top: 6px solid #d4af37; 
-            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+            animation: blockDance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; 
         }
         h3 { font-family: 'Montserrat', sans-serif; color: #2c3e50; text-align: center; margin: 15px 0; }
         .message-text { font-size: 1.15em; line-height: 1.7; text-align: justify; white-space: pre-wrap; color: #34495e; }
@@ -93,7 +81,24 @@
         .copy-btn:hover { background: #d4af37; color: white; }
         .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 20px; font-style: italic; }
 
-        .flag-counter-box { background: white; padding: 30px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
+        /* STATISTIQUES STYLISÉES */
+        .flag-counter-box { 
+            background: white; padding: 35px 20px; border-radius: 20px; 
+            margin: 40px auto; width: 92%; max-width: 500px; 
+            border: 1px solid #f0f0f0; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            animation: blockDance 1s ease-out;
+        }
+        .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
+        .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
+
+        /* ARCHIVES */
+        .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; }
+        .month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 10px 2px; border-radius: 8px; cursor: pointer; font-size: 9px; font-weight: 700; text-transform: uppercase; transition: 0.3s; }
+        .month-btn.active { background: #d4af37; color: white; box-shadow: 0 4px 12px rgba(212,175,55,0.4); }
+        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 5px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.9em; font-weight: 700; color: #34495e; text-align: left; animation: blockDance 0.5s ease forwards; }
+        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 30px auto; transition: 0.3s; }
     </style>
 </head>
 <body>
@@ -127,9 +132,10 @@
     </div>
 
     <div class="flag-counter-box">
-        <div style="font-family: 'Montserrat', sans-serif; font-weight:900; font-size:1.1em;">COMMUNAUTÉ EMMANUEL</div>
+        <div class="stat-title">COMMUNAUTÉ EMMANUEL</div>
+        <div class="stat-subtitle">✨ Lecteurs par pays et vues ✨</div>
         <a href="https://info.flagcounter.com/ivJp" target="_blank">
-            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Statistiques" border="0" style="margin-top:20px;">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Statistiques" border="0" style="margin-top:20px; max-width: 100%;">
         </a>
     </div>
 
@@ -162,17 +168,21 @@
                 genererBoutonsMois();
             } catch (err) { console.error("Erreur"); }
             
+            // SORTIE DOUCE DU RIDEAU
             setTimeout(() => { 
                 const loader = document.getElementById('loading-screen');
                 loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 1200);
+                setTimeout(() => { loader.style.display = 'none'; }, 1000);
             }, 2500);
         }
 
         function afficherAccueil() {
             const container = document.getElementById('flux-messages');
             const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
-            container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
+            container.innerHTML = derniers.map((msg, i) => {
+                let card = creerCard(msg);
+                return card.replace('class="message-card"', `class="message-card" style="animation-delay:${i*0.2}s"`);
+            }).join('');
         }
 
         function rechercherMessages() {
@@ -191,27 +201,16 @@
         function afficherTitresDuMois(numMois, btn) {
             const listeContainer = document.getElementById('titres-liste');
             const detailContainer = document.getElementById('message-detail');
-
             if (btn.classList.contains('active')) {
                 btn.classList.remove('active');
                 listeContainer.innerHTML = ''; detailContainer.innerHTML = '';
                 return;
             }
-
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             detailContainer.innerHTML = ''; 
-            
             const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois).sort((a, b) => a.id - b.id);
-            listeContainer.innerHTML = filtered.map(msg => `<div class="titre-archive-item">📖 ${msg.titre}</div>`).map((html, i) => {
-                return html.replace('class="', `style="animation-delay:${i*0.05}s" class="`);
-            }).join('');
-            
-            // Re-lier les clics
-            const items = listeContainer.querySelectorAll('.titre-archive-item');
-            filtered.forEach((msg, i) => {
-                items[i].onclick = () => voirDetail(msg.id);
-            });
+            listeContainer.innerHTML = filtered.map((msg, i) => `<div class="titre-archive-item" style="animation-delay:${i*0.05}s" onclick="voirDetail(${msg.id})">📖 ${msg.titre}</div>`).join('');
         }
 
         function voirDetail(id) {
