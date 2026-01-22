@@ -44,10 +44,14 @@
             50% { opacity: 1; transform: scale(1); }
         }
 
+        /* AJUSTEMENT TITRE : Plus stable et mieux espacé */
         h1 { 
             font-family: 'Montserrat', sans-serif;
-            color: #1a1a1a; text-transform: uppercase; letter-spacing: 4px; 
+            color: #1a1a1a; text-transform: uppercase; 
+            letter-spacing: 2px; /* Réduit pour éviter les mauvaises coupures */
             font-weight: 900; font-size: 2em; margin: 35px 0 5px 0; 
+            padding: 0 10px;
+            word-break: keep-all;
         }
         
         .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
@@ -81,18 +85,21 @@
         h3 { 
             font-family: 'Montserrat', sans-serif;
             color: #2c3e50; margin: 0 0 15px 0; font-size: 1.4em; 
-            line-height: 1.3; font-weight: 700; 
+            line-height: 1.3; font-weight: 700;
+            hyphens: auto; /* Coupe les mots proprement si besoin */
         }
 
         .message-image-container { width: 100%; text-align: center; margin-bottom: 20px; overflow: hidden; border-radius: 10px; }
         .message-image { max-width: 100%; height: auto; display: block; margin: 0 auto; }
 
+        /* AJUSTEMENT TEXTE : Justifié gauche-droite type Word */
         .message-text { 
             font-size: 1.15em; color: #34495e; line-height: 1.7; 
-            margin-bottom: 25px; white-space: pre-wrap; text-align: justify; 
+            margin-bottom: 25px; white-space: pre-wrap; 
+            text-align: justify; 
+            text-justify: inter-word; /* Répartit harmonieusement les espaces */
         }
 
-        /* Style pour les mots mis en gras via JSON */
         .message-text strong {
             color: #1a1a1a;
             font-weight: 700;
@@ -190,7 +197,6 @@
         }
 
         function copierTexte(bouton, texte) {
-            // On retire les étoiles pour que le partage WhatsApp/SMS soit propre
             const texteClair = texte.replace(/\*\*/g, '');
             navigator.clipboard.writeText(texteClair).then(() => {
                 const memo = bouton.innerHTML;
@@ -221,7 +227,6 @@
                         const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
                         let imageHtml = msg.image ? `<div class="message-image-container"><img src="${msg.image}" class="message-image"></div>` : '';
                         
-                        // Transformation des ** en gras HTML <strong>
                         const texteFormate = msg.texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
                         const card = document.createElement('div');
