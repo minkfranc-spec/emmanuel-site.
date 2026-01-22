@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* --- STYLE EMMANUEL --- */
+        /* --- STYLE GLOBAL EMMANUEL --- */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; }
         
@@ -17,19 +17,23 @@
 
         h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.7em; margin: 35px 0 5px 0; }
         .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
-        
+
+        /* BOUTONS FLOTTANTS */
+        .floating-container { position: fixed; right: 20px; z-index: 1000; display: flex; align-items: center; text-decoration: none; transition: 0.3s; }
+        .whatsapp-link { bottom: 30px; }
+        .scroll-link { bottom: 105px; display: none; }
+        .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; text-transform: uppercase; }
+        .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
+        .whatsapp-btn img { width: 60px; height: 60px; }
+        .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; }
+
         /* ARCHIVES */
         .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; animation: fadeIn 0.5s ease; }
         .month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 10px 2px; border-radius: 8px; cursor: pointer; font-size: 9px; font-weight: 700; text-transform: uppercase; transition: 0.3s; }
-        .month-btn:hover { background: #fcf8e8; }
         .month-btn.active { background: #d4af37; color: white; }
 
-        .titre-archive-item { 
-            background: #fff; border: 1px solid #eee; padding: 15px; margin: 5px 0; 
-            border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; 
-            font-size: 0.9em; font-weight: 700; color: #34495e; transition: 0.3s; text-align: left;
-        }
+        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 5px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.9em; font-weight: 700; color: #34495e; transition: 0.3s; text-align: left; }
         .titre-archive-item:hover { background: #fcf8e8; border-color: #d4af37; transform: translateX(5px); }
 
         .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 30px auto; transition: 0.3s; }
@@ -37,9 +41,9 @@
 
         /* CARDS */
         .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.04); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: fadeIn 0.4s ease; }
-        h3 { font-family: 'Montserrat', sans-serif; color: #2c3e50; text-align: center; line-height: 1.4; }
+        h3 { font-family: 'Montserrat', sans-serif; color: #2c3e50; text-align: center; margin: 15px 0; }
         .message-text { font-size: 1.15em; line-height: 1.7; text-align: justify; white-space: pre-wrap; color: #34495e; }
-        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
+        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; transition: 0.3s; }
         .copy-btn:hover { background: #d4af37; color: white; }
         .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 20px; font-style: italic; }
 
@@ -51,6 +55,15 @@
 <body>
 
     <div id="loading-screen"><div class="welcome-text">Bienvenue à EMMANUEL</div></div>
+
+    <a href="javascript:window.scrollTo(0,0)" class="floating-container scroll-link" id="scrollTopLink">
+        <span class="btn-label">Retour en haut</span>
+        <button class="scroll-btn">↑</button>
+    </a>
+    <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link">
+        <span class="btn-label">Besoin d'aide ?</span>
+        <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></div>
+    </a>
 
     <h1>EMMANUEL</h1>
     <div class="intro-text">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
@@ -76,29 +89,36 @@
         let tousLesMessages = [];
         const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
+        // GESTION DU SCROLL
+        window.onscroll = function() {
+            let btn = document.getElementById("scrollTopLink");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.style.display = "flex";
+            } else {
+                btn.style.display = "none";
+            }
+        };
+
         async function chargerMessages() {
             try {
                 const response = await fetch('data.json?v=' + Date.now());
                 const data = await response.json();
-                
                 const maintenant = new Date();
                 
-                // 🛡️ FILTRE SÉCURITÉ : On ne garde que les messages dont la date est passée ou égale à aujourd'hui
                 tousLesMessages = data.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0); // 01h30 du matin
+                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
                     return maintenant >= dateParution;
                 });
 
                 afficherAccueil();
                 genererBoutonsMois();
-            } catch (err) { console.error("Erreur de chargement"); }
+            } catch (err) { console.error("Erreur"); }
             setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1500);
         }
 
         function afficherAccueil() {
             const container = document.getElementById('flux-messages');
-            // On prend les 3 derniers parmi les messages autorisés
             const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
             container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
         }
@@ -118,14 +138,14 @@
             const detailContainer = document.getElementById('message-detail');
             detailContainer.innerHTML = ''; 
             
-            // On cherche dans les messages filtrés (ceux déjà parus)
+            // ARCHIVES : Ordre chronologique (du plus vieux au plus récent)
             const filtered = tousLesMessages.filter(msg => {
                 const moisMsg = new Date(msg.date).getMonth() + 1;
                 return moisMsg === numMois;
-            }).sort((a, b) => b.id - a.id);
+            }).sort((a, b) => a.id - b.id); // <--- ORDRE CHRONOLOGIQUE ICI
 
             if(filtered.length === 0) {
-                listeContainer.innerHTML = "<p style='margin:20px 0;'>Aucun enseignement disponible pour ce mois. 🙏</p>";
+                listeContainer.innerHTML = "<p style='margin:20px 0;'>Aucun enseignement pour ce mois. 🙏</p>";
             } else {
                 listeContainer.innerHTML = filtered.map(msg => 
                     `<div class="titre-archive-item" onclick="voirDetail(${msg.id})">📖 ${msg.titre}</div>`
@@ -138,7 +158,6 @@
             const detailContainer = document.getElementById('message-detail');
             document.getElementById('titres-liste').innerHTML = ''; 
             detailContainer.innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="revenirALaListe(${new Date(msg.date).getMonth() + 1})">⬅ Retour au mois</button>`;
-            window.scrollTo(0, document.getElementById('archiveSection').offsetTop - 20);
         }
 
         function revenirALaListe(numMois) {
@@ -149,12 +168,15 @@
         function creerCard(msg) {
             const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
             const texteFormate = msg.texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Nettoyage du texte pour la fonction copier
+            const textePourCopie = msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/'/g, "\\'");
+            
             return `
                 <div class="message-card">
-                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase; letter-spacing:1px;">${msg.categorie}</span>
+                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${msg.categorie}</span>
                     <h3>${msg.titre}</h3>
                     <div class="message-text">${texteFormate}</div>
-                    <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📤 Partager l'enseignement</button>
+                    <button class="copy-btn" onclick="copierTexte(this, \`${textePourCopie}\`)">📤 Partager l'enseignement</button>
                     <span class="date">Publié le ${dateAffichee}</span>
                 </div>`;
         }
@@ -164,7 +186,13 @@
             navigator.clipboard.writeText(texteClair).then(() => {
                 const memo = bouton.innerHTML;
                 bouton.innerHTML = "✨ PAROLE COPIÉE !";
-                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
+                bouton.style.background = "#d4af37";
+                bouton.style.color = "white";
+                setTimeout(() => { 
+                    bouton.innerHTML = memo; 
+                    bouton.style.background = "transparent";
+                    bouton.style.color = "#d4af37";
+                }, 2000);
             });
         }
 
