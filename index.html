@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* --- STYLE GLOBAL EMMANUEL --- */
+        /* --- STYLE GLOBAL --- */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; }
         
@@ -188,24 +188,30 @@
             afficherTitresDuMois(numMois, document.querySelectorAll('.month-btn')[numMois-1]);
         }
 
+        // --- FONCTION DE CRÉATION DE CARTE AVEC SÉCURITÉ BASE64 ---
         function creerCard(msg) {
             const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
             const texteFormate = msg.texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            // Correction de l'échappement pour le premier message et tous les autres
-            const texteSecurise = msg.texte.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/'/g, "\\'");
+            
+            // On encode le texte en Base64 pour éviter que les apostrophes cassent le bouton
+            const texteSecurise = btoa(unescape(encodeURIComponent(msg.texte)));
             
             return `
                 <div class="message-card">
                     <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${msg.categorie}</span>
                     <h3>${msg.titre}</h3>
                     <div class="message-text">${texteFormate}</div>
-                    <button class="copy-btn" onclick="copierTexte(this, \`${texteSecurise}\`)">📤 Partager l'enseignement</button>
+                    <button class="copy-btn" onclick="decoderEtCopier(this, '${texteSecurise}')">📤 Partager l'enseignement</button>
                     <span class="date">Publié le ${dateAffichee}</span>
                 </div>`;
         }
 
-        function copierTexte(bouton, texte) {
-            const texteClair = texte.replace(/\*\*/g, '');
+        // --- FONCTION DE COPIE DÉFINITIVE ---
+        function decoderEtCopier(bouton, base64) {
+            // On décode le Base64 vers le texte original
+            const texteOriginal = decodeURIComponent(escape(atob(base64)));
+            const texteClair = texteOriginal.replace(/\*\*/g, '');
+
             navigator.clipboard.writeText(texteClair).then(() => {
                 const memo = bouton.innerHTML;
                 bouton.innerHTML = "✨ PAROLE COPIÉE !";
@@ -216,6 +222,8 @@
                     bouton.style.background = "transparent";
                     bouton.style.color = "#d4af37";
                 }, 2000);
+            }).catch(err => {
+                console.error("Erreur de copie", err);
             });
         }
 
