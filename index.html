@@ -49,7 +49,6 @@
         .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 5px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.9em; font-weight: 700; color: #34495e; transition: 0.3s; text-align: left; }
         .titre-archive-item:hover { background: #fcf8e8; border-color: #d4af37; transform: translateX(5px); }
 
-        /* Animation pour l'apparition des titres */
         .reveal-list { animation: slideUpFade 0.5s ease forwards; }
 
         .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 30px auto; transition: 0.3s; }
@@ -200,11 +199,19 @@
         }
 
         function afficherTitresDuMois(numMois, btn) {
-            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
             const listeContainer = document.getElementById('titres-liste');
             const detailContainer = document.getElementById('message-detail');
+
+            // EFFET INTERRUPTEUR : Si on clique sur le mois déjà actif, on ferme tout
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                listeContainer.innerHTML = '';
+                detailContainer.innerHTML = '';
+                return;
+            }
+
+            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             
             listeContainer.classList.remove('reveal-list');
             detailContainer.innerHTML = ''; 
@@ -219,7 +226,7 @@
                     `<div class="titre-archive-item" onclick="voirDetail(${msg.id})">📖 ${msg.titre}</div>`
                 ).join('');
                 
-                void listeContainer.offsetWidth; // Trigger reflow pour l'animation
+                void listeContainer.offsetWidth; 
                 listeContainer.classList.add('reveal-list');
             }
         }
@@ -233,6 +240,8 @@
 
         function revenirALaListe(numMois) {
             const btn = document.querySelectorAll('.month-btn')[numMois-1];
+            // On retire la classe active pour que afficherTitresDuMois ne le considère pas comme un "fermeture"
+            btn.classList.remove('active'); 
             afficherTitresDuMois(numMois, btn);
         }
 
@@ -276,14 +285,12 @@
             if (s.style.display === 'block') {
                 s.style.display = 'none';
                 btn.innerHTML = "📂 Consulter les Archives";
-                // Nettoyage au moment de la fermeture
                 liste.innerHTML = '';
                 detail.innerHTML = '';
                 document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             } else {
                 s.style.display = 'block';
                 btn.innerHTML = "❌ Fermer les Archives";
-                // Assurer que c'est vide à l'ouverture (neutre)
                 liste.innerHTML = '';
                 detail.innerHTML = '';
                 document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
