@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMMANUEL | La Parole de Dieu</title>
+    
+    <meta property="og:title" content="EMMANUEL | La Parole de Dieu">
+    <meta property="og:description" content="La Lumière qui éclaire chaque pas sur le chemin de la Vie. Chaque jour, un nouvel enseignement pour nourrir votre âme.">
+    <meta property="og:url" content="https://emmanuel-site.vercel.app">
+    <meta property="og:image" content="https://files.catbox.moe/p9p39r.jpg"> 
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://files.catbox.moe/p9p39r.jpg">
+
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1042/1042618.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
@@ -89,7 +100,6 @@
         let tousLesMessages = [];
         const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
-        // GESTION DU SCROLL
         window.onscroll = function() {
             let btn = document.getElementById("scrollTopLink");
             if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
@@ -113,7 +123,7 @@
 
                 afficherAccueil();
                 genererBoutonsMois();
-            } catch (err) { console.error("Erreur"); }
+            } catch (err) { console.error("Erreur de chargement"); }
             setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1500);
         }
 
@@ -138,11 +148,10 @@
             const detailContainer = document.getElementById('message-detail');
             detailContainer.innerHTML = ''; 
             
-            // ARCHIVES : Ordre chronologique (du plus vieux au plus récent)
             const filtered = tousLesMessages.filter(msg => {
-                const moisMsg = new Date(msg.date).getMonth() + 1;
-                return moisMsg === numMois;
-            }).sort((a, b) => a.id - b.id); // <--- ORDRE CHRONOLOGIQUE ICI
+                const d = new Date(msg.date);
+                return (d.getMonth() + 1) === numMois;
+            }).sort((a, b) => a.id - b.id);
 
             if(filtered.length === 0) {
                 listeContainer.innerHTML = "<p style='margin:20px 0;'>Aucun enseignement pour ce mois. 🙏</p>";
@@ -168,7 +177,6 @@
         function creerCard(msg) {
             const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
             const texteFormate = msg.texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            // Nettoyage du texte pour la fonction copier
             const textePourCopie = msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/'/g, "\\'");
             
             return `
