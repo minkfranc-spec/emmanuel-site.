@@ -44,12 +44,14 @@
             50% { opacity: 1; transform: scale(1); }
         }
 
-        /* AJUSTEMENT TITRE : Plus stable et mieux espacé */
+        /* AJUSTEMENT TITRE PRINCIPAL : Plus fin et mieux équilibré */
         h1 { 
             font-family: 'Montserrat', sans-serif;
             color: #1a1a1a; text-transform: uppercase; 
-            letter-spacing: 2px; /* Réduit pour éviter les mauvaises coupures */
-            font-weight: 900; font-size: 2em; margin: 35px 0 5px 0; 
+            letter-spacing: 1px; 
+            font-weight: 900; 
+            font-size: 1.7em; /* Réduit de 2em à 1.7em pour plus d'élégance */
+            margin: 35px 0 5px 0; 
             padding: 0 10px;
             word-break: keep-all;
         }
@@ -82,22 +84,25 @@
             letter-spacing: 1px;
         }
 
+        /* AJUSTEMENT TITRE ENSEIGNEMENT : Plus compact et moins envahissant */
         h3 { 
             font-family: 'Montserrat', sans-serif;
-            color: #2c3e50; margin: 0 0 15px 0; font-size: 1.4em; 
-            line-height: 1.3; font-weight: 700;
-            hyphens: auto; /* Coupe les mots proprement si besoin */
+            color: #2c3e50; margin: 0 0 15px 0; 
+            font-size: 1.25em; /* Réduit de 1.4em à 1.25em pour compenser le gras */
+            line-height: 1.2; /* Resserre l'espace entre les lignes du titre */
+            font-weight: 700;
+            hyphens: auto;
         }
 
         .message-image-container { width: 100%; text-align: center; margin-bottom: 20px; overflow: hidden; border-radius: 10px; }
         .message-image { max-width: 100%; height: auto; display: block; margin: 0 auto; }
 
-        /* AJUSTEMENT TEXTE : Justifié gauche-droite type Word */
+        /* TEXTE JUSTIFIÉ : Équilibre parfait */
         .message-text { 
             font-size: 1.15em; color: #34495e; line-height: 1.7; 
             margin-bottom: 25px; white-space: pre-wrap; 
             text-align: justify; 
-            text-justify: inter-word; /* Répartit harmonieusement les espaces */
+            text-justify: inter-word;
         }
 
         .message-text strong {
