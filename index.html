@@ -7,6 +7,11 @@
 
     <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/p9p39r.jpg">
     <link rel="apple-touch-icon" href="https://files.catbox.moe/p9p39r.jpg">
+    
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkVNTUFOVUVMIiwKICAic2hvcnRfbmFtZSI6ICJFTU1BTlVFTCIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiIjogIiNkNGFmMzciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2ZpbGVzLmNhdGJveC5tb2UvcDlwMzlyLmpwZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvanBlZyIKICAgIH0KICBdCn0=">
+    
+    <meta name="theme-color" content="#d4af37">
+    <meta name="mobile-web-app-capable" content="yes">
 
     <meta property="og:title" content="EMMANUEL | La Parole de Dieu">
     <meta property="og:description" content="La Lumière qui éclaire chaque pas sur le chemin de la Vie.">
@@ -166,9 +171,8 @@
 
                 afficherAccueil();
                 genererBoutonsMois();
-            } catch (err) { console.error("Erreur"); }
+            } catch (err) { console.error("Erreur de chargement"); }
             
-            // SORTIE DOUCE DU RIDEAU
             setTimeout(() => { 
                 const loader = document.getElementById('loading-screen');
                 loader.style.opacity = '0';
