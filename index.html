@@ -21,24 +21,26 @@
         /* ARCHIVES */
         .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; animation: fadeIn 0.5s ease; }
         .month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 10px 2px; border-radius: 8px; cursor: pointer; font-size: 9px; font-weight: 700; text-transform: uppercase; }
+        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 10px 2px; border-radius: 8px; cursor: pointer; font-size: 9px; font-weight: 700; text-transform: uppercase; transition: 0.3s; }
+        .month-btn:hover { background: #fcf8e8; }
         .month-btn.active { background: #d4af37; color: white; }
 
-        /* LISTE DES TITRES (SOMMAIRE) */
         .titre-archive-item { 
             background: #fff; border: 1px solid #eee; padding: 15px; margin: 5px 0; 
             border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; 
-            font-size: 0.9em; font-weight: 700; color: #34495e; transition: 0.3s;
+            font-size: 0.9em; font-weight: 700; color: #34495e; transition: 0.3s; text-align: left;
         }
-        .titre-archive-item:hover { background: #fcf8e8; border-color: #d4af37; }
+        .titre-archive-item:hover { background: #fcf8e8; border-color: #d4af37; transform: translateX(5px); }
 
-        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 30px auto; }
+        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 30px auto; transition: 0.3s; }
+        .archive-main-btn:hover { background: #d4af37; transform: scale(1.05); }
 
         /* CARDS */
         .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.04); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: fadeIn 0.4s ease; }
-        h3 { font-family: 'Montserrat', sans-serif; color: #2c3e50; text-align: center; }
-        .message-text { font-size: 1.15em; line-height: 1.7; text-align: justify; white-space: pre-wrap; }
-        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; }
+        h3 { font-family: 'Montserrat', sans-serif; color: #2c3e50; text-align: center; line-height: 1.4; }
+        .message-text { font-size: 1.15em; line-height: 1.7; text-align: justify; white-space: pre-wrap; color: #34495e; }
+        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
+        .copy-btn:hover { background: #d4af37; color: white; }
         .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 20px; font-style: italic; }
 
         .flag-counter-box { background: white; padding: 30px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
@@ -55,12 +57,13 @@
     
     <div id="flux-messages"></div>
 
-    <button class="archive-main-btn" onclick="toggleArchives()">📂 Consulter les Archives</button>
+    <button class="archive-main-btn" id="btnToggleArchive" onclick="toggleArchives()">📂 Consulter les Archives</button>
     
     <div id="archiveSection" class="archive-section">
-        <div class="month-grid" id="monthGrid">
-            </div>
-        <div id="titres-liste"></div> <div id="message-detail"></div> </div>
+        <div class="month-grid" id="monthGrid"></div>
+        <div id="titres-liste"></div> 
+        <div id="message-detail"></div> 
+    </div>
 
     <div class="flag-counter-box">
         <div style="font-family: 'Montserrat', sans-serif; font-weight:900; font-size:1.1em;">COMMUNAUTÉ EMMANUEL</div>
@@ -76,15 +79,26 @@
         async function chargerMessages() {
             try {
                 const response = await fetch('data.json?v=' + Date.now());
-                tousLesMessages = await response.json();
+                const data = await response.json();
+                
+                const maintenant = new Date();
+                
+                // 🛡️ FILTRE SÉCURITÉ : On ne garde que les messages dont la date est passée ou égale à aujourd'hui
+                tousLesMessages = data.filter(msg => {
+                    const [annee, mois, jour] = msg.date.split('-').map(Number);
+                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0); // 01h30 du matin
+                    return maintenant >= dateParution;
+                });
+
                 afficherAccueil();
                 genererBoutonsMois();
-            } catch (err) { console.error("Erreur"); }
+            } catch (err) { console.error("Erreur de chargement"); }
             setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1500);
         }
 
         function afficherAccueil() {
             const container = document.getElementById('flux-messages');
+            // On prend les 3 derniers parmi les messages autorisés
             const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
             container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
         }
@@ -97,18 +111,21 @@
         }
 
         function afficherTitresDuMois(numMois, btn) {
-            // Style bouton actif
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
             const listeContainer = document.getElementById('titres-liste');
             const detailContainer = document.getElementById('message-detail');
-            detailContainer.innerHTML = ''; // On efface le message ouvert précédent
+            detailContainer.innerHTML = ''; 
             
-            const filtered = tousLesMessages.filter(msg => new Date(msg.date).getMonth() + 1 === numMois);
+            // On cherche dans les messages filtrés (ceux déjà parus)
+            const filtered = tousLesMessages.filter(msg => {
+                const moisMsg = new Date(msg.date).getMonth() + 1;
+                return moisMsg === numMois;
+            }).sort((a, b) => b.id - a.id);
 
             if(filtered.length === 0) {
-                listeContainer.innerHTML = "<p>Aucun enseignement ce mois-ci. 🙏</p>";
+                listeContainer.innerHTML = "<p style='margin:20px 0;'>Aucun enseignement disponible pour ce mois. 🙏</p>";
             } else {
                 listeContainer.innerHTML = filtered.map(msg => 
                     `<div class="titre-archive-item" onclick="voirDetail(${msg.id})">📖 ${msg.titre}</div>`
@@ -119,8 +136,9 @@
         function voirDetail(id) {
             const msg = tousLesMessages.find(m => m.id === id);
             const detailContainer = document.getElementById('message-detail');
-            document.getElementById('titres-liste').innerHTML = ''; // On cache la liste pour voir le message
-            detailContainer.innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="revenirALaListe(${new Date(msg.date).getMonth() + 1})">⬅ Retour au sommaire</button>`;
+            document.getElementById('titres-liste').innerHTML = ''; 
+            detailContainer.innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="revenirALaListe(${new Date(msg.date).getMonth() + 1})">⬅ Retour au mois</button>`;
+            window.scrollTo(0, document.getElementById('archiveSection').offsetTop - 20);
         }
 
         function revenirALaListe(numMois) {
@@ -133,17 +151,33 @@
             const texteFormate = msg.texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             return `
                 <div class="message-card">
-                    <span style="font-size:0.7em; color:#d4af37; font-weight:900;">${msg.categorie}</span>
+                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase; letter-spacing:1px;">${msg.categorie}</span>
                     <h3>${msg.titre}</h3>
                     <div class="message-text">${texteFormate}</div>
-                    <button class="copy-btn" onclick="navigator.clipboard.writeText('${msg.texte.replace(/'/g, "\\'")}').then(()=>alert('Copié !'))">📤 Partager</button>
-                    <span class="date">${dateAffichee}</span>
+                    <button class="copy-btn" onclick="copierTexte(this, \`${msg.texte.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📤 Partager l'enseignement</button>
+                    <span class="date">Publié le ${dateAffichee}</span>
                 </div>`;
+        }
+
+        function copierTexte(bouton, texte) {
+            const texteClair = texte.replace(/\*\*/g, '');
+            navigator.clipboard.writeText(texteClair).then(() => {
+                const memo = bouton.innerHTML;
+                bouton.innerHTML = "✨ PAROLE COPIÉE !";
+                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
+            });
         }
 
         function toggleArchives() {
             const s = document.getElementById('archiveSection');
-            s.style.display = (s.style.display === 'block') ? 'none' : 'block';
+            const btn = document.getElementById('btnToggleArchive');
+            if (s.style.display === 'block') {
+                s.style.display = 'none';
+                btn.innerHTML = "📂 Consulter les Archives";
+            } else {
+                s.style.display = 'block';
+                btn.innerHTML = "❌ Fermer les Archives";
+            }
         }
 
         chargerMessages();
