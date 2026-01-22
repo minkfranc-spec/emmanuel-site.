@@ -109,6 +109,18 @@
         let tousLesMessages = [];
         const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
+        // DICTIONNAIRE DE SYNONYMES
+        const synonymesEmmanuel = {
+            "dieu": ["seigneur", "père", "éternel", "créateur", "tout-puissant"],
+            "jésus": ["christ", "sauveur", "messie", "agneau", "rédempteur"],
+            "esprit": ["saint-esprit", "paraclet", "souffle", "consolateur"],
+            "paix": ["sérénité", "repos", "tranquillité", "calme"],
+            "grâce": ["faveur", "don", "bénédiction", "miséricorde"],
+            "parole": ["enseignement", "écriture", "évangile", "bible"],
+            "foi": ["croyance", "confiance", "fidélité", "assurance"],
+            "amour": ["charité", "affection", "bienveillance"]
+        };
+
         window.onscroll = function() {
             let btn = document.getElementById("scrollTopLink");
             if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
@@ -142,13 +154,48 @@
             container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
         }
 
+        // --- MOTEUR DE RECHERCHE INTELLIGENT AVEC SYNONYMES ET PERTINENCE ---
         function rechercherMessages() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const container = document.getElementById('flux-messages');
-            const filtered = tousLesMessages.filter(msg => 
-                msg.titre.toLowerCase().includes(query) || msg.texte.toLowerCase().includes(query)
-            ).sort((a, b) => b.id - a.id);
-            container.innerHTML = filtered.map(msg => creerCard(msg)).join('');
+            
+            if (query === "") {
+                afficherAccueil();
+                return;
+            }
+
+            let motsAChercher = [query];
+            if (synonymesEmmanuel[query]) {
+                motsAChercher = motsAChercher.concat(synonymesEmmanuel[query]);
+            }
+
+            const resultats = tousLesMessages.map(msg => {
+                const texteComplet = (msg.titre + " " + msg.categorie + " " + msg.texte).toLowerCase();
+                let scoreTotal = 0;
+                
+                motsAChercher.forEach(mot => {
+                    const occurrences = texteComplet.split(mot).length - 1;
+                    // Le mot exact compte double par rapport aux synonymes
+                    scoreTotal += (mot === query) ? (occurrences * 2) : occurrences;
+                });
+
+                return { ...msg, score: scoreTotal };
+            });
+
+            const filtered = resultats
+                .filter(msg => msg.score > 0)
+                .sort((a, b) => {
+                    if (b.score !== a.score) {
+                        return b.score - a.score; // Plus de répétitions en premier
+                    }
+                    return b.id - a.id; // Puis le plus récent
+                });
+
+            if (filtered.length === 0) {
+                container.innerHTML = "<p style='margin:40px 0; color:#95a5a6;'>Aucun enseignement ne correspond à cette recherche. 🙏</p>";
+            } else {
+                container.innerHTML = filtered.map(msg => creerCard(msg)).join('');
+            }
         }
 
         function genererBoutonsMois() {
@@ -188,12 +235,9 @@
             afficherTitresDuMois(numMois, document.querySelectorAll('.month-btn')[numMois-1]);
         }
 
-        // --- FONCTION DE CRÉATION DE CARTE AVEC SÉCURITÉ BASE64 ---
         function creerCard(msg) {
             const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
             const texteFormate = msg.texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            
-            // On encode le texte en Base64 pour éviter que les apostrophes cassent le bouton
             const texteSecurise = btoa(unescape(encodeURIComponent(msg.texte)));
             
             return `
@@ -206,9 +250,7 @@
                 </div>`;
         }
 
-        // --- FONCTION DE COPIE DÉFINITIVE ---
         function decoderEtCopier(bouton, base64) {
-            // On décode le Base64 vers le texte original
             const texteOriginal = decodeURIComponent(escape(atob(base64)));
             const texteClair = texteOriginal.replace(/\*\*/g, '');
 
