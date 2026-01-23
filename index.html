@@ -33,10 +33,13 @@
         h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 20px 0 5px 0; }
         .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
 
-        /* LOOK EMMANUEL POUR LES MESSAGES */
         .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
-        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; } /* pre-line permet de garder les paragraphes */
+        
+        /* TAILLE DES TITRES RÉDUITE ICI */
+        .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
+        
+        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; } 
         
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
         .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
@@ -45,7 +48,7 @@
         .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
         .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
         .month-btn.active { background: #d4af37; color: white; }
-        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.9em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
+        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
 
         .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; margin: 20px auto; text-transform: uppercase; }
 
@@ -160,17 +163,14 @@
             const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
             const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
             
-            // Formatage du texte pour les paragraphes et le gras
-            const texteFormate = texteOriginal
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
+            const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
 
             return `
                 <div class="message-card">
                     ${imgHtml}
                     <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${msg.categorie}</span>
-                    <h3 style="font-family:'Montserrat'; text-align:center; margin:10px 0 20px 0; color:#1a1a1a; font-size:1.4em;">${titre}</h3>
+                    <h3 class="msg-title">${titre}</h3>
                     <div class="msg-content">${texteFormate}</div>
                     <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
                     <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
