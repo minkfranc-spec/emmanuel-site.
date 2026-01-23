@@ -83,9 +83,9 @@
             <h3 id="modal-title" style="font-family:'Montserrat';">Approfondir ce thème</h3>
             <p id="modal-desc" style="font-size:0.9em; color:#7f8c8d;">Choisissez votre canal préféré pour recevoir plus d'explications :</p>
             <a id="wa-link" href="#" target="_blank" class="choice-btn btn-wa">💬 WhatsApp</a>
-            <div style="margin: 10px; font-size: 0.7em; color: #bdc3c7;">— OU —</div>
-            <button onclick="sendEmailRequest()" class="choice-btn btn-mail">📩 Par Email</button>
-            <span style="display:block; margin-top:15px; cursor:pointer; text-decoration:underline; font-size:0.8em; color:#95a5a6;" onclick="closeModal()">Plus tard, merci.</span>
+            <div id="modal-or" style="margin: 10px; font-size: 0.7em; color: #bdc3c7;">— OU —</div>
+            <button id="modal-mail-btn" onclick="sendEmailRequest()" class="choice-btn btn-mail">📩 Par Email</button>
+            <span id="modal-later" style="display:block; margin-top:15px; cursor:pointer; text-decoration:underline; font-size:0.8em; color:#95a5a6;" onclick="closeModal()">Plus tard, merci.</span>
         </div>
     </div>
 
@@ -156,32 +156,49 @@
                 archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", 
                 shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", 
                 statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", 
+                statInfo: "Le compteur s'actualise toutes les 15 minutes.<br><strong>Merci de votre présence.</strong>",
                 backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?",
                 deepBtn: "🔍 Approfondir ce thème (Optionnel)",
-                modalTitle: "Approfondir la Parole", modalDesc: "Comment préférez-vous recevoir des explications supplémentaires ?"
+                modalTitle: "Approfondir la Parole", modalDesc: "Comment préférez-vous recevoir des explications supplémentaires ?",
+                modalOr: "— OU —", modalMail: "📩 Par Email", modalLater: "Plus tard, merci."
             },
             en: { 
                 welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", 
                 archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", 
                 shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", 
                 statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", 
+                statInfo: "The counter updates every 15 minutes.<br><strong>Thank you for your presence.</strong>",
                 backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help ?",
                 deepBtn: "🔍 Deepen this theme (Optional)",
-                modalTitle: "Deepen the Word", modalDesc: "How would you like to receive further explanations?"
+                modalTitle: "Deepen the Word", modalDesc: "How would you like to receive further explanations?",
+                modalOr: "— OR —", modalMail: "📩 By Email", modalLater: "Maybe later, thanks."
             }
         };
 
         function setLanguage(lang) {
             currentLang = lang;
+            document.documentElement.lang = lang;
             document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
             document.getElementById('btn-en').classList.toggle('active', lang === 'en');
             document.getElementById('welcome-txt').innerText = translations[lang].welcome;
             document.getElementById('intro-txt').innerText = translations[lang].intro;
             document.getElementById('stat-title').innerText = translations[lang].statTitle;
+            document.getElementById('stat-sub').innerText = translations[lang].statSub;
+            document.getElementById('stat-info-txt').innerHTML = translations[lang].statInfo;
             document.getElementById('label-top').innerText = translations[lang].scrollTop;
             document.getElementById('label-help').innerText = translations[lang].help;
+            
+            // Modal translations
             document.getElementById('modal-title').innerText = translations[lang].modalTitle;
             document.getElementById('modal-desc').innerText = translations[lang].modalDesc;
+            document.getElementById('modal-or').innerText = translations[lang].modalOr;
+            document.getElementById('modal-mail-btn').innerText = translations[lang].modalMail;
+            document.getElementById('modal-later').innerText = translations[lang].modalLater;
+            
+            // Archive Button
+            const s = document.getElementById('archiveSection');
+            document.getElementById('btn-archive').innerText = (s.style.display === 'block') ? translations[lang].archiveBtnClose : translations[lang].archiveBtn;
+
             afficherAccueil();
             genererBoutonsMois();
         }
@@ -216,8 +233,8 @@
 
         function sendEmailRequest() {
             const monEmail = "francmink@gmail.com"; 
-            const sujet = encodeURIComponent(`Approfondissement : ${currentTheme}`);
-            const corps = encodeURIComponent(`Bonjour Pasteur Emmanuel,\n\nJe souhaiterais recevoir plus d'informations concernant le message : "${currentTheme}".\n\nMerci.`);
+            const sujet = encodeURIComponent(`Deepening: ${currentTheme}`);
+            const corps = encodeURIComponent(`Hello Pastor Emmanuel,\n\nI would like to receive more information regarding the message: "${currentTheme}".\n\nThank you.`);
             window.location.href = `mailto:${monEmail}?subject=${sujet}&body=${corps}`;
             closeModal();
         }
@@ -245,7 +262,7 @@
         }
 
         function decoderEtCopier(bouton, base64) {
-            const t = decodeURIComponent(escape(atob(base64))).replace(/\*\*/g, '');
+            const t = decodeURIComponent(escape(atob(base64))).replace(/\*\/g, '');
             navigator.clipboard.writeText(t).then(() => {
                 const memo = bouton.innerHTML; bouton.innerHTML = translations[currentLang].copied;
                 bouton.style.background = "#d4af37"; bouton.style.color = "white";
