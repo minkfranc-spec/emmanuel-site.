@@ -26,7 +26,6 @@
             100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
-        /* NOUVEAU STYLE PILULE ÉLÉGANT */
         .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
         .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
         .lang-btn.active { background: white; color: #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
@@ -167,6 +166,7 @@
             const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
             const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
             const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
+            const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
             
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
@@ -174,7 +174,7 @@
             return `
                 <div class="message-card">
                     ${imgHtml}
-                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${msg.categorie}</span>
+                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
                     <h3 class="msg-title">${titre}</h3>
                     <div class="msg-content">${texteFormate}</div>
                     <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
@@ -223,7 +223,12 @@
             }
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active'); detail.innerHTML = '';
-            const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois);
+            
+            // On filtre par mois puis on inverse l'ordre pour avoir le plus récent en haut
+            const filtered = tousLesMessages
+                .filter(msg => (new Date(msg.date).getMonth() + 1) === numMois)
+                .sort((a, b) => b.id - a.id);
+                
             liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
         }
 
