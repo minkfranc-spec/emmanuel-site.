@@ -33,10 +33,13 @@
         h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 20px 0 5px 0; }
         .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
 
+        /* LOOK EMMANUEL POUR LES MESSAGES */
         .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
-        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 15px; display: block; }
-        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 15px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
-        .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.8em; font-weight: 700; font-style: italic; }
+        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
+        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; } /* pre-line permet de garder les paragraphes */
+        
+        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
+        .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
 
         .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; padding-bottom: 40px; }
         .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
@@ -52,7 +55,6 @@
         .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
         .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
         .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; }
-        .whatsapp-btn img { width: 60px; height: 60px; }
 
         .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
         .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
@@ -70,7 +72,7 @@
     
     <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link">
         <span class="btn-label" id="label-help">Besoin d'aide ?</span>
-        <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></div>
+        <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="60"></div>
     </a>
 
     <div class="lang-selector">
@@ -155,17 +157,22 @@
         function creerCard(msg) {
             const dateObj = new Date(msg.date);
             const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
-            const texte = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
+            const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
             const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
+            
+            // Formatage du texte pour les paragraphes et le gras
+            const texteFormate = texteOriginal
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
 
             return `
                 <div class="message-card">
                     ${imgHtml}
                     <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${msg.categorie}</span>
-                    <h3 style="font-family:'Montserrat'; text-align:center; margin:10px 0;">${titre}</h3>
-                    <div style="text-align:justify; line-height:1.7;">${texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
-                    <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texte)))}')">${translations[currentLang].shareBtn}</button>
+                    <h3 style="font-family:'Montserrat'; text-align:center; margin:10px 0 20px 0; color:#1a1a1a; font-size:1.4em;">${titre}</h3>
+                    <div class="msg-content">${texteFormate}</div>
+                    <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
                     <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
                 </div>`;
         }
