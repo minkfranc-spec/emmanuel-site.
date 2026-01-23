@@ -36,9 +36,7 @@
         .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
         
-        /* TAILLE DES TITRES RÉDUITE ICI */
         .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
-        
         .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; } 
         
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
@@ -128,12 +126,24 @@
             currentLang = lang;
             document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
             document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            
+            // Mise à jour textes fixes
             document.getElementById('welcome-txt').innerText = translations[lang].welcome;
             document.getElementById('intro-txt').innerText = translations[lang].intro;
             document.getElementById('stat-title').innerText = translations[lang].statTitle;
             document.getElementById('stat-sub').innerText = translations[lang].statSub;
             document.getElementById('label-top').innerText = translations[lang].scrollTop;
             document.getElementById('label-help').innerText = translations[lang].help;
+
+            // CORRECTION : Mise à jour intelligente du bouton archive selon l'état actuel
+            const s = document.getElementById('archiveSection');
+            const archiveMainBtn = document.getElementById('btn-archive');
+            if (s.style.display === 'block') {
+                archiveMainBtn.innerText = translations[lang].archiveBtnClose;
+            } else {
+                archiveMainBtn.innerText = translations[lang].archiveBtn;
+            }
+            
             genererBoutonsMois();
             afficherAccueil();
         }
