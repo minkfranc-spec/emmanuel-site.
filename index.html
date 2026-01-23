@@ -8,7 +8,7 @@
     <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/p9p39r.jpg">
     <link rel="apple-touch-icon" href="https://files.catbox.moe/p9p39r.jpg">
     
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkVNTUFOVUVMIiwKICAic2hvcnRfbmFtZSI6ICJFTU1BTlVFTCIsCiAgInN0YXJ0X3VybCI6ICIvIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiIjogIiNkNGFmMzciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2ZpbGVzLmNhdGJveC5tb2UvcDlwMzlyLmpwZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvanBlZyIsCiAgICAgICJw dXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0KICBdCn0=">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkVNTUFOVUVMIiwKICAic2hvcnRfbmFtZSI6ICJFTU1BTlVFTCIsCiAgInN0YXJ0X3VybCI6ICIvIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiIjogIiNkNGFmMzciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2ZpbGVzLmNhdGJveC5tb2UvcDlwMzlyLmpwZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvanBlZyIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0KICBdCn0=">
     
     <meta name="theme-color" content="#d4af37">
     <meta name="mobile-web-app-capable" content="yes">
@@ -17,56 +17,43 @@
 
     <style>
         * { box-sizing: border-box; scroll-behavior: smooth; }
-        html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
+        body { margin: 0; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; }
         
-        /* LOGO D'ENTÊTE */
-        .main-logo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-top: 30px; border: 2px solid #d4af37; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-
+        .main-logo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-top: 30px; border: 2px solid #d4af37; }
+        
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 1s; }
         .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.4em; color: #d4af37; letter-spacing: 4px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 15px; animation: welcomeEntry 2s forwards; opacity: 0; }
 
         @keyframes welcomeEntry { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes blockDance { 0% { opacity: 0; transform: scale(0.95) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-
-        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; font-weight: 900; font-size: 1.6em; margin: 15px 0; }
-        .intro-text { width: 85%; margin: 0 auto 20px auto; color: #95a5a6; font-style: italic; }
-
-        /* CARDS MESSAGES AVEC SUPPORT IMAGE */
-        .message-card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); width: 92%; max-width: 500px; margin: 20px auto; text-align: left; border-top: 5px solid #d4af37; animation: blockDance 0.6s ease-out forwards; }
-        .msg-img { width: 100%; height: auto; border-radius: 10px; margin-bottom: 15px; display: block; }
         
-        .message-text { font-size: 1.1em; line-height: 1.6; text-align: justify; color: #34495e; }
-        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: 700; margin: 15px 0; transition: 0.3s; }
-        .copy-btn:hover { background: #d4af37; color: white; }
+        .message-card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); width: 92%; max-width: 500px; margin: 20px auto; text-align: left; border-top: 5px solid #d4af37; animation: blockDance 0.6s ease-out; }
+        .msg-img { width: 100%; height: auto; border-radius: 10px; margin-bottom: 15px; }
 
-        /* BOUTONS FLOTTANTS */
-        .floating-container { position: fixed; right: 20px; z-index: 1000; display: flex; align-items: center; text-decoration: none; }
-        .whatsapp-link { bottom: 20px; }
+        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: 700; margin-top: 15px; }
+        
+        .whatsapp-link { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
         .whatsapp-btn img { width: 55px; height: 55px; }
 
-        /* ARCHIVES */
         .archive-section { display: none; width: 92%; max-width: 500px; margin: 20px auto; }
         .month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 8px 2px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
-        .month-btn.active { background: #d4af37; color: white; }
-        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: 700; margin: 20px auto; }
+        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 8px 2px; border-radius: 6px; font-size: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="loading-screen"><div class="welcome-text">EMMANUEL</div></div>
 
-    <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link">
+    <a href="https://wa.me/237678356844" target="_blank" class="whatsapp-link">
         <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></div>
     </a>
 
     <img src="https://files.catbox.moe/p9p39r.jpg" alt="Logo" class="main-logo">
-    <h1>EMMANUEL</h1>
-    <div class="intro-text">La Lumière qui éclaire chaque pas.</div>
+    <h1 style="font-family:'Montserrat';">EMMANUEL</h1>
 
     <div id="flux-messages"></div>
 
-    <button class="archive-main-btn" id="btnToggleArchive" onclick="toggleArchives()">📂 Archives</button>
+    <button onclick="toggleArchives()" style="background:#1a1a1a; color:white; padding:15px 25px; border-radius:50px; border:none; cursor:pointer; font-family:'Montserrat'; font-weight:700; margin:20px;">📂 Archives</button>
+    
     <div id="archiveSection" class="archive-section">
         <div class="month-grid" id="monthGrid"></div>
         <div id="titres-liste"></div> 
@@ -80,58 +67,6 @@
             try {
                 const response = await fetch('data.json?v=' + Date.now());
                 const data = await response.json();
-                tousLesMessages = data;
-                afficherAccueil();
-                genererBoutonsMois();
-            } catch (err) { console.error("Erreur"); }
-            
-            setTimeout(() => { 
-                document.getElementById('loading-screen').style.opacity = '0';
-                setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1000);
-            }, 2000);
-        }
-
-        function creerCard(msg) {
-            const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
-            const texteFormate = msg.texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            
-            // Gestion de l'image : on vérifie si msg.image existe dans ton data.json
-            let imageHtml = msg.image ? `<img src="${msg.image}" class="msg-img" alt="${msg.titre}">` : '';
-
-            return `
-                <div class="message-card">
-                    ${imageHtml}
-                    <span style="font-size:0.7em; color:#d4af37; font-weight:900;">${msg.categorie}</span>
-                    <h3 style="margin: 10px 0;">${msg.titre}</h3>
-                    <div class="message-text">${texteFormate}</div>
-                    <button class="copy-btn" onclick="copierTexte('${btoa(unescape(encodeURIComponent(msg.texte)))}')">📤 Partager</button>
-                    <span style="display:block; text-align:right; font-size:0.8em; color:#bdc3c7;">${dateAffichee}</span>
-                </div>`;
-        }
-
-        function copierTexte(base64) {
-            const t = decodeURIComponent(escape(atob(base64))).replace(/\*\*/g, '');
-            navigator.clipboard.writeText(t);
-            alert("Texte copié ! ✨");
-        }
-
-        function afficherAccueil() {
-            const container = document.getElementById('flux-messages');
-            const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
-            container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
-        }
-
-        function toggleArchives() {
-            const s = document.getElementById('archiveSection');
-            s.style.display = (s.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function genererBoutonsMois() {
-            const moisNoms = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
-            document.getElementById('monthGrid').innerHTML = moisNoms.map((nom, i) => `<button class="month-btn" onclick="/* fonction archive */">${nom}</button>`).join('');
-        }
-
-        chargerMessages();
-    </script>
-</body>
-</html>
+                const maintenant = new Date();
+                
+                // ---
