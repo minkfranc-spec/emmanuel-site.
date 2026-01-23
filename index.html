@@ -224,10 +224,10 @@
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active'); detail.innerHTML = '';
             
-            // FILTRE ET TRI : Du plus grand ID au plus petit (Plus récent au plus ancien)
+            // ORDRE CHRONOLOGIQUE (Plus ancien en haut)
             const filtered = tousLesMessages
                 .filter(msg => (new Date(msg.date).getMonth() + 1) === numMois)
-                .sort((a, b) => b.id - a.id);
+                .sort((a, b) => a.id - b.id);
                 
             liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
         }
