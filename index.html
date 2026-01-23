@@ -84,9 +84,8 @@
             <p id="modal-desc" style="font-size:0.9em; color:#7f8c8d;">Choisissez votre canal préféré pour recevoir plus d'explications :</p>
             <a id="wa-link" href="#" target="_blank" class="choice-btn btn-wa">💬 WhatsApp</a>
             <div style="margin: 10px; font-size: 0.7em; color: #bdc3c7;">— OU —</div>
-            <input type="email" id="user-email" placeholder="Votre email..." style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; margin-bottom:10px;">
             <button onclick="sendEmailRequest()" class="choice-btn btn-mail">📩 Par Email</button>
-            <span style="display:block; margin-top:15px; cursor:pointer; text-decoration:underline; font-size:0.8em; color:#95a5a6;" onclick="closeModal()">Fermer</span>
+            <span style="display:block; margin-top:15px; cursor:pointer; text-decoration:underline; font-size:0.8em; color:#95a5a6;" onclick="closeModal()">Plus tard, merci.</span>
         </div>
     </div>
 
@@ -131,7 +130,7 @@
     </div>
 
     <script>
-        const MODE_MAINTENANCE = true; // 🟢 Ouvert
+        const MODE_MAINTENANCE = true; 
         const CLE_SECRETE = "emmanuel777"; 
 
         if (MODE_MAINTENANCE) {
@@ -208,7 +207,7 @@
 
         function openChoice(theme) {
             currentTheme = theme;
-            const waMsg = encodeURIComponent(`Bonjour Maître, j'aimerais un approfondissement sur : "${theme}" ✨`);
+            const waMsg = encodeURIComponent(`Bonjour Pasteur Emmanuel, j'aimerais un approfondissement sur : "${theme}" ✨`);
             document.getElementById('wa-link').href = `https://wa.me/237678356844?text=${waMsg}`;
             document.getElementById('choiceModal').style.display = 'flex';
         }
@@ -216,9 +215,11 @@
         function closeModal() { document.getElementById('choiceModal').style.display = 'none'; }
 
         function sendEmailRequest() {
-            const email = document.getElementById('user-email').value;
-            if(email) { alert("Demande reçue ! Vous recevrez l'approfondissement sur " + email); closeModal(); }
-            else { alert("Email invalide."); }
+            const monEmail = "francmink@gmail.com"; 
+            const sujet = encodeURIComponent(`Approfondissement : ${currentTheme}`);
+            const corps = encodeURIComponent(`Bonjour Pasteur Emmanuel,\n\nJe souhaiterais recevoir plus d'informations concernant le message : "${currentTheme}".\n\nMerci.`);
+            window.location.href = `mailto:${monEmail}?subject=${sujet}&body=${corps}`;
+            closeModal();
         }
 
         function creerCard(msg) {
