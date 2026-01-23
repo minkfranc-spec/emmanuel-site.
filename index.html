@@ -205,7 +205,6 @@
             } catch (err) { 
                 console.error("Erreur de chargement"); 
             } finally {
-                // FORCE LA FERMETURE DU LOADER QUOI QU'IL ARRIVE
                 setTimeout(() => { 
                     const loader = document.getElementById('loading-screen');
                     if(loader) {
@@ -267,8 +266,22 @@
         function afficherAccueil() {
             const container = document.getElementById('flux-messages');
             if (tousLesMessages.length === 0) return;
-            const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
-            container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
+
+            const maintenant = new Date();
+            // Filtrage : On garde les messages dont la date est passée, 
+            // OU si c'est aujourd'hui, on attend qu'il soit 01h30.
+            const messagesAutorises = tousLesMessages.filter(msg => {
+                const dateMsg = new Date(msg.date);
+                // Si la date du message est strictement avant aujourd'hui (00:00)
+                if (dateMsg.toDateString() === maintenant.toDateString()) {
+                    // Si c'est aujourd'hui, on vérifie l'heure (1h30)
+                    return (maintenant.getHours() > 1 || (maintenant.getHours() === 1 && maintenant.getMinutes() >= 30));
+                }
+                return dateMsg < maintenant;
+            });
+
+            const derniers = messagesAutorises.sort((a, b) => b.id - a.id).slice(0, 3);
+            container.innerHTML = derniers.length > 0 ? derniers.map(msg => creerCard(msg)).join('') : '<p style="color:#95a5a6; font-style:italic; margin-top:20px;">De nouveaux messages arrivent bientôt...</p>';
         }
 
         function toggleArchives() {
@@ -289,7 +302,16 @@
             if (btn.classList.contains('active')) { btn.classList.remove('active'); liste.innerHTML = ''; return; }
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active'); detail.innerHTML = '';
-            const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois).sort((a, b) => a.id - b.id);
+
+            const maintenant = new Date();
+            const filtered = tousLesMessages.filter(msg => {
+                const dateMsg = new Date(msg.date);
+                const moisMatch = (dateMsg.getMonth() + 1) === numMois;
+                // On ne montre dans les archives que les messages déjà publiés (passés ou aujourd'hui après 1h30)
+                const estPublie = dateMsg < maintenant || (dateMsg.toDateString() === maintenant.toDateString() && (maintenant.getHours() > 1 || (maintenant.getHours() === 1 && maintenant.getMinutes() >= 30)));
+                return moisMatch && estPublie;
+            }).sort((a, b) => a.id - b.id);
+
             liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
         }
 
