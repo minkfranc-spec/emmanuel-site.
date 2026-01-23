@@ -8,15 +8,22 @@
     <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/p9p39r.jpg">
     <link rel="apple-touch-icon" href="https://files.catbox.moe/p9p39r.jpg">
     
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkVNTUFOVUVMIiwKICAic2hvcnRfbmFtZSI6ICJFTU1BTlVFTCIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiIjogIiNkNGFmMzciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2ZpbGVzLmNhdGJveC5tb2UvcDlwMzlyLmpwZyIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvanBlZyIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9maWxlcy5jYXRib3gubW9lL3A5cDM5ci5qcGciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL2pwZWciLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiCiAgICB9CiAgXQp9">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkVNTUFOVUVMIiwKICAic2hvcnRfbmFtZSI6ICJFTU1BTlVFTCIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiIjogIiNkNGFmMzciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2ZpbGVzLmNhdGJveC5tb2UvcDlwMzlyLmpwZyIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvanBlZyIsCiAgICAgICJwdXJwb3NlIjogImFueSIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9maWxlcy5jYXRib3gubW9lL3A5cDM5ci5qcGciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL2pwZWciLAogICAgICAicHVycG9zZSI6ICJhbnkiCiAgICB9CiAgXQp9">
     
     <meta name="theme-color" content="#d4af37">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <meta property="og:title" content="EMMANUEL | La Parole de Dieu">
+    <meta property="og:description" content="La Lumière qui éclaire chaque pas sur le chemin de la Vie.">
+    <meta property="og:image" content="https://files.catbox.moe/p9p39r.jpg"> 
+    <meta property="og:url" content="https://emmanuel-verser.ap">
+    <meta property="og:type" content="website">
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* --- VOTRE STYLE PRÉFÉRÉ (RESTAURÉ) --- */
+        /* --- VOTRE STYLE PRÉFÉRÉ (RESTAURÉ À 100%) --- */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
         
@@ -31,6 +38,7 @@
 
         .search-box { width: 92%; max-width: 540px; margin: 0 auto 20px auto; position: relative; }
         .search-input { width: 100%; padding: 15px 45px 15px 20px; border-radius: 30px; border: 1px solid #eee; font-family: 'Montserrat', sans-serif; outline: none; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .search-input:focus { border-color: #d4af37; box-shadow: 0 4px 20px rgba(212,175,55,0.1); }
 
         .floating-container { position: fixed; right: 20px; z-index: 1000; display: flex; align-items: center; text-decoration: none; transition: 0.3s; }
         .whatsapp-link { bottom: 30px; }
@@ -42,14 +50,23 @@
 
         .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 15px; display: block; }
+        h3 { font-family: 'Montserrat', sans-serif; color: #2c3e50; text-align: center; margin: 15px 0; }
+        .message-text { font-size: 1.15em; line-height: 1.7; text-align: justify; white-space: pre-wrap; color: #34495e; }
         
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; transition: 0.3s; margin: 15px 0; }
         .copy-btn:hover { background: #d4af37; color: white; }
         .date { color: #bdc3c7; font-size: 0.85em; display: block; text-align: right; margin-top: 20px; font-style: italic; }
 
-        .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; box-shadow: 0 5px 20px rgba(0,0,0,0.03); }
+        .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; box-shadow: 0 5px 20px rgba(0,0,0,0.03); animation: blockDance 1s ease-out; }
+        .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
+        .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
+
         .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; }
-        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 30px auto; }
+        .month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 10px 2px; border-radius: 8px; cursor: pointer; font-size: 9px; font-weight: 700; text-transform: uppercase; transition: 0.3s; }
+        .month-btn.active { background: #d4af37; color: white; box-shadow: 0 4px 12px rgba(212,175,55,0.4); }
+        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 5px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.9em; font-weight: 700; color: #34495e; text-align: left; animation: blockDance 0.5s ease forwards; }
+        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 30px auto; transition: 0.3s; }
     </style>
 </head>
 <body>
@@ -60,7 +77,6 @@
         <span class="btn-label">Retour en haut</span>
         <button class="scroll-btn">↑</button>
     </a>
-    
     <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link">
         <span class="btn-label">Besoin d'aide ?</span>
         <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></div>
@@ -70,12 +86,13 @@
     <div class="intro-text">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
 
     <div class="search-box">
-        <input type="text" class="search-input" id="searchInput" placeholder="Rechercher..." onkeyup="rechercherMessages()">
+        <input type="text" class="search-input" id="searchInput" placeholder="Rechercher un enseignement..." onkeyup="rechercherMessages()">
     </div>
     
     <div id="flux-messages"></div>
 
     <button class="archive-main-btn" id="btnToggleArchive" onclick="toggleArchives()">📂 Consulter les Archives</button>
+    
     <div id="archiveSection" class="archive-section">
         <div class="month-grid" id="monthGrid"></div>
         <div id="titres-liste"></div> 
@@ -83,13 +100,25 @@
     </div>
 
     <div class="flag-counter-box">
+        <div class="stat-title">COMMUNAUTÉ EMMANUEL</div>
+        <div class="stat-subtitle">✨ Lecteurs par pays et vues ✨</div>
         <a href="https://info.flagcounter.com/ivJp" target="_blank">
-            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Statistiques" border="0">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Statistiques" border="0" style="margin-top:20px; max-width: 100%;">
         </a>
     </div>
 
     <script>
         let tousLesMessages = [];
+        const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
+        window.onscroll = function() {
+            let btn = document.getElementById("scrollTopLink");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.style.display = "flex";
+            } else {
+                btn.style.display = "none";
+            }
+        };
 
         async function chargerMessages() {
             try {
@@ -97,7 +126,6 @@
                 const data = await response.json();
                 const maintenant = new Date();
                 
-                // --- SÉCURITÉ DATE ---
                 tousLesMessages = data.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
                     const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
@@ -105,7 +133,8 @@
                 });
 
                 afficherAccueil();
-            } catch (err) { console.error("Erreur"); }
+                genererBoutonsMois();
+            } catch (err) { console.error("Erreur de chargement"); }
             
             setTimeout(() => { 
                 const loader = document.getElementById('loading-screen');
@@ -117,21 +146,65 @@
         function afficherAccueil() {
             const container = document.getElementById('flux-messages');
             const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
-            container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
+            container.innerHTML = derniers.map((msg, i) => {
+                let card = creerCard(msg);
+                return card.replace('class="message-card"', `class="message-card" style="animation-delay:${i*0.2}s"`);
+            }).join('');
+        }
+
+        function rechercherMessages() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const container = document.getElementById('flux-messages');
+            if (query === "") { afficherAccueil(); return; }
+            const filtered = tousLesMessages.filter(msg => (msg.titre + msg.texte).toLowerCase().includes(query));
+            container.innerHTML = filtered.map(msg => creerCard(msg)).join('');
+        }
+
+        function genererBoutonsMois() {
+            const grid = document.getElementById('monthGrid');
+            grid.innerHTML = moisNoms.map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join('');
+        }
+
+        function afficherTitresDuMois(numMois, btn) {
+            const listeContainer = document.getElementById('titres-liste');
+            const detailContainer = document.getElementById('message-detail');
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                listeContainer.innerHTML = ''; detailContainer.innerHTML = '';
+                return;
+            }
+            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            detailContainer.innerHTML = ''; 
+            const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois).sort((a, b) => a.id - b.id);
+            listeContainer.innerHTML = filtered.map((msg, i) => `<div class="titre-archive-item" style="animation-delay:${i*0.05}s" onclick="voirDetail(${msg.id})">📖 ${msg.titre}</div>`).join('');
+        }
+
+        function voirDetail(id) {
+            const msg = tousLesMessages.find(m => m.id === id);
+            document.getElementById('titres-liste').innerHTML = ''; 
+            document.getElementById('message-detail').innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="revenirALaListe(${new Date(msg.date).getMonth() + 1})">⬅ Retour</button>`;
+        }
+
+        function revenirALaListe(numMois) {
+            const btn = document.querySelectorAll('.month-btn')[numMois-1];
+            btn.classList.remove('active'); 
+            afficherTitresDuMois(numMois, btn);
         }
 
         function creerCard(msg) {
             const dateAffichee = new Date(msg.date).toLocaleDateString('fr-FR');
             const texteFormate = msg.texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             const texteSecurise = btoa(unescape(encodeURIComponent(msg.texte)));
+            
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
 
             return `
                 <div class="message-card">
                     ${imgHtml}
-                    <span style="font-size:0.7em; color:#d4af37; font-weight:900;">${msg.categorie}</span>
-                    <h3 style="text-align:center; font-family:'Montserrat';">${msg.titre}</h3>
-                    <div style="line-height:1.7; text-align:justify;">${texteFormate}</div>
+                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${msg.categorie}</span>
+                    <h3>${msg.titre}</h3>
+                    <div class="message-text">${texteFormate}</div>
                     <button class="copy-btn" onclick="decoderEtCopier(this, '${texteSecurise}')">📤 Partager</button>
                     <span class="date">Publié le ${dateAffichee}</span>
                 </div>`;
@@ -148,14 +221,13 @@
 
         function toggleArchives() {
             const s = document.getElementById('archiveSection');
-            s.style.display = (s.style.display === 'block') ? 'none' : 'block';
+            const btn = document.getElementById('btnToggleArchive');
+            if (s.style.display === 'block') {
+                s.style.display = 'none'; btn.innerHTML = "📂 Consulter les Archives";
+            } else {
+                s.style.display = 'block'; btn.innerHTML = "❌ Fermer les Archives";
+            }
         }
-
-        window.onscroll = function() {
-            let btn = document.getElementById("scrollTopLink");
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) btn.style.display = "flex";
-            else btn.style.display = "none";
-        };
 
         chargerMessages();
     </script>
