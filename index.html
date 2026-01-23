@@ -7,7 +7,6 @@
 
     <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/p9p39r.jpg">
     <link rel="apple-touch-icon" href="https://files.catbox.moe/p9p39r.jpg">
-    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/2904/2904944.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
@@ -15,72 +14,61 @@
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
         
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 1s ease-in-out; }
-        .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; animation: welcomeEntry 2.5s forwards; opacity: 0; }
+        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease; }
+        .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 5px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 15px 30px; }
 
-        @keyframes welcomeEntry { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes blockDance { 0% { opacity: 0; transform: scale(0.95) translateY(30px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-        
-        .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
-        .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
-        .lang-btn.active { background: white; color: #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; }
+        .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; background: transparent; color: #95a5a6; font-size: 10px; }
+        .lang-btn.active { background: white; color: #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
-        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 15px 0 5px 0; }
+        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 20px 0 5px 0; }
         .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
 
-        .message-card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 550px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; position: relative; }
-        .msg-img { width: 100%; border-radius: 15px; margin-bottom: 20px; display: block; }
-        .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
-        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; margin-bottom: 20px; } 
+        /* CARTES PRINCIPALES */
+        .message-card { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 550px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: fadeIn 0.8s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .msg-img { width: 100%; border-radius: 20px; margin-bottom: 20px; display: block; object-fit: cover; }
+        .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.2em; font-weight: 900; text-transform: uppercase; }
+        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; margin-bottom: 20px; }
 
-        /* --- SYSTÈME DE THÉORÈMES AMÉLIORÉ --- */
-        .axiome-container { width: 100%; overflow: hidden; margin: 15px 0; }
+        /* ZONE THÉORÈMES AMÉLIORÉE */
         .axiome-track { 
             display: flex; 
             overflow-x: auto; 
             gap: 15px; 
-            padding: 10px 40px 20px 5px; /* Grand padding à droite pour éviter la coupure */
+            padding: 10px 40px 25px 5px; /* Padding à droite pour éviter la coupure */
             scrollbar-width: none; 
             -webkit-overflow-scrolling: touch;
         }
         .axiome-track::-webkit-scrollbar { display: none; }
         
         .axiome-mini-card { 
-            min-width: 280px; /* Cage plus large */
+            min-width: 290px; 
             background: #2c3e50; 
             border-left: 5px solid #d4af37; 
-            border-radius: 20px; /* Bords très arrondis */
-            padding: 20px; 
+            border-radius: 20px; 
+            padding: 18px; 
             cursor: pointer; 
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2); 
-            flex-shrink: 0; /* Empêche l'écrasement */
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        .axiome-badge { font-family: 'Montserrat', sans-serif; font-size: 9px; color: #d4af37; font-weight: 900; text-transform: uppercase; display: block; margin-bottom: 10px; letter-spacing: 1px; }
-        .axiome-mini-card p { font-family: 'Lora', serif; font-size: 0.95em; color: #ecf0f1; margin: 0; line-height: 1.5; font-style: italic; font-weight: 500; }
+        .axiome-badge { font-family: 'Montserrat', sans-serif; font-size: 9px; color: #d4af37; font-weight: 900; text-transform: uppercase; display: block; margin-bottom: 8px; }
+        .axiome-mini-card p { font-size: 0.95em; color: #ecf0f1; margin: 0; line-height: 1.5; font-style: italic; }
+
+        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 15px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 15px 0; transition: 0.3s; }
+        .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.8em; font-weight: 700; font-style: italic; }
+
+        /* COMPTEUR ET PIED DE PAGE */
+        .flag-counter-box { background: white; padding: 30px 20px; border-radius: 25px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #eee; }
+        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px auto; }
         
-        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 15px 0; transition: 0.3s; }
-        .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; }
-
-        /* Archives & Footer */
-        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; margin: 20px auto; text-transform: uppercase; }
-        .archive-section { display: none; width: 92%; max-width: 550px; margin: 20px auto; padding-bottom: 40px; }
-        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
-        .month-btn.active { background: #d4af37; color: white; }
-        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 15px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; }
-
-        .floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
-        .whatsapp-link { bottom: 30px; display: flex !important; }
-        .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .floating-wa { position: fixed; bottom: 30px; right: 20px; z-index: 1000; }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
-
-    <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link">
-        <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="60"></div>
-    </a>
+    <div id="loading-screen"><div class="welcome-text">EMMANUEL</div></div>
 
     <div class="lang-selector">
         <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
@@ -92,116 +80,120 @@
 
     <div id="flux-messages"></div>
 
-    <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
-    
-    <div id="archiveSection" class="archive-section">
-        <div class="month-grid" id="monthGrid"></div>
-        <div id="titres-liste"></div> 
-        <div id="message-detail"></div> 
+    <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Archives</button>
+    <div id="archiveSection" style="display:none; padding: 20px 0;">
+        <div id="monthGrid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; width:92%; margin:auto; max-width:550px;"></div>
+        <div id="titres-liste" style="width:92%; margin:20px auto; max-width:550px;"></div>
     </div>
+
+    <div class="flag-counter-box">
+        <div style="font-family:'Montserrat'; font-weight:900; margin-bottom:10px;">COMMUNAUTÉ EMMANUEL</div>
+        <a href="https://info.flagcounter.com/ivJp" target="_blank">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+        </a>
+    </div>
+
+    <a href="https://wa.me/237678356844" class="floating-wa">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="60" alt="WhatsApp">
+    </a>
 
     <script>
         let currentLang = 'fr';
         let tousLesMessages = [];
         const translations = {
-            fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager la Parole", copied: "✨ COPIÉ !", published: "Publié le", th: "✨ Théorème de Foi", back: "⬅ Retour" },
-            en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share the Word", copied: "✨ COPIED!", published: "Published on", th: "✨ Faith Theorem", back: "⬅ Back" }
+            fr: { intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", share: "📤 Partager la Parole", copied: "✨ COPIÉ !", th: "✨ Théorème de Foi", pub: "Publié le" },
+            en: { intro: "The Light that guides every step on the path of Life.", share: "📤 Share the Word", copied: "✨ COPIED!", th: "✨ Faith Theorem", pub: "Published on" }
         };
 
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            document.getElementById('welcome-txt').innerText = translations[lang].welcome;
-            document.getElementById('intro-txt').innerText = translations[lang].intro;
-            afficherAccueil();
+        async function chargerDonnees() {
+            try {
+                const r = await fetch('data.json?v=' + Date.now());
+                tousLesMessages = await r.json();
+                tousLesMessages.sort((a, b) => b.id - a.id);
+                afficherFlux();
+                genererMois();
+            } catch (e) { console.error("Erreur"); }
+            setTimeout(() => document.getElementById('loading-screen').style.display='none', 1500);
         }
 
-        async function chargerMessages() {
-            try {
-                const response = await fetch('data.json?v=' + Date.now());
-                const data = await response.json();
-                tousLesMessages = data.sort((a, b) => b.id - a.id);
-                afficherAccueil();
-                genererBoutonsMois();
-            } catch (err) { console.error("Erreur"); }
-            setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 2000);
+        function setLanguage(l) {
+            currentLang = l;
+            document.getElementById('btn-fr').className = l==='fr'?'lang-btn active':'lang-btn';
+            document.getElementById('btn-en').className = l==='en'?'lang-btn active':'lang-btn';
+            document.getElementById('intro-txt').innerText = translations[l].intro;
+            afficherFlux();
         }
 
         function creerCard(msg) {
-            const dateObj = new Date(msg.date);
-            const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
-            const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
-            const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
+            const txt = (currentLang==='en' && msg.texte_en) ? msg.texte_en : msg.texte;
+            const tit = (currentLang==='en' && msg.titre_en) ? msg.titre_en : msg.titre;
             
-            // --- LOGIQUE MULTI-THÉORÈMES ---
+            // Extraction des Théorèmes
             const regex = /\*\*(.*?)\*\*/g;
-            let axiomesHtml = '';
+            let ths = '';
             let match;
-            while ((match = regex.exec(texteOriginal)) !== null) {
-                if (match[1].length > 15) {
-                    axiomesHtml += `
-                    <div class="axiome-mini-card" onclick="window.open('https://wa.me/?text=${encodeURIComponent('🛡️ *' + translations[currentLang].th + '* :\\n\\n\"' + match[1] + '\"\\n\\nDécouvre la suite sur Emmanuel-verser.ap')}', '_blank')">
+            while ((match = regex.exec(txt)) !== null) {
+                if (match[1].length > 10) {
+                    ths += `<div class="axiome-mini-card" onclick="partagerTh('${match[1].replace(/'/g, "\\'")}')">
                         <span class="axiome-badge">${translations[currentLang].th}</span>
                         <p>" ${match[1]} "</p>
                     </div>`;
                 }
             }
-            const track = axiomesHtml ? `<div class="axiome-container"><div class="axiome-track">${axiomesHtml}</div></div>` : '';
-
-            const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
 
             return `
                 <div class="message-card">
-                    ${imgHtml}
-                    <h3 class="msg-title">${titre}</h3>
-                    <div class="msg-content">${texteFormate}</div>
-                    ${track}
-                    <button class="copy-btn" onclick="copierTexte(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
-                    <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
+                    ${msg.image ? `<img src="${msg.image}" class="msg-img">` : ''}
+                    <h3 class="msg-title">${tit}</h3>
+                    <div class="msg-content">${txt.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                    ${ths ? `<div class="axiome-track">${ths}</div>` : ''}
+                    <button class="copy-btn" onclick="copierTout(this, '${btoa(unescape(encodeURIComponent(txt)))}')">${translations[currentLang].share}</button>
+                    <span class="published-date">${translations[currentLang].pub} ${msg.date}</span>
                 </div>`;
         }
 
-        function copierTexte(btn, b64) {
+        function partagerTh(t) {
+            const link = `https://wa.me/?text=${encodeURIComponent('🛡️ *' + translations[currentLang].th + '* :\\n\\n\"' + t + '\"\\n\\nDécouvre la suite sur Emmanuel-verser.ap')}`;
+            window.open(link, '_blank');
+        }
+
+        function copierTout(btn, b64) {
             const t = decodeURIComponent(escape(atob(b64))).replace(/\*\*/g, '');
             navigator.clipboard.writeText(t).then(() => {
-                btn.innerText = translations[currentLang].copied;
-                setTimeout(() => btn.innerText = translations[currentLang].shareBtn, 2000);
+                const old = btn.innerText; btn.innerText = translations[currentLang].copied;
+                setTimeout(() => btn.innerText = old, 2000);
             });
         }
 
-        function afficherAccueil() {
-            const container = document.getElementById('flux-messages');
-            container.innerHTML = tousLesMessages.slice(0, 3).map(msg => creerCard(msg)).join('');
+        function afficherFlux() {
+            document.getElementById('flux-messages').innerHTML = tousLesMessages.slice(0, 3).map(m => creerCard(m)).join('');
         }
 
         function toggleArchives() {
             const s = document.getElementById('archiveSection');
-            s.style.display = s.style.display === 'block' ? 'none' : 'block';
+            s.style.display = s.style.display === 'none' ? 'block' : 'none';
         }
 
-        function genererBoutonsMois() {
-            const grid = document.getElementById('monthGrid');
-            const mois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"];
-            grid.innerHTML = mois.map((m, i) => `<button class="month-btn" onclick="filtrerMois(${i+1}, this)">${m}</button>`).join('');
+        function genererMois() {
+            const m = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
+            document.getElementById('monthGrid').innerHTML = m.map((nom, i) => 
+                `<button class="lang-btn" style="border:1px solid #d4af37; color:#d4af37; margin:2px;" onclick="filtrer(${i+1})">${nom}</button>`
+            ).join('');
         }
 
-        function filtrerMois(m, btn) {
-            const liste = document.getElementById('titres-liste');
-            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const filtered = tousLesMessages.filter(msg => new Date(msg.date).getMonth() + 1 === m);
-            liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirMsg(${msg.id})">📖 ${msg.titre}</div>`).join('');
+        function filtrer(mois) {
+            const f = tousLesMessages.filter(m => new Date(m.date).getMonth() + 1 === mois);
+            document.getElementById('titres-liste').innerHTML = f.map(m => 
+                `<div style="background:white; padding:15px; border-radius:15px; margin:10px 0; cursor:pointer; text-align:left; border:1px solid #eee;" onclick="voir(${m.id})">📖 ${m.titre}</div>`
+            ).join('');
         }
 
-        function voirMsg(id) {
-            const msg = tousLesMessages.find(m => m.id === id);
-            document.getElementById('titres-liste').innerHTML = '';
-            document.getElementById('message-detail').innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="document.getElementById('message-detail').innerHTML=''">${translations[currentLang].back}</button>`;
+        function voir(id) {
+            const m = tousLesMessages.find(msg => msg.id === id);
+            document.getElementById('titres-liste').innerHTML = creerCard(m) + `<button class="archive-main-btn" onclick="document.getElementById('titres-liste').innerHTML=''">⬅ Retour</button>`;
         }
 
-        chargerMessages();
+        chargerDonnees();
     </script>
 </body>
 </html>
