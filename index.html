@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
+        /* --- STYLE CONSERVÉ --- */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
         
@@ -37,21 +38,20 @@
         .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
         .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
-        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; margin-bottom: 15px; } 
+        
+        /* CORRECTION ICI : pre-wrap pour les sauts de ligne */
+        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-wrap; margin-bottom: 15px; } 
 
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 15px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
-        
         .deep-study-link { display: block; text-align: center; color: #d4af37; font-family: 'Montserrat'; font-size: 0.8em; font-weight: 700; text-decoration: none; border: 1px dashed #d4af37; padding: 10px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; transition: 0.3s; }
-        .deep-study-link:hover { background: #fffcf0; }
-
         .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
 
+        /* ... Archives & Modal Styles ... */
         .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; padding-bottom: 40px; }
         .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
         .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
         .month-btn.active { background: #d4af37; color: white; }
         .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
-
         .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; margin: 20px auto; text-transform: uppercase; }
 
         .modal-choice { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; justify-content: center; align-items: center; }
@@ -60,6 +60,7 @@
         .btn-wa { background: #25D366; color: white; }
         .btn-mail { background: #d4af37; color: white; }
 
+        /* Floating elements */
         .floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
         .scroll-link { bottom: 105px; }
         .whatsapp-link { bottom: 30px; display: flex !important; }
@@ -129,9 +130,11 @@
     </div>
 
     <script>
-        const MODE_MAINTENANCE = true; 
+        // --- CONFIGURATION ---
+        const MODE_MAINTENANCE = false; // Désactivé pour test
         const CLE_SECRETE = "emmanuel777"; 
 
+        // Gestion Maintenance
         if (MODE_MAINTENANCE) {
             const params = new URLSearchParams(window.location.search);
             if (params.get('admin') !== CLE_SECRETE) {
@@ -153,7 +156,7 @@
             fr: { 
                 welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", 
                 archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", 
-                shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", 
+                shareBtn: "📤 Partager la Bénédiction ✨", copied: "✨ MESSAGE COPIÉ !", published: "Publié le", 
                 statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", 
                 statInfo: "Le compteur s'actualise toutes les 15 minutes.<br><strong>Merci de votre présence.</strong>",
                 backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?",
@@ -164,7 +167,7 @@
             en: { 
                 welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", 
                 archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", 
-                shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", 
+                shareBtn: "📤 Share the Blessing ✨", copied: "✨ MESSAGE COPIED!", published: "Published on", 
                 statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", 
                 statInfo: "The counter updates every 15 minutes.<br><strong>Thank you for your presence.</strong>",
                 backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help ?",
@@ -174,36 +177,15 @@
             }
         };
 
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.documentElement.lang = lang;
-            document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            document.getElementById('welcome-txt').innerText = translations[lang].welcome;
-            document.getElementById('intro-txt').innerText = translations[lang].intro;
-            document.getElementById('stat-title').innerText = translations[lang].statTitle;
-            document.getElementById('stat-sub').innerText = translations[lang].statSub;
-            document.getElementById('stat-info-txt').innerHTML = translations[lang].statInfo;
-            document.getElementById('label-top').innerText = translations[lang].scrollTop;
-            document.getElementById('label-help').innerText = translations[lang].help;
-            document.getElementById('modal-title').innerText = translations[lang].modalTitle;
-            document.getElementById('modal-desc').innerText = translations[lang].modalDesc;
-            document.getElementById('modal-or').innerText = translations[lang].modalOr;
-            document.getElementById('modal-mail-btn').innerText = translations[lang].modalMail;
-            document.getElementById('modal-later').innerText = translations[lang].modalLater;
-
-            afficherAccueil();
-            genererBoutonsMois();
-        }
-
+        // Initialisation
         async function chargerMessages() {
             try {
-                const response = await fetch('data.json?v=' + Date.now());
+                // Utilise soit ton fichier externe, soit tu peux coller le JSON directement ici pour tester
+                const response = await fetch('data.json'); 
                 tousLesMessages = await response.json();
-                afficherAccueil();
-                genererBoutonsMois();
+                setLanguage('fr'); 
             } catch (err) { 
-                console.error("Erreur de chargement"); 
+                console.error("Erreur de chargement des messages. Assurez-vous que data.json est accessible."); 
             } finally {
                 setTimeout(() => { 
                     const loader = document.getElementById('loading-screen');
@@ -211,79 +193,86 @@
                         loader.style.opacity = '0';
                         setTimeout(() => { loader.style.display = 'none'; }, 1000);
                     }
-                }, 2500);
+                }, 2000);
             }
         }
 
-        function openChoice(theme) {
-            currentTheme = theme;
-            const waMsg = encodeURIComponent(`Bonjour Pasteur Emmanuel, j'aimerais un approfondissement sur : "${theme}" ✨`);
-            document.getElementById('wa-link').href = `https://wa.me/237678356844?text=${waMsg}`;
-            document.getElementById('choiceModal').style.display = 'flex';
-        }
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${lang}`).classList.add('active');
+            
+            // Mise à jour des textes statiques
+            Object.keys(translations[lang]).forEach(id => {
+                const el = document.getElementById(id) || document.querySelector(`.${id}`);
+                if (el) el.innerText = translations[lang][id];
+            });
 
-        function closeModal() { document.getElementById('choiceModal').style.display = 'none'; }
-
-        function sendEmailRequest() {
-            const monEmail = "francmink@gmail.com"; 
-            const sujet = encodeURIComponent(`Deepening: ${currentTheme}`);
-            const corps = encodeURIComponent(`Hello Pastor Emmanuel,\n\nI would like to receive more information regarding the message: "${currentTheme}".\n\nThank you.`);
-            window.location.href = `mailto:${monEmail}?subject=${sujet}&body=${corps}`;
-            closeModal();
+            // Re-générer les contenus dynamiques
+            afficherAccueil();
+            genererBoutonsMois();
+            if(document.getElementById('archiveSection').style.display === 'block') {
+                 document.getElementById('titres-liste').innerHTML = '';
+                 document.getElementById('message-detail').innerHTML = '';
+            }
         }
 
         function creerCard(msg) {
             const dateObj = new Date(msg.date);
             const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
-            const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
-            const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
-            const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
+            const texte = currentLang === 'fr' ? msg.texte : msg.texte_en;
+            const titre = currentLang === 'fr' ? msg.titre : msg.titre_en;
+            const categorie = currentLang === 'fr' ? msg.categorie : msg.categorie_en;
             
-            const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
+            // Formatage gras automatique
+            const texteFormate = texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
             return `
                 <div class="message-card">
-                    ${imgHtml}
-                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
-                    <h3 class="msg-title">${titre}</h3>
+                    ${msg.image ? `<img src="${msg.image}" class="msg-img" alt="Illustration">` : ''}
+                    <div style="color: #d4af37; font-weight: bold; font-size: 0.8em; margin-bottom: 5px; text-transform: uppercase;">${categorie}</div>
+                    <h2 class="msg-title">${titre}</h2>
                     <div class="msg-content">${texteFormate}</div>
                     <div class="deep-study-link" onclick="openChoice('${titre.replace(/'/g, "\\'")}')">${translations[currentLang].deepBtn}</div>
-                    <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
+                    <button class="copy-btn" onclick="copierTexte(this, ${msg.id})">${translations[currentLang].shareBtn}</button>
                     <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
                 </div>`;
         }
 
-        function decoderEtCopier(bouton, base64) {
-            const t = decodeURIComponent(escape(atob(base64))).replace(/\*\*/g, '');
-            navigator.clipboard.writeText(t).then(() => {
-                const memo = bouton.innerHTML; bouton.innerHTML = translations[currentLang].copied;
-                bouton.style.background = "#d4af37"; bouton.style.color = "white";
-                setTimeout(() => { bouton.innerHTML = memo; bouton.style.background = "transparent"; bouton.style.color = "#d4af37"; }, 2000);
-            });
-        }
-
         function afficherAccueil() {
             const container = document.getElementById('flux-messages');
-            if (tousLesMessages.length === 0) return;
-
             const maintenant = new Date();
-            // Filtrage : On garde les messages dont la date est passée, 
-            // OU si c'est aujourd'hui, on attend qu'il soit 01h30.
-            const messagesAutorises = tousLesMessages.filter(msg => {
-                const dateMsg = new Date(msg.date);
-                // Si la date du message est strictement avant aujourd'hui (00:00)
-                if (dateMsg.toDateString() === maintenant.toDateString()) {
-                    // Si c'est aujourd'hui, on vérifie l'heure (1h30)
-                    return (maintenant.getHours() > 1 || (maintenant.getHours() === 1 && maintenant.getMinutes() >= 30));
-                }
-                return dateMsg < maintenant;
-            });
 
-            const derniers = messagesAutorises.sort((a, b) => b.id - a.id).slice(0, 3);
-            container.innerHTML = derniers.length > 0 ? derniers.map(msg => creerCard(msg)).join('') : '<p style="color:#95a5a6; font-style:italic; margin-top:20px;">De nouveaux messages arrivent bientôt...</p>';
+            // Filtrage 01h30
+            const messagesAutorises = tousLesMessages.filter(msg => {
+                const datePub = new Date(msg.date);
+                datePub.setHours(1, 30, 0);
+                return maintenant >= datePub;
+            }).sort((a, b) => b.id - a.id);
+
+            const derniers = messagesAutorises.slice(0, 3);
+            container.innerHTML = derniers.length > 0 ? derniers.map(msg => creerCard(msg)).join('') : '<p>Soyez patients, la Parole arrive...</p>';
         }
 
+        function copierTexte(bouton, id) {
+            const msg = tousLesMessages.find(m => m.id === id);
+            const texteRaw = currentLang === 'fr' ? msg.texte : msg.texte_en;
+            const cleanText = texteRaw.replace(/\*\*/g, ''); // Enlève les ** pour le presse-papier
+            
+            navigator.clipboard.writeText(cleanText).then(() => {
+                const oldText = bouton.innerHTML;
+                bouton.innerHTML = translations[currentLang].copied;
+                bouton.style.background = "#d4af37";
+                bouton.style.color = "white";
+                setTimeout(() => {
+                    bouton.innerHTML = oldText;
+                    bouton.style.background = "transparent";
+                    bouton.style.color = "#d4af37";
+                }, 2000);
+            });
+        }
+
+        // --- GESTION ARCHIVES ---
         function toggleArchives() {
             const s = document.getElementById('archiveSection');
             const btn = document.getElementById('btn-archive');
@@ -299,20 +288,19 @@
         function afficherTitresDuMois(numMois, btn) {
             const liste = document.getElementById('titres-liste');
             const detail = document.getElementById('message-detail');
-            if (btn.classList.contains('active')) { btn.classList.remove('active'); liste.innerHTML = ''; return; }
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active'); detail.innerHTML = '';
+            btn.classList.add('active');
+            detail.innerHTML = '';
 
             const maintenant = new Date();
             const filtered = tousLesMessages.filter(msg => {
-                const dateMsg = new Date(msg.date);
-                const moisMatch = (dateMsg.getMonth() + 1) === numMois;
-                // On ne montre dans les archives que les messages déjà publiés (passés ou aujourd'hui après 1h30)
-                const estPublie = dateMsg < maintenant || (dateMsg.toDateString() === maintenant.toDateString() && (maintenant.getHours() > 1 || (maintenant.getHours() === 1 && maintenant.getMinutes() >= 30)));
-                return moisMatch && estPublie;
-            }).sort((a, b) => a.id - b.id);
+                const d = new Date(msg.date);
+                return (d.getMonth() + 1) === numMois && (d <= maintenant);
+            }).sort((a, b) => b.id - a.id);
 
-            liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
+            liste.innerHTML = filtered.length > 0 ? 
+                filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, ${numMois})">📖 ${currentLang === 'fr' ? msg.titre : msg.titre_en}</div>`).join('') : 
+                '<p style="font-size:0.8em; margin:20px;">Aucun message pour ce mois.</p>';
         }
 
         function voirDetail(id, numMois) {
@@ -323,15 +311,32 @@
 
         function revenirALaListe(numMois) {
             const btn = document.querySelectorAll('.month-btn')[numMois-1];
-            btn.classList.remove('active');
             afficherTitresDuMois(numMois, btn);
         }
 
+        // --- MODAL & CONTACT ---
+        function openChoice(theme) {
+            currentTheme = theme;
+            const waMsg = encodeURIComponent(`Bonjour Pasteur Emmanuel, j'aimerais un approfondissement sur : "${theme}" ✨`);
+            document.getElementById('wa-link').href = `https://wa.me/237678356844?text=${waMsg}`;
+            document.getElementById('choiceModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('choiceModal').style.display = 'none'; }
+
+        function sendEmailRequest() {
+            const monEmail = "francmink@gmail.com"; 
+            const sujet = encodeURIComponent(`Approfondissement : ${currentTheme}`);
+            const corps = encodeURIComponent(`Bonjour Pasteur Emmanuel,\n\nJe souhaite recevoir plus d'enseignements sur le thème : "${currentTheme}".\n\nMerci.`);
+            window.location.href = `mailto:${monEmail}?subject=${sujet}&body=${corps}`;
+            closeModal();
+        }
+
         window.onscroll = function() {
-            let btn = document.getElementById("scrollTopLink");
-            btn.style.display = (window.scrollY > 400) ? "flex" : "none";
+            document.getElementById("scrollTopLink").style.display = (window.scrollY > 400) ? "flex" : "none";
         };
 
+        // Lancement
         chargerMessages();
     </script>
 </body>
