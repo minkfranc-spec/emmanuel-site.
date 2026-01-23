@@ -3,106 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMMANUEL | Administration</title>
+    <title>EMMANUEL | Admin Console</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --dark: #1a1a1a; --light: #fdfdfd; }
+        :root { --gold: #d4af37; --dark: #1a1a1a; --light: #fdfdfd; --gray: #95a5a6; }
         body { font-family: 'Lora', serif; background: var(--light); color: var(--dark); margin: 0; padding: 20px; }
-        .admin-container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border-top: 8px solid var(--gold); }
-        h1 { font-family: 'Montserrat', sans-serif; text-align: center; text-transform: uppercase; letter-spacing: 3px; color: var(--dark); }
+        .admin-container { max-width: 1000px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border-top: 8px solid var(--gold); }
         
-        .form-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        h1 { font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 3px; margin: 0; font-size: 1.8em; }
+        .subtitle { font-style: italic; color: var(--gray); margin-top: 10px; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         .full-width { grid-column: span 2; }
         
-        label { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 8px; }
-        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; font-family: 'Lora', serif; font-size: 1em; background: #fafafa; }
-        textarea { height: 120px; resize: vertical; }
+        .field-box { background: #fcfcfc; padding: 15px; border-radius: 10px; border: 1px solid #f0f0f0; }
+        label { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 8px; }
         
-        .btn-group { margin-top: 30px; text-align: center; }
-        button { font-family: 'Montserrat', sans-serif; font-weight: 900; padding: 15px 35px; border-radius: 50px; border: none; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-add { background: var(--dark); color: white; margin-right: 10px; }
-        .btn-add:hover { background: var(--gold); transform: translateY(-2px); }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; font-family: 'Lora', serif; font-size: 0.95em; box-sizing: border-box; }
+        textarea { height: 150px; }
+        
+        .lang-tag { float: right; font-size: 0.7em; background: #eee; padding: 2px 6px; border-radius: 4px; color: #666; }
+
+        .btn-zone { margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
+        button { font-family: 'Montserrat', sans-serif; font-weight: 900; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; text-transform: uppercase; transition: 0.3s; font-size: 0.8em; }
+        .btn-add { background: var(--dark); color: white; }
+        .btn-add:hover { background: var(--gold); transform: scale(1.05); }
         .btn-copy { background: var(--gold); color: white; }
-        
-        #json-output { margin-top: 40px; background: #272822; color: #f8f8f2; padding: 20px; border-radius: 10px; font-family: monospace; overflow-x: auto; white-space: pre-wrap; font-size: 0.9em; max-height: 400px; }
-        .status-msg { color: #27ae60; font-weight: bold; margin-top: 10px; display: none; text-align: center; }
-        .preview-img { width: 100px; height: 100px; object-fit: cover; border-radius: 10px; margin-top: 10px; border: 2px solid var(--gold); display: none; }
+        .btn-copy:hover { filter: brightness(1.1); }
+
+        #json-output { margin-top: 30px; background: #272822; color: #f8f8f2; padding: 20px; border-radius: 10px; font-family: monospace; font-size: 0.85em; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+        .alert { text-align: center; color: #27ae60; font-weight: bold; margin: 15px 0; display: none; }
     </style>
 </head>
 <body>
 
 <div class="admin-container">
-    <h1>🏛️ Console Emmanuel</h1>
-    <p style="text-align: center; font-style: italic; color: #95a5a6;">Ajoutez vos messages quotidiens et générez le fichier de mise à jour.</p>
+    <div class="header">
+        <h1>🏛️ EMMANUEL CONSOLE</h1>
+        <div class="subtitle">"La traduction est l'ombre portée de la Lumière" / "Translation is the shadow of Light"</div>
+    </div>
 
-    <div class="form-section">
-        <div>
-            <label>ID du Message (Suivant)</label>
-            <input type="number" id="msg-id" placeholder="Ex: 5">
+    <div class="form-grid">
+        <div class="field-box">
+            <label>ID <span class="lang-tag">Unique</span></label>
+            <input type="number" id="msg-id" placeholder="Ex: 10">
         </div>
-        <div>
-            <label>Date de Publication</label>
+        <div class="field-box">
+            <label>Date <span class="lang-tag">Global</span></label>
             <input type="date" id="msg-date">
         </div>
-        
-        <div class="full-width">
-            <label>Lien de l'image (Catbox ou autre)</label>
-            <input type="text" id="msg-image" placeholder="https://files.catbox.moe/..." oninput="previewImage(this.value)">
-            <img id="img-preview" class="preview-img">
+
+        <div class="field-box full-width">
+            <label>Image URL <span class="lang-tag">Catbox / ImgBB</span></label>
+            <input type="text" id="msg-image" placeholder="https://files.catbox.moe/...">
         </div>
 
-        <div>
-            <label>Catégorie (FR)</label>
+        <div class="field-box">
+            <label>Catégorie <span class="lang-tag">FR</span></label>
             <input type="text" id="msg-cat-fr" placeholder="Ex: Méditation">
         </div>
-        <div>
-            <label>Category (EN)</label>
+        <div class="field-box">
+            <label>Category <span class="lang-tag">EN</span></label>
             <input type="text" id="msg-cat-en" placeholder="Ex: Meditation">
         </div>
 
-        <div>
-            <label>Titre (FR)</label>
+        <div class="field-box">
+            <label>Titre <span class="lang-tag">FR</span></label>
             <input type="text" id="msg-titre-fr" placeholder="Titre en français">
         </div>
-        <div>
-            <label>Title (EN)</label>
+        <div class="field-box">
+            <label>Title <span class="lang-tag">EN</span></label>
             <input type="text" id="msg-titre-en" placeholder="Title in English">
         </div>
 
-        <div class="full-width">
-            <label>Contenu du Message (FR) - **gras** supporté</label>
-            <textarea id="msg-texte-fr" placeholder="Écrivez le message ici..."></textarea>
+        <div class="field-box">
+            <label>Message <span class="lang-tag">FR</span></label>
+            <textarea id="msg-texte-fr" placeholder="Texte français..."></textarea>
         </div>
-        <div class="full-width">
-            <label>Message Content (EN)</label>
-            <textarea id="msg-texte-en" placeholder="Write the message in English..."></textarea>
+        <div class="field-box">
+            <label>Message Content <span class="lang-tag">EN</span></label>
+            <textarea id="msg-texte-en" placeholder="English text..."></textarea>
         </div>
     </div>
 
-    <div class="btn-group">
-        <button class="btn-add" onclick="ajouterMessage()">➕ Ajouter à la liste</button>
-        <button class="btn-copy" onclick="copierJSON()">📋 Copier le JSON complet</button>
+    <div id="alert" class="alert">✨ Message ajouté avec succès ! / Message added successfully!</div>
+
+    <div class="btn-zone">
+        <button class="btn-add" onclick="ajouter()">➕ Ajouter / Add</button>
+        <button class="btn-copy" onclick="copier()">📋 Copier JSON / Copy JSON</button>
     </div>
-    
-    <div id="status" class="status-msg">✅ Message ajouté ! Copiez le code ci-dessous.</div>
 
     <div id="json-output">[]</div>
 </div>
 
 <script>
-    let messagesListe = [];
+    let archive = [];
 
-    // Charger le JSON actuel si vous voulez compléter une liste existante
-    // Vous pouvez coller votre JSON actuel dans la console pour l'éditer
-    
-    function previewImage(url) {
-        const img = document.getElementById('img-preview');
-        if(url) { img.src = url; img.style.display = 'block'; }
-        else { img.style.display = 'none'; }
-    }
-
-    function ajouterMessage() {
-        const newMessage = {
+    function ajouter() {
+        const msg = {
             id: parseInt(document.getElementById('msg-id').value),
             date: document.getElementById('msg-date').value,
             categorie: document.getElementById('msg-cat-fr').value,
@@ -114,28 +113,27 @@
             image: document.getElementById('msg-image').value
         };
 
-        messagesListe.push(newMessage);
-        // On trie par ID pour que le JSON reste propre
-        messagesListe.sort((a, b) => a.id - b.id);
+        if(!msg.id || !msg.date || !msg.titre || !msg.titre_en) {
+            alert("Veuillez remplir les deux langues ! / Please fill both languages!");
+            return;
+        }
+
+        archive.push(msg);
+        archive.sort((a, b) => a.id - b.id);
         
-        document.getElementById('json-output').innerText = JSON.stringify(messagesListe, null, 4);
+        document.getElementById('json-output').innerText = JSON.stringify(archive, null, 4);
+        document.getElementById('alert').style.display = 'block';
+        setTimeout(() => { document.getElementById('alert').style.display = 'none'; }, 3000);
         
-        // Notification
-        const status = document.getElementById('status');
-        status.style.display = 'block';
-        setTimeout(() => { status.style.display = 'none'; }, 3000);
-        
-        // Préparation de l'ID suivant pour gagner du temps
-        document.getElementById('msg-id').value = newMessage.id + 1;
+        document.getElementById('msg-id').value = msg.id + 1;
     }
 
-    function copierJSON() {
-        const text = document.getElementById('json-output').innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert("Le code JSON a été copié ! Collez-le maintenant dans votre fichier data.json");
+    function copier() {
+        const data = document.getElementById('json-output').innerText;
+        navigator.clipboard.writeText(data).then(() => {
+            alert("Copié ! Prêt pour data.json / Copied! Ready for data.json");
         });
     }
 </script>
-
 </body>
 </html>
