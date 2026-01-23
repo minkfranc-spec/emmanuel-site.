@@ -69,4 +69,62 @@
                 const data = await response.json();
                 const maintenant = new Date();
                 
-                // ---
+                // --- LE FILTRE DE SÉCURITÉ (LA BARRIÈRE) ---
+                tousLesMessages = data.filter(msg => {
+                    const [annee, mois, jour] = msg.date.split('-').map(Number);
+                    // Publication à 01:30 du matin
+                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
+                    return maintenant >= dateParution;
+                });
+
+                afficherAccueil();
+                genererBoutonsMois();
+            } catch (err) { console.error("Erreur"); }
+            
+            setTimeout(() => { 
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1000);
+            }, 2000);
+        }
+
+        function creerCard(msg) {
+            const texteFormate = msg.texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            let imageHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
+
+            return `
+                <div class="message-card">
+                    ${imageHtml}
+                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${msg.categorie}</span>
+                    <h3 style="margin: 10px 0;">${msg.titre}</h3>
+                    <div style="text-align:justify; line-height:1.6;">${texteFormate}</div>
+                    <button class="copy-btn" onclick="copierTexte('${btoa(unescape(encodeURIComponent(msg.texte)))}')">📤 Partager</button>
+                </div>`;
+        }
+
+        function copierTexte(base64) {
+            const t = decodeURIComponent(escape(atob(base64))).replace(/\*\*/g, '');
+            navigator.clipboard.writeText(t);
+            alert("Texte copié ! ✨");
+        }
+
+        function afficherAccueil() {
+            const container = document.getElementById('flux-messages');
+            // On affiche les 3 derniers messages autorisés (du plus récent au plus vieux)
+            const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
+            container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
+        }
+
+        function toggleArchives() {
+            const s = document.getElementById('archiveSection');
+            s.style.display = (s.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function genererBoutonsMois() {
+            const moisNoms = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
+            document.getElementById('monthGrid').innerHTML = moisNoms.map((nom, i) => `<button class="month-btn">${nom}</button>`).join('');
+        }
+
+        chargerMessages();
+    </script>
+</body>
+</html>
