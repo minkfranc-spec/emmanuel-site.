@@ -26,16 +26,16 @@
             100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
-        .lang-selector { margin: 30px 0 10px; display: flex; justify-content: center; gap: 10px; }
-        .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 10px 20px; border-radius: 25px; border: 2px solid #eee; cursor: pointer; transition: 0.3s; background: white; color: #95a5a6; font-size: 11px; }
-        .lang-btn.active { background: #e74c3c; color: white; border-color: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
+        /* NOUVEAU STYLE PILULE ÉLÉGANT */
+        .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
+        .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
+        .lang-btn.active { background: white; color: #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 
-        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 20px 0 5px 0; }
+        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 15px 0 5px 0; }
         .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
 
         .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
-        
         .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
         .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; } 
         
@@ -55,7 +55,7 @@
         .whatsapp-link { bottom: 30px; display: flex !important; }
         .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
         .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
-        .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; }
+        .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
         .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
         .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
@@ -77,8 +77,8 @@
     </a>
 
     <div class="lang-selector">
-        <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FRANÇAIS</button>
-        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">ENGLISH</button>
+        <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
+        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
     </div>
 
     <h1>EMMANUEL</h1>
@@ -127,7 +127,6 @@
             document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
             document.getElementById('btn-en').classList.toggle('active', lang === 'en');
             
-            // Mise à jour textes fixes
             document.getElementById('welcome-txt').innerText = translations[lang].welcome;
             document.getElementById('intro-txt').innerText = translations[lang].intro;
             document.getElementById('stat-title').innerText = translations[lang].statTitle;
@@ -135,14 +134,10 @@
             document.getElementById('label-top').innerText = translations[lang].scrollTop;
             document.getElementById('label-help').innerText = translations[lang].help;
 
-            // CORRECTION : Mise à jour intelligente du bouton archive selon l'état actuel
             const s = document.getElementById('archiveSection');
             const archiveMainBtn = document.getElementById('btn-archive');
-            if (s.style.display === 'block') {
-                archiveMainBtn.innerText = translations[lang].archiveBtnClose;
-            } else {
-                archiveMainBtn.innerText = translations[lang].archiveBtn;
-            }
+            if (s.style.display === 'block') archiveMainBtn.innerText = translations[lang].archiveBtnClose;
+            else archiveMainBtn.innerText = translations[lang].archiveBtn;
             
             genererBoutonsMois();
             afficherAccueil();
@@ -208,9 +203,6 @@
             if (s.style.display === 'block') {
                 s.style.display = 'none';
                 btn.innerText = translations[currentLang].archiveBtn;
-                document.getElementById('titres-liste').innerHTML = '';
-                document.getElementById('message-detail').innerHTML = '';
-                document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             } else {
                 s.style.display = 'block';
                 btn.innerText = translations[currentLang].archiveBtnClose;
