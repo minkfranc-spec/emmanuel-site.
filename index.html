@@ -37,17 +37,9 @@
         .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
         .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
-        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; margin-bottom: 20px; } 
-
-        /* --- NOUVEAUX STYLES AXIOMES --- */
-        .axiome-track { display: flex; overflow-x: auto; gap: 12px; padding: 10px 5px 25px 5px; scrollbar-width: none; -ms-overflow-style: none; }
-        .axiome-track::-webkit-scrollbar { display: none; }
-        .axiome-mini-card { min-width: 250px; background: #fffcf0; border: 1.5px solid #d4af37; border-radius: 15px; padding: 15px; cursor: pointer; transition: 0.3s; position: relative; box-shadow: 0 4px 10px rgba(212,175,55,0.1); }
-        .axiome-mini-card:active { transform: scale(0.95); }
-        .axiome-badge { font-family: 'Montserrat', sans-serif; font-size: 9px; color: #d4af37; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px; }
-        .axiome-mini-card p { font-size: 0.92em; font-weight: 700; color: #1a1a1a; margin: 0; line-height: 1.4; font-style: italic; }
+        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; } 
         
-        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 10px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
+        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
         .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
 
         .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; padding-bottom: 40px; }
@@ -125,8 +117,8 @@
         };
 
         const translations = {
-            fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", statInfo: "Le compteur s'actualise toutes les 15 minutes.<br><strong>Merci de votre présence.</strong>", axiomeTitle: "✨ Théorème de Foi" },
-            en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help ?", statInfo: "The counter updates every 15 minutes.<br><strong>Thank you for your presence.</strong>", axiomeTitle: "✨ Faith Theorem" }
+            fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", statInfo: "Le compteur s'actualise toutes les 15 minutes.<br><strong>Merci de votre présence.</strong>" },
+            en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help ?", statInfo: "The counter updates every 15 minutes.<br><strong>Thank you for your presence.</strong>" }
         };
 
         window.onscroll = function() {
@@ -183,25 +175,6 @@
             const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
             const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
             
-            // --- LOGIQUE D'EXTRACTION DES AXIOMES ---
-            const regex = /\*\*(.*?)\*\*/g;
-            let axiomesHtml = '';
-            let match;
-            let aDesAxiomes = false;
-
-            while ((match = regex.exec(texteOriginal)) !== null) {
-                if (match[1].length > 15) { 
-                    aDesAxiomes = true;
-                    const cleanText = match[1].replace(/'/g, "\\'");
-                    axiomesHtml += `
-                        <div class="axiome-mini-card" onclick="partagerAxiome('${cleanText}')">
-                            <span class="axiome-badge">${translations[currentLang].axiomeTitle}</span>
-                            <p>" ${match[1]} "</p>
-                        </div>`;
-                }
-            }
-            const trackHtml = aDesAxiomes ? `<div class="axiome-track">${axiomesHtml}</div>` : '';
-
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
 
@@ -211,17 +184,9 @@
                     <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
                     <h3 class="msg-title">${titre}</h3>
                     <div class="msg-content">${texteFormate}</div>
-                    
-                    ${trackHtml}
-
                     <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
                     <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
                 </div>`;
-        }
-
-        function partagerAxiome(texte) {
-            const url = encodeURIComponent("🛡️ *Théorème Divin* :\n\n\"" + texte + "\"\n\nSource : Emmanuel-verser.ap");
-            window.open(`https://wa.me/?text=${url}`, '_blank');
         }
 
         function decoderEtCopier(bouton, base64) {
