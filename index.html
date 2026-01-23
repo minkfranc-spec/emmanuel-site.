@@ -224,7 +224,7 @@
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active'); detail.innerHTML = '';
             
-            // On filtre par mois puis on inverse l'ordre pour avoir le plus récent en haut
+            // FILTRE ET TRI : Du plus grand ID au plus petit (Plus récent au plus ancien)
             const filtered = tousLesMessages
                 .filter(msg => (new Date(msg.date).getMonth() + 1) === numMois)
                 .sort((a, b) => b.id - a.id);
