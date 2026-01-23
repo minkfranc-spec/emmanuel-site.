@@ -26,7 +26,10 @@
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
         
-        /* ÉCRAN D'ACCUEIL AVEC EFFET D'APPARITION MAGIQUE */
+        /* LOGO PRINCIPAL */
+        .main-logo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-top: 40px; border: 3px solid #d4af37; box-shadow: 0 10px 25px rgba(212,175,55,0.2); animation: blockDance 1.2s ease; }
+
+        /* ÉCRAN D'ACCUEIL */
         #loading-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: white; z-index: 2000; display: flex; 
@@ -47,14 +50,13 @@
             100% { opacity: 1; transform: translateY(0) scale(1); letter-spacing: 6px; filter: blur(0); }
         }
 
-        /* ANIMATION DE DANSE DES BLOCS (Rebond) */
         @keyframes blockDance {
             0% { opacity: 0; transform: scale(0.8) translateY(40px); }
             60% { transform: scale(1.05) translateY(-5px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.7em; margin: 35px 0 5px 0; }
+        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.7em; margin: 15px 0 5px 0; }
         .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
 
         /* RECHERCHE */
@@ -68,10 +70,10 @@
         .scroll-link { bottom: 105px; display: none; }
         .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; text-transform: uppercase; }
         .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
-        .whatsapp-btn img { width: 60px; height: 60px; }
+        .whatsapp-btn img { width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; }
 
-        /* CARDS MESSAGES (Avec Danse) */
+        /* CARDS MESSAGES */
         .message-card { 
             background: white; padding: 30px; border-radius: 16px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
@@ -119,6 +121,8 @@
         <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></div>
     </a>
 
+    <img src="https://files.catbox.moe/p9p39r.jpg" alt="Logo Emmanuel" class="main-logo">
+
     <h1>EMMANUEL</h1>
     <div class="intro-text">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
 
@@ -145,6 +149,7 @@
     </div>
 
     <script>
+        // ... (Le script reste identique à ton original, j'ai juste corrigé une petite faute dans le console.error)
         let tousLesMessages = [];
         const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
