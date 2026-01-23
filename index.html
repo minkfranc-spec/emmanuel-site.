@@ -204,23 +204,23 @@
         }
 
         async function chargerMessages() {
-            try {
-                const response = await fetch('data.json?v=' + Date.now());
-                const data = await response.json();
-                const maintenant = new Date();
-                tousLesMessages = data.filter(msg => {
-                    const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
-                    return maintenant >= dateParution;
-                });
-                afficherAccueil();
-                genererBoutonsMois();
-            } catch (err) { console.error("Erreur"); }
-            setTimeout(() => { 
-                document.getElementById('loading-screen').style.opacity = '0';
-                setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1000);
-            }, 2500);
+    try {
+        const response = await fetch('data.json?v=' + Date.now());
+        const data = await response.json();
+        // ... (votre code existant)
+    } catch (err) { 
+        console.error("Erreur de chargement des données"); 
+    }
+    
+    // CE BLOC DOIT ÊTRE ICI pour s'exécuter quoi qu'il arrive
+    setTimeout(() => { 
+        const loader = document.getElementById('loading-screen');
+        if(loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 1000);
         }
+    }, 2500); 
+}
 
         function openChoice(theme) {
             currentTheme = theme;
