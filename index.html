@@ -3,268 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMMANUEL | La Parole de Dieu</title>
-    <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/p9p39r.jpg">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <title>ADMIN - EMMANUEL (AUTO-ORDRE)</title>
     <style>
-        :root { --gold: #d4af37; --dark: #1a1a1a; --light: #fdfdfd; --red-active: #ff0000; --gray-bg: #f0f0f0; }
-        * { box-sizing: border-box; scroll-behavior: smooth; }
-        body { margin: 0; padding: 0; background: var(--light); color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
-
-        /* --- MAINTENANCE (CORRECTION CENTRAGE) --- */
-        #maintenance-screen { 
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100vh;
-            background: radial-gradient(circle, #ffffff 0%, #e0e0e0 100%); 
-            z-index: 99999; 
-            display: flex; 
-            justify-content: center; /* Centrage horizontal */
-            align-items: center;     /* Centrage vertical */
-            padding: 20px;
-        }
-        .maintenance-card { 
-            max-width: 450px; width: 100%; padding: 40px 25px; background: white; 
-            border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
-            border: 4px solid var(--gold);
-        }
-        .logo-pulse { 
-            font-family: 'Montserrat'; font-size: 2em; font-weight: 800; 
-            color: var(--gold); letter-spacing: 6px; text-transform: uppercase; 
-            animation: pulse 2.5s infinite; border-top: 2px solid var(--gold); 
-            border-bottom: 2px solid var(--gold); padding: 12px; margin-bottom: 25px; 
-            display: inline-block;
-        }
-        
-        /* --- ANIMATIONS --- */
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.02); } 100% { opacity: 1; transform: scale(1); } }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
-        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- BOUTONS LANGUE --- */
-        .lang-container { margin: 15px 0; }
-        .lang-btn { border: 1px solid #ddd; background: transparent; padding: 6px 14px; border-radius: 20px; font-family: 'Montserrat'; font-weight: 700; font-size: 0.65em; color: #aaa; cursor: pointer; transition: 0.3s; margin: 0 3px; letter-spacing: 1px; }
-        .lang-btn.active { background: var(--red-active); color: white; border-color: var(--red-active); box-shadow: 0 3px 10px rgba(255, 0, 0, 0.3); transform: scale(1.05); }
-
-        /* --- CARTE MESSAGE --- */
-        .message-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 92%; max-width: 500px; margin: 25px auto; text-align: left; border-top: 4px solid var(--gold); position: relative; }
-        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 15px; object-fit: cover; max-height: 280px; }
-        .msg-title { font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; font-size: 1.1em; text-align: center; margin-bottom: 20px; color: var(--dark); line-height: 1.4; }
-        .msg-content { line-height: 1.9; text-align: justify; font-size: 0.95em; white-space: pre-wrap; color: #333; display: block; margin-bottom: 15px; }
-        .copy-btn { width: 100%; padding: 12px; border: none; background: #f8f9fa; border-radius: 8px; font-family: 'Montserrat'; font-weight: 700; cursor: pointer; color: var(--gold); transition: 0.3s; }
-
-        /* --- FLOTTANTS --- */
-        .float-container { position: fixed; right: 20px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-        .wa-circle, .scroll-top { display: flex; justify-content: center; align-items: center; border-radius: 50%; animation: float 3s ease-in-out infinite; }
-        .wa-circle { background: #25D366; width: 55px; height: 55px; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); }
-        .scroll-top { background: var(--dark); color: white; width: 45px; height: 45px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 1.2em; }
-        .float-label { background: white; padding: 6px 12px; border-radius: 8px; font-family: 'Montserrat'; font-size: 0.65em; font-weight: 800; margin-right: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); color: #555; text-transform: uppercase; }
-
-        /* --- ARCHIVES (CORRECTION) --- */
-        .archive-section { display: none; width: 92%; max-width: 500px; margin: 25px auto; }
-        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
-        .month-btn { font-family: 'Montserrat'; padding: 10px 5px; border-radius: 6px; border: 1px solid #eee; background: white; color: #888; cursor: pointer; font-size: 0.6em; font-weight: 800; text-transform: uppercase; }
-        .month-btn.active { background: var(--gold); color: white; border-color: var(--gold); }
-        .archive-item { padding: 15px; background: white; margin-bottom: 10px; border-radius: 10px; cursor: pointer; font-family: 'Montserrat'; font-size: 0.8em; text-align: left; border-left: 4px solid var(--gold); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
-        #site-wrapper { display: none; padding-bottom: 50px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #1e272e; color: white; padding: 20px; text-align: center; }
+        .container { max-width: 650px; margin: auto; background: #2f3640; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        label { display: block; text-align: left; font-size: 0.85em; color: #fbc531; margin-top: 15px; font-weight: bold; text-transform: uppercase; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 5px; border-radius: 6px; border: 1px solid #485460; background: #1e272e; color: white; font-size: 16px; }
+        input:focus, textarea:focus { border-color: #fbc531; outline: none; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 20px; transition: 0.3s; }
+        .btn-add { background: #44bd32; color: white; }
+        .btn-add:hover { background: #26de81; }
+        .btn-clear { background: #eb4d4b; color: white; margin-top: 30px; font-size: 0.8em; width: auto; padding: 10px 20px; }
+        textarea#resultat-json { background: #000; color: #00ff00; font-family: 'Consolas', monospace; height: 350px; margin-top: 20px; font-size: 13px; border: 2px solid #485460; }
+        h2 { margin-top: 0; color: #ffffff; letter-spacing: 2px; }
+        .info-copy { font-size: 0.8em; color: #95a5a6; margin-top: 10px; }
     </style>
 </head>
-<body class="fade-in">
+<body>
 
-    <div id="maintenance-screen">
-        <div class="maintenance-card">
-            <div class="logo-pulse">EMMANUEL</div>
-            <h2 style="font-family: 'Montserrat'; font-size: 1.3em; color: #333; margin-bottom: 15px;">Embellissement en cours ✨</h2>
-            <p style="font-family: 'Lora'; font-style: italic; font-size: 1.05em; color: #666; line-height: 1.8;">
-                "Préparez le chemin, aplanissez les sentiers."<br><br>
-                Nous travaillons sur l'autel numérique pour une expérience plus lumineuse.
-            </p>
-            <div style="margin-top: 30px; font-size: 0.8em; font-family: 'Montserrat'; font-weight: 800; color: var(--gold); letter-spacing: 3px;">PAIX ET GRÂCE</div>
-        </div>
-    </div>
-
-    <div id="site-wrapper">
-        <div class="float-container" style="bottom: 85px;">
-            <a href="https://wa.me/237678356844" target="_blank" style="text-decoration: none; display: flex; align-items: center;">
-                <div class="float-label" id="wa-label">WhatsApp</div>
-                <div class="wa-circle"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30"></div>
-            </a>
-        </div>
-
-        <div class="float-container" style="bottom: 25px;">
-            <div id="scrollTopContainer" style="display: none; align-items: center; cursor: pointer;" onclick="window.scrollTo(0,0)">
-                <div class="float-label" id="top-label">Haut</div>
-                <div class="scroll-top">⬆</div>
-            </div>
-        </div>
-
-        <div class="lang-container">
-            <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
-            <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
-        </div>
-
-        <h1 style="font-family: 'Montserrat'; font-weight: 900; letter-spacing: 4px; margin: 20px 0;">EMMANUEL</h1>
-        <p id="intro-txt" style="font-size: 0.9em; font-style: italic; color: #95a5a6; padding: 0 30px; margin-bottom: 30px;"></p>
-
-        <div id="flux-messages"></div>
-
-        <button onclick="toggleArchives()" style="margin: 40px auto; display: block; padding: 14px 40px; border-radius: 35px; border: none; background: var(--dark); color: white; font-family: 'Montserrat'; font-weight: 700; cursor: pointer; letter-spacing: 1.5px; box-shadow: 0 10px 20px rgba(0,0,0,0.15);">📂 ARCHIVES RÉCENTES</button>
-
-        <div id="archiveSection" class="archive-section">
-            <div class="month-grid" id="monthGrid"></div>
-            <div id="titres-liste"></div>
-            <div id="detail-archive"></div>
-        </div>
-
-        <div style="margin: 50px auto 10px auto; padding: 30px; width: 92%; max-width: 500px; background: white; border-radius: 20px; box-shadow: 0 5px 25px rgba(0,0,0,0.03);">
-            <div style="font-family: 'Montserrat'; font-weight: 900; font-size: 1.1em; color: var(--dark); margin-bottom: 8px;" id="stat-title">LECTEURS PAR PAYS ET VUES</div>
-            <div style="font-family: 'Montserrat'; font-size: 0.75em; color: var(--gold); font-weight: 700; margin-bottom: 20px; letter-spacing: 1px;" id="stat-sub">STATISTIQUES EN TEMPS RÉEL</div>
-            <img id="flag-counter" src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Compteur" style="width:100%; border-radius:5px;">
-        </div>
+    <div class="container">
+        <h2>🛠 PILOTAGE EMMANUEL</h2>
         
-        <div id="refresh-txt" style="font-size: 0.8em; color: #888; font-family: 'Montserrat'; font-weight: 600; padding: 25px;"></div>
+        <label>ID du message (Automatique)</label>
+        <input type="number" id="id" placeholder="ID">
+        
+        <label>Titre du message (S'affichera en MAJUSCULES)</label>
+        <input type="text" id="titre" placeholder="LE TITRE ICI">
+        
+        <label>Catégorie</label>
+        <input type="text" id="categorie" placeholder="EX: RÉVÉLATION, FOI">
+        
+        <label>Lien de l'image (Postimg Direct Link)</label>
+        <input type="text" id="image" placeholder="https://i.postimg.cc/...">
+        
+        <label>Texte de l'enseignement</label>
+        <textarea id="texte" placeholder="Écris ou colle ton texte ici..." rows="8"></textarea>
+        
+        <label>Date de publication (Format AAAA-MM-JJ)</label>
+        <input type="text" id="date" placeholder="2026-01-21">
+
+        <button class="btn-add" onclick="genererJSON()">📦 AJOUTER & ORDONNER</button>
+        
+        <div class="info-copy">👇 Sélectionne tout (Ctrl+A) et colle dans ton data.json</div>
+        <textarea id="resultat-json" readonly></textarea>
+        
+        <button class="btn-clear" onclick="viderReserve()">🗑 VIDER LA RÉSERVE</button>
     </div>
 
     <script>
-        // CONFIGURATION
-        const MAINTENANCE = false; // Mettre à true pour activer l'écran de maintenance
-        let currentLang = 'fr';
-        let tousLesMessages = [];
-
-        const translations = {
-            fr: { 
-                intro: "La Lumière qui éclaire chaque pas.", share: "📤 Partager", copied: "✨ COPIÉ !", 
-                statT: "LECTEURS PAR PAYS ET VUES", statS: "STATISTIQUES EN TEMPS RÉEL", 
-                refresh: "🔄 Actualisation : 15 min", waLabel: "WhatsApp", topLabel: "Haut",
-                months: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"]
-            },
-            en: { 
-                intro: "The Light that guides every step.", share: "📤 Share", copied: "✨ COPIED!", 
-                statT: "READERS BY COUNTRY AND VIEWS", statS: "REAL-TIME STATISTICS", 
-                refresh: "🔄 Auto-refresh: 15 min", waLabel: "WhatsApp", topLabel: "Top",
-                months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        // Au chargement, on initialise l'ID et la date
+        window.onload = function() {
+            const aujourdhui = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = aujourdhui;
+            
+            // On cherche le dernier ID dans la réserve pour suggérer le suivant
+            const reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
+            if (reserve.length > 0) {
+                const maxId = Math.max(...reserve.map(m => m.id));
+                document.getElementById('id').value = maxId + 1;
+            } else {
+                document.getElementById('id').value = 4; // On commence à 4 si vide
             }
+            afficherReserve();
         };
 
-        // GESTION MAINTENANCE
-        function checkMaintenance() {
-            const isAdmin = window.location.search.includes('admin');
-            const screen = document.getElementById('maintenance-screen');
-            const wrapper = document.getElementById('site-wrapper');
-            if (MAINTENANCE && !isAdmin) {
-                screen.style.display = 'flex';
-                wrapper.style.display = 'none';
-            } else {
-                screen.style.display = 'none';
-                wrapper.style.display = 'block';
-            }
-        }
+        function genererJSON() {
+            const id = document.getElementById('id').value;
+            const titre = document.getElementById('titre').value.toUpperCase();
+            const categorie = document.getElementById('categorie').value.toUpperCase();
+            const image = document.getElementById('image').value;
+            const texte = document.getElementById('texte').value;
+            const date = document.getElementById('date').value;
 
-        // CHARGEMENT DATA
-        async function charger() {
-            checkMaintenance();
-            try {
-                const res = await fetch('data.json?v=' + Date.now());
-                tousLesMessages = await res.json();
-                setLanguage('fr');
-                genererMois();
-            } catch (e) { 
-                console.error("Erreur de chargement des données"); 
-                // Données de test si le JSON échoue
-                tousLesMessages = [{id:1, date:"2026-01-24", titre:"Bienvenue", texte:"Que Dieu vous bénisse.", titre_en:"Welcome", texte_en:"God bless you."}];
-                setLanguage('fr');
-            }
-        }
-
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + lang).classList.add('active');
-            document.getElementById('intro-txt').innerText = translations[lang].intro;
-            document.getElementById('stat-title').innerText = translations[lang].statT;
-            document.getElementById('stat-sub').innerText = translations[lang].statS;
-            document.getElementById('refresh-txt').innerText = translations[lang].refresh;
-            document.getElementById('wa-label').innerText = translations[lang].waLabel;
-            document.getElementById('top-label').innerText = translations[lang].topLabel;
-            afficherAccueil();
-        }
-
-        function afficherAccueil() {
-            const now = new Date();
-            const autorises = tousLesMessages.filter(m => new Date(m.date) <= now).sort((a,b) => b.id - a.id);
-            document.getElementById('flux-messages').innerHTML = autorises.slice(0, 3).map(m => creerCard(m)).join('');
-        }
-
-        function creerCard(m) {
-            const titre = currentLang === 'fr' ? m.titre : m.titre_en;
-            const texte = currentLang === 'fr' ? m.texte : m.texte_en;
-            return `<div class="message-card fade-in">
-                ${m.image ? `<img src="${m.image}" class="msg-img">` : ''}
-                <h2 class="msg-title">${titre}</h2>
-                <div class="msg-content">${texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
-                <button class="copy-btn" onclick="copier(this, \`${titre}\`)">${translations[currentLang].share}</button>
-            </div>`;
-        }
-
-        // GESTION ARCHIVES (DÉBLOQUÉES)
-        function toggleArchives() {
-            const section = document.getElementById('archiveSection');
-            section.style.display = (section.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function genererMois() {
-            const grid = document.getElementById('monthGrid');
-            grid.innerHTML = translations[currentLang].months.map((m, i) => 
-                `<button class="month-btn" onclick="filtrerMois(${i})">${m}</button>`
-            ).join('');
-        }
-
-        function filtrerMois(moisIndex) {
-            const liste = document.getElementById('titres-liste');
-            const filtered = tousLesMessages.filter(m => new Date(m.date).getMonth() === moisIndex);
-            
-            if(filtered.length === 0) {
-                liste.innerHTML = "<p style='font-size:0.8em; color:#bbb; padding:20px;'>Aucun message ce mois-ci.</p>";
+            if(!id || !titre || !texte || !date) {
+                alert("Erreur : Tous les champs sont obligatoires !");
                 return;
             }
 
-            liste.innerHTML = filtered.map(m => `
-                <div class="archive-item" onclick="afficherUnMessage(${m.id})">
-                    <strong>${new Date(m.date).toLocaleDateString()}</strong> - ${currentLang === 'fr' ? m.titre : m.titre_en}
-                </div>
-            `).join('');
+            const nouveauMessage = {
+                "id": parseInt(id),
+                "titre": titre,
+                "categorie": categorie,
+                "image": image,
+                "texte": texte,
+                "date": date
+            };
+
+            let reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
+            
+            // On ajoute le nouveau message
+            reserve.push(nouveauMessage);
+            
+            // --- TRI MAGIQUE ---
+            // On trie pour que l'ID le plus grand soit toujours en premier (en haut)
+            reserve.sort((a, b) => b.id - a.id);
+            
+            localStorage.setItem('reserve_emmanuel', JSON.stringify(reserve));
+            
+            afficherReserve();
+            
+            // On prépare le formulaire pour le message suivant
+            document.getElementById('id').value = parseInt(id) + 1;
+            document.getElementById('titre').value = "";
+            document.getElementById('image').value = "";
+            document.getElementById('texte').value = "";
+            
+            alert("Message " + id + " ajouté et classé !");
         }
 
-        function afficherUnMessage(id) {
-            const m = tousLesMessages.find(msg => msg.id === id);
-            document.getElementById('flux-messages').innerHTML = creerCard(m);
-            window.scrollTo(0,0);
-            toggleArchives();
+        function afficherReserve() {
+            const reserve = JSON.parse(localStorage.getItem('reserve_emmanuel') || '[]');
+            const zoneNoire = document.getElementById('resultat-json');
+            if(reserve.length > 0) {
+                // On affiche le JSON complet avec crochets [ ]
+                zoneNoire.value = JSON.stringify(reserve, null, 2);
+            }
         }
 
-        function copier(btn, titre) {
-            navigator.clipboard.writeText(titre + " - Lu sur Emmanuel-verser.ap");
-            const txt = btn.innerText;
-            btn.innerText = translations[currentLang].copied;
-            setTimeout(() => btn.innerText = txt, 2000);
+        function viderReserve() {
+            if(confirm("Attention : Cela va supprimer toute ta réserve actuelle ! Continuer ?")) {
+                localStorage.removeItem('reserve_emmanuel');
+                document.getElementById('resultat-json').value = "";
+                location.reload();
+            }
         }
-
-        // ACTUALISATION AUTOMATIQUE (15 MIN)
-        setInterval(() => {
-            console.log("Actualisation des données...");
-            charger(); // Recharge les données sans rafraîchir toute la page
-            // Pour rafraîchir l'image du compteur aussi :
-            const img = document.getElementById('flag-counter');
-            img.src = img.src.split('?')[0] + '?t=' + Date.now();
-        }, 900000); // 900 000 ms = 15 minutes
-
-        window.onscroll = function() {
-            const container = document.getElementById("scrollTopContainer");
-            container.style.display = (window.scrollY > 200) ? "flex" : "none";
-        };
-
-        charger();
     </script>
 </body>
 </html>
