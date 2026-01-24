@@ -31,7 +31,13 @@
         .lang-btn.active { background: white; color: #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 
         h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 15px 0 5px 0; }
-        .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
+        .intro-text { width: 85%; margin: 0 auto 10px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
+
+        /* --- STYLE DE LA LOUPE --- */
+        .search-container { position: relative; width: 85%; max-width: 400px; margin: 0 auto 25px; }
+        .search-input { width: 100%; padding: 12px 40px 12px 20px; border-radius: 30px; border: 1px solid #eee; font-family: 'Montserrat', sans-serif; font-size: 0.85em; transition: 0.3s; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .search-input:focus { border-color: #d4af37; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15); }
+        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #d4af37; font-size: 1.1em; pointer-events: none; }
 
         .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
@@ -84,6 +90,11 @@
     <h1>EMMANUEL</h1>
     <div class="intro-text" id="intro-txt">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
 
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un message..." onkeyup="filtrerMessages()">
+        <span class="search-icon">🔍</span>
+    </div>
+
     <div id="flux-messages"></div>
 
     <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
@@ -108,7 +119,7 @@
 
     <script>
         /* 🔴⚪ --- INTERRUPTEUR DE MAINTENANCE --- 🔴⚪ */
-        const MAINTENANCE = false; // Mettre à 'true' pour activer la maintenance
+        const MAINTENANCE = false; 
         const ADMIN_PWD = "emmanuel777";
         
         const urlParams = new URLSearchParams(window.location.search);
@@ -143,8 +154,8 @@
         };
 
         const translations = {
-            fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min<br><span style='font-weight: 400; font-style: italic; opacity: 0.8;'>The counter updates every 15 min</span>" },
-            en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min<br><span style='font-weight: 400; font-style: italic; opacity: 0.8;'>Le compteur s'actualise toutes les 15 min</span>" }
+            fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min<br><span style='font-weight: 400; font-style: italic; opacity: 0.8;'>The counter updates every 15 min</span>" },
+            en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min<br><span style='font-weight: 400; font-style: italic; opacity: 0.8;'>Le compteur s'actualise toutes les 15 min</span>" }
         };
 
         window.onscroll = function() {
@@ -165,6 +176,7 @@
             document.getElementById('label-top').innerText = translations[lang].scrollTop;
             document.getElementById('label-help').innerText = translations[lang].help;
             document.getElementById('update-txt').innerHTML = translations[lang].update;
+            document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
 
             const s = document.getElementById('archiveSection');
             const archiveMainBtn = document.getElementById('btn-archive');
@@ -213,6 +225,28 @@
                     <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
                     <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
                 </div>`;
+        }
+
+        /* --- FONCTION DE RECHERCHE --- */
+        function filtrerMessages() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('flux-messages');
+            
+            if (query === "") {
+                afficherAccueil();
+                return;
+            }
+
+            const resultats = tousLesMessages.filter(msg => {
+                const searchIn = (
+                    (msg.titre || "") + (msg.titre_en || "") + 
+                    (msg.texte || "") + (msg.texte_en || "") +
+                    (msg.categorie || "") + (msg.categorie_en || "")
+                ).toLowerCase();
+                return searchIn.includes(query);
+            });
+
+            container.innerHTML = resultats.sort((a,b) => b.id - a.id).map(msg => creerCard(msg)).join('');
         }
 
         function decoderEtCopier(bouton, base64) {
