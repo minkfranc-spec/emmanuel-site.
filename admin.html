@@ -4,122 +4,247 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMMANUEL | La Parole de Dieu</title>
+
     <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/p9p39r.jpg">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" href="https://files.catbox.moe/p9p39r.jpg">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
     <style>
-        :root { --gold: #d4af37; --dark: #1a1a1a; --light: #fdfdfd; --red: #ff0000; --green: #27ae60; }
-        body { margin: 0; font-family: 'Lora', serif; background: var(--light); text-align: center; }
+        * { box-sizing: border-box; scroll-behavior: smooth; }
+        html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
+        
+        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 1s ease-in-out; }
+        .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; animation: welcomeEntry 2.5s forwards; opacity: 0; }
 
-        /* --- PANNEAU ADMIN SECRET --- */
-        #admin-panel { 
-            display: none; background: var(--dark); color: white; padding: 20px; 
-            border-bottom: 5px solid var(--gold); position: sticky; top: 0; z-index: 10000;
+        @keyframes welcomeEntry { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes blockDance { 0% { opacity: 0; transform: scale(0.95) translateY(30px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        
+        @keyframes pulseGold {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
-        .admin-flex { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; align-items: center; }
-        .btn-status { 
-            font-family: 'Montserrat'; font-weight: 900; padding: 10px 20px; 
-            border-radius: 5px; border: none; cursor: pointer; color: white; text-transform: uppercase;
-        }
-        .btn-vrai { background: var(--red); }
-        .btn-faux { background: var(--green); }
-        .admin-input { padding: 8px; border-radius: 4px; border: none; font-family: 'Montserrat'; width: 120px; text-align: center; }
-        .json-box { width: 90%; max-width: 600px; height: 100px; margin-top: 15px; font-family: monospace; font-size: 10px; }
 
-        /* --- MAINTENANCE --- */
-        #maintenance-screen { 
-            display: none; position: fixed; inset: 0; background: white; 
-            z-index: 9999; flex-direction: column; justify-content: center; align-items: center; 
-        }
-        .m-card { padding: 40px; border: 4px solid var(--gold); border-radius: 20px; max-width: 400px; }
+        .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
+        .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
+        .lang-btn.active { background: white; color: #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 
-        #site-content { display: block; padding: 20px; }
+        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 15px 0 5px 0; }
+        .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
+
+        .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
+        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
+        .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
+        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; } 
+        
+        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
+        .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
+
+        .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; padding-bottom: 40px; }
+        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
+        .month-btn.active { background: #d4af37; color: white; }
+        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
+
+        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; margin: 20px auto; text-transform: uppercase; }
+
+        .floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
+        .scroll-link { bottom: 105px; }
+        .whatsapp-link { bottom: 30px; display: flex !important; }
+        .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
+        .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
+        .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+        .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
+        .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
+        .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <div id="admin-panel">
-        <div class="admin-flex">
-            <span style="font-family: 'Montserrat'; font-weight: 900; color: var(--gold);">CONTRÔLE :</span>
-            <input type="password" id="pass-check" class="admin-input" placeholder="CODE">
-            <button class="btn-status btn-vrai" onclick="setMaint(true)">🔴 ACTIVER MAINTENANCE (TRUE)</button>
-            <button class="btn-status btn-faux" onclick="setMaint(false)">🟢 COUPER MAINTENANCE (FALSE)</button>
-        </div>
-        <textarea id="json-copy" class="json-box" readonly placeholder="Le JSON à copier sur GitHub s'affichera ici..."></textarea>
-        <p style="font-size: 10px; color: var(--gold); margin: 5px 0;">1. Clique sur un bouton | 2. Copie le texte | 3. Colle dans data.json sur GitHub</p>
+    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
+
+    <a href="javascript:void(0)" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="floating-container scroll-link" id="scrollTopLink">
+        <span class="btn-label" id="label-top">Retour en haut</span>
+        <button class="scroll-btn">↑</button>
+    </a>
+    
+    <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link">
+        <span class="btn-label" id="label-help">Besoin d'aide ?</span>
+        <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="60"></div>
+    </a>
+
+    <div class="lang-selector">
+        <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
+        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
     </div>
 
-    <div id="maintenance-screen">
-        <div class="m-card">
-            <h1 style="font-family: 'Montserrat'; color: var(--gold);">EMMANUEL</h1>
-            <p>Le site est actuellement en embellissement. ✨</p>
-            <p style="font-style: italic; color: #888;">"Préparez le chemin du Seigneur."</p>
-        </div>
+    <h1>EMMANUEL</h1>
+    <div class="intro-text" id="intro-txt">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
+
+    <div id="flux-messages"></div>
+
+    <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
+    
+    <div id="archiveSection" class="archive-section">
+        <div class="month-grid" id="monthGrid"></div>
+        <div id="titres-liste"></div> 
+        <div id="message-detail"></div> 
     </div>
 
-    <div id="site-content">
-        <h1 style="font-family: 'Montserrat'; letter-spacing: 5px;">EMMANUEL</h1>
-        <div id="messages-list">
-            <p>Chargement de la Parole...</p>
-        </div>
+    <div class="flag-counter-box">
+        <div class="stat-title" id="stat-title">COMMUNAUTÉ EMMANUEL</div>
+        <div class="stat-subtitle" id="stat-sub">✨ Lecteurs par pays et vues ✨</div>
+        <a href="https://info.flagcounter.com/ivJp" target="_blank">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Statistiques" border="0" style="margin-top:20px; max-width: 100%;">
+        </a>
     </div>
 
     <script>
-        let config = { maintenance: true, messages: [] };
-        const SECRET = "2026"; // 🔑 TON CODE
+        let currentLang = 'fr';
+        let tousLesMessages = [];
+        
+        const moisNoms = {
+            fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+            en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        };
 
-        // 1. Détecter le mode ?admin
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('admin')) {
-            document.getElementById('admin-panel').style.display = 'block';
+        const translations = {
+            fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?" },
+            en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?" }
+        };
+
+        window.onscroll = function() {
+            let btn = document.getElementById("scrollTopLink");
+            if (window.scrollY > 400) btn.style.display = "flex";
+            else btn.style.display = "none";
+        };
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            
+            document.getElementById('welcome-txt').innerText = translations[lang].welcome;
+            document.getElementById('intro-txt').innerText = translations[lang].intro;
+            document.getElementById('stat-title').innerText = translations[lang].statTitle;
+            document.getElementById('stat-sub').innerText = translations[lang].statSub;
+            document.getElementById('label-top').innerText = translations[lang].scrollTop;
+            document.getElementById('label-help').innerText = translations[lang].help;
+
+            const s = document.getElementById('archiveSection');
+            const archiveMainBtn = document.getElementById('btn-archive');
+            if (s.style.display === 'block') archiveMainBtn.innerText = translations[lang].archiveBtnClose;
+            else archiveMainBtn.innerText = translations[lang].archiveBtn;
+            
+            genererBoutonsMois();
+            afficherAccueil();
         }
 
-        // 2. Charger les données
-        async function loadData() {
+        async function chargerMessages() {
             try {
-                const res = await fetch('data.json?v=' + Date.now());
-                config = await res.json();
-                
-                // Vérifier la maintenance
-                if (config.maintenance && !urlParams.has('admin')) {
-                    document.getElementById('maintenance-screen').style.display = 'flex';
-                    document.getElementById('site-content').style.display = 'none';
-                }
-                
-                renderMessages();
-                updateJsonBox();
-            } catch (e) { console.log("Erreur de lecture data.json"); }
+                const response = await fetch('data.json?v=' + Date.now());
+                const data = await response.json();
+                const maintenant = new Date();
+                tousLesMessages = data.filter(msg => {
+                    const [annee, mois, jour] = msg.date.split('-').map(Number);
+                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
+                    return maintenant >= dateParution;
+                });
+                afficherAccueil();
+                genererBoutonsMois();
+            } catch (err) { console.error("Erreur"); }
+            setTimeout(() => { 
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1000);
+            }, 2500);
         }
 
-        // 3. Changer le statut (Admin seulement)
-        function setMaint(val) {
-            if (document.getElementById('pass-check').value !== SECRET) {
-                alert("Code incorrect ! ❌");
-                return;
+        function creerCard(msg) {
+            const dateObj = new Date(msg.date);
+            const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
+            const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
+            const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
+            const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
+            
+            const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
+
+            return `
+                <div class="message-card">
+                    ${imgHtml}
+                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
+                    <h3 class="msg-title">${titre}</h3>
+                    <div class="msg-content">${texteFormate}</div>
+                    <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
+                    <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
+                </div>`;
+        }
+
+        function decoderEtCopier(bouton, base64) {
+            const t = decodeURIComponent(escape(atob(base64))).replace(/\*\*/g, '');
+            navigator.clipboard.writeText(t).then(() => {
+                const memo = bouton.innerHTML; bouton.innerHTML = translations[currentLang].copied;
+                bouton.style.background = "#d4af37"; bouton.style.color = "white";
+                setTimeout(() => { bouton.innerHTML = memo; bouton.style.background = "transparent"; bouton.style.color = "#d4af37"; }, 2000);
+            });
+        }
+
+        function afficherAccueil() {
+            const container = document.getElementById('flux-messages');
+            const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
+            container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
+        }
+
+        function toggleArchives() {
+            const s = document.getElementById('archiveSection');
+            const btn = document.getElementById('btn-archive');
+            if (s.style.display === 'block') {
+                s.style.display = 'none';
+                btn.innerText = translations[currentLang].archiveBtn;
+            } else {
+                s.style.display = 'block';
+                btn.innerText = translations[currentLang].archiveBtnClose;
             }
-            config.maintenance = val;
-            updateJsonBox();
-            alert("Statut changé en " + val + " ! Copie le JSON en bas pour GitHub. ✨");
         }
 
-        function updateJsonBox() {
-            document.getElementById('json-copy').value = JSON.stringify(config, null, 4);
+        function genererBoutonsMois() {
+            const grid = document.getElementById('monthGrid');
+            const liste = moisNoms[currentLang];
+            grid.innerHTML = liste.map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join('');
         }
 
-        function renderMessages() {
-            const list = document.getElementById('messages-list');
-            if (config.messages.length === 0) {
-                list.innerHTML = "<p>Aucun message pour le moment.</p>";
-                return;
+        function afficherTitresDuMois(numMois, btn) {
+            const liste = document.getElementById('titres-liste');
+            const detail = document.getElementById('message-detail');
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active'); liste.innerHTML = ''; detail.innerHTML = ''; return;
             }
-            list.innerHTML = config.messages.map(m => `
-                <div style="border: 1px solid #eee; margin: 10px; padding: 15px; border-radius: 10px;">
-                    <h2 style="font-family: 'Montserrat';">${m.titre}</h2>
-                    <p>${m.texte}</p>
-                </div>
-            `).join('');
+            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); detail.innerHTML = '';
+            
+            // ORDRE CHRONOLOGIQUE (Plus ancien en haut)
+            const filtered = tousLesMessages
+                .filter(msg => (new Date(msg.date).getMonth() + 1) === numMois)
+                .sort((a, b) => a.id - b.id);
+                
+            liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
         }
 
-        loadData();
+        function voirDetail(id, numMois) {
+            const msg = tousLesMessages.find(m => m.id === id);
+            document.getElementById('titres-liste').innerHTML = '';
+            document.getElementById('message-detail').innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="revenirALaListe(${numMois})">${translations[currentLang].backList}</button>`;
+        }
+
+        function revenirALaListe(numMois) {
+            const btn = document.querySelectorAll('.month-btn')[numMois-1];
+            btn.classList.remove('active');
+            afficherTitresDuMois(numMois, btn);
+        }
+
+        chargerMessages();
     </script>
 </body>
 </html>
