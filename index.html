@@ -4,323 +4,230 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMMANUEL | La Parole de Dieu</title>
-
     <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/p9p39r.jpg">
-    <link rel="apple-touch-icon" href="https://files.catbox.moe/p9p39r.jpg">
-    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/2904/2904944.png">
-    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-
     <style>
+        /* Styles condensés pour la lisibilité */
         * { box-sizing: border-box; scroll-behavior: smooth; }
-        html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
-        
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 1s ease-in-out; }
-        .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; animation: welcomeEntry 2.5s forwards; opacity: 0; }
-
-        @keyframes welcomeEntry { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes blockDance { 0% { opacity: 0; transform: scale(0.95) translateY(30px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-        
-        @keyframes pulseGold {
-            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
-        }
-
-        .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
-        .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
-        .lang-btn.active { background: white; color: #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-
-        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 15px 0 5px 0; }
-        .intro-text { width: 85%; margin: 0 auto 25px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
-
-        /* --- BARRE DE RECHERCHE --- */
-        .search-container { position: relative; width: 92%; max-width: 540px; margin: 20px auto; }
-        .search-input { width: 100%; padding: 15px 45px 15px 20px; border-radius: 30px; border: 1px solid #ddd; outline: none; font-family: 'Montserrat'; font-size: 0.9em; box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: 0.3s; }
-        .search-input:focus { border-color: #d4af37; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.1); }
-        .search-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: #d4af37; font-size: 1.2em; }
-
-        .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
-        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
-        .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
-        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-wrap; margin-bottom: 15px; } 
-
-        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 15px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
-        .deep-study-link { display: block; text-align: center; color: #d4af37; font-family: 'Montserrat'; font-size: 0.8em; font-weight: 700; text-decoration: none; border: 1px dashed #d4af37; padding: 10px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; transition: 0.3s; }
-        .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
-
-        .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; padding-bottom: 40px; }
-        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
+        body { margin: 0; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; }
+        #loading-screen { position: fixed; inset: 0; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: 1s; }
+        .welcome-text { font-family: 'Montserrat'; font-size: 1.5em; color: #d4af37; letter-spacing: 5px; text-transform: uppercase; border-y: 2px solid #d4af37; padding: 20px; }
+        .lang-selector { margin: 20px 0; display: inline-flex; background: #f1f1f1; border-radius: 30px; padding: 5px; }
+        .lang-btn { font-family: 'Montserrat'; padding: 8px 15px; border-radius: 20px; border: none; cursor: pointer; background: transparent; color: #95a5a6; font-size: 10px; }
+        .lang-btn.active { background: white; color: #e74c3c; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .search-container { width: 90%; max-width: 500px; margin: 10px auto; position: relative; }
+        .search-input { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; }
+        .message-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); width: 90%; max-width: 500px; margin: 20px auto; text-align: left; border-top: 5px solid #d4af37; }
+        .msg-title { font-family: 'Montserrat'; font-size: 1.1em; text-transform: uppercase; margin-bottom: 15px; }
+        .msg-content { line-height: 1.7; text-align: justify; white-space: pre-wrap; }
+        .archive-section { display: none; width: 90%; max-width: 500px; margin: 20px auto; }
+        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .month-btn { padding: 10px; border: 1px solid #d4af37; border-radius: 8px; background: white; color: #d4af37; cursor: pointer; font-size: 10px; font-weight: bold; }
         .month-btn.active { background: #d4af37; color: white; }
-        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
-        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; margin: 20px auto; text-transform: uppercase; }
-
-        /* --- MODAL ET MINI-JEU --- */
-        .modal-choice { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; overflow-y: auto; }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; max-width: 400px; width: 90%; text-align: center; position: relative; }
-        .game-zone { margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 15px; border: 1px dashed #d4af37; }
-        .game-card { width: 80px; height: 110px; background: #d4af37; margin: 10px auto; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; color: white; font-size: 2em; transition: transform 0.6s; transform-style: preserve-3d; }
-        .game-card.reveal { transform: rotateY(180deg); background: white; color: #d4af37; border: 2px solid #d4af37; }
-        .choice-btns-hidden { display: none; }
-        .choice-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; font-family: 'Montserrat'; font-weight: 700; text-decoration: none; border: none; cursor: pointer; }
-        .btn-wa { background: #25D366; color: white; }
-        .btn-mail { background: #d4af37; color: white; }
-
-        .floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
-        .scroll-link { bottom: 105px; }
-        .whatsapp-link { bottom: 30px; display: flex !important; }
-        .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
-        .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
-        .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-
-        .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
-        .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
-        .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
-        .stat-info { font-family: 'Lora', serif; font-size: 0.85em; color: #95a5a6; margin-top: 15px; line-height: 1.6; }
+        .titre-archive-item { background: white; padding: 12px; margin: 5px 0; border-radius: 8px; border: 1px solid #eee; cursor: pointer; text-align: left; font-size: 0.9em; font-weight: bold; }
+        .copy-btn { width: 100%; padding: 12px; border: 2px solid #d4af37; background: none; color: #d4af37; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px; }
+        .modal-choice { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 350px; }
+        .flag-counter-box { background: white; padding: 20px; border-radius: 15px; margin: 30px auto; width: 90%; max-width: 500px; border: 1px solid #eee; }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
+    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue</div></div>
 
     <div id="choiceModal" class="modal-choice">
         <div class="modal-content">
-            <h3 id="modal-title" style="font-family:'Montserrat';">Approfondir ce thème</h3>
-            
-            <div id="game-intro">
-                <p style="font-size:0.8em; color:#7f8c8d;">Touchez la carte pour révéler une bénédiction et débloquer l'accès.</p>
-                <div class="game-card" id="card-to-flip" onclick="revealGame()">?</div>
+            <h3 id="modal-title" style="font-family:'Montserrat'">Approfondir</h3>
+            <div id="game-zone">
+                <p style="font-size:0.8em; color:gray" id="game-instr">Cliquez pour débloquer</p>
+                <div id="card" style="width:60px; height:80px; background:#d4af37; margin:10px auto; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; cursor:pointer; font-size:20px" onclick="revealGame()">?</div>
             </div>
-
-            <div id="options-zone" class="choice-btns-hidden">
-                <p id="game-quote" style="font-style:italic; color:#d4af37; margin-bottom:20px; font-weight:bold;"></p>
-                <p id="modal-desc" style="font-size:0.9em; color:#7f8c8d;">Prêt pour l'étude ? Choisissez un canal :</p>
-                <a id="wa-link" href="#" target="_blank" class="choice-btn btn-wa">💬 WhatsApp</a>
-                <div id="modal-or" style="margin: 10px; font-size: 0.7em; color: #bdc3c7;">— OU —</div>
-                <button id="modal-mail-btn" onclick="sendEmailRequest()" class="choice-btn btn-mail">📩 Par Email</button>
+            <div id="options" style="display:none">
+                <p id="quote" style="font-style:italic; color:#d4af37; margin-bottom:15px"></p>
+                <a id="wa-link" href="#" target="_blank" style="display:block; background:#25D366; color:white; padding:12px; border-radius:10px; text-decoration:none; margin-bottom:10px">WhatsApp</a>
+                <button onclick="sendMail()" style="width:100%; padding:12px; background:#d4af37; color:white; border:none; border-radius:10px">Email</button>
             </div>
-
-            <span id="modal-later" style="display:block; margin-top:15px; cursor:pointer; text-decoration:underline; font-size:0.8em; color:#95a5a6;" onclick="closeModal()">Plus tard, merci.</span>
+            <p onclick="closeModal()" style="margin-top:15px; font-size:0.8em; text-decoration:underline; cursor:pointer">Plus tard</p>
         </div>
     </div>
-
-    <a href="javascript:void(0)" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="floating-container scroll-link" id="scrollTopLink">
-        <span class="btn-label" id="label-top">Retour en haut</span>
-        <button class="scroll-btn">↑</button>
-    </a>
-    
-    <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link">
-        <span class="btn-label" id="label-help">Besoin d'aide ?</span>
-        <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="60"></div>
-    </a>
 
     <div class="lang-selector">
         <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
         <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
     </div>
 
-    <h1>EMMANUEL</h1>
-    <div class="intro-text" id="intro-txt">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
+    <h1 style="font-family:'Montserrat'">EMMANUEL</h1>
+    <p id="intro-txt" style="color:gray; font-style:italic"></p>
 
     <div class="search-container">
-        <input type="text" id="searchBar" class="search-input" placeholder="Rechercher une parole..." onkeyup="filtrerMessages()">
-        <span class="search-icon">🔍</span>
+        <input type="text" id="searchBar" class="search-input" onkeyup="filtrer()">
     </div>
 
     <div id="flux-messages"></div>
 
-    <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
-    
+    <button id="btn-archive" onclick="toggleArchives()" style="margin:20px; padding:15px; border-radius:30px; border:none; background:#1a1a1a; color:white; font-weight:bold; cursor:pointer">📂 Archives</button>
+
     <div id="archiveSection" class="archive-section">
         <div class="month-grid" id="monthGrid"></div>
-        <div id="titres-liste"></div> 
-        <div id="message-detail"></div> 
+        <div id="titres-liste" style="margin-top:20px"></div>
+        <div id="detail-archive"></div>
     </div>
 
     <div class="flag-counter-box">
-        <div class="stat-title" id="stat-title">COMMUNAUTÉ EMMANUEL</div>
-        <div class="stat-subtitle" id="stat-sub">✨ Lecteurs par pays et vues ✨</div>
-        <a href="https://info.flagcounter.com/ivJp" target="_blank">
-            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Statistiques" border="0" style="margin-top:20px; max-width: 100%;">
-        </a>
-        <div class="stat-info" id="stat-info-txt">
-            Le compteur s'actualise toutes les 15 minutes.<br>
-            <strong>Merci de votre présence.</strong>
-        </div>
+        <h4 id="stat-title" style="font-family:'Montserrat'; margin:0"></h4>
+        <p id="stat-sub" style="font-size:0.7em; color:#d4af37; font-weight:bold"></p>
+        <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" style="margin:15px 0">
+        <p id="stat-info" style="font-size:0.7em; color:gray"></p>
     </div>
 
     <script>
-        // =========================================================
-        // 🔴 MODE MAINTENANCE
-        // =========================================================
-        const MODE_MAINTENANCE = false; 
-        const CLE_SECRETE = "emmanuel777"; 
-
-        if (MODE_MAINTENANCE) {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('admin') !== CLE_SECRETE) {
-                window.stop(); 
-                document.documentElement.innerHTML = `
-                <head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>
-                body { margin:0; display:flex; justify-content:center; align-items:center; height:100vh; background:#fdfdfd; font-family:sans-serif; color:#d4af37; text-align:center; }
-                .box { padding:40px; border:1px solid #d4af37; border-radius:30px; }</style></head>
-                <body><div class="box"><h2>EMMANUEL</h2><p>La Lumière se prépare en silence...</p></div></body>`;
-                throw new Error("Maintenance");
-            }
-        }
-
+        const MODE_MAINTENANCE = false;
         let currentLang = 'fr';
         let tousLesMessages = [];
-        let currentTheme = "";
-        
-        const quotes = [
-            "La paix soit avec vous.", "Celui qui croit voit la Lumière.", 
-            "La Parole est une lampe.", "Dieu est Amour.", "Cherchez et vous trouverez."
-        ];
+        let themeSelectionne = "";
+
+        const moisTrad = {
+            fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+            en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        };
 
         const translations = {
-            fr: { 
-                welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", 
-                search: "Rechercher une parole...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", 
-                shareBtn: "📤 Partager la Bénédiction ✨", copied: "✨ MESSAGE COPIÉ !", published: "Publié le",
-                backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?",
-                deepBtn: "🔍 Approfondir ce thème (Optionnel)",
-                modalTitle: "Approfondir la Parole", modalDesc: "Comment préférez-vous recevoir des explications supplémentaires ?"
+            fr: {
+                welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas.", search: "Rechercher...",
+                archive: "📂 Consulter les Archives", archiveClose: "❌ Fermer les Archives",
+                share: "📤 Partager ✨", copied: "✨ COPIÉ !", published: "Publié le",
+                statT: "COMMUNAUTÉ EMMANUEL", statS: "LECTEURS PAR PAYS",
+                statI: "Mise à jour toutes les 15 min. Merci.", deep: "🔍 Approfondir ce thème",
+                mTitle: "Approfondir la Parole", back: "⬅ Retour"
             },
-            en: { 
-                welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", 
-                search: "Search for a word...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", 
-                shareBtn: "📤 Share the Blessing ✨", copied: "✨ MESSAGE COPIED!", published: "Published on",
-                backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help ?",
-                deepBtn: "🔍 Deepen this theme (Optional)",
-                modalTitle: "Deepen the Word", modalDesc: "How would you like to receive further explanations?"
+            en: {
+                welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step.", search: "Search...",
+                archive: "📂 View Archives", archiveClose: "❌ Close Archives",
+                share: "📤 Share the Blessing ✨", copied: "✨ COPIED!", published: "Published on",
+                statT: "EMMANUEL COMMUNITY", statS: "READERS BY COUNTRY",
+                statI: "Updated every 15 min. Thank you.", deep: "🔍 Deepen this theme",
+                mTitle: "Deepen the Word", back: "⬅ Back"
             }
         };
 
-        async function chargerMessages() {
+        async function charger() {
             try {
-                const response = await fetch('data.json?v=' + Date.now()); 
-                tousLesMessages = await response.json();
-                setLanguage('fr'); 
-            } catch (err) { console.error("Erreur JSON"); }
-            finally {
-                setTimeout(() => { 
-                    const loader = document.getElementById('loading-screen');
-                    if(loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 1000); }
-                }, 2000);
+                const res = await fetch('data.json?v=' + Date.now());
+                tousLesMessages = await res.json();
+                setLanguage('fr');
+            } catch (e) { console.error("Erreur"); }
+            finally { 
+                setTimeout(() => document.getElementById('loading-screen').style.opacity='0', 1000);
+                setTimeout(() => document.getElementById('loading-screen').style.display='none', 2000);
             }
         }
 
         function setLanguage(lang) {
             currentLang = lang;
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-${lang}`).classList.add('active');
-            document.getElementById('searchBar').placeholder = translations[lang].search;
+            document.getElementById('btn-' + lang).classList.add('active');
+            
             document.getElementById('welcome-txt').innerText = translations[lang].welcome;
             document.getElementById('intro-txt').innerText = translations[lang].intro;
-            document.getElementById('btn-archive').innerText = translations[lang].archiveBtn;
-            
-            afficherMessages(tousLesMessages.sort((a,b) => b.id - a.id).slice(0,3));
-            genererBoutonsMois();
+            document.getElementById('searchBar').placeholder = translations[lang].search;
+            document.getElementById('btn-archive').innerText = translations[lang].archive;
+            document.getElementById('stat-title').innerText = translations[lang].statT;
+            document.getElementById('stat-sub').innerText = translations[lang].statS;
+            document.getElementById('stat-info').innerText = translations[lang].statI;
+            document.getElementById('modal-title').innerText = translations[lang].mTitle;
+
+            afficherAccueil();
+            genererMois();
         }
 
-        function creerCard(msg) {
-            const dateObj = new Date(msg.date);
-            const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
-            const texte = currentLang === 'fr' ? msg.texte : msg.texte_en;
-            const titre = currentLang === 'fr' ? msg.titre : msg.titre_en;
-            const texteFormate = texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        function afficherAccueil() {
+            const now = new Date();
+            const autorises = tousLesMessages.filter(m => {
+                const d = new Date(m.date); d.setHours(1, 30, 0);
+                return now >= d;
+            }).sort((a,b) => b.id - a.id);
+            document.getElementById('flux-messages').innerHTML = autorises.slice(0, 3).map(m => creerCard(m)).join('');
+        }
 
+        function creerCard(m) {
+            const titre = currentLang === 'fr' ? m.titre : m.titre_en;
+            const texte = currentLang === 'fr' ? m.texte : m.texte_en;
             return `
                 <div class="message-card">
-                    ${msg.image ? `<img src="${msg.image}" class="msg-img">` : ''}
                     <h2 class="msg-title">${titre}</h2>
-                    <div class="msg-content">${texteFormate}</div>
-                    <div class="deep-study-link" onclick="openChoice('${titre.replace(/'/g, "\\'")}')">${translations[currentLang].deepBtn}</div>
-                    <button class="copy-btn" onclick="copierTexte(this, ${msg.id})">${translations[currentLang].shareBtn}</button>
-                    <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
+                    <div class="msg-content">${texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                    <p onclick="openChoice('${titre.replace(/'/g, "\\'")}')" style="color:#d4af37; cursor:pointer; font-size:0.8em; font-weight:bold; margin-top:15px">${translations[currentLang].deep}</p>
+                    <button class="copy-btn" onclick="copier(this, '${m.id}')">${translations[currentLang].share}</button>
                 </div>`;
         }
 
-        function afficherMessages(liste) {
-            document.getElementById('flux-messages').innerHTML = liste.map(msg => creerCard(msg)).join('');
-        }
-
-        function filtrerMessages() {
-            const query = document.getElementById('searchBar').value.toLowerCase();
-            const filtered = tousLesMessages.filter(msg => {
-                const t = (currentLang === 'fr' ? msg.titre : msg.titre_en).toLowerCase();
-                const c = (currentLang === 'fr' ? msg.texte : msg.texte_en).toLowerCase();
-                return t.includes(query) || c.includes(query);
+        function filtrer() {
+            const q = document.getElementById('searchBar').value.toLowerCase();
+            const filtered = tousLesMessages.filter(m => {
+                const val = (currentLang === 'fr' ? m.titre + m.texte : m.titre_en + m.texte_en).toLowerCase();
+                return val.includes(q);
             });
-            afficherMessages(filtered.slice(0, 10));
-        }
-
-        function openChoice(theme) {
-            currentTheme = theme;
-            document.getElementById('game-intro').style.display = 'block';
-            document.getElementById('options-zone').className = 'choice-btns-hidden';
-            document.getElementById('card-to-flip').className = 'game-card';
-            document.getElementById('card-to-flip').innerText = '?';
-            document.getElementById('choiceModal').style.display = 'flex';
-        }
-
-        function revealGame() {
-            const card = document.getElementById('card-to-flip');
-            card.classList.add('reveal');
-            setTimeout(() => {
-                card.innerText = "✨";
-                document.getElementById('game-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
-                document.getElementById('game-intro').style.display = 'none';
-                document.getElementById('options-zone').className = '';
-                document.getElementById('wa-link').href = `https://wa.me/237678356844?text=${encodeURIComponent("Bonjour Pasteur Emmanuel, j'aimerais approfondir : " + currentTheme)}`;
-            }, 600);
-        }
-
-        function closeModal() { document.getElementById('choiceModal').style.display = 'none'; }
-
-        function sendEmailRequest() {
-            window.location.href = `mailto:francmink@gmail.com?subject=Emmanuel&body=Thème: ${currentTheme}`;
-            closeModal();
-        }
-
-        function copierTexte(bouton, id) {
-            const msg = tousLesMessages.find(m => m.id === id);
-            const texteRaw = currentLang === 'fr' ? msg.texte : msg.texte_en;
-            navigator.clipboard.writeText(texteRaw.replace(/\*\*/g, '')).then(() => {
-                const memo = bouton.innerHTML; bouton.innerHTML = translations[currentLang].copied;
-                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
-            });
+            document.getElementById('flux-messages').innerHTML = filtered.slice(0, 5).map(m => creerCard(m)).join('');
         }
 
         function toggleArchives() {
             const s = document.getElementById('archiveSection');
-            s.style.display = (s.style.display === 'block') ? 'none' : 'block';
+            const isOpen = s.style.display === 'block';
+            s.style.display = isOpen ? 'none' : 'block';
+            document.getElementById('btn-archive').innerText = isOpen ? translations[currentLang].archive : translations[currentLang].archiveClose;
         }
 
-        function genererBoutonsMois() {
-            const moisNoms = {
-                fr: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
-                en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-            };
-            document.getElementById('monthGrid').innerHTML = moisNoms[currentLang].map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join('');
+        function genererMois() {
+            document.getElementById('monthGrid').innerHTML = moisTrad[currentLang].map((n, i) => 
+                `<button class="month-btn" onclick="voirMois(${i+1}, this)">${n}</button>`).join('');
         }
 
-        function afficherTitresDuMois(m, btn) {
+        function voirMois(m, btn) {
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === m);
-            document.getElementById('titres-liste').innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id})">📖 ${currentLang === 'fr' ? msg.titre : msg.titre_en}</div>`).join('');
+            document.getElementById('detail-archive').innerHTML = "";
+            const now = new Date();
+            // ORDRE INVERSE : b.id - a.id (Du plus récent au plus ancien)
+            const filtered = tousLesMessages.filter(msg => {
+                const d = new Date(msg.date);
+                return (d.getMonth() + 1) === m && d <= now;
+            }).sort((a, b) => b.id - a.id); 
+
+            document.getElementById('titres-liste').innerHTML = filtered.map(msg => 
+                `<div class="titre-archive-item" onclick="voirDetail(${msg.id})">📖 ${currentLang === 'fr' ? msg.titre : msg.titre_en}</div>`).join('');
         }
 
         function voirDetail(id) {
             const msg = tousLesMessages.find(m => m.id === id);
-            document.getElementById('message-detail').innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="document.getElementById('message-detail').innerHTML=''">Fermer</button>`;
+            document.getElementById('titres-liste').innerHTML = "";
+            document.getElementById('detail-archive').innerHTML = creerCard(msg) + 
+                `<button onclick="document.getElementById('detail-archive').innerHTML=''" style="margin-top:10px; border:none; background:none; text-decoration:underline; cursor:pointer">${translations[currentLang].back}</button>`;
         }
 
-        window.onscroll = () => { document.getElementById("scrollTopLink").style.display = (window.scrollY > 400) ? "flex" : "none"; };
-        chargerMessages();
+        function openChoice(t) {
+            themeSelectionne = t;
+            document.getElementById('options').style.display = "none";
+            document.getElementById('game-zone').style.display = "block";
+            document.getElementById('choiceModal').style.display = "flex";
+        }
+
+        function revealGame() {
+            document.getElementById('game-zone').style.display = "none";
+            document.getElementById('options').style.display = "block";
+            document.getElementById('quote').innerText = "La Lumière est en marche...";
+            document.getElementById('wa-link').href = `https://wa.me/237678356844?text=Approfondir : ${themeSelectionne}`;
+        }
+
+        function closeModal() { document.getElementById('choiceModal').style.display = "none"; }
+        function sendMail() { window.location.href = `mailto:francmink@gmail.com?subject=Emmanuel&body=${themeSelectionne}`; }
+        function copier(btn, id) {
+            const m = tousLesMessages.find(x => x.id == id);
+            navigator.clipboard.writeText(currentLang === 'fr' ? m.texte : m.texte_en);
+            const old = btn.innerText; btn.innerText = translations[currentLang].copied;
+            setTimeout(() => btn.innerText = old, 2000);
+        }
+
+        charger();
     </script>
 </body>
 </html>
