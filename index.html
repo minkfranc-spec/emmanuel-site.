@@ -7,104 +7,97 @@
     <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/p9p39r.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --dark: #1a1a1a; }
+        :root { --gold: #d4af37; --dark: #1a1a1a; --light: #fdfdfd; }
         * { box-sizing: border-box; scroll-behavior: smooth; }
-        body { margin: 0; padding: 0; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; }
+        body { margin: 0; padding: 0; background: var(--light); color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
 
-        /* ANIMATIONS SITE */
-        .fade-in { animation: fadeIn 1s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* MAINTENANCE */
-        #maintenance-screen { position: fixed; inset: 0; background: white; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; }
-
-        #loading-screen { position: fixed; inset: 0; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: 0.8s; }
-        .welcome-text { font-family: 'Montserrat'; font-size: 1.4em; color: var(--gold); letter-spacing: 5px; text-transform: uppercase; border-y: 2px solid var(--gold); padding: 15px; }
-
-        /* RECHERCHE - LOUPE PLUS PETITE */
-        .search-container { width: 90%; max-width: 400px; margin: 20px auto; position: relative; }
-        .search-input { width: 100%; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; font-size: 0.85em; transition: 0.3s; }
-        .search-input:focus { border-color: var(--gold); box-shadow: 0 0 8px rgba(212, 175, 55, 0.2); }
-
-        .message-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); width: 92%; max-width: 500px; margin: 20px auto; text-align: left; border-top: 5px solid var(--gold); }
-        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 15px; object-fit: cover; max-height: 250px; }
-        .msg-title { font-family: 'Montserrat'; font-weight: 900; text-transform: uppercase; font-size: 1.1em; text-align: center; margin: 10px 0; }
+        /* MAINTENANCE - PRIORITÉ ABSOLUE */
+        #maintenance-screen { position: fixed; inset: 0; background: white; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .logo-pulse { font-family: 'Montserrat'; font-size: 2em; font-weight: 900; color: var(--gold); letter-spacing: 8px; text-transform: uppercase; animation: pulse 2s infinite; border-y: 2px solid var(--gold); padding: 15px; }
         
-        /* BOUTON COPIE ANIME */
-        .copy-btn { font-family: 'Montserrat'; background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; transition: 0.3s; }
-        .copy-btn:active { transform: scale(0.95); background: var(--gold); color: white; }
+        /* ANIMATIONS */
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* BOUTON RETOUR FLÈCHE */
-        .back-arrow { cursor: pointer; font-size: 1.5em; color: var(--gold); margin-bottom: 15px; display: inline-block; transition: 0.3s; }
-        .back-arrow:hover { transform: translateX(-5px); }
+        /* RECHERCHE - LOUPE DISCRÈTE */
+        .search-container { width: 85%; max-width: 380px; margin: 20px auto; position: relative; }
+        .search-input { width: 100%; padding: 10px 15px; border-radius: 20px; border: 1px solid #eee; outline: none; font-size: 0.8em; font-family: 'Montserrat'; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .search-input:focus { border-color: var(--gold); }
 
-        /* ARCHIVES */
-        .archive-section { display: none; width: 92%; max-width: 500px; margin: 20px auto; }
+        /* CARTES ET BOUTONS */
+        .message-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 92%; max-width: 500px; margin: 25px auto; text-align: left; border-top: 5px solid var(--gold); }
+        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 15px; object-fit: cover; max-height: 280px; }
+        .msg-title { font-family: 'Montserrat'; font-weight: 900; text-transform: uppercase; font-size: 1.1em; text-align: center; margin-bottom: 15px; }
+        
+        .copy-btn { font-family: 'Montserrat'; background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; transition: all 0.2s; text-transform: uppercase; font-size: 0.9em; }
+        .copy-btn:active { transform: scale(0.96); background: var(--gold); color: white; }
+
+        /* ARCHIVES CHRONOLOGIQUES */
+        .archive-section { display: none; width: 92%; max-width: 500px; margin: 25px auto; }
         .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .month-btn { font-family: 'Montserrat'; padding: 10px; border-radius: 8px; border: 1px solid var(--gold); background: white; color: var(--gold); cursor: pointer; font-size: 9px; font-weight: 700; }
+        .month-btn { font-family: 'Montserrat'; padding: 10px; border-radius: 8px; border: 1px solid var(--gold); background: white; color: var(--gold); cursor: pointer; font-size: 9px; font-weight: 900; }
         .month-btn.active { background: var(--gold); color: white; }
-        .titre-archive-item { background: white; padding: 12px; margin: 6px 0; border-radius: 8px; border: 1px solid #eee; cursor: pointer; font-family: 'Montserrat'; font-size: 0.8em; text-align: left; transition: 0.2s; }
-        .titre-archive-item:hover { background: #fffcf5; border-color: var(--gold); }
+        .titre-archive-item { background: white; padding: 15px; margin: 8px 0; border-radius: 8px; border: 1px solid #f0f0f0; cursor: pointer; font-family: 'Montserrat'; font-size: 0.85em; text-align: left; font-weight: 700; }
+        
+        .back-arrow { cursor: pointer; font-size: 1.8em; color: var(--gold); margin-bottom: 10px; display: inline-block; transition: 0.3s; }
 
-        .float-wa { position: fixed; right: 20px; bottom: 25px; z-index: 1000; text-decoration: none; display: flex; align-items: center; }
-        .wa-icon { background: #25D366; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        /* FLOAT WHATSAPP */
+        .float-wa { position: fixed; right: 20px; bottom: 25px; z-index: 1000; text-decoration: none; }
+        .wa-circle { background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+
+        #site-wrapper { display: block; }
     </style>
 </head>
 <body class="fade-in">
 
     <div id="maintenance-screen">
-        <div class="welcome-text">Maintenance</div>
-        <p>Nous préparons de nouvelles paroles... ✨</p>
+        <div class="logo-pulse">EMMANUEL</div>
+        <p style="font-family: 'Montserrat'; font-size: 0.8em; letter-spacing: 2px; margin-top: 20px;">MAINTENANCE EN COURS</p>
     </div>
 
-    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">EMMANUEL</div></div>
+    <div id="site-wrapper">
+        <a href="https://wa.me/237678356844" target="_blank" class="float-wa">
+            <div class="wa-circle"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="32"></div>
+        </a>
 
-    <a href="https://wa.me/237678356844" target="_blank" class="float-wa">
-        <div class="wa-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30"></div>
-    </a>
+        <div style="margin: 20px 0;">
+            <button class="month-btn" style="width: 40px;" onclick="setLanguage('fr')">FR</button>
+            <button class="month-btn" style="width: 40px;" onclick="setLanguage('en')">EN</button>
+        </div>
 
-    <div class="lang-selector">
-        <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
-        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
-    </div>
+        <h1 style="font-family: 'Montserrat'; font-weight: 900; letter-spacing: 3px;">EMMANUEL</h1>
+        <p id="intro-txt" style="font-size: 0.9em; font-style: italic; color: gray; padding: 0 25px;"></p>
 
-    <h1 style="font-family:'Montserrat'; letter-spacing: 2px;">EMMANUEL</h1>
-    <div id="intro-txt" style="font-size: 0.9em; font-style: italic; color: gray; padding: 0 20px;"></div>
+        <div class="search-container">
+            <input type="text" id="searchBar" class="search-input" onkeyup="filtrer()" placeholder="🔍 Rechercher...">
+        </div>
 
-    <div class="search-container">
-        <input type="text" id="searchBar" class="search-input" onkeyup="filtrer()" placeholder="🔍 Rechercher...">
-    </div>
+        <div id="flux-messages"></div>
 
-    <div id="flux-messages"></div>
+        <button onclick="toggleArchives()" style="margin: 30px auto; display: block; padding: 12px 35px; border-radius: 30px; border: none; background: var(--dark); color: white; font-family: 'Montserrat'; font-weight: 900; cursor: pointer;">📂 ARCHIVES</button>
 
-    <button id="btn-archive-main" onclick="toggleArchives()" style="margin:25px auto; display:block; padding:12px 30px; border-radius:25px; border:none; background:var(--dark); color:white; font-family:'Montserrat'; cursor:pointer;">📂 Archives</button>
+        <div id="archiveSection" class="archive-section">
+            <div class="month-grid" id="monthGrid"></div>
+            <div id="titres-liste" style="margin-top: 20px;"></div>
+            <div id="detail-archive"></div>
+        </div>
 
-    <div id="archiveSection" class="archive-section">
-        <div class="month-grid" id="monthGrid"></div>
-        <div id="titres-liste" style="margin-top:20px"></div>
-        <div id="detail-archive"></div>
-    </div>
-
-    <div class="flag-counter-box" style="margin-top: 40px; padding-bottom: 40px;">
-        <div style="font-family:'Montserrat'; font-weight:900; font-size:0.9em;" id="stat-title"></div>
-        <div style="font-family:'Montserrat'; font-size:0.7em; color:var(--gold); margin-bottom:15px;" id="stat-sub"></div>
-        <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/">
+        <div style="margin: 40px auto; padding: 20px; width: 92%; max-width: 500px; border-top: 1px solid #eee;">
+            <div style="font-family: 'Montserrat'; font-weight: 900; font-size: 0.8em;" id="stat-title"></div>
+            <div style="font-family: 'Montserrat'; font-size: 0.6em; color: var(--gold); font-weight: 900; margin-bottom: 15px;" id="stat-sub"></div>
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/">
+        </div>
     </div>
 
     <script>
-        const MAINTENANCE = true; // TOUJOURS TRUE PENDANT LE TRAVAIL
+        const MAINTENANCE = true; // ACTIVÉ PAR DÉFAUT
         let currentLang = 'fr';
         let tousLesMessages = [];
 
         const translations = {
-            fr: { 
-                intro: "La Lumière qui éclaire chaque pas.", archive: "📂 Archives", back: "⬅", 
-                share: "📤 Partager ✨", copied: "✨ COPIÉ !", statT: "COMMUNAUTÉ EMMANUEL", statS: "LECTEURS PAR PAYS ET VUES"
-            },
-            en: { 
-                intro: "The Light that guides every step.", archive: "📂 Archives", back: "⬅", 
-                share: "📤 Share ✨", copied: "✨ COPIED!", statT: "EMMANUEL COMMUNITY", statS: "READERS BY COUNTRY AND VIEWS"
-            }
+            fr: { intro: "La Lumière qui éclaire chaque pas.", share: "📤 Partager ✨", copied: "✨ COPIÉ !", statT: "COMMUNAUTÉ EMMANUEL", statS: "LECTEURS PAR PAYS ET VUES" },
+            en: { intro: "The Light that guides every step.", share: "📤 Share ✨", copied: "✨ COPIED!", statT: "EMMANUEL COMMUNITY", statS: "READERS BY COUNTRY AND VIEWS" }
         };
 
         const moisTrad = {
@@ -112,24 +105,24 @@
             en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         };
 
-        if(MAINTENANCE) { document.getElementById('maintenance-screen').style.display = 'flex'; }
+        function checkMaintenance() {
+            if (MAINTENANCE) {
+                document.getElementById('maintenance-screen').style.display = 'flex';
+                document.getElementById('site-wrapper').style.display = 'none';
+            }
+        }
 
         async function charger() {
+            checkMaintenance();
             try {
                 const res = await fetch('data.json?v=' + Date.now());
                 tousLesMessages = await res.json();
                 setLanguage('fr');
-            } catch (e) { console.error("Erreur de chargement"); }
-            finally {
-                setTimeout(() => { document.getElementById('loading-screen').style.opacity = '0'; }, 800);
-                setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1500);
-            }
+            } catch (e) { console.error("Erreur de chargement des données."); }
         }
 
         function setLanguage(lang) {
             currentLang = lang;
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + lang).classList.add('active');
             document.getElementById('intro-txt').innerText = translations[lang].intro;
             document.getElementById('stat-title').innerText = translations[lang].statT;
             document.getElementById('stat-sub').innerText = translations[lang].statS;
@@ -142,20 +135,19 @@
             const autorises = tousLesMessages.filter(m => {
                 const d = new Date(m.date); d.setHours(1, 30, 0);
                 return now >= d;
-            }).sort((a,b) => b.id - a.id);
+            }).sort((a,b) => b.id - a.id); // Accueil : Récent en haut
             document.getElementById('flux-messages').innerHTML = autorises.slice(0, 3).map(m => creerCard(m)).join('');
         }
 
         function creerCard(m) {
             const titre = currentLang === 'fr' ? m.titre : m.titre_en;
             const texte = currentLang === 'fr' ? m.texte : m.texte_en;
-            const cat = currentLang === 'fr' ? m.categorie : m.categorie_en;
             return `
                 <div class="message-card fade-in">
                     ${m.image ? `<img src="${m.image}" class="msg-img">` : ''}
-                    <div style="font-size:0.7em; font-weight:bold; color:var(--gold); font-family:'Montserrat'">${cat}</div>
+                    <div style="font-size:0.7em; color:var(--gold); font-weight:900; font-family:'Montserrat'">${currentLang === 'fr' ? m.categorie : m.categorie_en}</div>
                     <h2 class="msg-title">${titre}</h2>
-                    <div class="msg-content" style="line-height:1.7; font-size:0.95em; text-align:justify; white-space:pre-wrap;">${texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                    <div style="line-height:1.8; text-align:justify; font-size:0.95em;">${texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
                     <button class="copy-btn" style="margin-top:20px" onclick="copier(this, ${m.id})">${translations[currentLang].share}</button>
                 </div>`;
         }
@@ -175,7 +167,7 @@
             btn.classList.add('active');
             document.getElementById('detail-archive').innerHTML = "";
             
-            // ORDRE ANCIEN EN HAUT : a.id - b.id
+            // ARCHIVES : PLUS ANCIEN EN HAUT (a.id - b.id)
             const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === m)
                                            .sort((a, b) => a.id - b.id);
 
@@ -187,7 +179,7 @@
             const msg = tousLesMessages.find(m => m.id === id);
             document.getElementById('titres-liste').innerHTML = "";
             document.getElementById('detail-archive').innerHTML = `
-                <span class="back-arrow" onclick="document.getElementById('detail-archive').innerHTML=''; voirMois(${(new Date(msg.date).getMonth()+1)}, document.querySelector('.month-btn.active'))">${translations[currentLang].back}</span>
+                <span class="back-arrow" onclick="voirMois(${(new Date(msg.date).getMonth()+1)}, document.querySelector('.month-btn.active'))">⬅</span>
                 ${creerCard(msg)}
             `;
         }
