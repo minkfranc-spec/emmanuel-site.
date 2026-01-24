@@ -11,54 +11,54 @@
         * { box-sizing: border-box; scroll-behavior: smooth; }
         body { margin: 0; padding: 0; background: var(--light); color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
 
-        /* MAINTENANCE - PRIORITÉ ABSOLUE */
+        /* ÉCRAN MAINTENANCE */
         #maintenance-screen { position: fixed; inset: 0; background: white; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .logo-pulse { font-family: 'Montserrat'; font-size: 2em; font-weight: 900; color: var(--gold); letter-spacing: 8px; text-transform: uppercase; animation: pulse 2s infinite; border-y: 2px solid var(--gold); padding: 15px; }
+        .logo-pulse { font-family: 'Montserrat'; font-size: 2em; font-weight: 900; color: var(--gold); letter-spacing: 8px; text-transform: uppercase; animation: pulse 2s infinite; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); padding: 15px; }
         
-        /* ANIMATIONS */
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.03); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
         .fade-in { animation: fadeIn 0.8s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* RECHERCHE - LOUPE DISCRÈTE */
-        .search-container { width: 85%; max-width: 380px; margin: 20px auto; position: relative; }
-        .search-input { width: 100%; padding: 10px 15px; border-radius: 20px; border: 1px solid #eee; outline: none; font-size: 0.8em; font-family: 'Montserrat'; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .search-input:focus { border-color: var(--gold); }
+        /* RECHERCHE DISCRÈTE */
+        .search-container { width: 85%; max-width: 350px; margin: 20px auto; position: relative; }
+        .search-input { width: 100%; padding: 8px 15px; border-radius: 20px; border: 1px solid #eee; outline: none; font-size: 0.8em; font-family: 'Montserrat'; transition: 0.3s; }
 
-        /* CARTES ET BOUTONS */
+        /* CARTES */
         .message-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 92%; max-width: 500px; margin: 25px auto; text-align: left; border-top: 5px solid var(--gold); }
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 15px; object-fit: cover; max-height: 280px; }
         .msg-title { font-family: 'Montserrat'; font-weight: 900; text-transform: uppercase; font-size: 1.1em; text-align: center; margin-bottom: 15px; }
         
-        .copy-btn { font-family: 'Montserrat'; background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; transition: all 0.2s; text-transform: uppercase; font-size: 0.9em; }
-        .copy-btn:active { transform: scale(0.96); background: var(--gold); color: white; }
+        /* BOUTON COPIE ANIME */
+        .copy-btn { font-family: 'Montserrat'; background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; transition: 0.2s; text-transform: uppercase; }
+        .copy-btn:active { transform: scale(0.95); background: var(--gold); color: white; }
 
-        /* ARCHIVES CHRONOLOGIQUES */
+        /* ARCHIVES */
         .archive-section { display: none; width: 92%; max-width: 500px; margin: 25px auto; }
         .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .month-btn { font-family: 'Montserrat'; padding: 10px; border-radius: 8px; border: 1px solid var(--gold); background: white; color: var(--gold); cursor: pointer; font-size: 9px; font-weight: 900; }
         .month-btn.active { background: var(--gold); color: white; }
-        .titre-archive-item { background: white; padding: 15px; margin: 8px 0; border-radius: 8px; border: 1px solid #f0f0f0; cursor: pointer; font-family: 'Montserrat'; font-size: 0.85em; text-align: left; font-weight: 700; }
+        .titre-archive-item { background: white; padding: 15px; margin: 8px 0; border-radius: 8px; border: 1px solid #f0f0f0; cursor: pointer; font-family: 'Montserrat'; font-size: 0.85em; text-align: left; font-weight: 700; transition: 0.2s; }
+        .titre-archive-item:hover { border-color: var(--gold); }
         
-        .back-arrow { cursor: pointer; font-size: 1.8em; color: var(--gold); margin-bottom: 10px; display: inline-block; transition: 0.3s; }
+        .back-arrow { cursor: pointer; font-size: 1.8em; color: var(--gold); margin-bottom: 10px; display: inline-block; }
 
-        /* FLOAT WHATSAPP */
-        .float-wa { position: fixed; right: 20px; bottom: 25px; z-index: 1000; text-decoration: none; }
-        .wa-circle { background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        /* WHATSAPP FLOAT */
+        .float-wa { position: fixed; right: 20px; bottom: 25px; z-index: 1000; }
+        .wa-circle { background: #25D366; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-        #site-wrapper { display: block; }
+        #site-wrapper { display: none; }
     </style>
 </head>
 <body class="fade-in">
 
     <div id="maintenance-screen">
         <div class="logo-pulse">EMMANUEL</div>
-        <p style="font-family: 'Montserrat'; font-size: 0.8em; letter-spacing: 2px; margin-top: 20px;">MAINTENANCE EN COURS</p>
+        <p style="font-family: 'Montserrat'; font-size: 0.7em; letter-spacing: 2px; margin-top: 20px; color: gray;">MAINTENANCE EN COURS</p>
     </div>
 
     <div id="site-wrapper">
         <a href="https://wa.me/237678356844" target="_blank" class="float-wa">
-            <div class="wa-circle"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="32"></div>
+            <div class="wa-circle"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30"></div>
         </a>
 
         <div style="margin: 20px 0;">
@@ -67,7 +67,7 @@
         </div>
 
         <h1 style="font-family: 'Montserrat'; font-weight: 900; letter-spacing: 3px;">EMMANUEL</h1>
-        <p id="intro-txt" style="font-size: 0.9em; font-style: italic; color: gray; padding: 0 25px;"></p>
+        <p id="intro-txt" style="font-size: 0.85em; font-style: italic; color: gray; padding: 0 25px;"></p>
 
         <div class="search-container">
             <input type="text" id="searchBar" class="search-input" onkeyup="filtrer()" placeholder="🔍 Rechercher...">
@@ -91,7 +91,7 @@
     </div>
 
     <script>
-        const MAINTENANCE = true; // ACTIVÉ PAR DÉFAUT
+        const MAINTENANCE = true; 
         let currentLang = 'fr';
         let tousLesMessages = [];
 
@@ -106,9 +106,15 @@
         };
 
         function checkMaintenance() {
-            if (MAINTENANCE) {
+            // VERIFICATION SECRETTE : Si l'URL contient ?admin, on passe !
+            const isAdmin = window.location.search.includes('admin');
+            
+            if (MAINTENANCE && !isAdmin) {
                 document.getElementById('maintenance-screen').style.display = 'flex';
                 document.getElementById('site-wrapper').style.display = 'none';
+            } else {
+                document.getElementById('maintenance-screen').style.display = 'none';
+                document.getElementById('site-wrapper').style.display = 'block';
             }
         }
 
@@ -118,7 +124,7 @@
                 const res = await fetch('data.json?v=' + Date.now());
                 tousLesMessages = await res.json();
                 setLanguage('fr');
-            } catch (e) { console.error("Erreur de chargement des données."); }
+            } catch (e) { console.error("Erreur de chargement."); }
         }
 
         function setLanguage(lang) {
@@ -135,7 +141,7 @@
             const autorises = tousLesMessages.filter(m => {
                 const d = new Date(m.date); d.setHours(1, 30, 0);
                 return now >= d;
-            }).sort((a,b) => b.id - a.id); // Accueil : Récent en haut
+            }).sort((a,b) => b.id - a.id);
             document.getElementById('flux-messages').innerHTML = autorises.slice(0, 3).map(m => creerCard(m)).join('');
         }
 
@@ -167,7 +173,7 @@
             btn.classList.add('active');
             document.getElementById('detail-archive').innerHTML = "";
             
-            // ARCHIVES : PLUS ANCIEN EN HAUT (a.id - b.id)
+            // ARCHIVES : PLUS ANCIEN EN HAUT
             const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === m)
                                            .sort((a, b) => a.id - b.id);
 
