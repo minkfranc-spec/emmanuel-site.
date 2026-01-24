@@ -3,181 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMMANUEL | Admin Console</title>
+    <title>EMMANUEL | La Parole de Dieu</title>
+    <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/p9p39r.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --dark: #1a1a1a; --light: #fdfdfd; --gray: #95a5a6; --red: #e74c3c; --green: #2ecc71; }
-        body { font-family: 'Lora', serif; background: var(--light); color: var(--dark); margin: 0; padding: 20px; }
-        .admin-container { max-width: 1000px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border-top: 8px solid var(--gold); }
-        
-        .header { text-align: center; margin-bottom: 30px; }
-        h1 { font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 3px; margin: 0; font-size: 1.8em; }
+        :root { --gold: #d4af37; --dark: #1a1a1a; --light: #fdfdfd; --red: #ff0000; --green: #27ae60; }
+        body { margin: 0; font-family: 'Lora', serif; background: var(--light); text-align: center; }
 
-        /* --- NOUVEAU: PANNEAU DE MAINTENANCE --- */
-        .maintenance-panel { background: #f9f9f9; border: 2px solid #eee; border-radius: 15px; padding: 20px; margin-bottom: 30px; text-align: center; }
-        .m-status { font-family: 'Montserrat'; font-size: 0.8em; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; }
-        .status-badge { padding: 5px 15px; border-radius: 20px; color: white; margin-left: 10px; }
-        .status-on { background: var(--green); }
-        .status-off { background: var(--red); }
-        
-        .m-controls { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; align-items: center; }
-        .pass-input { padding: 10px; border-radius: 8px; border: 2px solid #ddd; font-family: 'Montserrat'; width: 150px; text-align: center; }
-        .m-msg-input { width: 100%; max-width: 400px; padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
-        
-        .btn-m { font-family: 'Montserrat'; font-weight: 900; padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; color: white; text-transform: uppercase; transition: 0.3s; }
-        .btn-green { background: var(--green); box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); }
-        .btn-red { background: var(--red); box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
-        .btn-m:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        /* --- PANNEAU ADMIN SECRET --- */
+        #admin-panel { 
+            display: none; background: var(--dark); color: white; padding: 20px; 
+            border-bottom: 5px solid var(--gold); position: sticky; top: 0; z-index: 10000;
+        }
+        .admin-flex { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; align-items: center; }
+        .btn-status { 
+            font-family: 'Montserrat'; font-weight: 900; padding: 10px 20px; 
+            border-radius: 5px; border: none; cursor: pointer; color: white; text-transform: uppercase;
+        }
+        .btn-vrai { background: var(--red); }
+        .btn-faux { background: var(--green); }
+        .admin-input { padding: 8px; border-radius: 4px; border: none; font-family: 'Montserrat'; width: 120px; text-align: center; }
+        .json-box { width: 90%; max-width: 600px; height: 100px; margin-top: 15px; font-family: monospace; font-size: 10px; }
 
-        /* --- RESTE DU STYLE EXISTANT --- */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .full-width { grid-column: span 2; }
-        .field-box { background: #fcfcfc; padding: 15px; border-radius: 10px; border: 1px solid #f0f0f0; }
-        label { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 8px; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; font-family: 'Lora', serif; font-size: 0.95em; box-sizing: border-box; }
-        textarea { height: 120px; }
-        .lang-tag { float: right; font-size: 0.7em; background: #eee; padding: 2px 6px; border-radius: 4px; color: #666; }
-        .btn-zone { margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
-        .btn-main { font-family: 'Montserrat', sans-serif; font-weight: 900; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; text-transform: uppercase; transition: 0.3s; font-size: 0.8em; color: white; }
-        .btn-add { background: var(--dark); }
-        .btn-copy { background: var(--gold); }
-        #json-output { margin-top: 30px; background: #272822; color: #f8f8f2; padding: 20px; border-radius: 10px; font-family: monospace; font-size: 0.85em; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
-        .alert { text-align: center; color: #27ae60; font-weight: bold; margin: 15px 0; display: none; }
+        /* --- MAINTENANCE --- */
+        #maintenance-screen { 
+            display: none; position: fixed; inset: 0; background: white; 
+            z-index: 9999; flex-direction: column; justify-content: center; align-items: center; 
+        }
+        .m-card { padding: 40px; border: 4px solid var(--gold); border-radius: 20px; max-width: 400px; }
+
+        #site-content { display: block; padding: 20px; }
     </style>
 </head>
 <body>
 
-<div class="admin-container">
-    <div class="header">
-        <h1>🏛️ EMMANUEL CONSOLE</h1>
+    <div id="admin-panel">
+        <div class="admin-flex">
+            <span style="font-family: 'Montserrat'; font-weight: 900; color: var(--gold);">CONTRÔLE :</span>
+            <input type="password" id="pass-check" class="admin-input" placeholder="CODE">
+            <button class="btn-status btn-vrai" onclick="setMaint(true)">🔴 ACTIVER MAINTENANCE (TRUE)</button>
+            <button class="btn-status btn-faux" onclick="setMaint(false)">🟢 COUPER MAINTENANCE (FALSE)</button>
+        </div>
+        <textarea id="json-copy" class="json-box" readonly placeholder="Le JSON à copier sur GitHub s'affichera ici..."></textarea>
+        <p style="font-size: 10px; color: var(--gold); margin: 5px 0;">1. Clique sur un bouton | 2. Copie le texte | 3. Colle dans data.json sur GitHub</p>
     </div>
 
-    <div class="maintenance-panel">
-        <div class="m-status">
-            ÉTAT DU SITE : <span id="status-label" class="status-badge status-off">MAINTENANCE</span>
-        </div>
-        <div class="m-controls">
-            <input type="password" id="admin-pass" class="pass-input" placeholder="CODE SECRET">
-            <input type="text" id="m-message" class="m-msg-input" placeholder="Message de maintenance (ex: Embellissement en cours...)">
-            <button class="btn-m btn-green" onclick="setMaintenance(false)">🔓 LIVE</button>
-            <button class="btn-m btn-red" onclick="setMaintenance(true)">🔒 LOCK</button>
-        </div>
-        <p style="font-size: 0.7em; color: var(--gray); margin-top: 10px;">Le code généré ci-dessous inclura l'état de la maintenance pour data.json</p>
-    </div>
-
-    <div class="form-grid">
-        <div class="field-box">
-            <label>ID <span class="lang-tag">Unique</span></label>
-            <input type="number" id="msg-id" placeholder="Ex: 10">
-        </div>
-        <div class="field-box">
-            <label>Date <span class="lang-tag">Global</span></label>
-            <input type="date" id="msg-date">
-        </div>
-
-        <div class="field-box full-width">
-            <label>Image URL <span class="lang-tag">Catbox / ImgBB</span></label>
-            <input type="text" id="msg-image" placeholder="https://files.catbox.moe/...">
-        </div>
-
-        <div class="field-box">
-            <label>Titre <span class="lang-tag">FR</span></label>
-            <input type="text" id="msg-titre-fr" placeholder="Titre en français">
-        </div>
-        <div class="field-box">
-            <label>Title <span class="lang-tag">EN</span></label>
-            <input type="text" id="msg-titre-en" placeholder="Title in English">
-        </div>
-
-        <div class="field-box">
-            <label>Message <span class="lang-tag">FR</span></label>
-            <textarea id="msg-texte-fr" placeholder="Texte français..."></textarea>
-        </div>
-        <div class="field-box">
-            <label>Message Content <span class="lang-tag">EN</span></label>
-            <textarea id="msg-texte-en" placeholder="English text..."></textarea>
+    <div id="maintenance-screen">
+        <div class="m-card">
+            <h1 style="font-family: 'Montserrat'; color: var(--gold);">EMMANUEL</h1>
+            <p>Le site est actuellement en embellissement. ✨</p>
+            <p style="font-style: italic; color: #888;">"Préparez le chemin du Seigneur."</p>
         </div>
     </div>
 
-    <div id="alert" class="alert">✨ Opération réussie !</div>
-
-    <div class="btn-zone">
-        <button class="btn-main btn-add" onclick="ajouter()">➕ Ajouter Message</button>
-        <button class="btn-main btn-copy" onclick="copier()">📋 Copier JSON Complet</button>
+    <div id="site-content">
+        <h1 style="font-family: 'Montserrat'; letter-spacing: 5px;">EMMANUEL</h1>
+        <div id="messages-list">
+            <p>Chargement de la Parole...</p>
+        </div>
     </div>
 
-    <div id="json-output">{ "maintenance": true, "m_message": "", "messages": [] }</div>
-</div>
+    <script>
+        let config = { maintenance: true, messages: [] };
+        const SECRET = "2026"; // 🔑 TON CODE
 
-<script>
-    let siteData = {
-        maintenance: true,
-        m_message: "Embellissement en cours...",
-        messages: []
-    };
-
-    const SECRET_CODE = "2026"; // 🔑 CHANGE TON CODE ICI
-
-    function setMaintenance(isLocked) {
-        const pass = document.getElementById('admin-pass').value;
-        if(pass !== SECRET_CODE) {
-            alert("Code secret incorrect ! ❌");
-            return;
+        // 1. Détecter le mode ?admin
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('admin')) {
+            document.getElementById('admin-panel').style.display = 'block';
         }
 
-        siteData.maintenance = isLocked;
-        siteData.m_message = document.getElementById('m-message').value || "Embellissement en cours...";
-        
-        updateUI();
-        alert(isLocked ? "Site verrouillé ! 🔒" : "Site ouvert au public ! 🔓");
-    }
-
-    function updateUI() {
-        const label = document.getElementById('status-label');
-        if(siteData.maintenance) {
-            label.innerText = "MAINTENANCE";
-            label.className = "status-badge status-off";
-        } else {
-            label.innerText = "LIVE (OUVERT)";
-            label.className = "status-badge status-on";
-        }
-        document.getElementById('json-output').innerText = JSON.stringify(siteData, null, 4);
-    }
-
-    function ajouter() {
-        const msg = {
-            id: parseInt(document.getElementById('msg-id').value),
-            date: document.getElementById('msg-date').value,
-            titre: document.getElementById('msg-titre-fr').value,
-            titre_en: document.getElementById('msg-titre-en').value,
-            texte: document.getElementById('msg-texte-fr').value,
-            texte_en: document.getElementById('msg-texte-en').value,
-            image: document.getElementById('msg-image').value
-        };
-
-        if(!msg.id || !msg.date || !msg.titre) {
-            alert("Remplis les champs obligatoires !");
-            return;
+        // 2. Charger les données
+        async function loadData() {
+            try {
+                const res = await fetch('data.json?v=' + Date.now());
+                config = await res.json();
+                
+                // Vérifier la maintenance
+                if (config.maintenance && !urlParams.has('admin')) {
+                    document.getElementById('maintenance-screen').style.display = 'flex';
+                    document.getElementById('site-content').style.display = 'none';
+                }
+                
+                renderMessages();
+                updateJsonBox();
+            } catch (e) { console.log("Erreur de lecture data.json"); }
         }
 
-        siteData.messages.push(msg);
-        siteData.messages.sort((a, b) => b.id - a.id);
-        
-        updateUI();
-        document.getElementById('alert').style.display = 'block';
-        setTimeout(() => { document.getElementById('alert').style.display = 'none'; }, 3000);
-        document.getElementById('msg-id').value = msg.id + 1;
-    }
+        // 3. Changer le statut (Admin seulement)
+        function setMaint(val) {
+            if (document.getElementById('pass-check').value !== SECRET) {
+                alert("Code incorrect ! ❌");
+                return;
+            }
+            config.maintenance = val;
+            updateJsonBox();
+            alert("Statut changé en " + val + " ! Copie le JSON en bas pour GitHub. ✨");
+        }
 
-    function copier() {
-        const data = document.getElementById('json-output').innerText;
-        navigator.clipboard.writeText(data).then(() => {
-            alert("JSON copié ! Colle le tout dans ton fichier data.json ✨");
-        });
-    }
+        function updateJsonBox() {
+            document.getElementById('json-copy').value = JSON.stringify(config, null, 4);
+        }
 
-    // Initialisation
-    updateUI();
-</script>
+        function renderMessages() {
+            const list = document.getElementById('messages-list');
+            if (config.messages.length === 0) {
+                list.innerHTML = "<p>Aucun message pour le moment.</p>";
+                return;
+            }
+            list.innerHTML = config.messages.map(m => `
+                <div style="border: 1px solid #eee; margin: 10px; padding: 15px; border-radius: 10px;">
+                    <h2 style="font-family: 'Montserrat';">${m.titre}</h2>
+                    <p>${m.texte}</p>
+                </div>
+            `).join('');
+        }
+
+        loadData();
+    </script>
 </body>
 </html>
