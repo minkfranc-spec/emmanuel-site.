@@ -107,6 +107,33 @@
     </div>
 
     <script>
+        /* 🔴⚪ --- INTERRUPTEUR DE MAINTENANCE --- 🔴⚪ */
+        const MAINTENANCE = false; // Mettre à 'true' pour activer la maintenance
+        const ADMIN_PWD = "emmanuel777";
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdmin = urlParams.get('admin') === ADMIN_PWD;
+
+        if (MAINTENANCE && !isAdmin) {
+            window.addEventListener('DOMContentLoaded', () => {
+                document.body.innerHTML = `
+                    <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #fdfdfd; font-family: 'Montserrat', sans-serif; padding: 20px;">
+                        <div style="border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 40px; text-align: center; animation: welcomeEntry 2s forwards;">
+                            <h1 style="color: #d4af37; font-size: 1.8em; letter-spacing: 5px; margin-bottom: 20px;">EMMANUEL</h1>
+                            <p style="color: #2c3e50; font-family: 'Lora', serif; font-style: italic; font-size: 1.2em;">
+                                Le sanctuaire est en cours d'embellissement... 🕯️
+                            </p>
+                            <p style="color: #95a5a6; font-size: 0.9em; margin-top: 20px; text-transform: uppercase; letter-spacing: 2px;">
+                                De retour dans quelques instants. Merci de votre patience.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            });
+            throw new Error("Mode Maintenance Activé");
+        }
+        /* 🔴⚪ --- FIN DU SCRIPT MAINTENANCE --- 🔴⚪ */
+
         let currentLang = 'fr';
         let tousLesMessages = [];
         
