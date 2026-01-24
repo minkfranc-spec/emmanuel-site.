@@ -11,30 +11,31 @@
         * { box-sizing: border-box; scroll-behavior: smooth; }
         body { margin: 0; padding: 0; background: var(--light); color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; position: relative; }
 
-        /* --- MAINTENANCE (PROPRE & CENTRÉ) --- */
+        /* --- MAINTENANCE (CENTRÉ & DORÉ) --- */
         #maintenance-screen { 
             position: fixed; inset: 0; 
-            background: radial-gradient(circle, #ffffff 0%, #f7f7f7 100%); 
-            z-index: 99999; display: none; 
+            background: radial-gradient(circle, #ffffff 0%, #e0e0e0 100%); 
+            z-index: 99999; display: flex; /* Toujours flex pour centrage */
             flex-direction: column; justify-content: center; align-items: center; 
-            padding: 40px; text-align: center; 
+            padding: 20px; text-align: center; 
         }
         .maintenance-card { 
-            max-width: 500px; padding: 40px; background: white; 
-            border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); 
-            border: 1px solid #f0f0f0;
+            max-width: 450px; width: 90%; padding: 40px 25px; background: white; 
+            border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
+            border: 4px solid var(--gold); /* Bordure dorée prononcée */
+            position: relative;
         }
         .logo-pulse { 
-            font-family: 'Montserrat'; font-size: 2.2em; font-weight: 800; 
-            color: var(--gold); letter-spacing: 8px; text-transform: uppercase; 
+            font-family: 'Montserrat'; font-size: 2em; font-weight: 800; 
+            color: var(--gold); letter-spacing: 6px; text-transform: uppercase; 
             animation: pulse 2.5s infinite; border-top: 2px solid var(--gold); 
-            border-bottom: 2px solid var(--gold); padding: 15px; margin-bottom: 30px; 
+            border-bottom: 2px solid var(--gold); padding: 12px; margin-bottom: 25px; 
             display: inline-block;
         }
         
         /* --- ANIMATIONS --- */
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.02); } 100% { opacity: 1; transform: scale(1); } }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
         .fade-in { animation: fadeIn 0.8s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -67,10 +68,10 @@
         .titre-archive-item { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #f0f0f0; cursor: pointer; font-family: 'Montserrat'; font-size: 0.8em; text-align: left; font-weight: 600; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
         .titre-archive-item:hover { border-left-color: var(--gold); transform: translateX(3px); }
         
-        /* Bouton Retour (en bas) */
-        .back-arrow-container { display: flex; align-items: center; justify-content: center; margin-top: 20px; padding: 15px; cursor: pointer; color: var(--dark); transition: 0.3s; background: #f9f9f9; border-radius: 30px; width: 200px; margin-left: auto; margin-right: auto; }
-        .back-arrow-icon { font-size: 1.2em; color: var(--gold); margin-right: 8px; }
-        .back-text { font-family: 'Montserrat'; font-weight: 700; font-size: 0.75em; text-transform: uppercase; letter-spacing: 1px; }
+        /* Bouton Retour animée */
+        .back-arrow-container { display: flex; align-items: center; justify-content: center; margin-top: 25px; padding: 15px; cursor: pointer; color: var(--dark); transition: 0.3s; background: white; border: 1px solid #eee; border-radius: 30px; width: 180px; margin-left: auto; margin-right: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .back-arrow-icon { font-size: 1.4em; color: var(--gold); margin-right: 10px; animation: float 2.5s ease-in-out infinite; } /* Animation flèche */
+        .back-text { font-family: 'Montserrat'; font-weight: 700; font-size: 0.7em; text-transform: uppercase; letter-spacing: 1px; }
 
         /* --- FLOTTANTS --- */
         .float-container { position: fixed; right: 20px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
@@ -84,7 +85,6 @@
         .float-label { background: white; padding: 6px 12px; border-radius: 8px; font-family: 'Montserrat'; font-size: 0.65em; font-weight: 800; margin-right: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); color: #555; text-transform: uppercase; }
 
         #site-wrapper { display: none; padding-bottom: 50px; }
-        .refresh-info { font-size: 0.8em; color: #888; font-family: 'Montserrat'; font-weight: 600; padding: 25px; }
     </style>
 </head>
 <body class="fade-in">
@@ -92,20 +92,19 @@
     <div id="maintenance-screen">
         <div class="maintenance-card">
             <div class="logo-pulse">EMMANUEL</div>
-            <h2 style="font-family: 'Montserrat'; font-size: 1.4em; color: #333; margin-bottom: 15px;">Embellissement en cours 🕯️</h2>
-            <p style="font-family: 'Lora'; font-style: italic; font-size: 1em; color: #666; line-height: 1.8;">
+            <h2 style="font-family: 'Montserrat'; font-size: 1.3em; color: #333; margin-bottom: 15px;">Embellissement en cours ✨</h2>
+            <p style="font-family: 'Lora'; font-style: italic; font-size: 1.05em; color: #666; line-height: 1.8;">
                 "Préparez le chemin, aplanissez les sentiers."<br><br>
-                Nous travaillons sur l'autel numérique pour une expérience plus lumineuse. Nous revenons vers vous très bientôt.
+                Nous rendons le site plus beau pour votre édification. La Lumière revient bientôt.
             </p>
-            <div style="margin-top: 30px; font-size: 0.8em; font-family: 'Montserrat'; font-weight: 700; color: var(--gold); letter-spacing: 2px;">PAIX ET GRÂCE</div>
+            <div style="margin-top: 30px; font-size: 0.8em; font-family: 'Montserrat'; font-weight: 800; color: var(--gold); letter-spacing: 3px;">PAIX ET GRÂCE</div>
         </div>
     </div>
 
     <div id="site-wrapper">
-        
         <div class="float-container" style="bottom: 85px;">
             <a href="https://wa.me/237678356844" target="_blank" style="text-decoration: none; display: flex; align-items: center;">
-                <div class="float-label" id="wa-label">Écrivez-nous</div>
+                <div class="float-label" id="wa-label">WhatsApp</div>
                 <div class="wa-circle"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30"></div>
             </a>
         </div>
@@ -145,7 +144,7 @@
             <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" style="width:100%; border-radius:5px;">
         </div>
         
-        <div class="refresh-info" id="refresh-txt"></div>
+        <div id="refresh-txt" style="font-size: 0.8em; color: #888; font-family: 'Montserrat'; font-weight: 600; padding: 25px;"></div>
     </div>
 
     <script>
@@ -155,43 +154,20 @@
 
         const translations = {
             fr: { 
-                intro: "La Lumière qui éclaire chaque pas.", 
-                share: "📤 Partager la Bénédiction", 
-                copied: "✨ MESSAGE COPIÉ !", 
-                statT: "COMMUNAUTÉ EMMANUEL", 
-                statS: "LECTEURS PAR PAYS ET VUES", 
-                back: "RETOUR LISTE",
-                refresh: "🔄 Actualisation automatique : 15 min",
-                waLabel: "Écrivez-nous",
-                topLabel: "Haut"
+                intro: "La Lumière qui éclaire chaque pas.", share: "📤 Partager", copied: "✨ COPIÉ !", 
+                statT: "COMMUNAUTÉ EMMANUEL", statS: "LECTEURS PAR PAYS ET VUES", back: "RETOUR LISTE",
+                refresh: "🔄 Actualisation : 15 min", waLabel: "WhatsApp", topLabel: "Haut"
             },
             en: { 
-                intro: "The Light that guides every step.", 
-                share: "📤 Share the Blessing", 
-                copied: "✨ MESSAGE COPIED!", 
-                statT: "EMMANUEL COMMUNITY", 
-                statS: "READERS BY COUNTRY AND VIEWS", 
-                back: "BACK TO LIST",
-                refresh: "🔄 Auto-refresh: 15 min",
-                waLabel: "Contact us",
-                topLabel: "Top"
+                intro: "The Light that guides every step.", share: "📤 Share", copied: "✨ COPIED!", 
+                statT: "EMMANUEL COMMUNITY", statS: "READERS BY COUNTRY", back: "BACK TO LIST",
+                refresh: "🔄 Auto-refresh: 15 min", waLabel: "WhatsApp", topLabel: "Top"
             }
         };
 
         const moisTrad = {
             fr: ["JAN", "FÉV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOÛT", "SEP", "OCT", "NOV", "DÉC"],
             en: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
-        };
-
-        setTimeout(() => { window.location.reload(); }, 900000);
-
-        window.onscroll = function() {
-            const container = document.getElementById("scrollTopContainer");
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-                container.style.display = "flex";
-            } else {
-                container.style.display = "none";
-            }
         };
 
         function checkMaintenance() {
@@ -218,22 +194,14 @@
             currentLang = lang;
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + lang).classList.add('active');
-            
             document.getElementById('intro-txt').innerText = translations[lang].intro;
             document.getElementById('stat-title').innerText = translations[lang].statT;
             document.getElementById('stat-sub').innerText = translations[lang].statS;
-            document.getElementById('searchBar').placeholder = lang === 'fr' ? "🔍 Rechercher..." : "🔍 Search...";
             document.getElementById('refresh-txt').innerText = translations[lang].refresh;
             document.getElementById('wa-label').innerText = translations[lang].waLabel;
             document.getElementById('top-label').innerText = translations[lang].topLabel;
-
             afficherAccueil();
             genererMois();
-        }
-
-        function cleanCategory(cat) {
-            if (!cat) return "";
-            return cat.replace(/[^\p{L}\p{N}\s-]/gu, '').trim();
         }
 
         function afficherAccueil() {
@@ -248,12 +216,9 @@
         function creerCard(m) {
             const titre = currentLang === 'fr' ? m.titre : m.titre_en;
             const texte = currentLang === 'fr' ? m.texte : m.texte_en;
-            const catRaw = currentLang === 'fr' ? m.categorie : m.categorie_en;
-            
             return `
                 <div class="message-card fade-in">
                     ${m.image ? `<img src="${m.image}" class="msg-img">` : ''}
-                    <div class="msg-cat">${cleanCategory(catRaw)}</div>
                     <h2 class="msg-title">${titre}</h2>
                     <div class="msg-content">${texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
                     <button class="copy-btn" onclick="copier(this, ${m.id})">${translations[currentLang].share}</button>
@@ -263,35 +228,40 @@
         function toggleArchives() {
             const s = document.getElementById('archiveSection');
             s.style.display = (s.style.display === 'block') ? 'none' : 'block';
-            if(s.style.display === 'block') {
-                document.getElementById('titres-liste').innerHTML = "";
-                document.getElementById('detail-archive').innerHTML = "";
-                document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
-            }
         }
 
         function genererMois() {
             document.getElementById('monthGrid').innerHTML = moisTrad[currentLang].map((n, i) => 
-                `<button class="month-btn" onclick="voirMois(${i+1}, this)">${n}</button>`).join('');
+                `<button class="month-btn" id="mbtn-${i+1}" onclick="voirMois(${i+1}, this)">${n}</button>`).join('');
         }
 
         function voirMois(m, btn) {
+            const titresDiv = document.getElementById('titres-liste');
+            const detailDiv = document.getElementById('detail-archive');
+
+            // SI DÉJÀ ACTIF -> ON FERME
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                titresDiv.innerHTML = "";
+                detailDiv.innerHTML = "";
+                return;
+            }
+
+            // SINON -> ON OUVRE
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            document.getElementById('detail-archive').innerHTML = "";
-            document.getElementById('titres-liste').innerHTML = "";
+            detailDiv.innerHTML = "";
             
             const now = new Date();
             const filtered = tousLesMessages.filter(msg => {
                 const d = new Date(msg.date);
-                d.setHours(1, 30, 0);
                 return (d.getMonth() + 1) === m && now >= d;
             }).sort((a, b) => a.id - b.id);
 
             if(filtered.length === 0) {
-                 document.getElementById('titres-liste').innerHTML = `<p style="color:#aaa; font-size:0.8em; padding:10px;">Aucun message disponible.</p>`;
+                titresDiv.innerHTML = `<p style="color:#aaa; font-size:0.8em; padding:10px;">Aucun message disponible.</p>`;
             } else {
-                document.getElementById('titres-liste').innerHTML = filtered.map(msg => 
+                titresDiv.innerHTML = filtered.map(msg => 
                     `<div class="titre-archive-item" onclick="voirDetail(${msg.id})">
                         📖 ${currentLang === 'fr' ? msg.titre : msg.titre_en}
                      </div>`).join('');
@@ -301,34 +271,26 @@
         function voirDetail(id) {
             const msg = tousLesMessages.find(m => m.id === id);
             document.getElementById('titres-liste').innerHTML = "";
-            // BOUTON RETOUR PLACÉ EN BAS ICI :
             document.getElementById('detail-archive').innerHTML = `
                 ${creerCard(msg)}
-                <div class="back-arrow-container" onclick="voirMois(${(new Date(msg.date).getMonth()+1)}, document.querySelector('.month-btn.active'))">
+                <div class="back-arrow-container" onclick="voirMois(${(new Date(msg.date).getMonth()+1)}, document.getElementById('mbtn-${new Date(msg.date).getMonth()+1}'))">
                     <span class="back-arrow-icon">⬅</span>
                     <span class="back-text">${translations[currentLang].back}</span>
                 </div>
             `;
-            window.scrollTo(0, document.getElementById('archiveSection').offsetTop - 20);
         }
 
         function copier(btn, id) {
             const m = tousLesMessages.find(x => x.id == id);
             navigator.clipboard.writeText(currentLang === 'fr' ? m.texte : m.texte_en);
-            const memo = btn.innerText; btn.innerText = translations[currentLang].copied;
-            btn.style.background = "#d4af37"; btn.style.color = "white";
-            setTimeout(() => { 
-                btn.innerText = memo; 
-                btn.style.background = "white"; 
-                btn.style.color = "#d4af37";
-            }, 2000);
+            btn.innerText = translations[currentLang].copied;
+            setTimeout(() => { btn.innerText = translations[currentLang].share; }, 2000);
         }
 
-        function filtrer() {
-            const q = document.getElementById('searchBar').value.toLowerCase();
-            const filtered = tousLesMessages.filter(m => (currentLang === 'fr' ? m.titre + m.texte : m.titre_en + m.texte_en).toLowerCase().includes(q));
-            document.getElementById('flux-messages').innerHTML = filtered.slice(0, 5).map(m => creerCard(m)).join('');
-        }
+        window.onscroll = function() {
+            const container = document.getElementById("scrollTopContainer");
+            container.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "flex" : "none";
+        };
 
         charger();
     </script>
