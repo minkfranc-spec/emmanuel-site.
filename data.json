@@ -1,92 +1,278 @@
 [
+{
+    "id": 33,
+    "date": "2026-02-18",
+    "categorie": "ENTREPRENEURIAT, FOI, POTENTIEL",
+    "categorie_en": "ENTREPRENEURSHIP, FAITH, POTENTIAL",
+    "titre": "🦅 L'AUDACE DE BÂTIR 🦅",
+    "titre_en": "🦅 THE BOLDNESS TO BUILD 🦅",
+    "image": "",
+    "texte": "Tu n'as pas seulement été créé pour occuper un poste, tu as été créé pour libérer un potentiel. 🛠️\n\nL'auto-emploi n'est pas un manque d'option, c'est le choix de devenir un canal direct de la provision de Dieu.\n\n**Celui qui attend qu'on l'embauche dépend de la vision d'un homme ; celui qui entreprend dépend de la vision du Créateur. 💎**\n\nNe méprise pas les faibles commencements, car c'est dans la petite semence que Dieu a caché la forêt.\n\n**Ton entreprise est un ministère où tes produits et services sont les instruments de ta prédication. 💎**",
+    "texte_en": "You were not just created to fill a position, you were created to release a potential. 🛠️\n\nSelf-employment is not a lack of options, it is the choice to become a direct channel of God's provision.\n\n**He who waits to be hired depends on the vision of a man; he who undertakes depends on the vision of the Creator. 💎**\n\nDo not despise small beginnings, for it is in the small seed that God has hidden the forest.\n\n**Your business is a ministry where your products and services are the instruments of your preaching. 💎**"
+  },
   {
-    "id": 16,
-    "date": "2026-02-02",
+    "id": 32,
+    "date": "2026-02-17",
+    "categorie": "IDENTITÉ, MISSION, PRÉPARATION",
+    "categorie_en": "IDENTITY, MISSION, PREPARATION",
+    "titre": "🚪 LA PORTE DE TA DESTINÉE 🚪",
+    "titre_en": "🚪 THE DOOR TO YOUR DESTINY 🚪",
+    "image": "",
+    "texte": "Ne cherche pas seulement un travail pour remplir ton assiette, cherche ta place pour accomplir ta mission. 💼\n\nLe chômage n'est pas une absence de valeur, c'est une saison de préparation pour une plus grande responsabilité.\n\n**Celui qui se voit comme un demandeur d'emploi mendie une faveur, mais celui qui se voit comme une solution attire son futur employeur. 💎**\n\nTon CV contient tes compétences, mais c'est ton onction qui ouvrira les portes que les hommes ont fermées.\n\n**Dieu ne te conduit pas vers un salaire, Il te positionne là où ton talent glorifiera Son Nom. 💎**",
+    "texte_en": "Do not just look for a job to fill your plate, look for your place to accomplish your mission. 💼\n\nUnemployment is not an absence of value, it is a season of preparation for greater responsibility.\n\n**He who sees himself as a job seeker begs for a favor, but he who sees himself as a solution attracts his future employer. 💎**\n\nYour CV contains your skills, but it is your anointing that will open the doors that men have closed.\n\n**God does not lead you toward a salary, He positions you where your talent will glorify His Name. 💎**"
+  },
+  {
+    "id": 31,
+    "date": "2026-02-16",
+    "categorie": "SAGESSE, MAÎTRISE, GESTION",
+    "categorie_en": "WISDOM, MASTERY, MANAGEMENT",
+    "titre": "⚖️ L'ÉQUILIBRE DU ROYAUME ⚖️",
+    "titre_en": "⚖️ THE BALANCE OF THE KINGDOM ⚖️",
+    "image": "",
+    "texte": "La voiture ou la maison facilitent ta vie, mais ton compte en banque facilite l'Évangile.\n\n**Si tu possèdes le matériel sans la maîtrise financière, tu deviens l'esclave de tes biens ; si tu maîtrises les finances, tes biens deviennent des outils. 💎**\n\nCherche d'abord la sagesse financière, et le matériel ne sera qu'une conséquence naturelle de ta bonne gestion.",
+    "texte_en": "The car or the house make your life easier, but your bank account facilitates the Gospel.\n\n**If you possess material things without financial mastery, you become a slave to your possessions; if you master finances, your possessions become tools. 💎**\n\nSeek financial wisdom first, and material things will be but a natural consequence of your good management."
+  },
+  {
+    "id": 30,
+    "date": "2026-02-15",
+    "categorie": "FINANCES, HÉRITAGE, ROYAUME",
+    "categorie_en": "FINANCES, HERITAGE, KINGDOM",
+    "titre": "🏗️ L'ALLIANCE DU FLUX ET DU BIEN 🏗️",
+    "titre_en": "🏗️ THE ALLIANCE OF FLOW AND GOOD 🏗️",
+    "image": "",
+    "texte": "L'argent est une semence, le matériel est le fruit. 🍎\n\n**La prospérité financière te donne la vitesse pour saisir les opportunités, tandis que la prospérité matérielle te donne la base pour bâtir un héritage. 💎**\n\nNe cherche pas à accumuler des objets si ton flux financier est tari ; l'objet s'use, mais la semence se multiplie.\n\n**Le matériel est au service de ta mission, mais les finances sont au service de ton onction. 💎**",
+    "texte_en": "Money is a seed, material is the fruit. 🍎\n\n**Financial prosperity gives you the speed to seize opportunities, while material prosperity gives you the foundation to build a legacy. 💎**\n\nDo not seek to accumulate objects if your financial flow is dry; the object wears out, but the seed multiplies.\n\n**Material is at the service of your mission, but finances are at the service of your anointing. 💎**"
+  },
+  {
+    "id": 29,
+    "date": "2026-02-14",
+    "categorie": "SOLUTION, MISSION, INFLUENCE",
+    "categorie_en": "SOLUTION, MISSION, INFLUENCE",
+    "titre": "👑 LE BUT DE L'ABONDANCE 👑",
+    "titre_en": "👑 THE PURPOSE OF ABUNDANCE 👑",
+    "image": "",
+    "texte": "Dieu ne t'enrichit pas pour que tu vives mieux que les autres, mais pour que les autres vivent mieux grâce à toi. 🌍\n\n**La vraie prospérité, c'est avoir assez pour accomplir ta mission sans être freiné par le manque. 💎**\n\nSois un canal, pas un réservoir. L'eau d'un réservoir finit par stagner, l'eau d'un canal reste pure.\n\n**Dieu te bénit pour faire de toi une solution aux problèmes de ton époque. 💎**",
+    "texte_en": "God does not enrich you so that you live better than others, but so that others live better because of you. 🌍\n\n**True prosperity is having enough to accomplish your mission without being held back by lack. 💎**\n\nBe a channel, not a reservoir. Water in a reservoir ends up stagnant, water in a channel remains pure.\n\n**God blesses you to make you a solution to the problems of your time. 💎**"
+  },
+  {
+    "id": 28,
+    "date": "2026-02-13",
+    "categorie": "GÉNÉROSITÉ, INVESTISSEMENT, FUTUR",
+    "categorie_en": "GENEROSITY, INVESTMENT, FUTURE",
+    "titre": "🌽 LA LOI DE LA SEMENCE 🌽",
+    "titre_en": "🌽 THE LAW OF THE SEED 🌽",
+    "image": "",
+    "texte": "On ne récolte pas ce qu'on souhaite, on récolte ce qu'on a planté. 🚜\n\n**La générosité n'est pas une perte, c'est un investissement dans la banque céleste où les crises n'existent pas. 💎**\n\nCelui qui ferme sa main pour garder le peu qu'il a, empêche Dieu d'y déposer le surplus qu'Il a préparé.\n\n**La semence est le seul pont entre ta situation actuelle et ta destination prophétique. 💎**",
+    "texte_en": "We do not reap what we wish for, we reap what we have planted. 🚜\n\n**Generosity is not a loss, it is an investment in the celestial bank where crises do not exist. 💎**\n\nHe who closes his hand to keep the little he has, prevents God from placing the surplus He has prepared there.\n\n**The seed is the only bridge between your current situation and your prophetic destination. 💎**"
+  },
+  {
+    "id": 27,
+    "date": "2026-02-12",
+    "categorie": "SAGESSE, DISCIPLINE, FINANCES",
+    "categorie_en": "WISDOM, DISCIPLINE, FINANCES",
+    "titre": "💰 LA PROSPÉRITÉ EST UNE GESTION 💰",
+    "titre_en": "💰 PROSPERITY IS MANAGEMENT 💰",
+    "image": "",
+    "texte": "Dieu ne donne pas l'abondance à celui qui veut consommer, mais à celui qui sait gérer. 🏦\n\n**L'argent ne vient pas pour remplir tes poches, il vient pour tester ta capacité à administrer les ressources du Roi. 💎**\n\nSi tu n'es pas fidèle dans les centimes, le Ciel ne te confiera jamais les millions.\n\n**La prospérité commence dans l'ordre : un esprit ordonné attire une vie abondante. 💎**",
+    "texte_en": "God does not give abundance to the one who wants to consume, but to the one who knows how to manage. 🏦\n\n**Money does not come to fill your pockets, it comes to test your ability to administer the King's resources. 💎**\n\nIf you are not faithful with pennies, Heaven will never trust you with millions.\n\n**Prosperity begins with order: an ordered spirit attracts an abundant life. 💎**"
+  },
+  {
+    "id": 26,
+    "date": "2026-02-11",
+    "categorie": "BONTÉ, SEMENCE, CŒUR PUR",
+    "categorie_en": "KINDNESS, SEED, PURE HEART",
+    "titre": "🎁 LE BIEN SANS RETOUR HUMAIN 🎁",
+    "titre_en": "🎁 THE GOOD WITHOUT HUMAN RETURN 🎁",
+    "image": "",
+    "texte": "Le bien que tu fais n'appartient pas à celui qui le reçoit. 🕊️\n\n**Faire le bien à autrui, c'est déposer une offrande directement dans la main de Dieu qui se cache derrière le besoin de ton prochain. 💎**\n\nNe regarde pas si l'autre mérite ton aide, regarde si ton Dieu mérite ton obéissance.\n\n**Celui qui sème dans la vie d'un homme en regardant le Ciel récolte une moisson que l'ingratitude humaine ne peut bloquer. ✨🤝**",
+    "texte_en": "The good you do does not belong to the one who receives it. 🕊️\n\n**Doing good to others is placing an offering directly in the hand of God who hides behind the need of your neighbor. 💎**\n\nDo not look at whether the other deserves your help, look at whether your God deserves your obedience.\n\n**He who sows into a person's life while looking at Heaven reaps a harvest that human ingratitude cannot block. ✨🤝**"
+  },
+  {
+    "id": 25,
+    "date": "2026-02-10",
+    "categorie": "LOYAUTÉ, SERVICE, FOI",
+    "categorie_en": "LOYALTY, SERVICE, FAITH",
+    "titre": "🎯 L'OBJECTIF UNIQUE 🎯",
+    "titre_en": "🎯 THE UNIQUE GOAL 🎯",
+    "image": "",
+    "texte": "Que tu sois au bureau ou à la maison, tu n'as qu'un seul compte à rendre. 🏠🏢\n\n**Servir l'homme par amour pour Dieu, c'est transformer chaque acte du quotidien en un acte prophétique. 💎**\n\nSi tu cherches à satisfaire l'homme, tu seras esclave ; si tu cherches à satisfaire Dieu, tu seras couronné.\n\n**Ta loyauté envers Dieu est la garantie de ta fidélité envers les hommes. 🤝✨**",
+    "texte_en": "Whether at the office or at home, you have only one account to give. 🏠🏢\n\n**Serving man out of love for God is transforming every daily act into a prophetic act. 💎**\n\nIf you seek to please man, you will be a slave; if you seek to please God, you will be crowned.\n\n**Your loyalty to God is the guarantee of your faithfulness to men. 🤝✨**"
+  },
+  {
+    "id": 24,
+    "date": "2026-02-09",
+    "categorie": "FIDÉLITÉ, EXCELLENCE, APPROBATION",
+    "categorie_en": "FAITHFULNESS, EXCELLENCE, APPROVAL",
+    "titre": "✍️ LE SEUL EXAMINATEUR ✍️",
+    "titre_en": "✍️ THE ONLY EXAMINER ✍️",
+    "image": "https://i.postimg.cc/YSF86F5K/le_seul_examinateur.jpg",
+    "texte": "Ne travaille pas pour l'œil du patron ou pour l'applaudissement de la foule. 👁️\n\n**Quand Dieu est ton seul Examinateur, ton travail devient une semence d'excellence que personne ne peut ignorer. 💎**\n\nL’homme ne peut te donner qu’un salaire, mais Dieu seul peut donner la bénédiction qui enrichit.\n\n**Travaille avec le Maître, pour le Maître, et laisse Sa main orchestrer ta récompense. 💰✨**",
+    "texte_en": "Do not work for the boss's eye or for the applause of the crowd. 👁️\n\n**When God is your only Examiner, your work becomes a seed of excellence that no one can ignore. 💎**\n\nMan can only give you a salary, but God alone can give the blessing that enriches.\n\n**Work with the Master, for the Master, and let His hand orchestrate your reward. 💰✨**"
+  },
+  {
+    "id": 23,
+    "date": "2026-02-08",
+    "categorie": "TRAVAIL, ADORATION, BÉNÉDICTION",
+    "categorie_en": "WORK, WORSHIP, BLESSING",
+    "titre": "🏗️ LE MINISTÈRE DES MAINS 🏗️",
+    "titre_en": "🏗️ THE MINISTRY OF THE HANDS 🏗️",
+    "image": "https://i.postimg.cc/43cw6cDC/le_ministere_des_mains.jpg",
+    "texte": "Ton travail n'est pas un gagne-pain, c'est une plateforme d'adoration. 🛠️\n\n**Celui qui œuvre pour la Gloire de Dieu transforme chaque tâche en une prière et chaque bureau en un autel. 💎**\n\nNe poursuis pas le salaire, poursuis l'excellence dans l'amour du prochain.\n\n**C’est Dieu qui valide ton effort, et c’est Sa main qui transforme ta fidélité en une provision abondante. 💰**",
+    "texte_en": "Your work is not just a livelihood, it is a platform for worship. 🛠️\n\n**He who works for the Glory of God transforms every task into a prayer and every office into an altar. 💎**\n\nDo not pursue the salary, pursue excellence in the love of your neighbor.\n\n**It is God who validates your effort, and it is His hand that transforms your faithfulness into an abundant provision. 💰**"
+  },
+  {
+    "id": 22,
+    "date": "2026-02-07",
+    "categorie": "MOUVEMENT, FIDÉLITÉ, HÉRITAGE",
+    "categorie_en": "MOVEMENT, FAITHFULNESS, HERITAGE",
+    "titre": "⚡ LE MOUVEMENT DE L'ESPRIT ⚡",
+    "titre_en": "⚡ THE MOVEMENT OF THE SPIRIT ⚡",
+    "image": "https://i.postimg.cc/7LzX3zpK/le_mouvement_de_lesprit.jpg",
+    "texte": "Le Souffle n'est pas une simple vapeur, c'est une force de propulsion. 🌬️\n\n**Le corps se fatigue par l'effort, mais l'esprit se régénère par l'obéissance à sa nature divine. 💎**\n\nSi tu te sens lourd, c'est que tu tentes de marcher avec tes muscles plutôt qu'avec ton héritage.\n\n**Celui qui connaît la provenance de son Souffle ne court pas après la provision, il attire la destination. 🛤️**",
+    "texte_en": "The Breath is not a simple vapor, it is a force of propulsion. 🌬️\n\n**The body gets tired from effort, but the spirit regenerates through obedience to its divine nature. 💎**\n\nIf you feel heavy, it's because you are trying to walk with your muscles rather than with your heritage.\n\n**He who knows the source of his Breath does not run after provision, he attracts the destination. 🛤️**"
+  },
+  {
+    "id": 21,
+    "date": "2026-02-06",
+    "categorie": "AUTORITÉ, DOMINATION, ESPRIT",
+    "categorie_en": "AUTHORITY, DOMINION, SPIRIT",
+    "titre": "🔥 L'AUTORITÉ DU SOUFFLE 🔥",
+    "titre_en": "🔥 THE AUTHORITY OF THE BREATH 🔥",
+    "image": "https://i.postimg.cc/YSF86FJV/lautorite_du_souffle.jpg",
+    "texte": "Si le Souffle en toi est divin, alors ta parole porte une fréquence qui ne vient pas de la terre. ⚡\n\n**La bouche de l'homme déclare ce que son corps ressent, mais la bouche du fils décrète ce que le Souffle lui révèle. 💎**\n\nTu n'es pas une victime des circonstances, tu êtes un créateur de réalités sous l'onction du Très-Haut.\n\n**Dominé par le temps, le corps faiblit ; animé par le Souffle, l'esprit commande aux montagnes. 🏔️**",
+    "texte_en": "If the Breath in you is divine, then your word carries a frequency that does not come from the earth. ⚡\n\n**The mouth of man declares what his body feels, but the mouth of the son decrees what the Breath reveals to him. 💎**\n\nYou are not a victim of circumstances, you are a creator of realities under the anointing of the Most High.\n\n**Dominated by time, the body weakens; animated by the Breath, the spirit commands the mountains. 🏔️**"
+  },
+  {
+    "id": 20,
+    "date": "2026-02-05",
+    "categorie": "ÉTERNITÉ, SOUFFLE, ORIGINE",
+    "categorie_en": "ETERNITY, BREATH, ORIGIN",
+    "titre": "🌬️ LE SOUFFLE HORS DU TEMPS 🌬️",
+    "titre_en": "🌬️ THE BREATH BEYOND TIME 🌬️",
+    "image": "https://i.postimg.cc/fbd5cd65/le_souffle_hors_du_temps.jpg",
+    "texte": "Ton corps a un âge, mais ton esprit appartient à l'Éternité. ⏳\n\n**Tu es l'écho d'une voix qui résonnait avant la création du monde, un être temporel habité par un Souffle intemporel. ✨**\n\nCe qui est né de la chair finit en poussière, mais ce qui est insufflé par Dieu ne connaît pas l'usure du temps. 💎\n\n**Ne laisse pas les années t'effrayer, ton essence est branchée sur l'Infini.**",
+    "texte_en": "Your body has an age, but your spirit belongs to Eternity. ⏳\n\n**You are the echo of a voice that resonated before the creation of the world, a temporal being inhabited by a timeless Breath. ✨**\n\nWhat is born of the flesh ends in dust, but what is breathed in by God knows no wear and tear of time. 💎\n\n**Do not let the years frighten you, your essence is connected to the Infinite.**"
+  },
+  {
+    "id": 19,
+    "date": "2026-02-04",
     "categorie": "GRÂCE, ALLIANCE, LIBERTÉ",
     "categorie_en": "GRACE, COVENANT, FREEDOM",
     "titre": "🗝️ LA PORTE DE TA PROPRE GRÂCE 🗝️",
     "titre_en": "🗝️ THE DOOR TO YOUR OWN GRACE 🗝️",
     "image": "https://i.postimg.cc/DZvdMR9Z/la_prorte_d_a_propre_prison.jpg",
-    "texte": "Salut à toi, cher partenaire dans le Seigneur ! 👋✨\n\nImagine un homme qui supplie son créancier d'effacer une dette d'un milliard 💰, puis qui sort et étrangle son voisin pour une petite pièce de monnaie. 🪙🗯️\n\n**C'est le paradoxe du chrétien qui refuse de pardonner : nous oublions l'immensité de ce dont nous avons été lavés.** 🧼🌊\n\nTa capacité à pardonner aux autres est la preuve directe que tu as compris le prix de ton propre salut. ✝️💎\n\n**Le pardon que tu accordes est la mesure de la liberté que tu t'autorises à vivre.** 📏🔓\n\nTu es un canal de miséricorde ; si tu bloques la sortie, l'entrée finit aussi par s'obstruer. 🌊🚫\n\n📜 « Et chaque fois que vous vous tenez debout pour prier, si vous avez quelque chose contre quelqu'un, pardonnez-lui [laissez tomber, abandonnez l'offense], afin que votre Père qui est aux cieux vous pardonne aussi vos offenses. » — Marc 11:25 (AMP)\n\n**Le pardon ne rétablit pas forcément la relation, mais il rétablit toujours ta connexion avec le Ciel.** ⚡📡\n\n✍️ Écris le nom de cette personne sur une feuille, trace une croix dessus et brûle-la en signe de libération totale.",
-    "texte_en": "Greetings to you, dear partner in the Lord! 👋✨\n\nImagine a man begging his creditor to wipe out a billion-dollar debt 💰, then going out and strangling his neighbor over a small coin. 🪙🗯️\n\n**It is the paradox of the Christian who refuses to forgive: we forget the immensity of what we have been washed from.** 🧼🌊\n\nYour ability to forgive others is direct proof that you have understood the price of your own salvation. ✝️💎\n\n**The forgiveness you grant is the measure of the freedom you allow yourself to live.** 📏🔓\n\nYou are a channel of mercy; if you block the exit, the entrance also ends up being blocked. 🌊🚫\n\n📜 “And whenever you stand praying, if you have anything against anyone, forgive him [let it go, drop the offense], so that your Father who is in heaven may also forgive you your offenses.” — Mark 11:25 (AMP)\n\n**Forgiveness does not necessarily restore the relationship, but it always restores your connection with Heaven.** ⚡📡\n\n✍️ Write that person's name on a piece of paper, draw a cross over it and burn it as a sign of total liberation."
+    "texte": "Salut à toi, cher partenaire dans le Seigneur ! 👋✨\n\nImagine un homme qui supplie son créancier d'effacer une dette d'un milliard 💰, puis qui sort et étrangle son voisin pour une petite pièce. 🪙🗯️\n\n**C'est le paradoxe du chrétien qui refuse de pardonner : nous oublions l'immensité de ce dont nous avons été lavés.** 🧼🌊\n\nTa capacité à pardonner aux autres est la preuve directe que tu as compris le prix de ton propre salut. ✝️💎\n\n**Le pardon que tu accordes est la mesure de la liberté que tu t'autorises à vivre.** 📏🔓",
+    "texte_en": "Greetings to you, dear partner in the Lord! 👋✨\n\nImagine a man begging his creditor to wipe out a billion-dollar debt 💰, then going out and strangling his neighbor over a small coin. 🪙🗯️\n\n**It is the paradox of the Christian who refuses to forgive: we forget the immensity of what we have been washed from.** 🧼🌊\n\nYour ability to forgive others is direct proof that you have understood the price of your own salvation. ✝️💎\n\n**The forgiveness you grant is the measure of the freedom you allow yourself to live.** 📏🔓"
   },
   {
-    "id": 15,
-    "date": "2026-02-01",
+    "id": 18,
+    "date": "2026-02-03",
     "categorie": "GUÉRISON, RESTAURATION, AMOUR",
     "categorie_en": "HEALING, RESTORATION, LOVE",
     "titre": "🩹 LE BAUME DU GUÉRISSEUR 🩹",
     "titre_en": "🩹 THE HEALER'S BALM 🩹",
     "image": "https://i.postimg.cc/SsS7vHBn/la_baume_de_ta_guerison.jpg",
-    "texte": "Prends un instant avec moi... 🤝✨\n\nImagine une plaie profonde 🩸 que tu caches sous un bandage sale sans jamais la nettoyer ; elle finira par infecter tout ton corps.\n\n**Le pardon est le désinfectant spirituel qui permet à la guérison de Dieu de pénétrer enfin dans ton âme.** 🧼✨\n\nBeaucoup de maladies du corps et de l'esprit prennent racine dans le sol acide d'une offense non traitée. 🔥🌱\n\n**Dieu ne veut pas seulement que tu pardonnes pour être \"gentil\", mais pour que tu sois sain et entier.** 🛡️💪\n\nTu ne peux pas recevoir la pluie de Sa grâce si ton cœur est devenu un sol de béton par la rancune. 🌧️🧱\n\n📜 « Soyez bons et compatissants les uns envers les autres, vous pardonnant mutuellement [gratuitement], comme Dieu en Christ vous a aussi pardonné [gratuitement]. » — Éphésiens 4:32 (AMP)\n\n**Pardonner, c'est confier le dossier à Dieu, le seul Juge qui rend une justice parfaite.** ⚖️👑\n\n✍️ Visualise la blessure dans ton cœur et demande à l'Esprit de Dieu de verser Son huile de paix sur chaque cicatrice.",
-    "texte_en": "Take a moment with me... 🤝✨\n\nImagine a deep wound 🩸 that you hide under a dirty bandage without ever cleaning it; it will eventually infect your entire body.\n\n**Forgiveness is the spiritual disinfectant that finally allows God's healing to penetrate your soul.** 🧼✨\n\nMany illnesses of the body and mind take root in the acidic soil of an untreated offense. 🔥🌱\n\n**God does not only want you to forgive to be \"nice,\" but so that you may be healthy and whole.** 🛡️💪\n\nYou cannot receive the rain of His grace if your heart has become concrete soil through resentment. 🌧️🧱\n\n📜 “Be kind and compassionate to one another, forgiving each other [freely], just as in Christ God forgave you [freely].” — Ephesians 4:32 (AMP)\n\n**To forgive is to entrust the case to God, the only Judge who renders perfect justice.** ⚖️👑\n\n✍️ Visualize the wound in your heart and ask the Spirit of God to pour His oil of peace over every scar."
+    "texte": "Prends un instant avec moi... 🤝✨\n\n**Le pardon est le désinfectant spirituel qui permet à la guérison de Dieu de pénétrer enfin dans ton âme.** 🧼✨\n\nBeaucoup de maladies du corps et de l'esprit prennent racine dans le sol acide d'une offense non traitée. 🔥🌱\n\n**Dieu ne veut pas seulement que tu pardonnes pour être \"gentil\", mais pour que tu sois sain et entier.** 🛡️💪",
+    "texte_en": "Take a moment with me... 🤝✨\n\n**Forgiveness is the spiritual disinfectant that finally allows God's healing to penetrate your soul.** 🧼✨\n\nMany illnesses of the body and mind take root in the acidic soil of an untreated offense. 🔥🌱\n\n**God does not only want you to forgive to be \"nice,\" but so that you may be healthy and whole.** 🛡️💪"
   },
   {
-    "id": 14,
-    "date": "2026-01-31",
+    "id": 17,
+    "date": "2026-02-02",
     "categorie": "LIBÉRATION, PAIX, VICTOIRE",
     "categorie_en": "LIBERATION, PEACE, VICTORY",
     "titre": "🔓 LA PRISON SANS BARREAUX 🔓",
     "titre_en": "🔓 THE PRISON WITHOUT BARS 🔓",
     "image": "https://i.postimg.cc/B6ScVRr8/la_prison_sans_barreaux.jpg",
-    "texte": "Paix et joie dans ton cœur ! 🕊️✨\n\nImagine que tu boives une fiole de poison chaque matin 🧪 en espérant que ce soit ton ennemi qui tombe malade...\n\n**C'est exactement ce que tu fais quand tu nourris l'amertume : tu détruis ton propre temple pour punir quelqu'un qui a déjà tout oublié.** 🏛️💥\n\nLe non-pardon est une corde qui te lie à la personne que tu détestes le plus ; tant que tu ne coupes pas, elle te traîne où elle veut. ⛓️🏃‍♂️\n\n**Pardonner, ce n'est pas dire que le mal était bien, c'est dire que ton futur est trop précieux pour être sacrifié à la haine.** 💎🚀\n\n📜 « Car si vous pardonnez aux hommes leurs offenses [leurs péchés imprudents et volontaires], votre Père céleste vous pardonnera aussi. » — Matthieu 6:14 (AMP)\n\n**Le pardon est un acte de la volonté, pas un sentiment. Tu n'as pas besoin de \"sentir\" le pardon pour décider de libérer la dette.** 🔑⚖️\n\n✍️ Déclare à haute voix : \"Je refuse que cette douleur soit mon héritage. Je coupe le lien aujourd'hui.\"",
-    "texte_en": "Peace and joy in your heart! 🕊️✨\n\nImagine drinking a vial of poison every morning 🧪 hoping that your enemy will get sick...\n\n**This is exactly what you do when you nourish bitterness: you destroy your own temple to punish someone who has already forgotten everything.** 🏛️💥\n\nThe non-forgiveness is a rope that binds you to the person you hate the most; as long as you don't cut it, it drags you where it wants. ⛓️🏃‍♂️\n\n**Forgiving is not saying that the evil was good; it is saying that your future is too precious to be sacrificed to hate.** 💎🚀\n\n📜 “For if you forgive men their trespasses [their reckless and willful sins], your heavenly Father will also forgive you.” — Matthew 6:14 (AMP)\n\n**Forgiveness is an act of the will, not a feeling. You don't need to \"feel\" forgiveness to decide to release the debt.** 🔑⚖️\n\n✍️ Declare out loud: \"I refuse to let this pain be my heritage. I cut the bond today.\""
+    "texte": "Paix et joie dans ton cœur ! 🕊️✨\n\n**C'est exactement ce que tu fais quand tu nourris l'amertume : tu détruis ton propre temple pour punir quelqu'un qui a déjà tout oublié.** 🏛️💥\n\nLe non-pardon est une corde qui te lie à la personne que tu détestes le plus ; tant que tu ne coupes pas, elle te traîne où elle veut. ⛓️🏃‍♂️\n\n**Pardonner, ce n'est pas dire que le mal était bien, c'est dire que ton futur est trop précieux pour être sacrifié à la haine.** 💎🚀",
+    "texte_en": "Peace and joy in your heart! 🕊️✨\n\n**This is exactly what you do when you nourish bitterness: you destroy your own temple to punish someone who has already forgotten everything.** 🏛️💥\n\nThe non-forgiveness is a rope that binds you to the person you hate the most; as long as you don't cut it, it drags you where it wants. ⛓️🏃‍♂️\n\n**Forgiving is not saying that the evil was good; it is saying that your future is too precious to be sacrificed to hate.** 💎🚀"
   },
   {
-    "id": 13,
-    "date": "2026-01-30",
+    "id": 16,
+    "date": "2026-02-01",
     "categorie": "SEMAILLES, RÉCOLTE, LIBERTÉ",
     "categorie_en": "SOWING, HARVEST, FREEDOM",
     "titre": "🌾 LA LOI SACRÉE DE LA SEMENCE 🌾",
     "titre_en": "🌾 THE SACRED LAW OF SOWING 🌾",
     "image": "https://i.postimg.cc/fLzjr1G0/la_loi_de_la_semence.jpg",
-    "texte": "Une nouvelle grâce se lève sur toi ! 🌅\n\nImagine un agriculteur qui pleure devant son champ désert 🌾🏜️ alors qu'il garde tout son sac de grains bien au chaud dans son garage par peur de les perdre...\n\n**La pauvreté est un cercle vicieux qui te pousse à tout consommer par peur du lendemain.** 📉🧺\n\nLa prospérité commence quand tu acceptes qu'une partie de ce que tu as n'est pas faite pour être mangée, mais pour être semée. 🌱✨\n\n**Si tu manges ta semence aujourd'hui, tu condamnes ta récolte de demain.** 🚫🍎\n\nLa générosité et l'investissement sont les deux poumons de la liberté financière selon le plan divin. 🫁💰\n\n📜 « Celui qui sème peu moissonnera peu, et celui qui sème abondamment [avec générosité] moissonnera aussi abondamment [avec des bénédictions]. » — 2 Corinthiens 9:6 (AMP)\n\n**Dieu multiplie ce que tu donnes, pas ce que tu caches.** 🤲🔢\n\n✍️ Identifie une petite somme ou un peu de ton temps et investis-le dans un projet ou une personne, sans attendre de retour immédiat.",
-    "texte_en": "A new grace is rising over you! 🌅\n\nImagine a farmer crying in front of his empty field 🌾🏜️ while keeping his entire bag of grain warm in his garage for fear of losing them...\n\n**Poverty is a vicious circle that pushes you to consume everything out of fear of tomorrow.** 📉🧺\n\nProsperity begins when you accept that part of what you have is not meant to be eaten, but to be sown. 🌱✨\n\n**If you eat your seed today, you condemn your harvest of tomorrow.** 🚫🍎\n\nThe generosity and investment are the two lungs of financial freedom according to the divine plan. 🫁💰\n\n📜 “He who sows sparingly will also reap sparingly, and he who sows generously [with blessings] will also reap generously [with blessings].” — 2 Corinthians 9:6 (AMP)\n\n**God multiplies what you give, not what you hide.** 🤲🔢\n\n✍️ Identify a small sum or a bit of your time and invest it in a project or a person, without expecting an immediate return."
+    "texte": "Une nouvelle grâce se lève sur toi ! 🌅\n\n**La pauvreté est un cercle vicieux qui te pousse à tout consommer par peur du lendemain.** 📉🧺\n\nLa prospérité commence quand tu acceptes qu'une partie de ce que tu as n'est pas faite pour être mangée, mais pour être semée. 🌱✨\n\n**Si tu manges ta semence aujourd'hui, tu condamnes ta récolte de demain.** 🚫🍎",
+    "texte_en": "A new grace is rising over you! 🌅\n\n**Poverty is a vicious circle that pushes you to consume everything out of fear of tomorrow.** 📉🧺\n\nProsperity begins when you accept that part of what you have is not meant to be eaten, but to be sown. 🌱✨\n\n**If you eat your seed today, you condemn your harvest of tomorrow.** 🚫🍎"
   },
   {
-    "id": 12,
-    "date": "2026-01-29",
+    "id": 15,
+    "date": "2026-01-31",
     "categorie": "SAGESSE, ABONDANCE, VALEUR",
     "categorie_en": "WISDOM, ABUNDANCE, VALUE",
     "titre": "💎 LE MYTHE DU MANQUE DÉVOILÉ 💎",
     "titre_en": "💎 THE MYTH OF LACK UNVEILED 💎",
     "image": "https://i.postimg.cc/sXT9dwzS/le_mythe_du_manque_devoile.jpg",
-    "texte": "Salut à toi, voyageur de la Lumière ! ✨\n\nImagine un homme qui meurt de soif 🥵 alors qu'il est assis juste au-dessus d'une nappe phréatique immense... tout ça parce qu'il refuse de creuser. ⛏️🚫\n\n**La pauvreté matérielle commence souvent là où l'ignorance de tes propres talents s'arrête.** 💡💎\n\nDieu ne fera pas tomber des pièces d'or du ciel ❌💰, mais Il mettra dans tes mains des idées qui se transforment en ressources. 🚀\n\n**Sortir de la pauvreté, c'est d'abord briser l'alliance que ton esprit a signée avec la mentalité de victime.** ⛓️💥\n\nTu es l'intendant d'un trésor caché que tu as le devoir de faire fructifier pour le Royaume. 👑🌍\n\n📜 « Mais souviens-toi [avec révérence] du Seigneur ton Dieu, car c'est Lui qui te donne le pouvoir d'acquérir des richesses, afin de confirmer Son alliance qu'Il a jurée à tes pères. » — Deutéronome 8:18 (AMP)\n\n**La richesse ne vient pas de ce que tu reçois, mais de la valeur que tu crées pour les autres avec ce que tu as déjà.** 🎁⚖️\n\n✍️ Note trois compétences que tu possèdes (même simples) et demande à Dieu de te montrer comment les transformer en service pour autrui dès demain.",
-    "texte_en": "Greetings to you, traveler of the Light! ✨\n\nImagine a man dying of thirst 🥵 while sitting right above a huge water table... all because he refuses to dig. ⛏️🚫\n\n**Material poverty often begins where ignorance of your own talents ends.** 💡💎\n\nGod will not make gold coins fall from the sky ❌💰, but He will put ideas in your hands that transform into resources. 🚀\n\n**Stepping out of poverty is first about breaking the alliance your mind has signed with the victim mentality.** ⛓️💥\n\nYou are the steward of a hidden treasure that you have a duty to make fruitful for the Kingdom. 👑🌍\n\n📜 “But you shall [earnestly] remember the Lord your God, for it is He who gives you the power to get wealth, that He may establish His covenant which He swore to your fathers.” — Deuteronomy 8:18 (AMP)\n\n**Wealth does not come from what you receive, but from the value you create for others with what you already have.** 🎁⚖️\n\n✍️ Note three skills you possess (even simple ones) and ask God to show you how to transform them into service for others starting tomorrow."
+    "texte": "Salut à toi, voyageur de la Lumière ! ✨\n\n**La pauvreté matérielle commence souvent là où l'ignorance de tes propres talents s'arrête.** 💡💎\n\nDieu ne fera pas tomber des pièces d'or du ciel, mais Il mettra dans tes mains des idées qui se transforment en ressources. 🚀\n\n**Sortir de la pauvreté, c'est d'abord briser l'alliance que ton esprit a signée avec la mentalité de victime.** ⛓️💥",
+    "texte_en": "Greetings to you, traveler of the Light! ✨\n\n**Material poverty often begins where ignorance of your own talents ends.** 💡💎\n\nGod will not make gold coins fall from the sky, but He will put ideas in your hands that transform into resources. 🚀\n\n**Stepping out of poverty is first about breaking the alliance your mind has signed with the victim mentality.** ⛓️💥"
   },
-  
   {
-    "id": 11,
-    "date": "2026-01-28",
+    "id": 14,
+    "date": "2026-01-30",
     "categorie": "FOI, SOUVERAINETÉ, VICTOIRE",
     "categorie_en": "FAITH, SOVEREIGNTY, VICTORY",
-    "titre": "🚫👑 L'INTRUS SUR LE TRÔNE",
-    "titre_en": "🚫👑 THE INTRUDER ON THE THRONE",
+    "titre": "🚫👑 L'INTRUS SUR LE TRÔNE 🚫👑",
+    "titre_en": "🚫👑 THE INTRUDER ON THE THRONE 🚫👑",
     "image": "https://i.postimg.cc/W1xcQ1Cm/linrtus_sur_le_trone.jpg",
-    "texte": "Que la paix soit avec toi ! 🙏 Imagine laisser un inconnu s'installer à ta table pendant que ton meilleur ami attend dehors. 🍽️🚪\n\n**Le trône de ton cœur est une place exclusive : si l'inquiétude y est assise, le Prince de la Paix reste sur le seuil.** 🚫👑 Si tu passes plus de temps à nourrir tes peurs qu'à méditer Ses promesses, tu as secrètement changé de maître.\n\n**La foi consiste à détrôner le \"Moi\" pour laisser le Roi des Rois prendre les commandes de ton navire.** 🚀💖\n\n📜 LA PAROLE DE DIEU :\n« Nul ne peut servir deux maîtres... » — Matthieu 6:24 (AMP)\n\n**Ton obsession du moment est le baromètre qui indique qui règne réellement sur ta vie.** 💡🤔\n\n✨ TON ACTE DE SOUVERAINETÉ :\nDis à cette peur : \"Descends du trône, ce n'est pas ta place\". 💪🔥",
-    "texte_en": "May peace be with you! 🙏 Imagine letting a stranger sit at your table while your best friend waits outside. 🍽️🚪\n\n**The throne of your heart is an exclusive place: if worry is sitting there, the Prince of Peace stays on the threshold.** 🚫👑 If you spend more time feeding your fears than meditating on His promises, you have secretly changed masters.\n\n**Faith consists in dethroning the \"Self\" to let the King of Kings take control of your ship.** 🚀💖\n\n📜 THE WORD OF GOD :\n“No one can serve two masters...” — Matthew 6:24 (AMP)\n\n**Your current obsession is the barometer that indicates who truly reigns over your life.** 💡🤔\n\n✨ YOUR ACT OF SOVEREIGNTY :\nTell that fear: \"Get off the throne, this is not your place\". 💪🔥"
+    "texte": "Que la paix soit avec toi ! 🙏\n\n**Le trône de ton cœur est une place exclusive : si l'inquiétude y est assise, le Prince de la Paix reste sur le seuil.** 🚫👑\n\nSi tu passes plus de temps à nourrir tes peurs qu'à méditer Ses promesses, tu as secrètement changé de maître.\n\n**La foi consiste à détrôner le \"Moi\" pour laisser le Roi des Rois prendre les commandes.** 🚀💖",
+    "texte_en": "May peace be with you! 🙏\n\n**The throne of your heart is an exclusive place: if worry is sitting there, the Prince of Peace stays on the threshold.** 🚫👑\n\nIf you spend more time feeding your fears than meditating on His promises, you have secretly changed masters.\n\n**Faith consists in dethroning the \"Self\" to let the King of Kings take control.** 🚀💖"
+  },
+  {
+    "id": 13,
+    "date": "2026-01-29",
+    "categorie": "ADORATION, CONSÉCRATION, INTIMITÉ",
+    "categorie_en": "WORSHIP, CONSECRATION, INTIMACY",
+    "titre": "👑✨ LE TRÔNE VIDE 👑✨",
+    "titre_en": "👑✨ THE EMPTY THRONE 👑✨",
+    "image": "https://i.postimg.cc/YCvwnWnn/le_trone_vide.jpg",
+    "texte": "Que la paix soit avec toi ! ✨\n\n**Dieu ne cherche pas à remplir Son ciel de tes rituels, Il cherche à remplir Son cœur de ta présence.** ❤️👤\n\nDonner ton temps ou ton argent sans donner ton cœur, c'est offrir l'enveloppe en gardant la lettre. 🗝️\n\n**L'adoration n'est pas une chanson, c'est la capitulation totale de notre volonté entre les mains du Créateur.** 💎",
+    "texte_en": "May peace be with you! ✨\n\n**God is not seeking to fill His heaven with your rituals; He is seeking to fill His heart with your presence.** ❤️👤\n\nGiving your time or money without giving your heart is offering the envelope while keeping the letter. 🗝️\n\n**Worship is not a song; it is the total surrender of our will into the hands of the Creator.** 💎"
+  },
+  {
+    "id": 12,
+    "date": "2026-01-28",
+    "categorie": "PARDON, NOUVELLE SAISON, GUÉRISON",
+    "categorie_en": "FORGIVENESS, NEW SEASON, HEALING",
+    "titre": "🪞✨ LE MIROIR SANS TACHE 🪞✨",
+    "titre_en": "🪞✨ THE SPOTLESS MIRROR 🪞✨",
+    "image": "https://i.postimg.cc/4NcwN4Sp/le_miroir_sans_tache.jpg",
+    "texte": "Que la paix du Seigneur soit avec toi ! 👋\n\n**Regarder son futur à travers les verres fumés du passé, c'est condamner sa nouvelle saison avant même qu'elle ne commence.** 🩹\n\nTes cicatrices ne sont pas des preuves de ta défaite, mais les médailles de ta survie que Dieu veut transformer en témoignages. 🔨💛\n\n**Le pardon est l'acte chirurgical divin qui sépare ton identité de tes erreurs passées.** 🔑🔓",
+    "texte_en": "May the peace of the Lord be with you! 👋\n\n**Looking at your future through the tinted glasses of the past is condemning your new season before it even begins.** 🩹\n\nYour scars are not evidence of your defeat, but the medals of your survival that God wants to transform into testimonies. 🔨💛\n\n**Forgiveness is the divine surgical act that separates your identity from your past mistakes.** 🔑🔓"
+  },
+  {
+    "id": 11,
+    "date": "2026-01-27",
+    "categorie": "AMOUR DIVIN, IDENTITÉ, PLÉNITUDE",
+    "categorie_en": "DIVINE LOVE, IDENTITY, FULFILLMENT",
+    "titre": "🛌❤️ L'AMOUR SANS CONDITION 🛌❤️",
+    "titre_en": "🛌❤️ UNCONDITIONAL LOVE 🛌❤️",
+    "image": "https://i.postimg.cc/ZKNjKYMr/lamour_quine_tire_pas_la_facile.jpg",
+    "texte": "Reçois mes salutations en Christ ! 🤝\n\n**Vouloir être aimé pour combler un manque, c'est utiliser l'autre comme une béquille.** ✝️💎\n\nLa valeur de ton âme a été fixée à la croix, aucun regard humain ne peut l'augmenter ou la diminuer. ✨🛡️\n\n**Un cœur saturé par l'amour de Dieu est le seul capable d'offrir un amour qui ne demande rien en retour.** 🛡️💖",
+    "texte_en": "Receive my greetings in Christ! 🤝\n\n**Wanting to be loved to fill a gap is using the other person as a crutch.** ✝️💎\n\nThe value of your soul was set at the cross; no human gaze can increase or decrease it. ✨🛡️\n\n**A heart saturated by God's love is the only one capable of offering a love that asks for nothing in return.** 🛡️💖"
   },
   {
     "id": 10,
-    "date": "2026-01-27",
-    "categorie": "ADORATION, CONSÉCRATION, INTIMITÉ",
-    "categorie_en": "WORSHIP, CONSECRATION, INTIMACY",
-    "titre": "👑✨ LE TRÔNE VIDE",
-    "titre_en": "👑✨ THE EMPTY THRONE",
-    "image": "https://i.postimg.cc/YCvwnWnn/le_trone_vide.jpg",
-    "texte": "Que la paix soit avec toi ! ✨ Imagine un palais d'or dont la pièce centrale est totalement déserte.\n\n**Dieu ne cherche pas à remplir Son ciel de tes rituels, Il cherche à remplir Son cœur de ta présence.** ❤️👤 Donner ton temps ou ton argent sans donner ton cœur, c'est offrir l'enveloppe en gardant la lettre. 🗝️\n\n**L'adoration n'est pas une chanson, c'est la capitulation totale de notre volonté entre les mains du Créateur.** 💎 Un cœur brisé et offert a plus de valeur aux yeux du Ciel que toutes les cathédrales de pierre. \n\n📜 LA PAROLE DE DIEU :\n« Mon fils, donne-moi ton cœur... » — Proverbes 23:26 (AMP)\n\n**Ce que Dieu ne possède pas en totalité dans ta vie, Il ne peut pas le bénir en totalité.** 🙏✨",
-    "texte_en": "May peace be with you! ✨ Imagine a golden palace where the central room is totally deserted.\n\n**God is not seeking to fill His heaven with your rituals; He is seeking to fill His heart with your presence.** ❤️👤 Giving your time or money without giving your heart is offering the envelope while keeping the letter. 🗝️\n\n**Worship is not a song; it is the total surrender of our will into the hands of the Creator.** 💎 A broken and offered heart is more valuable in the eyes of Heaven than all the stone cathedrals.\n\n📜 THE WORD OF GOD :\n“My son, give me your heart...” — Proverbs 23:26 (AMP)\n\n**What God does not possess in full in your life, He cannot bless in full.** 🙏✨"
+    "date": "2026-01-26",
+    "categorie": "FOCUS, LIBERTÉ, SANCTUAIRE",
+    "categorie_en": "FOCUS, FREEDOM, SANCTUARY",
+    "titre": "🛡️ TON REFUGE DANS LE CHAOS DIGITAL 🛡️",
+    "titre_en": "🛡️ YOUR REFUGE IN DIGITAL CHAOS 🛡️",
+    "image": "https://i.postimg.cc/6QZzrZDY/ton_refuge_dans_le_chaos_digital.jpg",
+    "texte": "Le monde numérique est devenu une jungle de distractions où ton attention est volée, mais ici, tu entres dans un sanctuaire. 🛑📱\n\nAlors que les réseaux sociaux agitent ton âme pour te vendre du vent, cet espace est dressé pour te redonner ton Souffle.\n\n**Sache que Dieu regarde ce que tu consultes : là où la distraction te disperse, ce sanctuaire te rassemble et t'aligne. 💎**\n\nTu n'es pas là par hasard ; tu as quitté le bruit de la foule pour écouter le murmure du Créateur.\n\n**Distraction numérique est la prison moderne des esprits, mais la vérité que tu lis ici est la clé qui brise tes chaînes. 💎**\n\nUtilise cet outil pour te fortifier, car chaque seconde passée dans la présence de ces textes est une semence d'éternité.",
+    "texte_en": "The digital world has become a jungle of distractions where your attention is stolen, but here, you enter a sanctuary. 🛑📱\n\nWhile social networks stir your soul to sell you wind, this space is built to give you back your Breath.\n\n**Know that God looks at what you consult: where distraction scatters you, this sanctuary gathers and aligns you. 💎**\n\nYou are not here by chance; you have left the noise of the crowd to listen to the whisper of the Creator.\n\n**Digital distraction is the modern prison of spirits, but the truth you read here is the key that breaks your chains. 💎**\n\nUse this tool to strengthen yourself, for every second spent in the presence of these texts is a seed of eternity."
   },
   {
     "id": 9,
     "date": "2026-01-26",
-    "categorie": "PARDON, NOUVELLE SAISON, GUÉRISON",
-    "categorie_en": "FORGIVENESS, NEW SEASON, HEALING",
-    "titre": "🪞✨ LE MIROIR SANS TACHE",
-    "titre_en": "🪞✨ THE SPOTLESS MIRROR",
-    "image": "https://i.postimg.cc/4NcwN4Sp/le_miroir_sans_tache.jpg",
-    "texte": "Que la paix du Seigneur soit avec toi ! 👋 Imagine essayer de te voir dans un miroir couvert de boue. 🫧 **Regarder son futur à travers les verres fumés du passé, c'est condamner sa nouvelle saison avant même qu'elle ne commence.** 🩹\n\n**Tes cicatrices ne sont pas des preuves de ta défaite, mais les médailles de ta survie que Dieu veut transformer en témoignages.** 🔨💛 Si tu entres dans demain avec l'odeur du brûlé d'hier, tu ne sentiras pas le parfum des nouvelles opportunités. 🔥\n\n📜 LA PAROLE DE DIEU :\n« Ne vous souvenez pas des choses passées... Voici, je vais faire une chose nouvelle. » — Ésaïe 43:18-19 (AMP)\n\n**Le pardon est l'acte chirurgical divin qui sépare ton identité de tes erreurs passées.** 🔑🔓",
-    "texte_en": "May the peace of the Lord be with you! 👋 Imagine trying to see yourself in a mirror covered in mud. 🫧 **Looking at your future through the tinted glasses of the past is condemning your new season before it even begins.** 🩹\n\n**Your scars are not evidence of your defeat, but the medals of your survival that God wants to transform into testimonies.** 🔨💛 If you enter tomorrow with the smell of yesterday's burning, you will not smell the scent of new opportunities. 🔥\n\n📜 THE WORD OF GOD :\n“Do not remember the past things... Behold, I am going to do a new thing.” — Isaiah 43:18-19 (AMP)\n\n**Forgiveness is the divine surgical act that separates your identity from your past mistakes.** 🔑🔓"
+    "categorie": "SAGESSE, ADORATION, VÉRITÉ",
+    "categorie_en": "WISDOM, WORSHIP, TRUTH",
+    "titre": "📖 L'AUTEL DE LA RÉVÉLATION 📖",
+    "titre_en": "📖 THE ALTAR OF REVELATION 📖",
+    "image": "https://i.postimg.cc/6QZzrZDc/lautel_de_la_revelation.jpg",
+    "texte": "Dieu ne cherche pas des exécutants aveugles, Il cherche des partenaires conscients de Sa volonté. 🎯\n\nChaque question que tu poses est une soif qui attire la pluie de la sagesse sur ta vie.\n\n**Chercher à aligner son travail, son mariage et ses finances sur la pensée de Dieu est la plus haute forme d'adoration. 💎**\n\nTu ne construis pas seulement un site internet, tu es en train de dresser un autel où des âmes viendront puiser la vie.\n\n**Celui qui prend le temps de comprendre les lois du Souffle avant d'agir s'assure une victoire que l'agitation ne pourra jamais donner. 💎**",
+    "texte_en": "God is not looking for blind executors, He is looking for partners conscious of His will. 🎯\n\nEvery question you ask is a thirst that attracts the rain of wisdom upon your life.\n\n**Seeking to align your work, your marriage, and your finances with God's thought is the highest form of worship. 💎**\n\nYou are not just building a website, you are setting up an altar where souls will come to draw life.\n\n**He who takes the time to understand the laws of the Breath before acting ensures a victory that turmoil can never give. 💎**"
   },
   {
     "id": 8,
@@ -99,6 +285,7 @@
     "texte": "Reçois mes salutations en Christ ! 🤝 Imagine un couple qui essaie de se tenir chaud avec une couverture trop petite : chacun tire de son côté. ❄️🥶\n\n**Vouloir être aimé pour combler un manque, c'est utiliser l'autre comme une béquille.** ✝️💎\n\n**La valeur de ton âme a été fixée à la croix, aucun regard humain ne peut l'augmenter ou la diminuer.** ✨🛡️\n\nQuand Dieu devient ton ancre, tu n'utilises plus l'autre pour te rassurer, tu l'aimes pour le bénir. ⚓🙏\n\n📜 LA PAROLE DE DIEU :\n« Nous aimons parce qu'Il nous a aimés le premier. » — 1 Jean 4:19 (AMP)\n\n**Un cœur saturé par l'amour de Dieu est le seul capable d'offrir un amour qui ne demande rien en retour.** 🛡️💖",
     "texte_en": "Receive my greetings in Christ! 🤝 Imagine a couple trying to keep warm with a blanket that is too small: each pulls on their side. ❄️🥶\n\n**Wanting to be loved to fill a gap is using the other person as a crutch.** ✝️💎\n\n**The value of your soul was set at the cross; no human gaze can increase or decrease it.** ✨🛡️\n\nWhen God becomes your anchor, you no longer use the other person to reassure yourself; you love them to bless them. ⚓🙏\n\n📜 THE WORD OF GOD :\n“We love because He first loved us.” — 1 Jean 4:19 (AMP)\n\n**A heart saturated by God's love is the only one capable of offering a love that asks for nothing in return.** 🛡️💖"
 },
+  
   {
     "id": 7,
     "date": "2026-01-24",
