@@ -2,13 +2,11 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMMANUEL | La Parole de Dieu</title>
 
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
-    <link rel="manifest" href="manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="EMMANUEL">
     
@@ -121,6 +119,7 @@
     </div>
 
     <script>
+        /* 🔴⚪ --- INTERRUPTEUR DE MAINTENANCE --- 🔴⚪ */
         const MAINTENANCE = false; 
         const ADMIN_PWD = "emmanuel777";
         
@@ -136,24 +135,61 @@
                             <p style="color: #2c3e50; font-family: 'Lora', serif; font-style: italic; font-size: 1.2em;">
                                 Le sanctuaire est en cours d'embellissement... 🕯️
                             </p>
+                            <p style="color: #95a5a6; font-size: 0.9em; margin-top: 20px; text-transform: uppercase; letter-spacing: 2px;">
+                                De retour dans quelques instants. Merci de votre patience.
+                            </p>
                         </div>
                     </div>
                 `;
             });
-            throw new Error("Mode Maintenance");
+            throw new Error("Mode Maintenance Activé");
         }
+        /* 🔴⚪ --- FIN DU SCRIPT MAINTENANCE --- 🔴⚪ */
 
         let currentLang = 'fr';
         let tousLesMessages = [];
         
-        const translations = {
-            fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min" },
-            en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min" }
+        const moisNoms = {
+            fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+            en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         };
+
+        const translations = {
+            fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min<br><span style='font-weight: 400; font-style: italic; opacity: 0.8;'>The counter updates every 15 min</span>" },
+            en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min<br><span style='font-weight: 400; font-style: italic; opacity: 0.8;'>Le compteur s'actualise toutes les 15 min</span>" }
+        };
+
+        window.onscroll = function() {
+            let btn = document.getElementById("scrollTopLink");
+            if (window.scrollY > 400) btn.style.display = "flex";
+            else btn.style.display = "none";
+        };
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            
+            document.getElementById('welcome-txt').innerText = translations[lang].welcome;
+            document.getElementById('intro-txt').innerText = translations[lang].intro;
+            document.getElementById('stat-title').innerText = translations[lang].statTitle;
+            document.getElementById('stat-sub').innerText = translations[lang].statSub;
+            document.getElementById('label-top').innerText = translations[lang].scrollTop;
+            document.getElementById('label-help').innerText = translations[lang].help;
+            document.getElementById('update-txt').innerHTML = translations[lang].update;
+            document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
+
+            const s = document.getElementById('archiveSection');
+            const archiveMainBtn = document.getElementById('btn-archive');
+            if (s.style.display === 'block') archiveMainBtn.innerText = translations[lang].archiveBtnClose;
+            else archiveMainBtn.innerText = translations[lang].archiveBtn;
+            
+            genererBoutonsMois();
+            afficherAccueil();
+        }
 
         async function chargerMessages() {
             try {
-                // MODIF 3 : Cache-buster dynamique pour forcer la mise à jour sur tous les navigateurs
                 const response = await fetch('data.json?v=' + Date.now());
                 const data = await response.json();
                 const maintenant = new Date();
@@ -163,27 +199,12 @@
                     return maintenant >= dateParution;
                 });
                 afficherAccueil();
-            } catch (err) { console.error("Erreur de chargement"); }
-            
+                genererBoutonsMois();
+            } catch (err) { console.error("Erreur"); }
             setTimeout(() => { 
-                const loader = document.getElementById('loading-screen');
-                if (loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => { loader.style.display = 'none'; }, 1000);
-                }
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1000);
             }, 2500);
-        }
-
-        // ... Reste des fonctions (afficherAccueil, setLanguage, filtrerMessages, etc.) ...
-        // Je remets ici les fonctions essentielles pour que le site soit complet :
-
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            document.getElementById('welcome-txt').innerText = translations[lang].welcome;
-            document.getElementById('intro-txt').innerText = translations[lang].intro;
-            afficherAccueil();
         }
 
         function creerCard(msg) {
@@ -191,16 +212,51 @@
             const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
             const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
             const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
+            const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
+            
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
 
-            return `<div class="message-card">
-                ${imgHtml}
-                <h3 class="msg-title">${titre}</h3>
-                <div class="msg-content">${texteFormate}</div>
-                <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
-                <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
-            </div>`;
+            return `
+                <div class="message-card">
+                    ${imgHtml}
+                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
+                    <h3 class="msg-title">${titre}</h3>
+                    <div class="msg-content">${texteFormate}</div>
+                    <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
+                    <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
+                </div>`;
+        }
+
+        /* --- FONCTION DE RECHERCHE --- */
+        function filtrerMessages() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('flux-messages');
+            
+            if (query === "") {
+                afficherAccueil();
+                return;
+            }
+
+            const resultats = tousLesMessages.filter(msg => {
+                const searchIn = (
+                    (msg.titre || "") + (msg.titre_en || "") + 
+                    (msg.texte || "") + (msg.texte_en || "") +
+                    (msg.categorie || "") + (msg.categorie_en || "")
+                ).toLowerCase();
+                return searchIn.includes(query);
+            });
+
+            container.innerHTML = resultats.sort((a,b) => b.id - a.id).map(msg => creerCard(msg)).join('');
+        }
+
+        function decoderEtCopier(bouton, base64) {
+            const t = decodeURIComponent(escape(atob(base64))).replace(/\*\*/g, '');
+            navigator.clipboard.writeText(t).then(() => {
+                const memo = bouton.innerHTML; bouton.innerHTML = translations[currentLang].copied;
+                bouton.style.background = "#d4af37"; bouton.style.color = "white";
+                setTimeout(() => { bouton.innerHTML = memo; bouton.style.background = "transparent"; bouton.style.color = "#d4af37"; }, 2000);
+            });
         }
 
         function afficherAccueil() {
@@ -209,19 +265,51 @@
             container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
         }
 
-        function decoderEtCopier(bouton, base64) {
-            const t = decodeURIComponent(escape(atob(base64))).replace(/\*\*/g, '');
-            navigator.clipboard.writeText(t).then(() => {
-                const memo = bouton.innerHTML; bouton.innerHTML = translations[currentLang].copied;
-                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
-            });
+        function toggleArchives() {
+            const s = document.getElementById('archiveSection');
+            const btn = document.getElementById('btn-archive');
+            if (s.style.display === 'block') {
+                s.style.display = 'none';
+                btn.innerText = translations[currentLang].archiveBtn;
+            } else {
+                s.style.display = 'block';
+                btn.innerText = translations[currentLang].archiveBtnClose;
+            }
         }
 
-        window.onscroll = function() {
-            let btn = document.getElementById("scrollTopLink");
-            if (window.scrollY > 400) btn.style.display = "flex";
-            else btn.style.display = "none";
-        };
+        function genererBoutonsMois() {
+            const grid = document.getElementById('monthGrid');
+            const liste = moisNoms[currentLang];
+            grid.innerHTML = liste.map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join('');
+        }
+
+        function afficherTitresDuMois(numMois, btn) {
+            const liste = document.getElementById('titres-liste');
+            const detail = document.getElementById('message-detail');
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active'); liste.innerHTML = ''; detail.innerHTML = ''; return;
+            }
+            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); detail.innerHTML = '';
+            
+            const filtered = tousLesMessages
+                .filter(msg => (new Date(msg.date).getMonth() + 1) === numMois)
+                .sort((a, b) => a.id - b.id);
+                
+            liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
+        }
+
+        function voirDetail(id, numMois) {
+            const msg = tousLesMessages.find(m => m.id === id);
+            document.getElementById('titres-liste').innerHTML = '';
+            document.getElementById('message-detail').innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="revenirALaListe(${numMois})">${translations[currentLang].backList}</button>`;
+        }
+
+        function revenirALaListe(numMois) {
+            const btn = document.querySelectorAll('.month-btn')[numMois-1];
+            btn.classList.remove('active');
+            afficherTitresDuMois(numMois, btn);
+        }
 
         chargerMessages();
     </script>
