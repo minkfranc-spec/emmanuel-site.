@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMMANUEL | La Parole de Dieu</title>
 
+    <link rel="canonical" href="https://emmanuel-site.vercel.app">
+
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
     <meta name="mobile-web-app-capable" content="yes">
@@ -119,6 +121,14 @@
     </div>
 
     <script>
+        /* 🛡️ --- CORRECTION URL (Anti-xn--) --- 🛡️ */
+        (function() {
+            const cleanURL = "https://emmanuel-site.vercel.app";
+            if (location.hostname.includes("xn--") || location.protocol !== 'https:') {
+                location.replace(cleanURL + location.pathname + location.search);
+            }
+        })();
+
         /* 🔴⚪ --- INTERRUPTEUR DE MAINTENANCE --- 🔴⚪ */
         const MAINTENANCE = false; 
         const ADMIN_PWD = "emmanuel777";
@@ -228,7 +238,6 @@
                 </div>`;
         }
 
-        /* --- FONCTION DE RECHERCHE --- */
         function filtrerMessages() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const container = document.getElementById('flux-messages');
