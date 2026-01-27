@@ -200,25 +200,14 @@
 
         async function chargerMessages() {
             try {
-                // 🌍 --- SEULE MODIFICATION : HEURE INTERNATIONALE --- 🌍
-                let maintenant;
-                try {
-                    const timeResponse = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
-                    const timeData = await timeResponse.json();
-                    maintenant = new Date(timeData.datetime);
-                } catch(e) {
-                    maintenant = new Date(); // Repli local si l'API échoue
-                }
-
                 const response = await fetch('data.json?v=' + Date.now());
                 const data = await response.json();
-                
+                const maintenant = new Date();
                 tousLesMessages = data.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    const dateParution = new Date(Date.UTC(annee, mois - 1, jour, 1, 30, 0));
+                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
                     return maintenant >= dateParution;
                 });
-                
                 afficherAccueil();
                 genererBoutonsMois();
             } catch (err) { console.error("Erreur"); }
@@ -335,4 +324,3 @@
     </script>
 </body>
 </html>
-
