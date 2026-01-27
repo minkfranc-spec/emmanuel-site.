@@ -200,28 +200,9 @@
 
         async function chargerMessages() {
             try {
-                // 🌍 --- RÉCUPÉRATION DE L'HEURE INTERNATIONALE --- 🌍
-                const timeResponse = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
-                const timeData = await timeResponse.json();
-                const maintenant = new Date(timeData.datetime);
-
                 const response = await fetch('data.json?v=' + Date.now());
                 const data = await response.json();
-                
-                tousLesMessages = data.filter(msg => {
-                    const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    const dateParution = new Date(Date.UTC(annee, mois - 1, jour, 1, 30, 0));
-                    return maintenant >= dateParution;
-                });
-                
-                afficherAccueil();
-                genererBoutonsMois();
-            } catch (err) { 
-                console.error("Erreur de synchro, repli local"); 
-                // Repli local sécurisé si l'API échoue
                 const maintenant = new Date();
-                const response = await fetch('data.json?v=' + Date.now());
-                const data = await response.json();
                 tousLesMessages = data.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
                     const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
@@ -229,7 +210,7 @@
                 });
                 afficherAccueil();
                 genererBoutonsMois();
-            }
+            } catch (err) { console.error("Erreur"); }
             setTimeout(() => { 
                 document.getElementById('loading-screen').style.opacity = '0';
                 setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1000);
