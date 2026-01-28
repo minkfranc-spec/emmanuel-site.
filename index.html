@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <title>EMMANUEL | La Voix de la Vérité</title>
 
     <link rel="canonical" href="https://emmanuel-site.vercel.app">
-
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="EMMANUEL">
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
@@ -121,12 +122,12 @@
     </div>
 
     <script>
-        /* 🛡️ --- PROTECTION ET REDIRECTION STRICTE --- 🛡️ */
+        /* 🛡️ --- PROTECTION ASSOUPLIE POUR PC --- 🛡️ */
         (function() {
-            const currentHost = window.location.hostname;
-            const targetHost = "emmanuel-site.vercel.app";
-            if (currentHost.includes("xn--") || (currentHost !== targetHost && currentHost !== "localhost")) {
-                window.location.replace("https://" + targetHost + window.location.pathname + window.location.search);
+            const host = window.location.hostname;
+            // On ne redirige que si on détecte une attaque de type punycode (xn--)
+            if (host.includes("xn--")) {
+                window.location.replace("https://emmanuel-site.vercel.app" + window.location.pathname);
             }
         })();
 
@@ -139,7 +140,7 @@
             window.addEventListener('DOMContentLoaded', () => {
                 document.body.innerHTML = `<div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #fdfdfd; font-family: 'Montserrat', sans-serif; padding: 20px;"><div style="border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 40px; text-align: center;"><h1 style="color: #d4af37; font-size: 1.8em; letter-spacing: 5px; margin-bottom: 20px;">EMMANUEL</h1><p style="color: #2c3e50; font-family: 'Lora', serif; font-style: italic; font-size: 1.2em;">Le sanctuaire est en cours d'embellissement... 🕯️</p></div></div>`;
             });
-            throw new Error("Mode Maintenance Activé");
+            throw new Error("Mode Maintenance");
         }
 
         let currentLang = 'fr';
@@ -178,7 +179,6 @@
                 const loader = document.getElementById('loading-screen');
                 if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
             } catch (err) { 
-                console.error("Erreur de chargement."); 
                 document.getElementById('loading-screen').style.display = 'none';
             }
         }
