@@ -2,50 +2,43 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>EMMANUEL | Organisateur V3</title>
+    <title>EMMANUEL | Organisateur & Signalement</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; text-align: center; }
+        body { font-family: 'Lora', serif; background: #fdfdfd; padding: 20px; text-align: center; }
         .box { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 15px; border-top: 8px solid #d4af37; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        textarea { width: 100%; height: 400px; font-family: monospace; padding: 15px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; }
-        .btn { background: #1a1a1a; color: white; padding: 15px 35px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; }
-        .btn:hover { background: #d4af37; }
-        .error-log { color: red; font-size: 0.9em; margin-top: 10px; text-align: left; }
+        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; }
+        textarea { width: 100%; height: 400px; font-family: monospace; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; outline-color: #d4af37; }
+        .btn { background: #1a1a1a; color: white; padding: 15px 35px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .btn:hover { background: #d4af37; transform: translateY(-2px); }
+        .error-msg { display: none; margin-top: 20px; padding: 15px; background: #ffebee; color: #c62828; border-radius: 8px; border-left: 5px solid #ef5350; text-align: left; font-family: monospace; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h1>🏛️ Organisateur V3 (La Forteresse)</h1>
-    <p>Collez votre JSON. Je répare les virgules, les points doubles et les crochets.</p>
+    <h1>🏛️ Organisateur Signalétique</h1>
+    <p>Le script part du <strong>dernier ID en bas</strong> et remonte vers le haut.</p>
     
-    <textarea id="jsonInput" placeholder="Collez ici..."></textarea>
+    <textarea id="jsonInput" placeholder="Collez votre code JSON ici..."></textarea>
     
-    <button class="btn" onclick="traiterJSON()">⚡ RÉPARER ET SYNCHRONISER</button>
-    <div id="logs" class="error-log"></div>
+    <button class="btn" onclick="organiser()">⚡ SYNCHRONISER ET VÉRIFIER</button>
+    
+    <div id="errorBox" class="error-msg"></div>
 </div>
 
 <script>
-function traiterJSON() {
-    let input = document.getElementById('jsonInput').value.trim();
-    let logs = document.getElementById('logs');
-    logs.innerHTML = "";
+function organiser() {
+    const inputField = document.getElementById('jsonInput');
+    const errorBox = document.getElementById('errorBox');
+    errorBox.style.display = 'none';
 
     try {
-        // --- ÉTAPE 1 : NETTOYAGE CHIRURGICAL ---
-        // 1. Corriger les doubles points accidentels (:: -> :)
-        input = input.replace(/::+/g, ':');
-        // 2. Corriger les virgules avant une accolade fermante ( ,} -> } )
-        input = input.replace(/,\s*}/g, '}');
-        // 3. Corriger les virgules avant un crochet fermant ( ,] -> ] )
-        input = input.replace(/,\s*\]/g, ']');
-        // 4. S'assurer qu'il y a des crochets au début et à la fin
-        if (!input.startsWith('[')) input = '[' + input;
-        if (!input.endsWith(']')) input = input + ']';
+        let data = JSON.parse(inputField.value);
+        
+        if (data.length === 0) return;
 
-        // --- ÉTAPE 2 : PARSING ---
-        let data = JSON.parse(input);
-
-        // --- ÉTAPE 3 : CHRONOLOGIE (BAS VERS LE HAUT) ---
+        // --- LOGIQUE : BAS VERS LE HAUT ---
         let dernierIndex = data.length - 1;
         let idActuel = parseInt(data[dernierIndex].id);
         let dateActuelle = new Date(data[dernierIndex].date);
@@ -55,24 +48,31 @@ function traiterJSON() {
             dateActuelle.setDate(dateActuelle.getDate() + 1);
 
             data[i].id = idActuel;
+            
+            // Formatage date YYYY-MM-DD
             let y = dateActuelle.getFullYear();
             let m = String(dateActuelle.getMonth() + 1).padStart(2, '0');
             let d = String(dateActuelle.getDate()).padStart(2, '0');
             data[i].date = `${y}-${m}-${d}`;
         }
 
-        // --- ÉTAPE 4 : EXPORT ---
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        // --- EXPORTATION ---
+        const finalJson = JSON.stringify(data, null, 2);
+        const blob = new Blob([finalJson], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = "data.json";
         a.click();
-        
+
     } catch (e) {
-        logs.innerHTML = "❌ Erreur de structure : Assurez-vous que chaque message commence par { et finit par }. <br>Détail : " + e.message;
+        // --- SIGNALEMENT DE L'ERREUR ---
+        errorBox.innerHTML = "<strong>❌ ERREUR DÉTECTÉE :</strong><br>" + e.message + 
+        "<br><br><small>Astuce : Vérifiez s'il ne manque pas une virgule entre deux messages ou si un guillemet est resté ouvert.</small>";
+        errorBox.style.display = 'block';
     }
 }
 </script>
+
 </body>
 </html>
