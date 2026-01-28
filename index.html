@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMMANUEL | La Parole de Dieu</title>
+    <title>EMMANUEL | La Voix de la Vérité</title>
 
     <link rel="canonical" href="https://emmanuel-site.vercel.app">
 
@@ -121,11 +121,12 @@
     </div>
 
     <script>
-        /* 🛡️ --- CORRECTION URL (Anti-xn--) --- 🛡️ */
+        /* 🛡️ --- PROTECTION ET REDIRECTION STRICTE --- 🛡️ */
         (function() {
-            const cleanURL = "https://emmanuel-site.vercel.app";
-            if (location.hostname.includes("xn--") || location.protocol !== 'https:') {
-                location.replace(cleanURL + location.pathname + location.search);
+            const currentHost = window.location.hostname;
+            const targetHost = "emmanuel-site.vercel.app";
+            if (currentHost.includes("xn--") || (currentHost !== targetHost && currentHost !== "localhost")) {
+                window.location.replace("https://" + targetHost + window.location.pathname + window.location.search);
             }
         })();
 
@@ -146,11 +147,8 @@
         const moisNoms = { fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] };
         const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min" }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min" } };
 
-        /* ⚡ --- FONCTION CHARGER MESSAGES HYBRIDE --- ⚡ */
         async function chargerMessages() {
-            let maintenant = new Date(); // Fallback immédiat
-            
-            // Tentative Heure Atomique (max 1.5s)
+            let maintenant = new Date();
             const tempsPromesse = (async () => {
                 const apis = ['https://worldtimeapi.org/api/timezone/Etc/UTC', 'https://timeapi.io/api/Time/current/zone?timeZone=Etc/UTC'];
                 for (const url of apis) {
@@ -170,19 +168,17 @@
             try {
                 const [tempsCertifie, data] = await Promise.all([tempsPromesse, dataPromesse]);
                 maintenant = tempsCertifie;
-                
                 tousLesMessages = data.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
                     const dateParution = new Date(Date.UTC(annee, mois - 1, jour, 1, 30, 0));
                     return maintenant >= dateParution;
                 });
-                
                 afficherAccueil();
                 genererBoutonsMois();
                 const loader = document.getElementById('loading-screen');
                 if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
             } catch (err) { 
-                console.error("Erreur."); 
+                console.error("Erreur de chargement."); 
                 document.getElementById('loading-screen').style.display = 'none';
             }
         }
