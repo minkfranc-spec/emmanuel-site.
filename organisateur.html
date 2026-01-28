@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMMANUEL | Organisateur JSON</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Lora', serif; background: #fdfdfd; color: #2c3e50; margin: 0; padding: 20px; text-align: center; }
+        .box { max-width: 900px; margin: 20px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border-top: 6px solid #d4af37; }
+        h1 { font-family: 'Montserrat', sans-serif; text-transform: uppercase; font-weight: 900; color: #1a1a1a; }
+        textarea { width: 100%; height: 350px; border-radius: 10px; border: 1px solid #eee; padding: 15px; font-family: monospace; font-size: 13px; outline-color: #d4af37; }
+        .btn-propulser { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 40px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; text-transform: uppercase; margin-top: 25px; transition: 0.3s; }
+        .btn-propulser:hover { background: #d4af37; transform: translateY(-2px); }
+        .notice { font-size: 0.85em; color: #95a5a6; margin-top: 15px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h1>🚀 Organisateur Chronologique</h1>
+        <p>Collez votre JSON. Le script se basera sur le <strong>dernier message (en bas)</strong> pour dater et numéroter tout ce qui se trouve au-dessus.</p>
+        
+        <textarea id="jsonInput" placeholder="[{ ... }]"></textarea>
+        
+        <button class="btn-propulser" onclick="traiterJSON()">⚡ Synchroniser le futur</button>
+        
+        <div class="notice">
+            Une fois cliqué, le fichier <strong>data.json</strong> corrigé sera téléchargé automatiquement.
+        </div>
+    </div>
+
+    <script>
+        function traiterJSON() {
+            const input = document.getElementById('jsonInput').value;
+            try {
+                let data = JSON.parse(input);
+                if (data.length < 2) { alert("Ajoutez au moins deux messages pour organiser."); return; }
+
+                // LOGIQUE : On part du dernier élément (le point de référence)
+                let dernierIndex = data.length - 1;
+                let idActuel = parseInt(data[dernierIndex].id);
+                let dateActuelle = new Date(data[dernierIndex].date);
+
+                // On remonte vers le haut (de l'avant-dernier jusqu'au premier)
+                for (let i = dernierIndex - 1; i >= 0; i--) {
+                    idActuel++; // On incrémente l'ID
+                    dateActuelle.setDate(dateActuelle.getDate() + 1); // On ajoute un jour
+
+                    data[i].id = idActuel;
+                    
+                    // Formatage date YYYY-MM-DD
+                    let y = dateActuelle.getFullYear();
+                    let m = String(dateActuelle.getMonth() + 1).padStart(2, '0');
+                    let d = String(dateActuelle.getDate()).padStart(2, '0');
+                    data[i].date = `${y}-${m}-${d}`;
+                }
+
+                // Génération du fichier
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "data.json";
+                a.click();
+            } catch (e) {
+                alert("Erreur de format JSON. Vérifiez vos virgules !");
+            }
+        }
+    </script>
+</body>
+</html>
