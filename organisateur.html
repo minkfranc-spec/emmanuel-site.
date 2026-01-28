@@ -2,86 +2,77 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMMANUEL | L'Ultra-Réparateur</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <title>EMMANUEL | Organisateur V3</title>
     <style>
         body { font-family: sans-serif; background: #f4f4f4; padding: 20px; text-align: center; }
         .box { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 15px; border-top: 8px solid #d4af37; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; }
-        textarea { width: 100%; height: 450px; font-family: monospace; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; }
-        .btn { background: #1a1a1a; color: white; padding: 15px 35px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 20px; }
+        textarea { width: 100%; height: 400px; font-family: monospace; padding: 15px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; }
+        .btn { background: #1a1a1a; color: white; padding: 15px 35px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; }
         .btn:hover { background: #d4af37; }
+        .error-log { color: red; font-size: 0.9em; margin-top: 10px; text-align: left; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h1>🛠️ L'Ultra-Réparateur JSON</h1>
-    <p>Collez votre texte ici. Même s'il manque des crochets ou s'il y a des erreurs de virgules/points.</p>
+    <h1>🏛️ Organisateur V3 (La Forteresse)</h1>
+    <p>Collez votre JSON. Je répare les virgules, les points doubles et les crochets.</p>
     
-    <textarea id="jsonInput" placeholder="Collez votre code ici..."></textarea>
+    <textarea id="jsonInput" placeholder="Collez ici..."></textarea>
     
-    <button class="btn" onclick="superReparation()">⚡ RÉPARER, CALIBRER ET TÉLÉCHARGER</button>
+    <button class="btn" onclick="traiterJSON()">⚡ RÉPARER ET SYNCHRONISER</button>
+    <div id="logs" class="error-log"></div>
 </div>
 
 <script>
-function superReparation() {
-    let input = document.getElementById('jsonInput').value;
+function traiterJSON() {
+    let input = document.getElementById('jsonInput').value.trim();
+    let logs = document.getElementById('logs');
+    logs.innerHTML = "";
 
-    // 1. RECONSTRUCTION RADICALE
-    // On cherche tous les objets { ... } individuellement
-    let objetsTrouves = [];
-    let regexObjets = /{[^{]*"id"[^}]*}/g; 
-    let match;
-    
-    while ((match = regexObjets.exec(input)) !== null) {
-        let bloc = match[0];
-        // Nettoyage interne du bloc (doubles points, virgules mal placées)
-        bloc = bloc.replace(/::+/g, ':'); // Change :: en :
-        bloc = bloc.replace(/,\s*}/g, '}'); // Enlève la virgule avant }
-        try {
-            objetsTrouves.push(JSON.parse(bloc));
-        } catch(e) {
-            // Si JSON.parse échoue encore, on tente de forcer la réparation des guillemets
-            try {
-                let blocRepare = bloc.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
-                objetsTrouves.push(JSON.parse(blocRepare));
-            } catch(e2) { console.warn("Bloc ignoré car trop corrompu : ", bloc); }
+    try {
+        // --- ÉTAPE 1 : NETTOYAGE CHIRURGICAL ---
+        // 1. Corriger les doubles points accidentels (:: -> :)
+        input = input.replace(/::+/g, ':');
+        // 2. Corriger les virgules avant une accolade fermante ( ,} -> } )
+        input = input.replace(/,\s*}/g, '}');
+        // 3. Corriger les virgules avant un crochet fermant ( ,] -> ] )
+        input = input.replace(/,\s*\]/g, ']');
+        // 4. S'assurer qu'il y a des crochets au début et à la fin
+        if (!input.startsWith('[')) input = '[' + input;
+        if (!input.endsWith(']')) input = input + ']';
+
+        // --- ÉTAPE 2 : PARSING ---
+        let data = JSON.parse(input);
+
+        // --- ÉTAPE 3 : CHRONOLOGIE (BAS VERS LE HAUT) ---
+        let dernierIndex = data.length - 1;
+        let idActuel = parseInt(data[dernierIndex].id);
+        let dateActuelle = new Date(data[dernierIndex].date);
+
+        for (let i = dernierIndex - 1; i >= 0; i--) {
+            idActuel++;
+            dateActuelle.setDate(dateActuelle.getDate() + 1);
+
+            data[i].id = idActuel;
+            let y = dateActuelle.getFullYear();
+            let m = String(dateActuelle.getMonth() + 1).padStart(2, '0');
+            let d = String(dateActuelle.getDate()).padStart(2, '0');
+            data[i].date = `${y}-${m}-${d}`;
         }
+
+        // --- ÉTAPE 4 : EXPORT ---
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "data.json";
+        a.click();
+        
+    } catch (e) {
+        logs.innerHTML = "❌ Erreur de structure : Assurez-vous que chaque message commence par { et finit par }. <br>Détail : " + e.message;
     }
-
-    if (objetsTrouves.length === 0) {
-        alert("Désolé Maître, je n'ai trouvé aucun message valide dans ce texte.");
-        return;
-    }
-
-    // 2. CHRONOLOGIE (Du bas vers le haut)
-    let dernierIndex = objetsTrouves.length - 1;
-    let idActuel = parseInt(objetsTrouves[dernierIndex].id);
-    let dateActuelle = new Date(objetsTrouves[dernierIndex].date);
-
-    for (let i = dernierIndex - 1; i >= 0; i--) {
-        idActuel++;
-        dateActuelle.setDate(dateActuelle.getDate() + 1);
-
-        objetsTrouves[i].id = idActuel;
-        let y = dateActuelle.getFullYear();
-        let m = String(dateActuelle.getMonth() + 1).padStart(2, '0');
-        let d = String(dateActuelle.getDate()).padStart(2, '0');
-        objetsTrouves[i].date = `${y}-${m}-${d}`;
-    }
-
-    // 3. EXPORTATION PROPRE
-    const finalJson = JSON.stringify(objetsTrouves, null, 2);
-    const blob = new Blob([finalJson], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "data.json";
-    a.click();
 }
 </script>
-
 </body>
 </html>
