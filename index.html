@@ -125,7 +125,6 @@
         /* 🛡️ --- PROTECTION ASSOUPLIE POUR PC --- 🛡️ */
         (function() {
             const host = window.location.hostname;
-            // On ne redirige que si on détecte une attaque de type punycode (xn--)
             if (host.includes("xn--")) {
                 window.location.replace("https://emmanuel-site.vercel.app" + window.location.pathname);
             }
@@ -154,7 +153,7 @@
                 const apis = ['https://worldtimeapi.org/api/timezone/Etc/UTC', 'https://timeapi.io/api/Time/current/zone?timeZone=Etc/UTC'];
                 for (const url of apis) {
                     try {
-                        const res = await fetch(url, { signal: AbortSignal.timeout(1500) });
+                        const res = await fetch(url, { signal: AbortSignal.timeout(2000) });
                         if (res.ok) {
                             const data = await res.json();
                             return new Date(data.datetime || data.utc_datetime);
@@ -168,16 +167,26 @@
 
             try {
                 const [tempsCertifie, data] = await Promise.all([tempsPromesse, dataPromesse]);
-                maintenant = tempsCertifie;
+                
+                // Ajustement GMT+1 pour le Cameroun
+                const heureLocale = new Date(tempsCertifie.getTime() + (1 * 60 * 60 * 1000));
+                
                 tousLesMessages = data.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    const dateParution = new Date(Date.UTC(annee, mois - 1, jour, 1, 30, 0));
-                    return maintenant >= dateParution;
+                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
+                    
+                    // Libère le message si l'heure est atteinte OU si on est déjà au jour suivant
+                    return heureLocale >= dateParution || (heureLocale.getDate() >= jour && heureLocale.getMonth() >= mois - 1);
                 });
+
                 afficherAccueil();
                 genererBoutonsMois();
+                
                 const loader = document.getElementById('loading-screen');
-                if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
+                if (loader) { 
+                    loader.style.opacity = '0'; 
+                    setTimeout(() => { loader.style.display = 'none'; }, 500); 
+                }
             } catch (err) { 
                 document.getElementById('loading-screen').style.display = 'none';
             }
