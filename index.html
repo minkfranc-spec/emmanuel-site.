@@ -121,6 +121,7 @@
     </div>
 
     <script>
+        /* 🛡️ --- CORRECTION URL (Anti-xn--) --- 🛡️ */
         (function() {
             const cleanURL = "https://emmanuel-site.vercel.app";
             if (location.hostname.includes("xn--") || location.protocol !== 'https:') {
@@ -128,22 +129,44 @@
             }
         })();
 
+        /* 🔴⚪ --- INTERRUPTEUR DE MAINTENANCE --- 🔴⚪ */
         const MAINTENANCE = false; 
         const ADMIN_PWD = "emmanuel777";
+        
         const urlParams = new URLSearchParams(window.location.search);
         const isAdmin = urlParams.get('admin') === ADMIN_PWD;
 
         if (MAINTENANCE && !isAdmin) {
             window.addEventListener('DOMContentLoaded', () => {
-                document.body.innerHTML = `<div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #fdfdfd; font-family: 'Montserrat', sans-serif; padding: 20px;"><div style="border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 40px; text-align: center;"><h1 style="color: #d4af37; font-size: 1.8em; letter-spacing: 5px; margin-bottom: 20px;">EMMANUEL</h1><p style="color: #2c3e50; font-family: 'Lora', serif; font-style: italic; font-size: 1.2em;">Le sanctuaire est en cours d'embellissement... 🕯️</p></div></div>`;
+                document.body.innerHTML = `
+                    <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #fdfdfd; font-family: 'Montserrat', sans-serif; padding: 20px;">
+                        <div style="border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 40px; text-align: center; animation: welcomeEntry 2s forwards;">
+                            <h1 style="color: #d4af37; font-size: 1.8em; letter-spacing: 5px; margin-bottom: 20px;">EMMANUEL</h1>
+                            <p style="color: #2c3e50; font-family: 'Lora', serif; font-style: italic; font-size: 1.2em;">
+                                Le sanctuaire est en cours d'embellissement... 🕯️
+                            </p>
+                            <p style="color: #95a5a6; font-size: 0.9em; margin-top: 20px; text-transform: uppercase; letter-spacing: 2px;">
+                                De retour dans quelques instants. Merci de votre patience.
+                            </p>
+                        </div>
+                    </div>
+                `;
             });
             throw new Error("Mode Maintenance Activé");
         }
 
         let currentLang = 'fr';
         let tousLesMessages = [];
-        const moisNoms = { fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] };
-        const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min<br><span style='font-weight: 400; font-style: italic; opacity: 0.8;'>The counter updates every 15 min</span>" }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min<br><span style='font-weight: 400; font-style: italic; opacity: 0.8;'>Le compteur s'actualise toutes les 15 min</span>" } };
+        
+        const moisNoms = {
+            fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+            en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        };
+
+        const translations = {
+            fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min<br><span style='font-weight: 400; font-style: italic; opacity: 0.8;'>The counter updates every 15 min</span>" },
+            en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min<br><span style='font-weight: 400; font-style: italic; opacity: 0.8;'>Le compteur s'actualise toutes les 15 min</span>" }
+        };
 
         window.onscroll = function() {
             let btn = document.getElementById("scrollTopLink");
@@ -155,6 +178,7 @@
             currentLang = lang;
             document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
             document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            
             document.getElementById('welcome-txt').innerText = translations[lang].welcome;
             document.getElementById('intro-txt').innerText = translations[lang].intro;
             document.getElementById('stat-title').innerText = translations[lang].statTitle;
@@ -163,17 +187,19 @@
             document.getElementById('label-help').innerText = translations[lang].help;
             document.getElementById('update-txt').innerHTML = translations[lang].update;
             document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
+
             const s = document.getElementById('archiveSection');
             const archiveMainBtn = document.getElementById('btn-archive');
             if (s.style.display === 'block') archiveMainBtn.innerText = translations[lang].archiveBtnClose;
             else archiveMainBtn.innerText = translations[lang].archiveBtn;
+            
             genererBoutonsMois();
             afficherAccueil();
         }
 
-        /* 🔒 --- CHARGEMENT SÉCURISÉ (TEMPS RÉEL UNIQUEMENT) --- 🔒 */
+        /* ⚡ --- FONCTION CHARGER MESSAGES ULTRA-RAPIDE --- ⚡ */
         async function chargerMessages() {
-            // 1. On lance les deux requêtes en parallèle
+            // 1. Lancement simultané des requêtes (Parallélisme)
             const tempsPromesse = (async () => {
                 const apis = [
                     'https://timeapi.io/api/Time/current/zone?timeZone=Etc/UTC',
@@ -181,20 +207,20 @@
                 ];
                 for (const apiUrl of apis) {
                     try {
-                        const res = await fetch(apiUrl);
+                        const res = await fetch(apiUrl, { signal: AbortSignal.timeout(2000) });
                         if (res.ok) {
                             const data = await res.json();
                             return new Date(data.datetime || data.utc_datetime);
                         }
                     } catch (e) { continue; }
                 }
-                throw new Error("Horloge inaccessible"); 
+                return new Date(); // Fallback
             })();
 
             const dataPromesse = fetch('data.json?v=' + Date.now()).then(res => res.json());
 
+            // 2. Traitement dès que les deux répondent
             try {
-                // 2. On attend la vérité (Heure UTC + Données)
                 const [maintenant, data] = await Promise.all([tempsPromesse, dataPromesse]);
                 
                 tousLesMessages = data.filter(msg => {
@@ -206,15 +232,15 @@
                 afficherAccueil();
                 genererBoutonsMois();
 
-                // 3. Libération de l'écran
+                // 3. Retrait immédiat du loader
                 const loader = document.getElementById('loading-screen');
-                loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 500);
-
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => { loader.style.display = 'none'; }, 500);
+                }
             } catch (err) { 
-                // Si l'horloge échoue, on ne libère pas l'accès. On réessaie dans 3 secondes.
-                console.error("Accès refusé : Synchronisation temporelle impossible.");
-                setTimeout(chargerMessages, 3000);
+                console.error("Erreur de chargement."); 
+                document.getElementById('loading-screen').style.display = 'none';
             }
         }
 
@@ -224,19 +250,39 @@
             const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
             const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
             const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
+            
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
-            return `<div class="message-card">${imgHtml}<span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3><div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
+
+            return `
+                <div class="message-card">
+                    ${imgHtml}
+                    <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
+                    <h3 class="msg-title">${titre}</h3>
+                    <div class="msg-content">${texteFormate}</div>
+                    <button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button>
+                    <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
+                </div>`;
         }
 
         function filtrerMessages() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const container = document.getElementById('flux-messages');
-            if (query === "") { afficherAccueil(); return; }
+            
+            if (query === "") {
+                afficherAccueil();
+                return;
+            }
+
             const resultats = tousLesMessages.filter(msg => {
-                const searchIn = ((msg.titre || "") + (msg.titre_en || "") + (msg.texte || "") + (msg.texte_en || "") + (msg.categorie || "") + (msg.categorie_en || "")).toLowerCase();
+                const searchIn = (
+                    (msg.titre || "") + (msg.titre_en || "") + 
+                    (msg.texte || "") + (msg.texte_en || "") +
+                    (msg.categorie || "") + (msg.categorie_en || "")
+                ).toLowerCase();
                 return searchIn.includes(query);
             });
+
             container.innerHTML = resultats.sort((a,b) => b.id - a.id).map(msg => creerCard(msg)).join('');
         }
 
@@ -258,8 +304,13 @@
         function toggleArchives() {
             const s = document.getElementById('archiveSection');
             const btn = document.getElementById('btn-archive');
-            if (s.style.display === 'block') { s.style.display = 'none'; btn.innerText = translations[currentLang].archiveBtn; }
-            else { s.style.display = 'block'; btn.innerText = translations[currentLang].archiveBtnClose; }
+            if (s.style.display === 'block') {
+                s.style.display = 'none';
+                btn.innerText = translations[currentLang].archiveBtn;
+            } else {
+                s.style.display = 'block';
+                btn.innerText = translations[currentLang].archiveBtnClose;
+            }
         }
 
         function genererBoutonsMois() {
@@ -271,10 +322,16 @@
         function afficherTitresDuMois(numMois, btn) {
             const liste = document.getElementById('titres-liste');
             const detail = document.getElementById('message-detail');
-            if (btn.classList.contains('active')) { btn.classList.remove('active'); liste.innerHTML = ''; detail.innerHTML = ''; return; }
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active'); liste.innerHTML = ''; detail.innerHTML = ''; return;
+            }
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active'); detail.innerHTML = '';
-            const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois).sort((a, b) => a.id - b.id);
+            
+            const filtered = tousLesMessages
+                .filter(msg => (new Date(msg.date).getMonth() + 1) === numMois)
+                .sort((a, b) => a.id - b.id);
+                
             liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
         }
 
