@@ -3,284 +3,548 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMMANUEL | La Parole de Dieu</title>
+    <title>Lumière de la Foi - Parole de Foi en Dieu</title>
 
-    <link rel="canonical" href="https://emmanuel-site.vercel.app">
-
-    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="EMMANUEL">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-
+    <!-- Chargement de la police Inter -->
     <style>
-        * { box-sizing: border-box; scroll-behavior: smooth; }
-        html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
-        
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-in-out; }
-        .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; animation: welcomeEntry 2s forwards; opacity: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+    </style>
 
-        @keyframes welcomeEntry { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes blockDance { 0% { opacity: 0; transform: scale(0.95) translateY(30px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-        
-        @keyframes pulseGold {
-            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+    <!-- Chargement et configuration de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configuration immédiate de Tailwind
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1e3a8a',
+                        'light-bg': '#f9fafb',
+                        'accent-gold': '#f59e0b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Styles de base et personnalisés -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+            color: #1f2937;
         }
 
-        .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
-        .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
-        .lang-btn.active { background: white; color: #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .hero-section {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        }
 
-        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 15px 0 5px 0; }
-        .intro-text { width: 85%; margin: 0 auto 10px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
+        .btn-primary {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                        0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
 
-        .search-container { position: relative; width: 85%; max-width: 400px; margin: 0 auto 25px; }
-        .search-input { width: 100%; padding: 12px 40px 12px 20px; border-radius: 30px; border: 1px solid #eee; font-family: 'Montserrat', sans-serif; font-size: 0.85em; transition: 0.3s; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .search-input:focus { border-color: #d4af37; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15); }
-        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #d4af37; font-size: 1.1em; pointer-events: none; }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                        0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
 
-        .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
-        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
-        .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
-        .msg-content { text-align: justify; line-height: 1.8; font-size: 1.05em; white-space: pre-line; } 
-        
-        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
-        .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
+        /* Utilisation pour les cartes de messages */
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
 
-        .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; padding-bottom: 40px; }
-        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
-        .month-btn.active { background: #d4af37; color: white; }
-        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
-
-        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; margin: 20px auto; text-transform: uppercase; }
-
-        .floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
-        .scroll-link { bottom: 105px; }
-        .whatsapp-link { bottom: 30px; display: flex !important; }
-        .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
-        .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
-        .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-
-        .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
-        .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
-        .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
-        .update-notice { font-family: 'Montserrat', sans-serif; font-size: 0.7em; font-weight: 700; color: #95a5a6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
+        /* Styles pour la Modal (prose-like) */
+        .modal-content {
+            line-height: 1.75;
+        }
+        .modal-content h1 {
+            font-size: 1.875rem; /* 3xl */
+            font-weight: 700; /* bold */
+            color: #1e3a8a; /* primary-blue */
+            margin-bottom: 0.75rem;
+        }
+        .modal-content h2 {
+            font-size: 1.5rem; /* 2xl */
+            font-weight: 600; /* semi-bold */
+            color: #1f2937;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
-<body>
 
-    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
+<body class="antialiased">
 
-    <a href="javascript:void(0)" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="floating-container scroll-link" id="scrollTopLink">
-        <span class="btn-label" id="label-top">Retour en haut</span>
-        <button class="scroll-btn">↑</button>
-    </a>
+    <!-- Header / Barre de Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
+                <div class="flex justify-start lg:w-0 lg:flex-1">
+                    <a href="#accueil" class="flex items-center space-x-2">
+                        <!-- Icône de croix stylisée -->
+                        <svg class="h-8 w-8 text-primary-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        <span class="text-2xl font-extrabold text-primary-blue tracking-tight">Lumière de la Foi</span>
+                    </a>
+                </div>
+
+                <!-- Liens de navigation Desktop -->
+                <nav class="hidden md:flex space-x-10">
+                    <a href="#accueil" class="text-base font-medium text-gray-500 hover:text-primary-blue transition duration-150 ease-in-out">Accueil</a>
+                    <a href="#messages" class="text-base font-medium text-gray-500 hover:text-primary-blue transition duration-150 ease-in-out">Messages</a>
+                    <a href="#newsletter" class="text-base font-medium text-gray-500 hover:text-primary-blue transition duration-150 ease-in-out">Newsletter</a>
+                    <a href="#contact" class="text-base font-medium text-gray-500 hover:text-primary-blue transition duration-150 ease-in-out">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Section Hero -->
+        <section id="accueil" class="hero-section text-center rounded-xl p-12 mb-8 shadow-xl">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-primary-blue mb-4">
+                Transmettre la Foi en Dieu
+            </h1>
+            <p class="mt-3 max-w-2xl mx-auto text-xl text-gray-600 sm:mt-5 sm:text-2xl">
+                Un espace de paix et de lumière pour explorer la Parole et grandir dans l'espérance.
+            </p>
+            <div class="mt-8 flex justify-center">
+                <a href="#messages"
+                   class="btn-primary inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-accent-gold hover:bg-yellow-600 md:py-4 md:text-lg md:px-10">
+                    Découvrir nos messages
+                </a>
+            </div>
+        </section>
+
+        <!-- Image de séparation -->
+        <div class="mb-16 rounded-xl overflow-hidden shadow-2xl">
+            <img src="https://placehold.co/1200x300/1e3a8a/f9fafb?text=Paix+et+Esp%C3%A9rance"
+                alt="Image symbolisant la paix, la sérénité et l'espérance"
+                class="w-full h-auto object-cover">
+        </div>
+
+        <!-- Messages -->
+        <section id="messages" class="bg-white p-8 rounded-xl shadow-lg mb-16">
+            <h2 class="text-3xl font-bold text-primary-blue border-b-2 border-accent-gold pb-3 mb-6">
+                Méditations Quotidiennes
+            </h2>
+            <div id="messages-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Les messages seront générés ici par JavaScript -->
+            </div>
+        </section>
+
+        <!-- Newsletter -->
+        <section id="newsletter" class="bg-primary-blue text-white p-10 rounded-xl shadow-xl mb-16 text-center">
+            <h2 class="text-3xl font-bold mb-4">Abonnez-vous à notre Newsletter</h2>
+            <p class="mb-6 text-indigo-200">
+                Recevez directement dans votre boîte mail des messages de foi et des inspirations hebdomadaires.
+            </p>
+            <form id="newsletter-form" class="max-w-lg mx-auto">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="email" id="email-newsletter" required placeholder="Votre adresse email"
+                            class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-accent-gold focus:border-accent-gold text-gray-900">
+                    <button type="submit"
+                            class="btn-primary px-5 py-3 border border-transparent text-base font-medium rounded-lg text-primary-blue bg-accent-gold hover:bg-yellow-600 flex-shrink-0">
+                        S'abonner
+                    </button>
+                </div>
+                <p id="newsletter-message" class="mt-3 text-sm text-yellow-300 hidden" role="status"></p>
+            </form>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="bg-white p-8 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-bold text-primary-blue border-b-2 border-accent-gold pb-3 mb-6">
+                Partagez Votre Expérience
+            </h2>
+            <form id="contact-form" class="space-y-6">
+                <input type="text" id="name" placeholder="Votre Nom (facultatif)"
+                       class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-blue focus:border-primary-blue">
+                <input type="email" id="email-contact" placeholder="Votre Email" required
+                       class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-blue focus:border-primary-blue">
+                <textarea id="message" rows="5" placeholder="Votre Message" required
+                          class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-blue focus:border-primary-blue"></textarea>
+                <button type="submit"
+                        class="btn-primary w-full px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-primary-blue hover:bg-indigo-700 md:py-4 md:text-lg">
+                    Envoyer le Message
+                </button>
+                <p id="contact-message" class="mt-3 text-sm text-green-600 hidden" role="status"></p>
+            </form>
+        </section>
+    </main>
     
-    <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link">
-        <span class="btn-label" id="label-help">Besoin d'aide ?</span>
-        <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="60"></div>
-    </a>
-
-    <div class="lang-selector">
-        <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
-        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
-    </div>
-
-    <h1>EMMANUEL</h1>
-    <div class="intro-text" id="intro-txt">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
-
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un message..." onkeyup="filtrerMessages()">
-        <span class="search-icon">🔍</span>
-    </div>
-
-    <div id="flux-messages"></div>
-
-    <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
-    
-    <div id="archiveSection" class="archive-section">
-        <div class="month-grid" id="monthGrid"></div>
-        <div id="titres-liste"></div> 
-        <div id="message-detail"></div> 
-    </div>
-
-    <div class="flag-counter-box">
-        <div class="stat-title" id="stat-title">COMMUNAUTÉ EMMANUEL</div>
-        <div class="stat-subtitle" id="stat-sub">✨ Lecteurs par pays et vues ✨</div>
-        <a href="https://info.flagcounter.com/ivJp" target="_blank">
-            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Statistiques" border="0" style="margin-top:20px; max-width: 100%;">
-        </a>
-        <div class="update-notice" id="update-txt">
-            Le compteur s'actualise toutes les 15 min<br>
-            <span style="font-weight: 400; font-style: italic; opacity: 0.8;">The counter updates every 15 min</span>
+    <!-- MODAL (Boîte de dialogue personnalisée) pour afficher le message complet -->
+    <div id="message-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <div id="modal-content" class="modal-content">
+                <!-- Le contenu complet du message sera inséré ici par JavaScript -->
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button onclick="hideMessage()" class="px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-blue-800 transition">
+                    Fermer
+                </button>
+            </div>
         </div>
     </div>
+    <!-- FIN MODAL -->
 
-    <script>
-        /* 🛡️ --- CORRECTION URL (Anti-xn--) --- 🛡️ */
-        (function() {
-            const cleanURL = "https://emmanuel-site.vercel.app";
-            if (location.hostname.includes("xn--") || location.protocol !== 'https:') {
-                location.replace(cleanURL + location.pathname + location.search);
-            }
-        })();
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2025 Lumière de la Foi. Tous droits réservés.</p>
+            <p class="text-sm mt-2 text-gray-400">Marchez dans la lumière.</p>
+        </div>
+    </footer>
 
-        const MAINTENANCE = false; 
-        const ADMIN_PWD = "emmanuel777";
-        const urlParams = new URLSearchParams(window.location.search);
-        const isAdmin = urlParams.get('admin') === ADMIN_PWD;
 
-        if (MAINTENANCE && !isAdmin) {
-            window.addEventListener('DOMContentLoaded', () => {
-                document.body.innerHTML = `<div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #fdfdfd; font-family: 'Montserrat', sans-serif; padding: 20px;"><div style="border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 40px; text-align: center;"><h1 style="color: #d4af37; font-size: 1.8em; letter-spacing: 5px; margin-bottom: 20px;">EMMANUEL</h1><p style="color: #2c3e50; font-family: 'Lora', serif; font-style: italic; font-size: 1.2em;">Le sanctuaire est en cours d'embellissement... 🕯️</p></div></div>`;
-            });
-            throw new Error("Mode Maintenance Activé");
-        }
+    <!-- Logique JavaScript et Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot, collection, query, addDoc, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        let currentLang = 'fr';
-        let tousLesMessages = [];
-        const moisNoms = { fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] };
-        const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min" }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min" } };
+        // Configuration Firebase (Variables globales fournies par l'environnement)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        /* ⚡ --- FONCTION CHARGER MESSAGES HYBRIDE --- ⚡ */
-        async function chargerMessages() {
-            let maintenant = new Date(); // Fallback immédiat
-            
-            // Tentative Heure Atomique (max 1.5s)
-            const tempsPromesse = (async () => {
-                const apis = ['https://worldtimeapi.org/api/timezone/Etc/UTC', 'https://timeapi.io/api/Time/current/zone?timeZone=Etc/UTC'];
-                for (const url of apis) {
-                    try {
-                        const res = await fetch(url, { signal: AbortSignal.timeout(1500) });
-                        if (res.ok) {
-                            const data = await res.json();
-                            return new Date(data.datetime || data.utc_datetime);
-                        }
-                    } catch (e) { continue; }
-                }
-                return new Date();
-            })();
+        // Activation des logs de débogage
+        setLogLevel('Debug');
 
-            const dataPromesse = fetch('data.json?v=' + Date.now()).then(res => res.json());
+        let app, db, auth, userId = null;
+        let isAuthReady = false;
 
+        // --- 1. Initialisation Firebase et Authentification ---
+        const initFirebase = async () => {
             try {
-                const [tempsCertifie, data] = await Promise.all([tempsPromesse, dataPromesse]);
-                maintenant = tempsCertifie;
-                
-                tousLesMessages = data.filter(msg => {
-                    const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    const dateParution = new Date(Date.UTC(annee, mois - 1, jour, 1, 30, 0));
-                    return maintenant >= dateParution;
-                });
-                
-                afficherAccueil();
-                genererBoutonsMois();
-                const loader = document.getElementById('loading-screen');
-                if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
-            } catch (err) { 
-                console.error("Erreur."); 
-                document.getElementById('loading-screen').style.display = 'none';
+                if (Object.keys(firebaseConfig).length > 0) {
+                    app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+
+                    onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            console.log("Firebase Auth: User signed in with ID:", userId);
+                        } else {
+                            try {
+                                if (initialAuthToken) {
+                                    await signInWithCustomToken(auth, initialAuthToken);
+                                } else {
+                                    await signInAnonymously(auth);
+                                }
+                            } catch (error) {
+                                console.error("Firebase Auth Error:", error);
+                                userId = crypto.randomUUID(); // Fallback ID
+                            }
+                        }
+                        isAuthReady = true;
+                        if (db) {
+                            setupDataListeners();
+                        }
+                    });
+
+                } else {
+                    console.error("Firebase: Configuration manquante. Affichage des messages MOCK.");
+                    renderMessages(MOCK_MESSAGES);
+                }
+
+            } catch (error) {
+                console.error("Erreur d'initialisation Firebase:", error);
+                renderMessages(MOCK_MESSAGES);
             }
-        }
-
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            document.getElementById('welcome-txt').innerText = translations[lang].welcome;
-            document.getElementById('intro-txt').innerText = translations[lang].intro;
-            document.getElementById('stat-title').innerText = translations[lang].statTitle;
-            document.getElementById('stat-sub').innerText = translations[lang].statSub;
-            document.getElementById('label-top').innerText = translations[lang].scrollTop;
-            document.getElementById('label-help').innerText = translations[lang].help;
-            document.getElementById('update-txt').innerHTML = translations[lang].update;
-            document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
-            genererBoutonsMois();
-            afficherAccueil();
-        }
-
-        function creerCard(msg) {
-            const dateObj = new Date(msg.date);
-            const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
-            const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
-            const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
-            const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
-            const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
-            return `<div class="message-card">${imgHtml}<span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3><div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
-        }
-
-        function afficherAccueil() {
-            const container = document.getElementById('flux-messages');
-            const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
-            container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
-        }
-
-        function toggleArchives() {
-            const s = document.getElementById('archiveSection');
-            const btn = document.getElementById('btn-archive');
-            if (s.style.display === 'block') { s.style.display = 'none'; btn.innerText = translations[currentLang].archiveBtn; }
-            else { s.style.display = 'block'; btn.innerText = translations[currentLang].archiveBtnClose; }
-        }
-
-        function genererBoutonsMois() {
-            const grid = document.getElementById('monthGrid');
-            const liste = moisNoms[currentLang];
-            grid.innerHTML = liste.map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join('');
-        }
-
-        function afficherTitresDuMois(numMois, btn) {
-            const liste = document.getElementById('titres-liste');
-            const detail = document.getElementById('message-detail');
-            if (btn.classList.contains('active')) { btn.classList.remove('active'); liste.innerHTML = ''; detail.innerHTML = ''; return; }
-            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active'); detail.innerHTML = '';
-            const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois).sort((a, b) => a.id - b.id);
-            liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
-        }
-
-        function voirDetail(id, numMois) {
-            const msg = tousLesMessages.find(m => m.id === id);
-            document.getElementById('titres-liste').innerHTML = '';
-            document.getElementById('message-detail').innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="revenirALaListe(${numMois})">${translations[currentLang].backList}</button>`;
-        }
-
-        function revenirALaListe(numMois) {
-            const btn = document.querySelectorAll('.month-btn')[numMois-1];
-            btn.classList.remove('active');
-            afficherTitresDuMois(numMois, btn);
-        }
-
-        function decoderEtCopier(bouton, base64) {
-            const t = decodeURIComponent(escape(atob(base64))).replace(/\*\*/g, '');
-            navigator.clipboard.writeText(t).then(() => {
-                const memo = bouton.innerHTML; bouton.innerHTML = translations[currentLang].copied;
-                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
-            });
-        }
-
-        function filtrerMessages() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const container = document.getElementById('flux-messages');
-            if (query === "") { afficherAccueil(); return; }
-            const resultats = tousLesMessages.filter(msg => {
-                const searchIn = ((msg.titre || "") + (msg.titre_en || "") + (msg.texte || "") + (msg.texte_en || "") + (msg.categorie || "") + (msg.categorie_en || "")).toLowerCase();
-                return searchIn.includes(query);
-            });
-            container.innerHTML = resultats.sort((a,b) => b.id - a.id).map(msg => creerCard(msg)).join('');
-        }
-
-        window.onscroll = function() {
-            let btn = document.getElementById("scrollTopLink");
-            if (window.scrollY > 400) btn.style.display = "flex";
-            else btn.style.display = "none";
         };
 
-        chargerMessages();
+        // --- 2. Messages de Méditation (MOCK restaurés) ---
+        const MOCK_MESSAGES = [
+            {
+                id: 'amour',
+                title: "L'Amour Inconditionnel",
+                date: "2025-11-09",
+                summary: "L'amour Agapè est l'essence de Dieu. Inconditionnel, il ne dépend pas de nos mérites, mais du don suprême de Jésus-Christ. Il nous apporte le pardon, une sécurité profonde et nous inspire à aimer les autres par compassion.",
+                content: `
+                    <h1 class="text-3xl font-bold text-primary-blue mb-3">L'Amour Inconditionnel : Le Cœur de Dieu</h1>
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-2">Définition et Source</h2>
+                    <p class="mb-4">
+                        L'amour dont la Bible nous parle, souvent appelé "Agapè", est l'essence même de Dieu. Ce n'est pas un sentiment humain passager, mais un acte de volonté pur, parfait et illimité. Il est "inconditionnel" car il ne dépend jamais de nos mérites, de nos succès ou de nos échecs. C'est l'amour qui nous a été démontré de manière suprême par le don de Jésus-Christ.
+                    </p>
+                    <blockquote class="mb-4 italic border-l-4 border-accent-gold pl-3 text-gray-800 bg-gray-50 p-3 rounded-md">
+                        « Car Dieu a tant aimé le monde qu'il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu'il ait la vie éternelle. » (Jean 3:16)
+                    </blockquote>
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-2">Comment cet amour nous transforme</h2>
+                    <p class="mb-2">L'Amour Inconditionnel est une puissance qui nous relève et nous purifie.</p>
+                    <ul class="list-disc list-inside text-left ml-4 space-y-2 text-gray-700">
+                        <li>**Le Pardon total :** Il nous rappelle que même lorsque nous trébuchons, le pardon de Dieu est toujours disponible.</li>
+                        <li>**La Sécurité :** Être aimé de cet amour nous donne une paix profonde. Notre valeur est définie par Celui qui nous a créés.</li>
+                        <li>**L'Appel à la Sainteté :** En recevant cet amour immense, nous sommes inspirés à aimer les autres de la même manière.</li>
+                    </ul>
+                    <h2 class="text-2xl font-semibold text-gray-700 mt-4 mb-2">Méditation pour la semaine</h2>
+                    <p class="mb-4 text-gray-600 italic">
+                        Prenez un instant pour vous souvenir que vous êtes infiniment aimé, non pas selon la mesure de votre foi ou de vos œuvres, mais par la seule grâce et bonté de Dieu.
+                    </p>
+                `,
+                image: 'https://placehold.co/400x200/f59e0b/1e3a8a?text=Amour+Inconditionnel',
+                timestamp: Date.now()
+            },
+            {
+                id: 'force',
+                title: "La Force dans l'Épreuve",
+                date: "2025-11-08",
+                summary: "La foi est notre ancre inébranlable au milieu des tempêtes. Elle ne promet pas l'absence de difficultés, mais assure la présence d'un refuge constant qui transforme l'épreuve en persévérance et en espérance.",
+                content: `
+                    <h1 class="text-3xl font-bold text-primary-blue mb-3">La Force dans l'Épreuve : La Foi comme Ancre Inébranlable</h1>
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-2">La Réalité de l'Épreuve et la Source de la Paix</h2>
+                    <p class="mb-4">
+                        Les épreuves font partie intégrante de l'expérience humaine. La foi ne promet pas une vie sans difficultés, mais elle assure la présence constante d'un refuge et d'un soutien inébranlable. La force est trouvée dans la conviction que Dieu travaille en toutes choses pour notre bien.
+                    </p>
+                    <blockquote class="mb-4 italic border-l-4 border-accent-gold pl-3 text-gray-800 bg-gray-50 p-3 rounded-md">
+                        « Heureux l'homme qui supporte patiemment la tentation; car, après avoir été éprouvé, il recevra la couronne de vie... » (Jacques 1:12)
+                    </blockquote>
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-2">Comment la foi devient notre bouclier</h2>
+                    <p class="mb-2">Lorsque le vent souffle fort, la foi nous offre trois piliers essentiels :</p>
+                    <ul class="list-disc list-inside text-left ml-4 space-y-2 text-gray-700">
+                        <li>**L'Ancre de l'Âme :** Elle nous maintient stables lorsque les vagues du doute menacent de nous submerger.</li>
+                        <li>**Le Bouclier de la Confiance :** Elle protège notre cœur du désespoir. Savoir que Dieu a un plan remplace l'anxiété par une confiance tranquille.</li>
+                        <li>**Le Processus de Raffinement :** L'épreuve produit la patience, l'expérience, et l'espérance (Romains 5:3-4).</li>
+                    </ul>
+                    <h2 class="text-2xl font-semibold text-gray-700 mt-4 mb-2">Prière et Méditation</h2>
+                    <p class="mb-4 text-gray-600 italic">
+                        Rappelez-vous que vous n'êtes jamais seul dans votre lutte. Méditez sur ce verset : « L'Éternel est ma force et mon bouclier... » (Psaume 28:7)
+                    </p>
+                `,
+                image: 'https://placehold.co/400x200/dbeafe/1e3a8a?text=Force+et+Patience',
+                timestamp: Date.now() - 86400000
+            },
+            {
+                id: 'esperance',
+                title: "L'Espérance pour Demain",
+                date: "2025-11-07",
+                summary: "L'espérance chrétienne est une certitude, ancrée dans la résurrection du Christ. Elle nous donne la force d'affronter le présent avec patience et joie, sachant que notre destinée éternelle est assurée.",
+                content: `
+                    <h1 class="text-3xl font-bold text-primary-blue mb-3">L'Espérance pour Demain : Notre Ancrage dans l'Éternel</h1>
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-2">Une Espérance qui n'est pas un Souhait</h2>
+                    <p class="mb-4">
+                        L'espérance chrétienne est une certitude ancrée dans les promesses inébranlables de Dieu et scellée par la résurrection de Jésus-Christ. Elle nous assure que, quoi qu'il arrive sur cette terre, le meilleur reste à venir.
+                    </p>
+                    <blockquote class="mb-4 italic border-l-4 border-accent-gold pl-3 text-gray-800 bg-gray-50 p-3 rounded-md">
+                        « Béni soit Dieu... qui nous a régénérés, pour une espérance vivante, par la résurrection de Jésus-Christ d'entre les morts. » (1 Pierre 1:3)
+                    </blockquote>
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-2">Le Fondement de Notre Confiance</h2>
+                    <p class="mb-2">Notre espérance pour demain repose sur deux vérités centrales :</p>
+                    <ul class="list-disc list-inside text-left ml-4 space-y-2 text-gray-700">
+                        <li>**La Victoire Finale :** Jésus a vaincu la mort, gage de notre propre résurrection et de notre vie éternelle.</li>
+                        <li>**Un Plan Parfait :** Savoir que le Créateur détient notre avenir entre Ses mains nous permet de lâcher prise sur l'anxiété.</li>
+                    </ul>
+                    <h2 class="text-2xl font-semibold text-gray-700 mt-4 mb-2">L'Impact sur Notre Aujourd'hui</h2>
+                    <p class="mb-4 text-gray-600 italic">
+                        L'Espérance nous donne la perspective nécessaire pour endurer les difficultés et remplit notre cœur de joie et d'audace.
+                    </p>
+                `,
+                image: 'https://placehold.co/400x200/1e3a8a/f9fafb?text=Esp%C3%A9rance+Vivante',
+                timestamp: Date.now() - 2 * 86400000
+            }
+        ];
+
+        // --- 3. Fonction de Rendu des Messages ---
+        const renderMessages = (messages) => {
+            const container = document.getElementById('messages-container');
+            if (!container) return;
+
+            // Tri par date (du plus récent au plus ancien)
+            messages.sort((a, b) => b.timestamp - a.timestamp);
+
+            container.innerHTML = messages.map(message => {
+                // Utilisation du 'summary' ou du début du 'content' pour la carte
+                const cardContent = message.summary || message.content.replace(/<[^>]*>/g, '').substring(0, 200) + '...';
+
+                return `
+                    <div class="bg-light-bg rounded-lg overflow-hidden shadow-md hover:shadow-xl transform hover:scale-[1.02] transition duration-300 cursor-pointer" onclick="showMessage('${message.id}')">
+                        <img src="${message.image}" alt="Illustration pour ${message.title}" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <span class="text-xs font-semibold text-accent-gold uppercase tracking-wider">${new Date(message.timestamp).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                            <h3 class="mt-1 text-xl font-bold text-primary-blue line-clamp-1">${message.title}</h3>
+                            <p class="mt-3 text-gray-600 text-sm line-clamp-3">${cardContent}</p>
+                            <span class="mt-4 inline-flex items-center text-primary-blue font-medium text-sm hover:text-accent-gold">
+                                Lire la suite &rarr;
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+        
+        // --- 4. Gestion de la MODAL ---
+
+        window.showMessage = (messageId) => {
+            const message = MOCK_MESSAGES.find(m => m.id === messageId); // Récupération directe dans le MOCK
+            const modalContent = document.getElementById('modal-content');
+            const modal = document.getElementById('message-modal');
+
+            if (message && modalContent && modal) {
+                // Insère le contenu HTML complet stocké
+                modalContent.innerHTML = message.content;
+                // Affiche la modal
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        window.hideMessage = () => {
+            const modal = document.getElementById('message-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            document.getElementById('modal-content').innerHTML = ''; // Nettoie le contenu
+        }
+
+
+        // --- 5. Écoute des Données Firestore (Messages) ---
+        const setupDataListeners = () => {
+            if (!db || !isAuthReady) return;
+
+            const messagesCollectionPath = `artifacts/${appId}/public/data/messages`;
+            const q = query(collection(db, messagesCollectionPath));
+
+            console.log("Firestore: Setting up onSnapshot listener for messages...");
+
+            onSnapshot(q, (snapshot) => {
+                const messages = [];
+                let dbHasContent = false;
+                snapshot.forEach((doc) => {
+                    dbHasContent = true;
+                    const data = doc.data();
+                    const timestamp = data.timestamp ? (data.timestamp.toDate ? data.timestamp.toDate().getTime() : Date.now()) : Date.now();
+
+                    // Nous utilisons le MOCK pour les messages principaux
+                    // Si vous souhaitez utiliser les données de la DB, il faut les structurer correctement
+                    // Ici, nous nous assurons que les messages mock sont bien dans la DB pour la persistance
+                });
+
+                if (!dbHasContent) {
+                    // Ajouter les mock messages à la DB pour qu'ils soient persistants et visibles par tous
+                    MOCK_MESSAGES.forEach(msg => {
+                        const newDocRef = doc(collection(db, messagesCollectionPath), msg.id); 
+                        const { timestamp, ...msgData } = msg; 
+                        setDoc(newDocRef, { ...msgData, timestamp: serverTimestamp() }, { merge: true }).catch(e => console.error("Error setting mock doc:", e));
+                    });
+                }
+                
+                // Rendu des messages MOCK, car leur contenu complet est dans le JS
+                renderMessages(MOCK_MESSAGES);
+                console.log(`Firestore: Messages MOCK affichés.`);
+
+            }, (error) => {
+                console.error("Firestore (Messages) Listener Error:", error);
+                renderMessages(MOCK_MESSAGES); // Afficher les mock messages en cas d'échec
+            });
+        };
+
+        // --- 6. Logique des Formulaires ---
+
+        // Fonction pour afficher un message d'état
+        const showStatusMessage = (elementId, message, isError = false) => {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            el.textContent = message;
+            el.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-300');
+            el.classList.add(isError ? 'text-red-600' : (elementId.includes('newsletter') ? 'text-yellow-300' : 'text-green-600'));
+            setTimeout(() => {
+                el.classList.add('hidden');
+            }, 5000);
+        };
+
+        // Gestion de l'inscription à la Newsletter
+        document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email-newsletter').value;
+
+            if (!db || !userId) {
+                showStatusMessage('newsletter-message', "Erreur : La connexion n'est pas prête. Veuillez réessayer.", true);
+                return;
+            }
+
+            try {
+                const collectionPath = `artifacts/${appId}/users/${userId}/newsletter_subscriptions`;
+                await addDoc(collection(db, collectionPath), {
+                    email: email,
+                    subscribedAt: serverTimestamp(),
+                    userId: userId,
+                });
+
+                showStatusMessage('newsletter-message', "Merci de vous être abonné ! Vous recevrez bientôt notre lumière.");
+                document.getElementById('newsletter-form').reset();
+            } catch (error) {
+                console.error("Erreur lors de l'abonnement à la newsletter:", error);
+                showStatusMessage('newsletter-message', "Erreur lors de l'abonnement. Veuillez vérifier votre connexion.", true);
+            }
+        });
+
+        // Gestion du formulaire de Contact
+        document.getElementById('contact-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email-contact').value;
+            const content = document.getElementById('message').value;
+
+            if (!db || !userId) {
+                showStatusMessage('contact-message', "Erreur : La connexion n'est pas prête. Veuillez réessayer.", true);
+                return;
+            }
+
+            try {
+                const collectionPath = `artifacts/${appId}/public/data/contact_messages`;
+                await addDoc(collection(db, collectionPath), {
+                    name: name || 'Anonyme',
+                    email: email,
+                    content: content,
+                    sentAt: serverTimestamp(),
+                    senderId: userId,
+                });
+
+                showStatusMessage('contact-message', "Message envoyé avec succès ! Nous apprécions votre partage.");
+                document.getElementById('contact-form').reset();
+            } catch (error) {
+                console.error("Erreur lors de l'envoi du message de contact:", error);
+                showStatusMessage('contact-message', "Erreur lors de l'envoi. Veuillez vérifier votre connexion.", true);
+            }
+        });
+        
+        // Gestion du défilement fluide pour les ancres
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetHref = this.getAttribute('href');
+                if (targetHref.length > 1 && targetHref.startsWith('#')) {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(targetHref);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+
+        // --- 7. Démarrage de l'Application ---
+        window.onload = initFirebase;
+        // Fallback pour le rendu initial en cas de problème de démarrage rapide
+        setTimeout(() => {
+            if (!isAuthReady) {
+                renderMessages(MOCK_MESSAGES);
+            }
+        }, 500);
+
     </script>
 </body>
 </html>
