@@ -18,8 +18,8 @@
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #2c3e50; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
         
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 1s ease-in-out; }
-        .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; animation: welcomeEntry 2.5s forwards; opacity: 0; }
+        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-in-out; }
+        .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; animation: welcomeEntry 2s forwards; opacity: 0; }
 
         @keyframes welcomeEntry { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes blockDance { 0% { opacity: 0; transform: scale(0.95) translateY(30px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
@@ -154,7 +154,6 @@
             });
             throw new Error("Mode Maintenance Activé");
         }
-        /* 🔴⚪ --- FIN DU SCRIPT MAINTENANCE --- 🔴⚪ */
 
         let currentLang = 'fr';
         let tousLesMessages = [];
@@ -198,50 +197,51 @@
             afficherAccueil();
         }
 
-        /* 🛡️ --- NOUVELLE FONCTION CHARGER MESSAGES (HEURE UTC) --- 🛡️ */
+        /* ⚡ --- FONCTION CHARGER MESSAGES ULTRA-RAPIDE --- ⚡ */
         async function chargerMessages() {
-            let maintenant = new Date(); // Valeur par défaut
-
-            // 1. Synchronisation avec l'heure universelle
-            try {
+            // 1. Lancement simultané des requêtes (Parallélisme)
+            const tempsPromesse = (async () => {
                 const apis = [
                     'https://timeapi.io/api/Time/current/zone?timeZone=Etc/UTC',
                     'https://worldtimeapi.org/api/timezone/Etc/UTC'
                 ];
                 for (const apiUrl of apis) {
                     try {
-                        const timeRes = await fetch(apiUrl, { timeout: 3000 });
-                        if (timeRes.ok) {
-                            const timeData = await timeRes.json();
-                            maintenant = new Date(timeData.datetime || timeData.utc_datetime);
-                            console.log("⌚ Heure universelle synchronisée.");
-                            break;
+                        const res = await fetch(apiUrl, { signal: AbortSignal.timeout(2000) });
+                        if (res.ok) {
+                            const data = await res.json();
+                            return new Date(data.datetime || data.utc_datetime);
                         }
                     } catch (e) { continue; }
                 }
-            } catch (e) { console.warn("Mode heure locale utilisé."); }
+                return new Date(); // Fallback
+            })();
 
-            // 2. Récupération des messages
+            const dataPromesse = fetch('data.json?v=' + Date.now()).then(res => res.json());
+
+            // 2. Traitement dès que les deux répondent
             try {
-                const response = await fetch('data.json?v=' + Date.now());
-                const data = await response.json();
+                const [maintenant, data] = await Promise.all([tempsPromesse, dataPromesse]);
                 
                 tousLesMessages = data.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    // Publication fixée à 01:30 du matin UTC
                     const dateParution = new Date(Date.UTC(annee, mois - 1, jour, 1, 30, 0));
                     return maintenant >= dateParution;
                 });
                 
                 afficherAccueil();
                 genererBoutonsMois();
-            } catch (err) { console.error("Erreur de chargement."); }
 
-            // 3. Gestion de l'écran de chargement
-            setTimeout(() => { 
-                document.getElementById('loading-screen').style.opacity = '0';
-                setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1000);
-            }, 2500);
+                // 3. Retrait immédiat du loader
+                const loader = document.getElementById('loading-screen');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => { loader.style.display = 'none'; }, 500);
+                }
+            } catch (err) { 
+                console.error("Erreur de chargement."); 
+                document.getElementById('loading-screen').style.display = 'none';
+            }
         }
 
         function creerCard(msg) {
