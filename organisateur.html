@@ -2,74 +2,86 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>EMMANUEL | Organisateur & Signalement</title>
+    <title>EMMANUEL | Organisateur & Détecteur</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Lora', serif; background: #fdfdfd; padding: 20px; text-align: center; }
-        .box { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 15px; border-top: 8px solid #d4af37; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; }
-        textarea { width: 100%; height: 400px; font-family: monospace; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; outline-color: #d4af37; }
-        .btn { background: #1a1a1a; color: white; padding: 15px 35px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s; }
-        .btn:hover { background: #d4af37; transform: translateY(-2px); }
-        .error-msg { display: none; margin-top: 20px; padding: 15px; background: #ffebee; color: #c62828; border-radius: 8px; border-left: 5px solid #ef5350; text-align: left; font-family: monospace; }
+        body { font-family: sans-serif; background: #fdfdfd; padding: 20px; text-align: center; color: #1a1a1a; }
+        .box { max-width: 950px; margin: auto; background: white; padding: 35px; border-radius: 20px; border-top: 10px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
+        textarea { width: 100%; height: 450px; font-family: 'Courier New', monospace; padding: 15px; border: 2px solid #eee; border-radius: 10px; background: #fafafa; font-size: 14px; box-sizing: border-box; }
+        .btn { background: #1a1a1a; color: white; padding: 18px 45px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 25px; transition: 0.3s; }
+        .btn:hover { background: #d4af37; transform: scale(1.02); }
+        .error-zone { display: none; margin-top: 25px; padding: 20px; background: #fff5f5; border-left: 6px solid #ff4d4d; color: #b91c1c; text-align: left; border-radius: 8px; font-size: 14px; }
+        .guide { font-size: 0.9em; color: #666; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h1>🏛️ Organisateur Signalétique</h1>
-    <p>Le script part du <strong>dernier ID en bas</strong> et remonte vers le haut.</p>
+    <h1>🏛️ Organisateur de la Parole</h1>
+    <p class="guide">Collez votre JSON ci-dessous. Le script calculera les dates et ID à partir du message du bas.</p>
     
-    <textarea id="jsonInput" placeholder="Collez votre code JSON ici..."></textarea>
+    <textarea id="jsonContent" placeholder="Collez votre code ici..."></textarea>
     
-    <button class="btn" onclick="organiser()">⚡ SYNCHRONISER ET VÉRIFIER</button>
+    <button class="btn" onclick="lancerCalcul()">⚡ SYNCHRONISER LA CHRONOLOGIE</button>
     
-    <div id="errorBox" class="error-msg"></div>
+    <div id="displayError" class="error-zone"></div>
 </div>
 
 <script>
-function organiser() {
-    const inputField = document.getElementById('jsonInput');
-    const errorBox = document.getElementById('errorBox');
-    errorBox.style.display = 'none';
+function lancerCalcul() {
+    const zoneTexte = document.getElementById('jsonContent');
+    const zoneErreur = document.getElementById('displayError');
+    zoneErreur.style.display = 'none';
 
     try {
-        let data = JSON.parse(inputField.value);
-        
-        if (data.length === 0) return;
+        // Lecture du JSON brut
+        let data = JSON.parse(zoneTexte.value);
 
-        // --- LOGIQUE : BAS VERS LE HAUT ---
-        let dernierIndex = data.length - 1;
-        let idActuel = parseInt(data[dernierIndex].id);
-        let dateActuelle = new Date(data[dernierIndex].date);
-
-        for (let i = dernierIndex - 1; i >= 0; i--) {
-            idActuel++;
-            dateActuelle.setDate(dateActuelle.getDate() + 1);
-
-            data[i].id = idActuel;
-            
-            // Formatage date YYYY-MM-DD
-            let y = dateActuelle.getFullYear();
-            let m = String(dateActuelle.getMonth() + 1).padStart(2, '0');
-            let d = String(dateActuelle.getDate()).padStart(2, '0');
-            data[i].date = `${y}-${m}-${d}`;
+        if (!Array.isArray(data)) {
+            throw new Error("Le fichier doit commencer par [ et finir par ]");
         }
 
-        // --- EXPORTATION ---
-        const finalJson = JSON.stringify(data, null, 2);
-        const blob = new Blob([finalJson], { type: "application/json" });
+        if (data.length < 1) return;
+
+        // --- RAISONNEMENT : REMONTÉE DU BAS VERS LE HAUT ---
+        let indexDernier = data.length - 1;
+        
+        // On récupère le point de départ tout en bas
+        let idReference = parseInt(data[indexDernier].id);
+        let dateReference = new Date(data[indexDernier].date);
+
+        // On remonte vers le haut pour dater les nouveaux messages
+        for (let i = indexDernier - 1; i >= 0; i--) {
+            idReference++; 
+            dateReference.setDate(dateReference.getDate() + 1);
+
+            data[i].id = idReference;
+            
+            // Formatage YYYY-MM-DD
+            let annee = dateReference.getFullYear();
+            let mois = String(dateReference.getMonth() + 1).padStart(2, '0');
+            let jour = String(dateReference.getDate()).padStart(2, '0');
+            data[i].date = `${annee}-${mois}-${jour}`;
+        }
+
+        // --- GÉNÉRATION DU FICHIER PROPRE ---
+        const jsonPropre = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonPropre], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = "data.json";
         a.click();
 
-    } catch (e) {
+    } catch (err) {
         // --- SIGNALEMENT DE L'ERREUR ---
-        errorBox.innerHTML = "<strong>❌ ERREUR DÉTECTÉE :</strong><br>" + e.message + 
-        "<br><br><small>Astuce : Vérifiez s'il ne manque pas une virgule entre deux messages ou si un guillemet est resté ouvert.</small>";
-        errorBox.style.display = 'block';
+        zoneErreur.innerHTML = "<strong>⚠️ ERREUR DANS LE FICHIER :</strong><br>" + err.message;
+        
+        if (err.message.includes("position")) {
+            zoneErreur.innerHTML += "<br><br><em>Conseil : Vérifiez les virgules entre les messages <code>}, {</code> et assurez-vous que tous les textes sont bien entre guillemets.</em>";
+        }
+        zoneErreur.style.display = 'block';
     }
 }
 </script>
