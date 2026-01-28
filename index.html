@@ -198,19 +198,46 @@
             afficherAccueil();
         }
 
+        /* 🛡️ --- NOUVELLE FONCTION CHARGER MESSAGES (HEURE UTC) --- 🛡️ */
         async function chargerMessages() {
+            let maintenant = new Date(); // Valeur par défaut
+
+            // 1. Synchronisation avec l'heure universelle
+            try {
+                const apis = [
+                    'https://timeapi.io/api/Time/current/zone?timeZone=Etc/UTC',
+                    'https://worldtimeapi.org/api/timezone/Etc/UTC'
+                ];
+                for (const apiUrl of apis) {
+                    try {
+                        const timeRes = await fetch(apiUrl, { timeout: 3000 });
+                        if (timeRes.ok) {
+                            const timeData = await timeRes.json();
+                            maintenant = new Date(timeData.datetime || timeData.utc_datetime);
+                            console.log("⌚ Heure universelle synchronisée.");
+                            break;
+                        }
+                    } catch (e) { continue; }
+                }
+            } catch (e) { console.warn("Mode heure locale utilisé."); }
+
+            // 2. Récupération des messages
             try {
                 const response = await fetch('data.json?v=' + Date.now());
                 const data = await response.json();
-                const maintenant = new Date();
+                
                 tousLesMessages = data.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
+                    // Publication fixée à 01:30 du matin UTC
+                    const dateParution = new Date(Date.UTC(annee, mois - 1, jour, 1, 30, 0));
                     return maintenant >= dateParution;
                 });
+                
                 afficherAccueil();
                 genererBoutonsMois();
-            } catch (err) { console.error("Erreur"); }
+            } catch (err) { console.error("Erreur de chargement."); }
+
+            // 3. Gestion de l'écran de chargement
             setTimeout(() => { 
                 document.getElementById('loading-screen').style.opacity = '0';
                 setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1000);
