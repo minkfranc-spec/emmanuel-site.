@@ -2,9 +2,8 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>EMMANUEL | Organisateur Hors-Ligne V2</title>
+    <title>EMMANUEL | Organisateur & Visionnaire</title>
     <style>
-        /* Polices système élégantes (pas besoin d'internet) */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background: #f0f0f0; 
@@ -48,7 +47,7 @@
             margin-top: 25px; 
             transition: 0.3s; 
         }
-        .btn:hover { background: #d4af37; }
+        .btn:hover { background: #d4af37; transform: scale(1.02); }
         .error-zone { 
             display: none; 
             margin-top: 25px; 
@@ -70,7 +69,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
             border: 1px solid #ddd; 
         }
-        /* L'image a une marge en bas pour la séparer du titre */
         .card img { 
             width: 100%; 
             border-radius: 10px; 
@@ -78,7 +76,6 @@
             display: block;
         }
         .card-cat { color: #d4af37; font-weight: bold; font-size: 0.8em; text-transform: uppercase; display: block; margin-bottom: 15px; }
-        /* Le titre est en dessous de l'image maintenant */
         .card-title { 
             font-size: 28px; 
             color: #1a1a1a; 
@@ -94,6 +91,16 @@
             font-size: 17px; 
             font-family: 'Georgia', serif; 
         }
+
+        /* --- MISE EN AVANT DES THÉORÈMES (GRAS) --- */
+        .card-text b, .card-text strong {
+            color: #000;
+            font-weight: 900;
+            background: rgba(212, 175, 55, 0.1); /* Un léger fond doré pour le théorème */
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
         .preview-label { 
             font-size: 20px; 
             font-weight: bold; 
@@ -107,29 +114,35 @@
 <body>
 
 <div class="box">
-    <h1>🏛️ ORGANISATEUR & APERÇU RÉEL</h1>
-    <p>Utilisable sans connexion. L'aperçu reflète la structure du site. 🛡️</p>
+    <h1>🏛️ ORGANISATEUR DE THÉORÈMES</h1>
+    <p>Aperçu réel avec mise en avant des passages importants. 🛡️</p>
     
     <textarea id="jsonContent" placeholder="Collez votre code JSON ici..."></textarea>
     
-    <button class="btn" onclick="lancerCalcul()">⚡ SYNCHRONISER & VOIR L'APERÇU</button>
+    <button class="btn" onclick="lancerCalcul()">⚡ SYNCHRONISER & RÉVÉLER LA PAROLE</button>
     
     <div id="displayError" class="error-zone"></div>
 </div>
 
 <div id="previewArea">
-    <span class="preview-label">👁️ APERÇU CONFORME AU SITE</span>
+    <span class="preview-label">👁️ APERÇU FINAL (COMME SUR LE SITE)</span>
     <div id="previewContent"></div>
 </div>
 
 <script>
+// Fonction pour transformer le format **gras** en HTML <b>
+function formaterTheoreme(texte) {
+    if (!texte) return "";
+    // Remplace **texte** par <b>texte</b>
+    return texte.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+}
+
 function lancerCalcul() {
     const zoneTexte = document.getElementById('jsonContent');
     const zoneErreur = document.getElementById('displayError');
     const previewArea = document.getElementById('previewArea');
     const previewContent = document.getElementById('previewContent');
     
-    // Reset visuel
     zoneTexte.classList.remove('error-border');
     zoneErreur.style.display = 'none';
 
@@ -159,21 +172,22 @@ function lancerCalcul() {
             data[i].date = `${annee}-${mois}-${jour}`;
         }
 
-        // Mettre à jour le texte
         zoneTexte.value = JSON.stringify(data, null, 2);
         
-        // --- APERÇU RÉALISTE (ORDRE MODIFIÉ) ---
+        // --- APERÇU AVEC THÉORÈMES EN GRAS ---
         previewContent.innerHTML = "";
         data.forEach(msg => {
             const card = document.createElement('div');
             card.className = 'card';
             
-            // NOTE DU MAÎTRE : L'ordre est maintenant : Catégorie -> Image -> Titre -> Texte
+            // On applique le formaterTheoreme sur le texte
+            let texteFormate = formaterTheoreme(msg.texte);
+
             card.innerHTML = `
-                <span class="card-cat">Catégorie: ${msg.categorie} | ID: ${msg.id} | Date: ${msg.date}</span>
-                ${msg.image ? '<img src="'+msg.image+'" alt="[Aperçu Image - Connexion requise]">' : ''}
+                <span class="card-cat">${msg.categorie} | ID: ${msg.id} | ${msg.date}</span>
+                ${msg.image ? '<img src="'+msg.image+'" alt="[Image]">' : ''}
                 <div class="card-title">${msg.titre}</div>
-                <div class="card-text">${msg.texte}</div>
+                <div class="card-text">${texteFormate}</div>
             `;
             previewContent.appendChild(card);
         });
