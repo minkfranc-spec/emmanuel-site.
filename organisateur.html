@@ -2,80 +2,54 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>EMMANUEL | Organisateur Précision Laser</title>
+    <title>EMMANUEL | Organisateur Expert</title>
     <style>
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: #f0f0f0; 
-            padding: 20px; 
-            text-align: center; 
-            color: #1a1a1a; 
+            font-family: 'Segoe UI', sans-serif; 
+            background: #f0f0f0; padding: 20px; text-align: center; color: #1a1a1a; 
         }
         .box { 
-            max-width: 950px; 
-            margin: auto; 
-            background: white; 
-            padding: 35px; 
-            border-radius: 20px; 
-            border-top: 10px solid #d4af37; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            margin-bottom: 40px; 
+            max-width: 1000px; margin: auto; background: white; padding: 35px; 
+            border-radius: 20px; border-top: 10px solid #d4af37; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 40px; 
         }
-        h1 { text-transform: uppercase; letter-spacing: 2px; color: #1a1a1a; font-weight: 900; }
+        h1 { text-transform: uppercase; letter-spacing: 2px; font-weight: 900; }
         
-        /* Zone de texte avec coloration de sélection personnalisée */
+        /* --- SYSTÈME DE LIGNES NUMÉROTÉES --- */
+        .editor-container {
+            position: relative; border: 2px solid #ddd; border-radius: 10px;
+            background: #fafafa; overflow: hidden; display: flex; text-align: left;
+        }
+        .line-numbers {
+            width: 40px; padding: 15px 5px; border-right: 1px solid #ddd;
+            background: #eee; color: #888; font-family: 'Courier New', monospace;
+            font-size: 14px; text-align: right; user-select: none; line-height: 1.5;
+        }
         textarea { 
-            width: 100%; 
-            height: 350px; 
-            font-family: 'Courier New', monospace; 
-            padding: 15px; 
-            border: 2px solid #ddd; 
-            border-radius: 10px; 
-            background: #fafafa; 
-            font-size: 14px; 
-            box-sizing: border-box; 
-            outline: none;
-            line-height: 1.5;
+            flex: 1; height: 400px; font-family: 'Courier New', monospace; 
+            padding: 15px; border: none; background: transparent; 
+            font-size: 14px; outline: none; line-height: 1.5; resize: none;
         }
-        textarea::selection {
-            background: #ff4d4d; /* Surlignage rouge pour l'erreur */
-            color: white;
-        }
+        textarea::selection { background: #ff4d4d; color: white; }
 
-        .error-border { border: 3px solid #ff4d4d !important; background: #fff5f5 !important; }
-        
         .btn { 
-            background: #1a1a1a; 
-            color: white; 
-            padding: 18px 45px; 
-            border: none; 
-            border-radius: 50px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 16px; 
-            margin-top: 25px; 
-            transition: 0.3s; 
+            background: #1a1a1a; color: white; padding: 18px 45px; border: none; 
+            border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 25px; 
         }
-        .btn:hover { background: #d4af37; transform: scale(1.02); }
+        .btn:hover { background: #d4af37; }
 
         .error-zone { 
-            display: none; 
-            margin-top: 25px; 
-            padding: 20px; 
-            background: #fff5f5; 
-            border-left: 6px solid #ff4d4d; 
-            color: #b91c1c; 
-            text-align: left; 
-            border-radius: 8px; 
-            font-size: 15px;
+            display: none; margin-top: 25px; padding: 20px; background: #fff5f5; 
+            border-left: 6px solid #ff4d4d; color: #b91c1c; text-align: left; border-radius: 8px; 
         }
 
-        /* Styles Aperçu */
+        /* --- APERÇU --- */
         #previewArea { max-width: 850px; margin: auto; text-align: left; display: none; }
-        .card { background: white; padding: 40px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #ddd; }
-        .card img { width: 100%; border-radius: 10px; margin-bottom: 25px; display: block; }
-        .card-cat { color: #d4af37; font-weight: bold; font-size: 0.8em; text-transform: uppercase; display: block; margin-bottom: 15px; }
-        .card-title { font-size: 28px; color: #1a1a1a; margin-bottom: 25px; font-family: 'Georgia', serif; font-weight: bold; }
+        .card { background: white; padding: 40px; border-radius: 15px; margin-bottom: 30px; border: 1px solid #ddd; }
+        .card img { width: 100%; border-radius: 10px; margin-bottom: 25px; }
+        /* IDs et infos en minuscule pour repérage rapide */
+        .card-meta { color: #d4af37; font-weight: bold; font-size: 0.75em; text-transform: lowercase; margin-bottom: 15px; display: block; }
+        .card-title { font-size: 26px; color: #1a1a1a; margin-bottom: 20px; font-family: 'Georgia', serif; font-weight: bold; }
         .card-text { white-space: pre-wrap; line-height: 1.8; color: #333; font-size: 17px; font-family: 'Georgia', serif; }
         .card-text b { color: #000; font-weight: 900; background: rgba(212, 175, 55, 0.1); padding: 2px 4px; border-radius: 4px; }
     </style>
@@ -83,10 +57,13 @@
 <body>
 
 <div class="box">
-    <h1>🏛️ ORGANISATEUR HORS-LIGNE</h1>
-    <p>Détection précise par <b>Ligne</b> et <b>Colonne</b>. 🛡️</p>
+    <h1>🏛️ ORGANISATEUR HAUTE PRÉCISION</h1>
+    <p>Numérotation active et détection par ligne/colonne. 🛡️</p>
     
-    <textarea id="jsonContent" placeholder="Collez votre code JSON ici..." oninput="nettoyer()"></textarea>
+    <div class="editor-container">
+        <div id="lineNumbers" class="line-numbers">1</div>
+        <textarea id="jsonContent" placeholder="Collez votre JSON..." oninput="updateEditor()" onscroll="syncScroll()"></textarea>
+    </div>
     
     <button class="btn" onclick="lancerCalcul()">⚡ SYNCHRONISER & VÉRIFIER</button>
     
@@ -98,18 +75,33 @@
 </div>
 
 <script>
-function nettoyer() {
-    document.getElementById('jsonContent').classList.remove('error-border');
+const textarea = document.getElementById('jsonContent');
+const lineNumbers = document.getElementById('lineNumbers');
+
+function updateEditor() {
+    // Mise à jour des numéros de ligne
+    const lines = textarea.value.split('\n').length;
+    let lineNumbersHTML = '';
+    for (let i = 1; i <= lines; i++) {
+        lineNumbersHTML += i + '<br>';
+    }
+    lineNumbers.innerHTML = lineNumbersHTML;
+    
+    // Nettoyage erreur
+    textarea.parentElement.style.borderColor = "#ddd";
     document.getElementById('displayError').style.display = 'none';
 }
 
+function syncScroll() {
+    lineNumbers.scrollTop = textarea.scrollTop;
+}
+
 function lancerCalcul() {
-    const zoneTexte = document.getElementById('jsonContent');
     const zoneErreur = document.getElementById('displayError');
     const previewArea = document.getElementById('previewArea');
     const previewContent = document.getElementById('previewContent');
     
-    let rawValue = zoneTexte.value.trim();
+    let rawValue = textarea.value.trim();
     if (!rawValue) return;
 
     try {
@@ -130,7 +122,8 @@ function lancerCalcul() {
             data[i].date = `${annee}-${mois}-${jour}`;
         }
 
-        zoneTexte.value = JSON.stringify(data, null, 2);
+        textarea.value = JSON.stringify(data, null, 2);
+        updateEditor(); // Rafraîchir les numéros de ligne après formatage
         
         // --- APERÇU ---
         previewContent.innerHTML = "";
@@ -138,8 +131,8 @@ function lancerCalcul() {
             let texteFormate = msg.texte.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             previewContent.innerHTML += `
                 <div class="card">
-                    <span class="card-cat">${msg.categorie} | ID: ${msg.id} | ${msg.date}</span>
-                    ${msg.image ? '<img src="'+msg.image+'" alt="[Image]">' : ''}
+                    <span class="card-meta">id: ${msg.id} | date: ${msg.date} | cat: ${msg.categorie}</span>
+                    ${msg.image ? '<img src="'+msg.image+'" alt="image">' : ''}
                     <div class="card-title">${msg.titre}</div>
                     <div class="card-text">${texteFormate}</div>
                 </div>
@@ -149,29 +142,17 @@ function lancerCalcul() {
 
     } catch (err) {
         previewArea.style.display = "none";
-        zoneTexte.classList.add('error-border');
+        textarea.parentElement.style.borderColor = "#ff4d4d";
         zoneErreur.style.display = 'block';
         
-        // --- LOGIQUE DE DÉTECTION DE POSITION ---
         let message = err.message;
-        let pos = 0;
-        
-        // Extraction de la position dans le message d'erreur
         let match = message.match(/position (\d+)/);
         if (match) {
-            pos = parseInt(match[1]);
+            let pos = parseInt(match[1]);
             let lignes = rawValue.substring(0, pos).split("\n");
-            let numLigne = lignes.length;
-            let numCol = lignes[lignes.length - 1].length + 1;
-
-            zoneErreur.innerHTML = `<strong>⚠️ ERREUR DE SYNTAXE :</strong><br>
-            📍 <b>Ligne :</b> ${numLigne} | <b>Colonne :</b> ${numCol}<br>
-            💬 <b>Détail :</b> ${message}<br><br>
-            <em>Le curseur a été placé à l'endroit exact pour vous aider à corriger.</em>`;
-
-            // Surlignage automatique
-            zoneTexte.focus();
-            zoneTexte.setSelectionRange(pos, pos + 1); // Souligne le caractère fautif
+            zoneErreur.innerHTML = `<strong>⚠️ ERREUR :</strong> Ligne <b>${lignes.length}</b>, Colonne <b>${lignes[lignes.length - 1].length + 1}</b>.<br>💬 ${message}`;
+            textarea.focus();
+            textarea.setSelectionRange(pos, pos + 1);
         } else {
             zoneErreur.innerHTML = "<strong>⚠️ ERREUR :</strong> " + message;
         }
