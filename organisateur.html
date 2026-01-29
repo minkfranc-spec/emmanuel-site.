@@ -2,98 +2,180 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>EMMANUEL | Organisateur & Visionnaire</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <title>EMMANUEL | Organisateur Hors-Ligne</title>
     <style>
-        body { font-family: sans-serif; background: #fdfdfd; padding: 20px; text-align: center; color: #1a1a1a; }
-        .box { max-width: 950px; margin: auto; background: white; padding: 35px; border-radius: 20px; border-top: 10px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        h1 { font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
-        textarea { width: 100%; height: 450px; font-family: 'Courier New', monospace; padding: 15px; border: 2px solid #eee; border-radius: 10px; background: #fafafa; font-size: 14px; box-sizing: border-box; outline: none; }
-        /* Style pour l'erreur visuelle */
+        /* Polices système élégantes (pas besoin d'internet) */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f0f0f0; 
+            padding: 20px; 
+            text-align: center; 
+            color: #1a1a1a; 
+        }
+        .box { 
+            max-width: 950px; 
+            margin: auto; 
+            background: white; 
+            padding: 35px; 
+            border-radius: 20px; 
+            border-top: 10px solid #d4af37; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            margin-bottom: 40px; 
+        }
+        h1 { text-transform: uppercase; letter-spacing: 2px; color: #1a1a1a; font-weight: 900; }
+        textarea { 
+            width: 100%; 
+            height: 350px; 
+            font-family: 'Courier New', monospace; 
+            padding: 15px; 
+            border: 2px solid #ddd; 
+            border-radius: 10px; 
+            background: #fafafa; 
+            font-size: 14px; 
+            box-sizing: border-box; 
+            outline: none; 
+        }
         .error-border { border: 3px solid #ff4d4d !important; background: #fff5f5 !important; }
-        .btn { background: #1a1a1a; color: white; padding: 18px 45px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 25px; transition: 0.3s; }
-        .btn:hover { background: #d4af37; transform: scale(1.02); }
-        .error-zone { display: none; margin-top: 25px; padding: 20px; background: #fff5f5; border-left: 6px solid #ff4d4d; color: #b91c1c; text-align: left; border-radius: 8px; font-size: 14px; }
-        .guide { font-size: 0.9em; color: #666; margin-bottom: 15px; }
+        .btn { 
+            background: #1a1a1a; 
+            color: white; 
+            padding: 18px 45px; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 16px; 
+            margin-top: 25px; 
+            transition: 0.3s; 
+        }
+        .btn:hover { background: #d4af37; }
+        .error-zone { 
+            display: none; 
+            margin-top: 25px; 
+            padding: 20px; 
+            background: #fff5f5; 
+            border-left: 6px solid #ff4d4d; 
+            color: #b91c1c; 
+            text-align: left; 
+            border-radius: 8px; 
+        }
+        
+        /* --- STYLE PRÉVISUALISATION --- */
+        #previewArea { max-width: 850px; margin: auto; text-align: left; display: none; }
+        .card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+            border: 1px solid #ddd; 
+        }
+        .card img { 
+            width: 100%; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            display: block;
+        }
+        .card-cat { color: #d4af37; font-weight: bold; font-size: 0.8em; text-transform: uppercase; display: block; margin-bottom: 10px; }
+        .card-title { font-size: 26px; color: #1a1a1a; margin-bottom: 20px; font-family: 'Georgia', serif; font-weight: bold; }
+        .card-text { 
+            white-space: pre-wrap; 
+            line-height: 1.8; 
+            color: #333; 
+            font-size: 17px; 
+            font-family: 'Georgia', serif; 
+        }
+        .preview-label { 
+            font-size: 20px; 
+            font-weight: bold; 
+            margin: 30px 0; 
+            display: block; 
+            color: #d4af37; 
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h1>🏛️ Organisateur de la Parole</h1>
-    <p class="guide">Collez votre JSON. En cas d'erreur, la zone sera encadrée en rouge. 🛡️</p>
+    <h1>🏛️ ORGANISATEUR HORS-LIGNE</h1>
+    <p>Utilisable sans connexion. Votre code reste privé sur votre ordinateur. 🛡️</p>
     
-    <textarea id="jsonContent" placeholder="Collez votre code ici..." oninput="nettoyerErreur()"></textarea>
+    <textarea id="jsonContent" placeholder="Collez votre code JSON ici..."></textarea>
     
-    <button class="btn" onclick="lancerCalcul()">⚡ SYNCHRONISER & VÉRIFIER</button>
+    <button class="btn" onclick="lancerCalcul()">⚡ SYNCHRONISER & VOIR L'APERÇU</button>
     
     <div id="displayError" class="error-zone"></div>
 </div>
 
-<script>
-function nettoyerErreur() {
-    const zoneTexte = document.getElementById('jsonContent');
-    const zoneErreur = document.getElementById('displayError');
-    zoneTexte.classList.remove('error-border');
-    zoneErreur.style.display = 'none';
-}
+<div id="previewArea">
+    <span class="preview-label">👁️ APERÇU DE VOS MESSAGES</span>
+    <div id="previewContent"></div>
+</div>
 
+<script>
 function lancerCalcul() {
     const zoneTexte = document.getElementById('jsonContent');
     const zoneErreur = document.getElementById('displayError');
+    const previewArea = document.getElementById('previewArea');
+    const previewContent = document.getElementById('previewContent');
     
+    // Reset visuel
+    zoneTexte.classList.remove('error-border');
+    zoneErreur.style.display = 'none';
+
     try {
         let rawValue = zoneTexte.value.trim();
+        if (!rawValue) return;
+
         let data = JSON.parse(rawValue);
 
         if (!Array.isArray(data)) {
-            throw new Error("Le fichier doit commencer par [ et finir par ]");
+            throw new Error("Le code doit commencer par [ et finir par ]");
         }
 
-        if (data.length < 1) return;
-
-        // --- RAISONNEMENT CHRONOLOGIQUE ---
+        // --- CALCUL CHRONOLOGIQUE ---
         let indexDernier = data.length - 1;
-        let idReference = parseInt(data[indexDernier].id);
-        let dateReference = new Date(data[indexDernier].date);
+        let idRef = parseInt(data[indexDernier].id);
+        let dateRef = new Date(data[indexDernier].date);
 
         for (let i = indexDernier - 1; i >= 0; i--) {
-            idReference++; 
-            dateReference.setDate(dateReference.getDate() + 1);
-            data[i].id = idReference;
+            idRef++; 
+            dateRef.setDate(dateRef.getDate() + 1);
+            data[i].id = idRef;
             
-            let annee = dateReference.getFullYear();
-            let mois = String(dateReference.getMonth() + 1).padStart(2, '0');
-            let jour = String(dateReference.getDate()).padStart(2, '0');
+            let annee = dateRef.getFullYear();
+            let mois = String(dateRef.getMonth() + 1).padStart(2, '0');
+            let jour = String(dateRef.getDate()).padStart(2, '0');
             data[i].date = `${annee}-${mois}-${jour}`;
         }
 
-        // --- GÉNÉRATION ---
+        // Mettre à jour le texte
         zoneTexte.value = JSON.stringify(data, null, 2);
-        alert("✅ Synchronisation réussie ! Le code est propre.");
+        
+        // --- APERÇU ---
+        previewContent.innerHTML = "";
+        data.forEach(msg => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            // Note: Les images ne chargeront que si vous avez internet. 
+            // Mais le texte et la structure fonctionneront toujours.
+            card.innerHTML = `
+                <span class="card-cat">Catégorie: ${msg.categorie} | ID: ${msg.id} | Date: ${msg.date}</span>
+                <div class="card-title">${msg.titre}</div>
+                ${msg.image ? '<img src="'+msg.image+'" alt="[Image - nécessite connexion]">' : ''}
+                <div class="card-text">${msg.texte}</div>
+            `;
+            previewContent.appendChild(card);
+        });
+
+        previewArea.style.display = "block";
 
     } catch (err) {
-        // --- DÉTECTION ET SIGNALEMENT VISUEL ---
+        previewArea.style.display = "none";
         zoneTexte.classList.add('error-border');
         zoneErreur.style.display = 'block';
-        
-        // Extraction de la position de l'erreur pour guider le Maître
-        let message = err.message;
-        let positionMatch = message.match(/position (\d+)/);
-        
-        if (positionMatch) {
-            let pos = parseInt(positionMatch[1]);
-            let texteAvant = zoneTexte.value.substring(0, pos);
-            let ligne = texteAvant.split('\n').length;
-            zoneErreur.innerHTML = "<strong>⚠️ ERREUR DE STRUCTURE :</strong> L'erreur se trouve vers la <b>ligne " + ligne + "</b>.<br><br>" +
-                                   "<em>Conseil : Vérifiez s'il manque une virgule <code>,</code> entre deux messages ou si un guillemet est resté ouvert.</em>";
-            
-            // On place le curseur à l'endroit de l'erreur pour vous aider
-            zoneTexte.focus();
-            zoneTexte.setSelectionRange(pos - 10, pos + 10); 
-        } else {
-            zoneErreur.innerHTML = "<strong>⚠️ ERREUR :</strong> " + message;
-        }
+        zoneErreur.innerHTML = "<strong>⚠️ ERREUR :</strong> " + err.message;
     }
 }
 </script>
