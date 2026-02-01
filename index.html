@@ -125,9 +125,8 @@
     </div>
 
     <script>
-        /* 🛡️ --- PROTECTION CORRIGÉE PAR LE SCRIBE --- 🛡️ */
         (function() {
-            // Bloc de redirection supprimé pour rester sur emmanuel-dpv.pages.dev
+            // Protection de redirection supprimée pour la stabilité sur Cloudflare.
         })();
 
         let currentLang = 'fr';
@@ -137,28 +136,17 @@
 
         async function chargerMessages() {
             try {
+                // Chargement des données avec anti-cache
                 const res = await fetch('data.json?v=' + Date.now());
                 const data = await res.json();
                 
-                const tempsPromesse = (async () => {
-                    const apis = ['https://worldtimeapi.org/api/timezone/Etc/UTC', 'https://timeapi.io/api/Time/current/zone?timeZone=Etc/UTC'];
-                    for (const url of apis) {
-                        try {
-                            const resT = await fetch(url, { signal: AbortSignal.timeout(2000) });
-                            if (resT.ok) {
-                                const dT = await resT.json();
-                                return new Date(dT.datetime || dT.utc_datetime);
-                            }
-                        } catch (e) { continue; }
-                    }
-                    return new Date(); 
-                })();
-
-                const tempsCertifie = await tempsPromesse;
-                const heureLocale = new Date(tempsCertifie.getTime() + (1 * 60 * 60 * 1000)); // GMT+1
+                // --- PORTIER TEMPOREL ROBUSTE (GMT+1) ---
+                const maintenant = new Date();
+                const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000)); // Calcule GMT+1
 
                 tousLesMessages = data.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
+                    // Le message devient visible à 01:30 du matin le jour J
                     const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
                     return heureLocale >= dateParution;
                 });
@@ -173,7 +161,8 @@
                 }
             } catch (err) { 
                 console.error("Erreur de chargement:", err);
-                document.getElementById('loading-screen').style.display = 'none';
+                const loader = document.getElementById('loading-screen');
+                if (loader) loader.style.display = 'none';
             }
         }
 
@@ -199,7 +188,7 @@
             const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
             const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
             const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
-            const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            const texteFormate = texteOriginal.replace(/\*\?(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
             return `<div class="message-card">${imgHtml}<span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3><div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
         }
