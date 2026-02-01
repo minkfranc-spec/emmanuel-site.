@@ -136,18 +136,17 @@
 
         async function chargerMessages() {
             try {
-                // Chargement des données avec anti-cache
                 const res = await fetch('data.json?v=' + Date.now());
                 const data = await res.json();
                 
-                // --- PORTIER TEMPOREL ROBUSTE (GMT+1) ---
+                // --- PORTIER TEMPOREL RÉGLÉ SUR MINUIT PILE (GMT+1) ---
                 const maintenant = new Date();
-                const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000)); // Calcule GMT+1
+                const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000)); 
 
                 tousLesMessages = data.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    // Le message devient visible à 01:30 du matin le jour J
-                    const dateParution = new Date(annee, mois - 1, jour, 1, 30, 0);
+                    // Le message devient visible à 00:00:01 du matin le jour J
+                    const dateParution = new Date(annee, mois - 1, jour, 0, 0, 1);
                     return heureLocale >= dateParution;
                 });
 
