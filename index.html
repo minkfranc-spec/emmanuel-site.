@@ -29,7 +29,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* DESIGN PASTEUR EMMANUEL - INTACT */
+        /* DESIGN PASTEUR EMMANUEL - OPTIMISÉ PC & MOBILE */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { 
             margin: 0; 
@@ -90,7 +90,7 @@
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
         .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
 
-        /* NOUVELLE INTERFACE DE PARTAGE */
+        /* INTERFACE DE PARTAGE OPTIMISÉE */
         #shareModal {
             display: none;
             position: fixed;
@@ -103,14 +103,22 @@
             border-radius: 30px 30px 0 0;
             box-shadow: 0 -5px 25px rgba(0,0,0,0.2);
             animation: slideUp 0.3s ease-out;
+            text-align: center;
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2500; }
-        .share-options { display: flex; justify-content: space-around; margin-top: 20px; }
+        
+        .share-options { 
+            display: flex; 
+            justify-content: space-around; 
+            margin: 25px auto 0; 
+            max-width: 400px; /* EVITE L'EFFET TROP LARGE SUR PC */
+        }
+        
         .share-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: #1a1a1a; text-decoration: none; }
         .share-icon { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; color: white; font-size: 24px; }
         .bg-wa { background: #25D366; }
-        .bg-fb { background: #1877F2; } /* COULEUR FACEBOOK AJOUTÉE */
+        .bg-fb { background: #1877F2; } 
         .bg-mail { background: #E74C3C; }
         .bg-copy { background: #34495E; }
         .close-modal { margin-top: 25px; color: #95a5a6; font-family: 'Montserrat', sans-serif; font-size: 12px; text-transform: uppercase; cursor: pointer; font-weight: 900; }
@@ -293,7 +301,6 @@
             document.getElementById('shareModal').style.display = 'none';
         }
 
-        // LOGIQUE FACEBOOK INJECTÉE ICI
         function actionPartage(type) {
             const url = "https://emmanuel-dpv.pages.dev";
             const messageComplet = `${titrePartageTemp}\n\n${msgPartageTemp}\n\nLire la suite : ${url}`;
