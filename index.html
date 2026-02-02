@@ -29,7 +29,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* VOTRE DESIGN RESTE INTACT - AUCUNE MODIFICATION VISUELLE */
+        /* DESIGN PASTEUR EMMANUEL - INTACT */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { 
             margin: 0; 
@@ -234,35 +234,34 @@
             </div>`;
         }
 
-        // PUCE PARTAGE MONDIALE AMÉLIORÉE
+        // PUCE PARTAGE MONDIALE IMPÉRATIVE (FORCE LE MENU SUR TÉLÉPHONE)
         function pucePartageMondiale(titreB64, texteB64, bouton) {
             const titre = decodeURIComponent(escape(atob(titreB64)));
             const texte = decodeURIComponent(escape(atob(texteB64))).replace(/\*\*/g, '');
             const url = window.location.href;
-            const messageComplet = `${titre}\n\n${texte}\n\nDécouvrez plus sur : ${url}`;
+            const messageComplet = `${titre}\n\n${texte}\n\nLien : ${url}`;
 
+            // On tente d'abord le menu système (le plus complet)
             if (navigator.share) {
                 navigator.share({
                     title: titre,
                     text: messageComplet,
                     url: url
-                }).catch(() => copierEtOuvrirWA(messageComplet, bouton));
+                }).catch(() => fallbackPartage(messageComplet, bouton));
             } else {
-                copierEtOuvrirWA(messageComplet, bouton);
+                fallbackPartage(messageComplet, bouton);
             }
         }
 
-        function copierEtOuvrirWA(message, bouton) {
+        function fallbackPartage(message, bouton) {
             navigator.clipboard.writeText(message).then(() => {
                 const memo = bouton.innerHTML;
                 bouton.innerHTML = translations[currentLang].copied;
                 setTimeout(() => { bouton.innerHTML = memo; }, 2000);
                 
-                // Pour forcer l'action mondiale, on ouvre WhatsApp Web si c'est un PC
-                if (!navigator.userAgent.match(/Android|iPhone|iPad/i)) {
-                    const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
-                    window.open(waUrl, '_blank');
-                }
+                // On force l'ouverture de WhatsApp si le menu système échoue
+                const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+                window.open(waUrl, '_blank');
             });
         }
 
