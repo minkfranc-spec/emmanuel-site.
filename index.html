@@ -161,11 +161,10 @@
     </div>
 
     <script>
-        // LE RESTE DE VOTRE SCRIPT RESTE INTACT (LOGIQUE DE CHARGEMENT ET FILTRAGE)
         let currentLang = 'fr';
         let tousLesMessages = [];
         const moisNoms = { fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] };
-        const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min" }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min" } };
+        const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ LIEN COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min" }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ LINK COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min" } };
 
         async function chargerMessages() {
             try {
@@ -222,7 +221,40 @@
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
-            return `<div class="message-card">${imgHtml}<span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3><div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="decoderEtCopier(this, '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
+            
+            // Injection de la puce mondiale sur le bouton
+            return `<div class="message-card">
+                ${imgHtml}
+                <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
+                <h3 class="msg-title">${titre}</h3>
+                <div class="msg-content">${texteFormate}</div>
+                <button class="copy-btn" onclick="pucePartageMondiale('${btoa(unescape(encodeURIComponent(titre)))}', '${btoa(unescape(encodeURIComponent(texteOriginal)))}', this)">
+                    ${translations[currentLang].shareBtn}
+                </button>
+                <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
+            </div>`;
+        }
+
+        // LA PUCE DE PARTAGE MONDIALE
+        function pucePartageMondiale(titreB64, texteB64, bouton) {
+            const titre = decodeURIComponent(escape(atob(titreB64)));
+            const texte = decodeURIComponent(escape(atob(texteB64))).replace(/\*\*/g, '');
+            const url = window.location.href;
+            const messageComplet = `${titre}\n\n${texte}\n\nDécouvrez plus sur : ${url}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: titre,
+                    text: messageComplet,
+                    url: url
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(messageComplet).then(() => {
+                    const memo = bouton.innerHTML;
+                    bouton.innerHTML = translations[currentLang].copied;
+                    setTimeout(() => { bouton.innerHTML = memo; }, 2000);
+                });
+            }
         }
 
         function afficherAccueil() {
@@ -264,14 +296,6 @@
             const btn = document.querySelectorAll('.month-btn')[numMois-1];
             btn.classList.remove('active');
             afficherTitresDuMois(numMois, btn);
-        }
-
-        function decoderEtCopier(bouton, base64) {
-            const t = decodeURIComponent(escape(atob(base64))).replace(/\*\*/g, '');
-            navigator.clipboard.writeText(t).then(() => {
-                const memo = bouton.innerHTML; bouton.innerHTML = translations[currentLang].copied;
-                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
-            });
         }
 
         function filtrerMessages() {
