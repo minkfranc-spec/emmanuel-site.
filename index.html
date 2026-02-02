@@ -222,7 +222,6 @@
             
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
             
-            // Injection de la puce mondiale sur le bouton
             return `<div class="message-card">
                 ${imgHtml}
                 <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
@@ -235,7 +234,7 @@
             </div>`;
         }
 
-        // LA PUCE DE PARTAGE MONDIALE
+        // PUCE PARTAGE MONDIALE AMÉLIORÉE
         function pucePartageMondiale(titreB64, texteB64, bouton) {
             const titre = decodeURIComponent(escape(atob(titreB64)));
             const texte = decodeURIComponent(escape(atob(texteB64))).replace(/\*\*/g, '');
@@ -247,14 +246,24 @@
                     title: titre,
                     text: messageComplet,
                     url: url
-                }).catch(console.error);
+                }).catch(() => copierEtOuvrirWA(messageComplet, bouton));
             } else {
-                navigator.clipboard.writeText(messageComplet).then(() => {
-                    const memo = bouton.innerHTML;
-                    bouton.innerHTML = translations[currentLang].copied;
-                    setTimeout(() => { bouton.innerHTML = memo; }, 2000);
-                });
+                copierEtOuvrirWA(messageComplet, bouton);
             }
+        }
+
+        function copierEtOuvrirWA(message, bouton) {
+            navigator.clipboard.writeText(message).then(() => {
+                const memo = bouton.innerHTML;
+                bouton.innerHTML = translations[currentLang].copied;
+                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
+                
+                // Pour forcer l'action mondiale, on ouvre WhatsApp Web si c'est un PC
+                if (!navigator.userAgent.match(/Android|iPhone|iPad/i)) {
+                    const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+                    window.open(waUrl, '_blank');
+                }
+            });
         }
 
         function afficherAccueil() {
