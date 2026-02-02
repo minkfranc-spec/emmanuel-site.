@@ -29,7 +29,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* DESIGN PASTEUR EMMANUEL - VERSION ÉPURÉE */
+        /* DESIGN PASTEUR EMMANUEL - VERSION HARMONISÉE PC */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { 
             margin: 0; 
@@ -73,24 +73,20 @@
         .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
         
         .msg-content { 
-            text-align: left; /* CORRECTION : Plus de trous entre les mots */
-            line-height: 1.6; /* Espacement de lecture confortable */
+            text-align: left; 
+            line-height: 1.6; 
             font-size: 1.05em; 
             white-space: pre-line; 
             color: #1a1a1a; 
             font-weight: 400;
         } 
         
-        /* Contrôle de l'espace entre les paragraphes */
-        .msg-content strong { 
-            font-family: 'Montserrat', sans-serif; 
-            font-weight: 900; 
-            color: #000000;
-        }
+        .msg-content strong { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000000; }
         
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
         .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
 
+        /* INTERFACE PARTAGE DISCIPLINÉE */
         #shareModal {
             display: none;
             position: fixed;
@@ -112,7 +108,7 @@
             display: flex; 
             justify-content: space-around; 
             margin: 25px auto 0; 
-            max-width: 400px; 
+            max-width: 400px; /* Limite la largeur sur PC */
         }
         
         .share-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: #1a1a1a; text-decoration: none; }
@@ -123,19 +119,25 @@
         .bg-copy { background: #34495E; }
         .close-modal { margin-top: 25px; color: #95a5a6; font-family: 'Montserrat', sans-serif; font-size: 12px; text-transform: uppercase; cursor: pointer; font-weight: 900; }
 
+        /* SECTIONS BAS DE PAGE DISCIPLINÉES */
         .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; padding-bottom: 40px; }
         .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
         .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
         .month-btn.active { background: #d4af37; color: white; }
         .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
-        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; margin: 20px auto; text-transform: uppercase; }
+        
+        /* Bouton archive centré et limité */
+        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; display: block; margin: 20px auto; text-transform: uppercase; max-width: 300px; }
+        
         .floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
         .scroll-link { bottom: 105px; }
         .whatsapp-link { bottom: 30px; display: flex !important; }
         .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
         .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
         .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
+        
+        /* Compteur pays centré et limité */
+        .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 540px; border: 1px solid #f0f0f0; box-shadow: 0 10px 40px rgba(0,0,0,0.03); }
         .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
         .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
         .update-notice { font-family: 'Montserrat', sans-serif; font-size: 0.7em; font-weight: 700; color: #95a5a6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
