@@ -90,21 +90,44 @@
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
         .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
 
+        /* NOUVELLE INTERFACE DE PARTAGE */
+        #shareModal {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            z-index: 3000;
+            padding: 30px 20px;
+            border-radius: 30px 30px 0 0;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2500; }
+        .share-options { display: flex; justify-content: space-around; margin-top: 20px; }
+        .share-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: #1a1a1a; text-decoration: none; }
+        .share-icon { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; color: white; font-size: 24px; }
+        .bg-wa { background: #25D366; }
+        .bg-fb { background: #1877F2; } /* COULEUR FACEBOOK AJOUTÉE */
+        .bg-mail { background: #E74C3C; }
+        .bg-copy { background: #34495E; }
+        .close-modal { margin-top: 25px; color: #95a5a6; font-family: 'Montserrat', sans-serif; font-size: 12px; text-transform: uppercase; cursor: pointer; font-weight: 900; }
+
+        /* Reste du design */
         .archive-section { display: none; width: 92%; max-width: 540px; margin: 20px auto; padding-bottom: 40px; }
         .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
         .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
         .month-btn.active { background: #d4af37; color: white; }
         .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
-
         .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; margin: 20px auto; text-transform: uppercase; }
-
         .floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
         .scroll-link { bottom: 105px; }
         .whatsapp-link { bottom: 30px; display: flex !important; }
         .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
         .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
         .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-
         .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
         .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
         .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
@@ -160,9 +183,36 @@
         </div>
     </div>
 
+    <div id="modalOverlay" class="modal-overlay" onclick="fermerPartage()"></div>
+    <div id="shareModal">
+        <div style="font-family: 'Montserrat', sans-serif; font-weight: 900; color: #d4af37; text-transform: uppercase;">Partager la Parole</div>
+        <div class="share-options">
+            <div class="share-item" onclick="actionPartage('wa')">
+                <div class="share-icon bg-wa">💬</div>
+                WhatsApp
+            </div>
+            <div class="share-item" onclick="actionPartage('fb')">
+                <div class="share-icon bg-fb">🔵</div>
+                Facebook
+            </div>
+            <div class="share-item" onclick="actionPartage('mail')">
+                <div class="share-icon bg-mail">✉</div>
+                Email
+            </div>
+            <div class="share-item" onclick="actionPartage('copy')">
+                <div class="share-icon bg-copy">🔗</div>
+                Lien
+            </div>
+        </div>
+        <div class="close-modal" onclick="fermerPartage()">Annuler</div>
+    </div>
+
     <script>
         let currentLang = 'fr';
         let tousLesMessages = [];
+        let msgPartageTemp = "";
+        let titrePartageTemp = "";
+
         const moisNoms = { fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] };
         const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ LIEN COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour à la liste", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min" }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ LINK COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back to list", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min" } };
 
@@ -170,7 +220,6 @@
             try {
                 const res = await fetch('data.json?v=' + Date.now());
                 const data = await res.json();
-                
                 const maintenant = new Date();
                 const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000)); 
 
@@ -217,9 +266,7 @@
             const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
             const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
             const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
-            
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
             
             return `<div class="message-card">
@@ -227,42 +274,41 @@
                 <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
                 <h3 class="msg-title">${titre}</h3>
                 <div class="msg-content">${texteFormate}</div>
-                <button class="copy-btn" onclick="pucePartageMondiale('${btoa(unescape(encodeURIComponent(titre)))}', '${btoa(unescape(encodeURIComponent(texteOriginal)))}', this)">
+                <button class="copy-btn" onclick="ouvrirMenuPartage('${btoa(unescape(encodeURIComponent(titre)))}', '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">
                     ${translations[currentLang].shareBtn}
                 </button>
                 <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
             </div>`;
         }
 
-        // PUCE PARTAGE MONDIALE IMPÉRATIVE (FORCE LE MENU SUR TÉLÉPHONE)
-        function pucePartageMondiale(titreB64, texteB64, bouton) {
-            const titre = decodeURIComponent(escape(atob(titreB64)));
-            const texte = decodeURIComponent(escape(atob(texteB64))).replace(/\*\*/g, '');
-            const url = window.location.href;
-            const messageComplet = `${titre}\n\n${texte}\n\nLien : ${url}`;
-
-            // On tente d'abord le menu système (le plus complet)
-            if (navigator.share) {
-                navigator.share({
-                    title: titre,
-                    text: messageComplet,
-                    url: url
-                }).catch(() => fallbackPartage(messageComplet, bouton));
-            } else {
-                fallbackPartage(messageComplet, bouton);
-            }
+        function ouvrirMenuPartage(titreB64, texteB64) {
+            titrePartageTemp = decodeURIComponent(escape(atob(titreB64)));
+            msgPartageTemp = decodeURIComponent(escape(atob(texteB64))).replace(/\*\*/g, '');
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.getElementById('shareModal').style.display = 'block';
         }
 
-        function fallbackPartage(message, bouton) {
-            navigator.clipboard.writeText(message).then(() => {
-                const memo = bouton.innerHTML;
-                bouton.innerHTML = translations[currentLang].copied;
-                setTimeout(() => { bouton.innerHTML = memo; }, 2000);
-                
-                // On force l'ouverture de WhatsApp si le menu système échoue
-                const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
-                window.open(waUrl, '_blank');
-            });
+        function fermerPartage() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById('shareModal').style.display = 'none';
+        }
+
+        // LOGIQUE FACEBOOK INJECTÉE ICI
+        function actionPartage(type) {
+            const url = "https://emmanuel-dpv.pages.dev";
+            const messageComplet = `${titrePartageTemp}\n\n${msgPartageTemp}\n\nLire la suite : ${url}`;
+
+            if (type === 'wa') {
+                window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(messageComplet), '_blank');
+            } else if (type === 'fb') {
+                window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), '_blank');
+            } else if (type === 'mail') {
+                window.location.href = `mailto:?subject=${encodeURIComponent(titrePartageTemp)}&body=${encodeURIComponent(messageComplet)}`;
+            } else if (type === 'copy') {
+                navigator.clipboard.writeText(messageComplet);
+                alert(translations[currentLang].copied);
+            }
+            fermerPartage();
         }
 
         function afficherAccueil() {
