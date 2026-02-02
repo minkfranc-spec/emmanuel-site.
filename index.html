@@ -7,29 +7,40 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     
-    <meta name="robots" content="noindex, nofollow, noarchive">
-    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="description" content="EMMANUEL - Un sanctuaire numérique pour la transformation de l'âme, l'onction de prospérité et la liberté spirituelle par la Parole.">
+    <meta name="keywords" content="Pasteur Emmanuel, foi, onction, prospérité, bible, pardon, succès, sagesse divine, ministère">
+    <meta name="author" content="Pasteur Emmanuel">
+
+    <meta property="og:title" content="EMMANUEL | La Voix de la Vérité">
+    <meta property="og:description" content="Accédez à vos clés spirituelles pour une vie de victoire.">
+    <meta property="og:image" content="https://i.postimg.cc/cCXq2khG/Lancement.png">
+    <meta property="og:url" content="https://emmanuel-dpv.pages.dev">
+    <meta property="og:type" content="website">
     
     <title>EMMANUEL | La Voix de la Vérité</title>
 
-    <link rel="canonical" href="https://emmanuel-site.vercel.app">
+    <link rel="canonical" href="https://emmanuel-dpv.pages.dev">
+    
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
+        /* VOTRE DESIGN RESTE INTACT - AUCUNE MODIFICATION VISUELLE */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { 
             margin: 0; 
             padding: 0; 
             width: 100%; 
             background: #fdfdfd; 
-            color: #1a1a1a; /* Encre activée : Noir profond */
+            color: #1a1a1a; 
             font-family: 'Lora', serif; 
             text-align: center; 
             overflow-x: hidden; 
-            -webkit-font-smoothing: antialiased; /* Netteté maximale */
+            -webkit-font-smoothing: antialiased; 
             -moz-osx-font-smoothing: grayscale;
         }
         
@@ -66,14 +77,13 @@
             line-height: 1.8; 
             font-size: 1.08em; 
             white-space: pre-line; 
-            color: #1a1a1a; /* Encre noire activée */
+            color: #1a1a1a; 
             font-weight: 400;
         } 
         
-        /* Force le gras intense pour Cloudflare et Théorèmes */
         .msg-content strong { 
             font-family: 'Montserrat', sans-serif; 
-            font-weight: 900; /* Gras profond */
+            font-weight: 900; 
             color: #000000;
         }
         
@@ -151,6 +161,7 @@
     </div>
 
     <script>
+        // LE RESTE DE VOTRE SCRIPT RESTE INTACT (LOGIQUE DE CHARGEMENT ET FILTRAGE)
         let currentLang = 'fr';
         let tousLesMessages = [];
         const moisNoms = { fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] };
@@ -208,7 +219,6 @@
             const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
             const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
             
-            // Correction Regex Gras Cloudflare
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
