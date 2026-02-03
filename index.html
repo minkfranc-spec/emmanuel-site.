@@ -7,6 +7,17 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     
+    <script>
+      (function() {
+        var currentHost = window.location.hostname;
+        var targetHost = "emmanuel-dpv.pages.dev";
+        // Si l'URL contient 'vercel.app', on redirige vers le nouveau domaine
+        if (currentHost.includes("vercel.app")) {
+          window.location.replace("https://" + targetHost + window.location.pathname + window.location.search);
+        }
+      })();
+    </script>
+
     <meta name="robots" content="index, follow">
     <meta name="googlebot" content="index, follow">
     <meta name="description" content="EMMANUEL - Un sanctuaire numérique pour la transformation de l'âme, l'onction de prospérité et la liberté spirituelle par la Parole.">
@@ -73,7 +84,7 @@
         .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
         
         .msg-content { 
-            text-align: justify; /* Texte maintenu justifié selon votre demande */
+            text-align: justify; 
             line-height: 1.6; 
             font-size: 1.05em; 
             white-space: pre-line; 
@@ -112,7 +123,6 @@
         .bg-copy { background: #34495E; }
         .close-modal { margin-top: 25px; color: #95a5a6; font-family: 'Montserrat', sans-serif; font-size: 12px; text-transform: uppercase; cursor: pointer; font-weight: 900; }
 
-        /* SECTIONS BAS DE PAGE RESSERRÉES */
         .archive-section { display: none; width: 92%; max-width: 500px; margin: 20px auto; padding-bottom: 40px; }
         .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
         .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
