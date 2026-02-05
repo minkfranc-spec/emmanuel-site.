@@ -11,7 +11,6 @@
       (function() {
         var currentHost = window.location.hostname;
         var targetHost = "emmanuel-dpv.pages.dev";
-        // Si l'URL contient 'vercel.app', on redirige vers le nouveau domaine
         if (currentHost.includes("vercel.app")) {
           window.location.replace("https://" + targetHost + window.location.pathname + window.location.search);
         }
@@ -279,10 +278,14 @@
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
             
+            // MODIFICATION INJECTÉE ICI PAR VOTRE EXPERT : Lecteur audio
+            let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
+            
             return `<div class="message-card">
                 ${imgHtml}
                 <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
                 <h3 class="msg-title">${titre}</h3>
+                ${audioHtml}
                 <div class="msg-content">${texteFormate}</div>
                 <button class="copy-btn" onclick="ouvrirMenuPartage('${btoa(unescape(encodeURIComponent(titre)))}', '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">
                     ${translations[currentLang].shareBtn}
