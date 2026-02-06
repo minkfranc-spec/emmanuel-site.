@@ -6,7 +6,7 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f4f4; padding: 20px; text-align: center; color: #1a1a1a; scroll-behavior: smooth; }
         .box { max-width: 950px; margin: auto; background: white; padding: 35px; border-radius: 20px; border-top: 10px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 40px; }
-        h1 { text-transform: uppercase; letter-spacing: 2px; font-weight: 900; }
+        h1 { text-transform: uppercase; letter-spacing: 2px; font-weight: 900; margin-bottom: 10px; }
         
         textarea { 
             width: 100%; height: 400px; font-family: 'Courier New', monospace; 
@@ -20,8 +20,16 @@
         .btn:hover { background: #d4af37; transform: scale(1.02); }
 
         /* LECTEUR AUDIO ROYAL */
-        .audio-container { margin: 20px 0; background: #f9f9f9; padding: 15px; border-radius: 12px; border-left: 5px solid #d4af37; }
-        audio { width: 100%; height: 40px; }
+        .audio-container { 
+            margin: 25px 0; 
+            background: #fdfaf0; 
+            padding: 20px; 
+            border-radius: 15px; 
+            border: 1px solid #eaddca;
+            border-left: 8px solid #d4af37; 
+        }
+        .audio-label { color: #d4af37; font-weight: 900; font-size: 13px; text-transform: uppercase; display: block; margin-bottom: 10px; letter-spacing: 1px; }
+        audio { width: 100%; height: 45px; }
 
         /* L'ASCENSEUR ROYAL */
         #scrollToTop {
@@ -36,11 +44,11 @@
 
         /* Aperçu */
         #previewArea { max-width: 850px; margin: auto; text-align: left; display: none; padding-bottom: 100px; }
-        .card { background: white; padding: 40px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #ddd; }
-        .card-meta-visible { font-size: 12px; color: #1a1a1a; text-transform: lowercase; margin-bottom: 8px; display: block; font-weight: 900; letter-spacing: 0.5px; }
+        .card { background: white; padding: 40px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #ddd; position: relative; }
+        .card-meta-visible { font-size: 12px; color: #888; text-transform: lowercase; margin-bottom: 8px; display: block; font-weight: 900; letter-spacing: 0.5px; }
         .card-cat { color: #d4af37; font-weight: bold; font-size: 0.8em; text-transform: uppercase; display: block; margin-bottom: 15px; }
         .card img { width: 100%; border-radius: 10px; margin-bottom: 25px; display: block; }
-        .card-title { font-size: 28px; color: #1a1a1a; margin-bottom: 25px; font-family: 'Georgia', serif; font-weight: bold; }
+        .card-title { font-size: 28px; color: #1a1a1a; margin-bottom: 25px; font-family: 'Georgia', serif; font-weight: bold; line-height: 1.2; }
         .card-text { white-space: pre-wrap; line-height: 1.8; color: #333; font-size: 17px; font-family: 'Georgia', serif; }
         .card-text b { color: #000; font-weight: 900; background: rgba(212, 175, 55, 0.1); padding: 2px 4px; border-radius: 4px; }
         .error-zone { color: #ff4d4d; background: #fff5f5; padding: 15px; border-radius: 10px; margin-top: 20px; display: none; text-align: left; border: 1px solid #ff4d4d; }
@@ -50,7 +58,7 @@
 
 <div class="box" id="topHeader">
     <h1>🏛️ ORGANISATEUR DE LA PAROLE</h1>
-    <p>Surlignage <b>Bleu</b> et métadonnées en <b>Gras</b>. 🛡️</p>
+    <p>Gestionnaire de prédications pour <b>EMMANUEL DPV</b> 🛡️</p>
     <textarea id="jsonContent" placeholder="Collez votre code JSON ici..." oninput="nettoyer()"></textarea>
     <button class="btn" onclick="lancerCalcul()">⚡ SYNCHRONISER & ANALYSER</button>
     <div id="displayError" class="error-zone"></div>
@@ -63,18 +71,14 @@
 <button id="scrollToTop" onclick="versLeHaut()">↑</button>
 
 <script>
+// Gestion de l'ascenseur
 window.onscroll = function() {
     let btn = document.getElementById("scrollToTop");
-    if (window.pageYOffset > 400) {
-        btn.style.display = "block";
-    } else {
-        btn.style.display = "none";
-    }
+    if (window.pageYOffset > 400) { btn.style.display = "block"; } 
+    else { btn.style.display = "none"; }
 };
 
-function versLeHaut() {
-    window.scrollTo({top: 0, behavior: 'smooth'});
-}
+function versLeHaut() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
 function nettoyer() {
     document.getElementById('jsonContent').classList.remove('error-border');
@@ -95,7 +99,7 @@ function lancerCalcul() {
 
         // --- CALCUL CHRONOLOGIQUE ---
         let indexDernier = data.length - 1;
-        if(data[indexDernier].id && data[indexDernier].date) {
+        if(data[indexDernier] && data[indexDernier].id && data[indexDernier].date) {
             let idRef = parseInt(data[indexDernier].id);
             let dateRef = new Date(data[indexDernier].date);
 
@@ -112,68 +116,45 @@ function lancerCalcul() {
 
         txt.value = JSON.stringify(data, null, 2);
         
-        // --- APERÇU ---
+        // --- GÉNÉRATION DE L'APERÇU ---
         previewContent.innerHTML = "";
         data.forEach(msg => {
             let texteFormate = (msg.texte || "").replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             
-            // Gestion de l'audio
+            // DÉTECTION MULTI-CLEFS POUR L'AUDIO
+            let lienAudio = msg.audioUrl || msg.audio || msg.urlAudio;
             let audioHtml = "";
-            if (msg.audioUrl) {
+
+            if (lienAudio && lienAudio.trim() !== "") {
                 audioHtml = `
                 <div class="audio-container">
-                    <small><b>🔊 PRÉDICATION AUDIO :</b></small><br><br>
-                    <audio controls>
-                        <source src="${msg.audioUrl}" type="audio/mpeg">
-                        Votre navigateur ne supporte pas la lecture audio.
+                    <span class="audio-label">🔊 ÉCOUTER LA PRÉDICATION</span>
+                    <audio controls preload="metadata">
+                        <source src="${lienAudio}" type="audio/mpeg">
+                        Votre navigateur ne supporte pas l'audio.
                     </audio>
                 </div>`;
             }
 
             previewContent.innerHTML += `
                 <div class="card">
-                    <span class="card-meta-visible">id: ${msg.id} — date: ${msg.date}</span>
-                    <span class="card-cat">${msg.categorie || "MESSAGE"}</span>
+                    <span class="card-meta-visible">ID: ${msg.id} — DATE: ${msg.date}</span>
+                    <span class="card-cat">${msg.categorie || "ENSEIGNEMENT"}</span>
                     ${msg.image ? '<img src="'+msg.image+'" alt="Illustration">' : ''}
-                    <div class="card-title">${msg.titre}</div>
+                    <div class="card-title">${msg.titre || "Sans titre"}</div>
                     ${audioHtml}
                     <div class="card-text">${texteFormate}</div>
                 </div>
             `;
         });
+
         previewArea.style.display = "block";
 
     } catch (err) {
         previewArea.style.display = "none";
         txt.classList.add('error-border');
         errZone.style.display = 'block';
-        
-        let msg = err.message;
-        let match = msg.match(/position (\d+)/);
-        
-        if (match) {
-            let pos = parseInt(match[1]);
-            let texteAvantErreur = rawValue.substring(0, pos);
-            let lignes = texteAvantErreur.split("\n");
-            
-            let idConcerne = "Inconnu";
-            let searchID = texteAvantErreur.match(/"id":\s*"?(\d+)"?/g);
-            if(searchID) {
-                let lastID = searchID[searchID.length - 1];
-                idConcerne = lastID.replace(/[^\d]/g, '');
-            }
-
-            errZone.innerHTML = `
-                <strong>⚠️ ERREUR DANS LA STRUCTURE :</strong><br>
-                🆔 <b>ID Message Probable :</b> ${idConcerne}<br>
-                📍 <b>Ligne :</b> ${lignes.length} | <b>Colonne :</b> ${lignes[lignes.length-1].length+1}<br>
-                💬 <b>Détail :</b> ${msg}
-            `;
-            txt.focus();
-            txt.setSelectionRange(pos, pos + 1);
-        } else {
-            errZone.innerHTML = "<strong>⚠️ ERREUR :</strong> " + msg;
-        }
+        errZone.innerHTML = "<strong>⚠️ ERREUR JSON :</strong> " + err.message;
     }
 }
 </script>
