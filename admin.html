@@ -9,13 +9,11 @@
         .admin-box { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 20px; border-top: 10px solid #d4af37; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #1a1a1a; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; margin-bottom: 10px; }
         
-        /* --- SECTION CONTROLE STANDBY --- */
         .control-room { background: #1a1a1a; color: white; padding: 20px; border-radius: 15px; margin-bottom: 25px; text-align: center; border: 2px solid #d4af37; }
         .status-badge { display: inline-block; padding: 8px 20px; border-radius: 50px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .online { background: #27ae60; color: white; box-shadow: 0 0 15px #27ae60; }
         .standby { background: #c0392b; color: white; box-shadow: 0 0 15px #c0392b; }
         .btn-toggle { background: white; color: #1a1a1a; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-toggle:hover { transform: scale(1.05); background: #d4af37; color: white; }
 
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
@@ -24,16 +22,15 @@
         label { font-weight: bold; margin: 10px 0 5px; color: #d4af37; font-size: 0.9em; }
         input, textarea { padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 14px; outline: none; transition: 0.3s; }
         input:focus, textarea:focus { border-color: #d4af37; background: #fffdf5; }
-        textarea { height: 100px; resize: vertical; font-family: 'Georgia', serif; }
+        textarea { height: 100px; resize: vertical; }
 
-        .btn-add { background: #1a1a1a; color: white; padding: 15px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 25px; font-size: 16px; transition: 0.3s; width: 100%; border: 2px solid #1a1a1a; }
+        .btn-add { background: #1a1a1a; color: white; padding: 15px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 25px; font-size: 16px; width: 100%; border: 2px solid #1a1a1a; }
         .btn-add:hover { background: transparent; color: #1a1a1a; }
 
         .organisateur-zone { background: #fdf9ea; padding: 15px; border-radius: 15px; margin-top: 30px; border: 1px dashed #d4af37; }
-        .result-zone { margin-top: 40px; }
         #jsonOutput { width: 100%; height: 250px; background: #1a1a1a; color: #00ff00; font-family: 'Courier New', monospace; padding: 15px; border-radius: 10px; margin-top: 10px; box-sizing: border-box; }
         .btn-copy { background: #d4af37; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
-        .btn-repair { background: #34495e; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 5px; }
+        .btn-repair { background: #34495e; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -43,28 +40,24 @@
 
     <div class="control-room">
         <div id="statusBadge" class="status-badge online">● Site en Ligne</div>
-        <p style="margin: 0 0 15px 0; font-size: 0.8em; opacity: 0.8;">Action rapide depuis votre mobile :</p>
-        <button class="btn-toggle" onclick="toggleStatus()">MODIFIER LE STATUT DU SITE</button>
+        <br>
+        <button class="btn-toggle" onclick="toggleStatus()">MODIFIER LE STATUT</button>
     </div>
     
     <div class="grid">
         <div class="col">
             <label>🆔 ID</label>
-            <input type="number" id="id" placeholder="Ex: 35">
+            <input type="number" id="id">
             <label>📅 Date</label>
             <input type="date" id="date">
             <label>🖼️ Image URL</label>
-            <input type="text" id="image" placeholder="Lien postimg...">
+            <input type="text" id="image">
             <label>🏷️ Catégories (FR)</label>
-            <input type="text" id="cat_fr" value="GRACE | SAINTETÉ">
-            <label>🏷️ Categories (EN)</label>
-            <input type="text" id="cat_en" value="GRACE | HOLINESS">
+            <input type="text" id="cat_fr" value="GRACE | VÉRITÉ">
         </div>
         <div class="col">
             <label>🏆 Titre (FR)</label>
             <input type="text" id="titre_fr">
-            <label>🏆 Title (EN)</label>
-            <input type="text" id="titre_en">
             <label>📖 Message (FR)</label>
             <textarea id="txt_fr"></textarea>
             <label>📖 Message (EN)</label>
@@ -75,13 +68,13 @@
     <button class="btn-add" onclick="ajouterAuFlux()">⚡ AJOUTER CE MESSAGE</button>
 
     <div class="organisateur-zone">
-        <label style="color: #1a1a1a;">🔧 RÉPARER UN ANCIEN JSON (Organisateur)</label>
-        <textarea id="jsonInput" placeholder="Collez ici votre JSON avec des erreurs (points, virgules manquantes...)" style="width:100%; height:80px; margin-top:5px;"></textarea>
-        <button class="btn-repair" onclick="reparerEtCharger()">RÉPARER & CHARGER LES MESSAGES</button>
+        <label>🔧 RÉPARER / CHARGER LE JSON ACTUEL</label>
+        <textarea id="jsonInput" placeholder="Collez votre fichier complet ici pour le corriger..." style="width:100%; height:80px;"></textarea>
+        <button class="btn-repair" onclick="reparerEtCharger()">RÉPARER & SYNCHRONISER</button>
     </div>
 
     <div class="result-zone">
-        <label>💎 DATA.JSON PRÊT À DÉPLOYER</label><br>
+        <label>💎 DATA.JSON FINAL</label><br>
         <button class="btn-copy" onclick="copierFlux()">COPIER TOUT LE CODE</button>
         <textarea id="jsonOutput" readonly></textarea>
     </div>
@@ -91,103 +84,68 @@
     let listeMessages = [];
     let siteStatus = "online";
 
-    // --- FONCTION STANDBY ---
     function toggleStatus() {
-        const badge = document.getElementById('statusBadge');
-        if (siteStatus === "online") {
-            siteStatus = "standby";
-            badge.innerText = "● Site en Stand-by";
-            badge.className = "status-badge standby";
-        } else {
-            siteStatus = "online";
-            badge.innerText = "● Site en Ligne";
-            badge.className = "status-badge online";
-        }
+        siteStatus = (siteStatus === "online") ? "standby" : "online";
+        document.getElementById('statusBadge').innerText = (siteStatus === "online") ? "● Site en Ligne" : "● Site en Stand-by";
+        document.getElementById('statusBadge').className = "status-badge " + siteStatus;
         majAffichage();
     }
 
-    // --- FONCTION AJOUT ---
     function ajouterAuFlux() {
         const nouveauMsg = {
             id: parseInt(document.getElementById('id').value),
             date: document.getElementById('date').value,
             categorie: document.getElementById('cat_fr').value,
-            categorie_en: document.getElementById('cat_en').value,
             titre: document.getElementById('titre_fr').value,
-            titre_en: document.getElementById('titre_en').value,
             image: document.getElementById('image').value,
             texte: document.getElementById('txt_fr').value,
             texte_en: document.getElementById('txt_en').value
         };
-
-        if(!nouveauMsg.id || !nouveauMsg.titre) {
-            alert("Maître, l'ID et le Titre sont nécessaires !"); return;
-        }
-
         listeMessages.push(nouveauMsg);
         listeMessages.sort((a, b) => b.id - a.id);
         majAffichage();
-        
-        // Nettoyage partiel
-        document.getElementById('id').value = "";
-        document.getElementById('titre_fr').value = "";
-        document.getElementById('titre_en').value = "";
-        document.getElementById('txt_fr').value = "";
-        document.getElementById('txt_en').value = "";
-        document.getElementById('id').focus();
     }
 
-    // --- L'ORGANISATEUR (CORRECTEUR DE SYNTAXE) ---
     function reparerEtCharger() {
         let brut = document.getElementById('jsonInput').value.trim();
-        if(!brut) return;
-
         try {
-            // 1. Nettoyage des erreurs classiques (points entre objets, virgules oubliées)
-            let propre = brut
-                .replace(/\}\s*\.\s*\{/g, '},{') // Remplace } . { par },{
-                .replace(/\}\s*\{/g, '},{')     // Ajoute virgule entre }{
-                .replace(/,\s*\]/g, ']')        // Retire virgule finale avant ]
-                .replace(/,\s*\}/g, '}');       // Retire virgule finale avant }
-
-            // Si ce n'est pas un tableau, on tente de l'envelopper
-            if (!propre.startsWith('[')) propre = '[' + propre + ']';
-
-            let dataParse = JSON.parse(propre);
+            // Nettoyage des points erronés entre les accolades
+            let propre = brut.replace(/\}\s*\.\s*\{/g, '},{');
+            let data = JSON.parse(propre);
             
-            // Gestion si le JSON importé a déjà la nouvelle structure
-            if (dataParse.messages) {
-                listeMessages = dataParse.messages;
-                siteStatus = dataParse.status || "online";
+            // Extraction intelligente : on cherche les messages même s'ils sont imbriqués
+            if (data.messages) {
+                // Si c'est le format { status:..., messages: [ {status:..., messages: [...] } ] }
+                if (data.messages[0] && data.messages[0].messages) {
+                    listeMessages = data.messages[0].messages;
+                } else {
+                    listeMessages = data.messages;
+                }
+                siteStatus = data.status || "online";
             } else {
-                listeMessages = dataParse;
+                listeMessages = Array.isArray(data) ? data : [];
             }
 
             majAffichage();
-            alert("Syntaxe corrigée et messages chargés, Pasteur !");
-            document.getElementById('jsonInput').value = "";
+            alert("Substance purifiée et synchronisée ! 🦁");
         } catch (e) {
-            alert("Erreur trop grave pour être réparée automatiquement. Vérifiez les guillemets.");
-            console.log(e);
+            alert("Erreur de syntaxe grave. Vérifiez les virgules.");
         }
     }
 
-    // --- MISE À JOUR DU CODE FINAL ---
     function majAffichage() {
-        const objetFinal = {
+        document.getElementById('jsonOutput').value = JSON.stringify({
             status: siteStatus,
             messages: listeMessages
-        };
-        document.getElementById('jsonOutput').value = JSON.stringify(objetFinal, null, 2);
+        }, null, 2);
     }
 
     function copierFlux() {
         const copyText = document.getElementById("jsonOutput");
         copyText.select();
         navigator.clipboard.writeText(copyText.value);
-        alert("Substance copiée ! Prêt pour le site. 🦁🚀");
+        alert("JSON copié !");
     }
 </script>
-
 </body>
 </html>
