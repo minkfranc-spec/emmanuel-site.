@@ -1,14 +1,9 @@
 
 {
   "status": "online",
-  "messages":
-
-
-  [
-
-    
-    {
-    "id": 32,
+  "messages": [
+     {
+      "id": 32,
     "date": "2026-02-16",
     "categorie": "JUSTICE | POSITION | STRUCTURE",
     "categorie_en": "JUSTICE | POSITION | STRUCTURE",
@@ -372,7 +367,7 @@
     "titre_en": "🕯️ EMMANUEL: WELCOME TO OUR HAVEN OF SPIRITUAL PEACE 🕯️",
     "image": "https://i.postimg.cc/cCXq2khG/Lancement.png",
     "texte": "Bien-aimés, 🌟\n\nC'est avec une immense joie que nous ouvrons les portes d'EMMANUEL, notre sanctuaire numérique dédié à la Parole de Dieu. 🙌\n\n**« La Parole de Dieu est une force unifiante qui transcende toutes les barrières humaines. »** ✨\n\nIci, vous ne trouverez ni critique, ni jugement, mais un appel constant à la réconciliation, à la foi et à l'amour. ❤️\n\nChaque enseignement est une invitation à cheminer ensemble vers une relation plus intime avec notre Père céleste. 🙏☀️ Ouvrez votre cœur et laissez la Parole transformer votre vie. 🕊️",
-    "texte_en": "Beloved, 🌟\n\nIt is with immense joy that we open the doors of EMMANUEL, our digital sanctuary dedicated to the Word of God. 🙌\n\n**“The Word of God is a unifying force that transcends all human barriers.”** ✨\n\nOpen your heart and let the Word transform your life. 🕊️"
+    "texte_en": "Beloved, 🌟\n\nIt is with immense joy... 🕊️"
     }
   ]
 }
