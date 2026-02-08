@@ -3,79 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMMANUEL | Administrateur Suprême</title>
+    <title>EMMANUEL | Administrateur Final</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; padding: 10px; color: #1a1a1a; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 10px; }
         .admin-box { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 20px; border-top: 10px solid #d4af37; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #1a1a1a; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; margin-bottom: 10px; }
-        
-        .control-room { background: #1a1a1a; color: white; padding: 20px; border-radius: 15px; margin-bottom: 25px; text-align: center; border: 2px solid #d4af37; }
-        .status-badge { display: inline-block; padding: 8px 20px; border-radius: 50px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .online { background: #27ae60; color: white; box-shadow: 0 0 15px #27ae60; }
-        .standby { background: #c0392b; color: white; box-shadow: 0 0 15px #c0392b; }
-        .btn-toggle { background: white; color: #1a1a1a; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
-        
-        .col { display: flex; flex-direction: column; }
-        label { font-weight: bold; margin: 10px 0 5px; color: #d4af37; font-size: 0.9em; }
-        input, textarea { padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 14px; outline: none; transition: 0.3s; }
-        input:focus, textarea:focus { border-color: #d4af37; background: #fffdf5; }
-        textarea { height: 100px; resize: vertical; }
-
-        .btn-add { background: #1a1a1a; color: white; padding: 15px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 25px; font-size: 16px; width: 100%; border: 2px solid #1a1a1a; }
-        .btn-add:hover { background: transparent; color: #1a1a1a; }
-
-        .organisateur-zone { background: #fdf9ea; padding: 15px; border-radius: 15px; margin-top: 30px; border: 1px dashed #d4af37; }
-        #jsonOutput { width: 100%; height: 250px; background: #1a1a1a; color: #00ff00; font-family: 'Courier New', monospace; padding: 15px; border-radius: 10px; margin-top: 10px; box-sizing: border-box; }
-        .btn-copy { background: #d4af37; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
-        .btn-repair { background: #34495e; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .control-room { background: #1a1a1a; color: white; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
+        .status-badge { display: inline-block; padding: 10px 25px; border-radius: 50px; font-weight: bold; margin-bottom: 10px; }
+        .online { background: #27ae60; } .standby { background: #c0392b; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        textarea { width: 100%; height: 100px; border-radius: 10px; border: 1px solid #ddd; padding: 10px; box-sizing: border-box; }
+        input { width: 100%; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        .btn-add { background: #1a1a1a; color: white; padding: 15px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        .organisateur { background: #fffdf5; padding: 15px; border: 2px dashed #d4af37; border-radius: 15px; margin-top: 30px; }
+        #jsonOutput { background: #1a1a1a; color: #00ff00; height: 300px; font-family: monospace; }
+        .btn-copy { background: #d4af37; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="admin-box">
-    <h1>🏛️ EMMANUEL CONTROL</h1>
+    <h1>🏛️ EMMANUEL : CONTRÔLE TOTAL</h1>
 
     <div class="control-room">
-        <div id="statusBadge" class="status-badge online">● Site en Ligne</div>
-        <br>
-        <button class="btn-toggle" onclick="toggleStatus()">MODIFIER LE STATUT</button>
+        <div id="statusBadge" class="status-badge online">● SITE EN LIGNE</div><br>
+        <button onclick="toggleStatus()" style="padding: 10px; cursor:pointer; border-radius: 20px; font-weight:bold;">CHANGER LE STATUT</button>
     </div>
-    
+
     <div class="grid">
         <div class="col">
-            <label>🆔 ID</label>
-            <input type="number" id="id">
-            <label>📅 Date</label>
-            <input type="date" id="date">
-            <label>🖼️ Image URL</label>
-            <input type="text" id="image">
-            <label>🏷️ Catégories (FR)</label>
-            <input type="text" id="cat_fr" value="GRACE | VÉRITÉ">
+            <label>🆔 ID</label><input type="number" id="id">
+            <label>📅 Date</label><input type="date" id="date">
+            <label>🏆 Titre</label><input type="text" id="titre_fr">
         </div>
         <div class="col">
-            <label>🏆 Titre (FR)</label>
-            <input type="text" id="titre_fr">
-            <label>📖 Message (FR)</label>
-            <textarea id="txt_fr"></textarea>
-            <label>📖 Message (EN)</label>
-            <textarea id="txt_en"></textarea>
+            <label>📖 Message (FR)</label><textarea id="txt_fr"></textarea>
+            <label>📖 Message (EN)</label><textarea id="txt_en"></textarea>
         </div>
     </div>
+    <button class="btn-add" onclick="ajouterAuFlux()">⚡ AJOUTER LE MESSAGE</button>
 
-    <button class="btn-add" onclick="ajouterAuFlux()">⚡ AJOUTER CE MESSAGE</button>
-
-    <div class="organisateur-zone">
-        <label>🔧 RÉPARER / CHARGER LE JSON ACTUEL</label>
-        <textarea id="jsonInput" placeholder="Collez votre fichier complet ici pour le corriger..." style="width:100%; height:80px;"></textarea>
-        <button class="btn-repair" onclick="reparerEtCharger()">RÉPARER & SYNCHRONISER</button>
+    <div class="organisateur">
+        <label>🛠️ ZONE DE RÉPARATION (Collez votre fichier cccc.txt ici)</label>
+        <textarea id="jsonInput" placeholder="Collez le contenu de cccc.txt..."></textarea>
+        <button onclick="reparer()" style="background:#34495e; color:white; padding:10px; cursor:pointer; margin-top:10px; border-radius:5px;">RÉPARER LA STRUCTURE MAINTENANT</button>
     </div>
 
-    <div class="result-zone">
-        <label>💎 DATA.JSON FINAL</label><br>
-        <button class="btn-copy" onclick="copierFlux()">COPIER TOUT LE CODE</button>
+    <div style="margin-top:30px;">
+        <button class="btn-copy" onclick="copier()">COPIER LE JSON PRÊT POUR LE SITE</button>
         <textarea id="jsonOutput" readonly></textarea>
     </div>
 </div>
@@ -86,66 +60,61 @@
 
     function toggleStatus() {
         siteStatus = (siteStatus === "online") ? "standby" : "online";
-        document.getElementById('statusBadge').innerText = (siteStatus === "online") ? "● Site en Ligne" : "● Site en Stand-by";
+        document.getElementById('statusBadge').innerText = (siteStatus === "online") ? "● SITE EN LIGNE" : "● SITE EN STAND-BY";
         document.getElementById('statusBadge').className = "status-badge " + siteStatus;
-        majAffichage();
+        maj();
     }
 
     function ajouterAuFlux() {
-        const nouveauMsg = {
+        const m = {
             id: parseInt(document.getElementById('id').value),
             date: document.getElementById('date').value,
-            categorie: document.getElementById('cat_fr').value,
             titre: document.getElementById('titre_fr').value,
-            image: document.getElementById('image').value,
             texte: document.getElementById('txt_fr').value,
             texte_en: document.getElementById('txt_en').value
         };
-        listeMessages.push(nouveauMsg);
-        listeMessages.sort((a, b) => b.id - a.id);
-        majAffichage();
+        listeMessages.unshift(m);
+        maj();
     }
 
-    function reparerEtCharger() {
+    function reparer() {
         let brut = document.getElementById('jsonInput').value.trim();
         try {
-            // Nettoyage des points erronés entre les accolades
+            // Nettoyage des points erronés
             let propre = brut.replace(/\}\s*\.\s*\{/g, '},{');
             let data = JSON.parse(propre);
-            
-            // Extraction intelligente : on cherche les messages même s'ils sont imbriqués
-            if (data.messages) {
-                // Si c'est le format { status:..., messages: [ {status:..., messages: [...] } ] }
-                if (data.messages[0] && data.messages[0].messages) {
-                    listeMessages = data.messages[0].messages;
-                } else {
-                    listeMessages = data.messages;
-                }
-                siteStatus = data.status || "online";
-            } else {
-                listeMessages = Array.isArray(data) ? data : [];
+
+            // ⚡ EXTRACTION RADICALE (On cherche récursivement les messages)
+            function extraire(obj) {
+                if (Array.isArray(obj)) return obj;
+                if (obj.messages) return extraire(obj.messages);
+                return [];
             }
 
-            majAffichage();
-            alert("Substance purifiée et synchronisée ! 🦁");
+            listeMessages = extraire(data);
+            siteStatus = data.status || "online";
+            
+            maj();
+            alert("✅ Structure réparée ! Les couches inutiles ont été supprimées.");
         } catch (e) {
-            alert("Erreur de syntaxe grave. Vérifiez les virgules.");
+            alert("❌ Erreur critique. Vérifiez qu'il n'y a pas de texte hors du JSON.");
         }
     }
 
-    function majAffichage() {
+    function maj() {
         document.getElementById('jsonOutput').value = JSON.stringify({
             status: siteStatus,
             messages: listeMessages
         }, null, 2);
     }
 
-    function copierFlux() {
-        const copyText = document.getElementById("jsonOutput");
-        copyText.select();
-        navigator.clipboard.writeText(copyText.value);
-        alert("JSON copié !");
+    function copier() {
+        const out = document.getElementById("jsonOutput");
+        out.select();
+        navigator.clipboard.writeText(out.value);
+        alert("JSON Copié !");
     }
 </script>
+
 </body>
 </html>
