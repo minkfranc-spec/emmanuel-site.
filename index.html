@@ -229,10 +229,26 @@
             try {
                 const res = await fetch('data.json?v=' + Date.now());
                 const data = await res.json();
+                
+                // --- INJECTION SÉCURITÉ STAND-BY ---
+                if (data.status === "standby") {
+                    document.body.innerHTML = `
+                        <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#1a1a1a; color:#d4af37; text-align:center; padding:20px;">
+                            <h1 style="color:#d4af37; font-size:3em; font-family:'Montserrat';">🏛️ EMMANUEL</h1>
+                            <p style="font-family:'Lora'; font-size:1.5em;">Le sanctuaire est momentanément fermé pour maintenance.</p>
+                            <p style="font-style:italic; opacity:0.7;">La Voix de la Vérité revient bientôt.</p>
+                        </div>`;
+                    return;
+                }
+
+                // --- INJECTION DÉCODEUR DE STRUCTURE ---
+                // On récupère la liste située dans "messages"
+                const listeBrute = data.messages || [];
+
                 const maintenant = new Date();
                 const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000)); 
 
-                tousLesMessages = data.filter(msg => {
+                tousLesMessages = listeBrute.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
                     const dateParution = new Date(annee, mois - 1, jour, 0, 0, 1);
                     return heureLocale >= dateParution;
@@ -278,7 +294,6 @@
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
             
-            // MODIFICATION INJECTÉE ICI PAR VOTRE EXPERT : Lecteur audio
             let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
             
             return `<div class="message-card">
