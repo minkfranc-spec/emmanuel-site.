@@ -2,79 +2,112 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>EMMANUEL | Administrateur de Saisie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMMANUEL | Administrateur Suprême</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; padding: 20px; color: #1a1a1a; }
-        .admin-box { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 20px; border-top: 10px solid #d4af37; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #1a1a1a; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; padding: 10px; color: #1a1a1a; }
+        .admin-box { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 20px; border-top: 10px solid #d4af37; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #1a1a1a; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; margin-bottom: 10px; }
         
+        /* --- SECTION CONTROLE STANDBY --- */
+        .control-room { background: #1a1a1a; color: white; padding: 20px; border-radius: 15px; margin-bottom: 25px; text-align: center; border: 2px solid #d4af37; }
+        .status-badge { display: inline-block; padding: 8px 20px; border-radius: 50px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .online { background: #27ae60; color: white; box-shadow: 0 0 15px #27ae60; }
+        .standby { background: #c0392b; color: white; box-shadow: 0 0 15px #c0392b; }
+        .btn-toggle { background: white; color: #1a1a1a; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-toggle:hover { transform: scale(1.05); background: #d4af37; color: white; }
+
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .col { display: flex; flex-direction: column; }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
         
+        .col { display: flex; flex-direction: column; }
         label { font-weight: bold; margin: 10px 0 5px; color: #d4af37; font-size: 0.9em; }
         input, textarea { padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 14px; outline: none; transition: 0.3s; }
         input:focus, textarea:focus { border-color: #d4af37; background: #fffdf5; }
-        textarea { height: 120px; resize: vertical; font-family: 'Georgia', serif; }
+        textarea { height: 100px; resize: vertical; font-family: 'Georgia', serif; }
 
-        .btn-add { background: #1a1a1a; color: white; padding: 15px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 25px; font-size: 16px; transition: 0.3s; width: 100%; }
-        .btn-add:hover { background: #d4af37; transform: translateY(-2px); }
+        .btn-add { background: #1a1a1a; color: white; padding: 15px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 25px; font-size: 16px; transition: 0.3s; width: 100%; border: 2px solid #1a1a1a; }
+        .btn-add:hover { background: transparent; color: #1a1a1a; }
 
+        .organisateur-zone { background: #fdf9ea; padding: 15px; border-radius: 15px; margin-top: 30px; border: 1px dashed #d4af37; }
         .result-zone { margin-top: 40px; }
-        #jsonOutput { width: 100%; height: 300px; background: #1a1a1a; color: #00ff00; font-family: 'Courier New', monospace; padding: 15px; border-radius: 10px; margin-top: 10px; }
+        #jsonOutput { width: 100%; height: 250px; background: #1a1a1a; color: #00ff00; font-family: 'Courier New', monospace; padding: 15px; border-radius: 10px; margin-top: 10px; box-sizing: border-box; }
         .btn-copy { background: #d4af37; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
+        .btn-repair { background: #34495e; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="admin-box">
-    <h1>📝 SAISIE DES MESSAGES</h1>
+    <h1>🏛️ EMMANUEL CONTROL</h1>
+
+    <div class="control-room">
+        <div id="statusBadge" class="status-badge online">● Site en Ligne</div>
+        <p style="margin: 0 0 15px 0; font-size: 0.8em; opacity: 0.8;">Action rapide depuis votre mobile :</p>
+        <button class="btn-toggle" onclick="toggleStatus()">MODIFIER LE STATUT DU SITE</button>
+    </div>
     
     <div class="grid">
         <div class="col">
-            <label>🆔 ID du message</label>
-            <input type="number" id="id" placeholder="Ex: 15">
-            
-            <label>📅 Date de parution</label>
+            <label>🆔 ID</label>
+            <input type="number" id="id" placeholder="Ex: 35">
+            <label>📅 Date</label>
             <input type="date" id="date">
-            
-            <label>🖼️ URL de l'image</label>
-            <input type="text" id="image" placeholder="Lien catbox ou postimg...">
-            
+            <label>🖼️ Image URL</label>
+            <input type="text" id="image" placeholder="Lien postimg...">
             <label>🏷️ Catégories (FR)</label>
-            <input type="text" id="cat_fr" placeholder="FOI, SAGESSE">
-            
+            <input type="text" id="cat_fr" value="GRACE | SAINTETÉ">
             <label>🏷️ Categories (EN)</label>
-            <input type="text" id="cat_en" placeholder="FAITH, WISDOM">
+            <input type="text" id="cat_en" value="GRACE | HOLINESS">
         </div>
         <div class="col">
             <label>🏆 Titre (FR)</label>
-            <input type="text" id="titre_fr" placeholder="Titre en français">
-            
+            <input type="text" id="titre_fr">
             <label>🏆 Title (EN)</label>
-            <input type="text" id="titre_en" placeholder="Title in English">
-            
+            <input type="text" id="titre_en">
             <label>📖 Message (FR)</label>
-            <textarea id="txt_fr" placeholder="Écrivez le message ici..."></textarea>
-            
+            <textarea id="txt_fr"></textarea>
             <label>📖 Message (EN)</label>
-            <textarea id="txt_en" placeholder="Write the message here..."></textarea>
+            <textarea id="txt_en"></textarea>
         </div>
     </div>
 
-    <button class="btn-add" onclick="ajouterAuFlux()">⚡ AJOUTER AU FICHIER JSON</button>
+    <button class="btn-add" onclick="ajouterAuFlux()">⚡ AJOUTER CE MESSAGE</button>
+
+    <div class="organisateur-zone">
+        <label style="color: #1a1a1a;">🔧 RÉPARER UN ANCIEN JSON (Organisateur)</label>
+        <textarea id="jsonInput" placeholder="Collez ici votre JSON avec des erreurs (points, virgules manquantes...)" style="width:100%; height:80px; margin-top:5px;"></textarea>
+        <button class="btn-repair" onclick="reparerEtCharger()">RÉPARER & CHARGER LES MESSAGES</button>
+    </div>
 
     <div class="result-zone">
-        <label>💎 FICHIER DATA.JSON FINAL (Ordre Décroissant)</label>
-        <button class="btn-copy" onclick="copierFlux()">Copier tout le JSON</button>
+        <label>💎 DATA.JSON PRÊT À DÉPLOYER</label><br>
+        <button class="btn-copy" onclick="copierFlux()">COPIER TOUT LE CODE</button>
         <textarea id="jsonOutput" readonly></textarea>
     </div>
 </div>
 
 <script>
     let listeMessages = [];
+    let siteStatus = "online";
 
+    // --- FONCTION STANDBY ---
+    function toggleStatus() {
+        const badge = document.getElementById('statusBadge');
+        if (siteStatus === "online") {
+            siteStatus = "standby";
+            badge.innerText = "● Site en Stand-by";
+            badge.className = "status-badge standby";
+        } else {
+            siteStatus = "online";
+            badge.innerText = "● Site en Ligne";
+            badge.className = "status-badge online";
+        }
+        majAffichage();
+    }
+
+    // --- FONCTION AJOUT ---
     function ajouterAuFlux() {
-        // 1. Récupération des données
         const nouveauMsg = {
             id: parseInt(document.getElementById('id').value),
             date: document.getElementById('date').value,
@@ -88,33 +121,71 @@
         };
 
         if(!nouveauMsg.id || !nouveauMsg.titre) {
-            alert("Maître, l'ID et le Titre sont obligatoires !");
-            return;
+            alert("Maître, l'ID et le Titre sont nécessaires !"); return;
         }
 
-        // 2. Ajout et Tri (ID le plus élevé en haut)
         listeMessages.push(nouveauMsg);
         listeMessages.sort((a, b) => b.id - a.id);
-
-        // 3. Mise à jour de l'affichage JSON
-        document.getElementById('jsonOutput').value = JSON.stringify(listeMessages, null, 2);
-
-        // 4. Nettoyage des champs pour la saisie suivante
+        majAffichage();
+        
+        // Nettoyage partiel
         document.getElementById('id').value = "";
         document.getElementById('titre_fr').value = "";
         document.getElementById('titre_en').value = "";
         document.getElementById('txt_fr').value = "";
         document.getElementById('txt_en').value = "";
-        
-        // On garde la date et l'image par défaut pour gagner du temps
         document.getElementById('id').focus();
+    }
+
+    // --- L'ORGANISATEUR (CORRECTEUR DE SYNTAXE) ---
+    function reparerEtCharger() {
+        let brut = document.getElementById('jsonInput').value.trim();
+        if(!brut) return;
+
+        try {
+            // 1. Nettoyage des erreurs classiques (points entre objets, virgules oubliées)
+            let propre = brut
+                .replace(/\}\s*\.\s*\{/g, '},{') // Remplace } . { par },{
+                .replace(/\}\s*\{/g, '},{')     // Ajoute virgule entre }{
+                .replace(/,\s*\]/g, ']')        // Retire virgule finale avant ]
+                .replace(/,\s*\}/g, '}');       // Retire virgule finale avant }
+
+            // Si ce n'est pas un tableau, on tente de l'envelopper
+            if (!propre.startsWith('[')) propre = '[' + propre + ']';
+
+            let dataParse = JSON.parse(propre);
+            
+            // Gestion si le JSON importé a déjà la nouvelle structure
+            if (dataParse.messages) {
+                listeMessages = dataParse.messages;
+                siteStatus = dataParse.status || "online";
+            } else {
+                listeMessages = dataParse;
+            }
+
+            majAffichage();
+            alert("Syntaxe corrigée et messages chargés, Pasteur !");
+            document.getElementById('jsonInput').value = "";
+        } catch (e) {
+            alert("Erreur trop grave pour être réparée automatiquement. Vérifiez les guillemets.");
+            console.log(e);
+        }
+    }
+
+    // --- MISE À JOUR DU CODE FINAL ---
+    function majAffichage() {
+        const objetFinal = {
+            status: siteStatus,
+            messages: listeMessages
+        };
+        document.getElementById('jsonOutput').value = JSON.stringify(objetFinal, null, 2);
     }
 
     function copierFlux() {
         const copyText = document.getElementById("jsonOutput");
         copyText.select();
         navigator.clipboard.writeText(copyText.value);
-        alert("JSON copié avec succès, mon Maître !");
+        alert("Substance copiée ! Prêt pour le site. 🦁🚀");
     }
 </script>
 
