@@ -9,7 +9,7 @@
         .admin-box { max-width: 700px; margin: auto; background: #1a1a1a; padding: 30px; border-radius: 25px; border: 2px solid #d4af37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
         h1 { color: #d4af37; font-size: 1.8em; margin-bottom: 10px; }
         .status-panel { background: #222; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
-        .status-indicator { font-weight: bold; padding: 10px 20px; border-radius: 50px; display: inline-block; margin-bottom: 15px; transition: 0.5s; }
+        .status-indicator { font-weight: bold; padding: 10px 20px; border-radius: 50px; display: inline-block; margin-bottom: 15px; transition: 0.5s; color: white; }
         .online { background: #27ae60; box-shadow: 0 0 15px #27ae60; }
         .standby { background: #c0392b; box-shadow: 0 0 15px #c0392b; }
         textarea { width: 100%; height: 120px; border-radius: 10px; border: none; padding: 15px; background: #252525; color: #00ff00; font-family: monospace; margin-top: 10px; box-sizing: border-box; }
@@ -52,6 +52,7 @@
 <script>
     let fluxGlobal = { status: "online", messages: [] };
 
+    // 1. Charger les données pour ne rien perdre
     function chargerDonnees() {
         const raw = document.getElementById('inputJSON').value.trim();
         try {
@@ -70,13 +71,15 @@
         }
     }
 
+    // 2. LE BOUTON MAGIQUE (Celui qui doit marcher !)
     function basculerStandBy() {
         fluxGlobal.status = (fluxGlobal.status === "online") ? "standby" : "online";
         actualiserInterface();
-        const mode = fluxGlobal.status === "online" ? "EN LIGNE 🟢" : "STAND-BY 🔴";
+        const mode = fluxGlobal.status === "online" ? "EN LIGNE 🟢" : "ARRÊTÉ (Stand-by) 🔴";
         alert("Bouton Magique : Passage en " + mode);
     }
 
+    // 3. Mise à jour du voyant ET du texte final
     function actualiserInterface() {
         const ind = document.getElementById('statusInd');
         const out = document.getElementById('outputJSON');
@@ -84,9 +87,11 @@
         if (fluxGlobal.status === "standby") {
             ind.innerText = "● MODE STAND-BY ACTIVÉ";
             ind.className = "status-indicator standby";
+            ind.style.background = "#c0392b"; // Force le rouge
         } else {
             ind.innerText = "● SITE EN LIGNE";
             ind.className = "status-indicator online";
+            ind.style.background = "#27ae60"; // Force le vert
         }
         
         out.value = JSON.stringify(fluxGlobal, null, 2);
@@ -95,6 +100,7 @@
     function copier() {
         const out = document.getElementById('outputJSON');
         out.select();
+        out.setSelectionRange(0, 99999); // Pour mobile
         document.execCommand('copy');
         alert("🎯 Code copié ! Collez-le maintenant sur GitHub dans data.json");
     }
