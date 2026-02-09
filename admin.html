@@ -5,19 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADMIN | Emmanuel DPV</title>
     <style>
-        body { font-family: 'Montserrat', sans-serif; background: #0f0f0f; color: white; padding: 20px; text-align: center; }
-        .admin-box { max-width: 700px; margin: auto; background: #1a1a1a; padding: 30px; border-radius: 25px; border: 2px solid #d4af37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
-        h1 { color: #d4af37; font-size: 1.8em; margin-bottom: 10px; }
-        .status-panel { background: #222; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
-        .status-indicator { font-weight: bold; padding: 10px 20px; border-radius: 50px; display: inline-block; margin-bottom: 15px; transition: 0.5s; color: white; }
-        .online { background: #27ae60; box-shadow: 0 0 15px #27ae60; }
-        .standby { background: #c0392b; box-shadow: 0 0 15px #c0392b; }
-        textarea { width: 100%; height: 120px; border-radius: 10px; border: none; padding: 15px; background: #252525; color: #00ff00; font-family: monospace; margin-top: 10px; box-sizing: border-box; }
-        .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px 30px; width: 100%; margin-top: 15px; text-transform: uppercase; }
-        .btn-magic { background: #d4af37; color: black; font-size: 1.1em; }
-        .btn-load { background: #34495e; color: white; }
-        .btn-copy { background: white; color: black; }
-        .footer-link { margin-top: 20px; font-size: 0.8em; color: #666; }
+        body { font-family: 'Montserrat', sans-serif; background: #0f0f0f; color: white; padding: 10px; text-align: center; }
+        .admin-box { max-width: 900px; margin: auto; background: #1a1a1a; padding: 25px; border-radius: 25px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); }
+        h1 { color: #d4af37; font-size: 1.6em; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
+        .status-panel { background: #222; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #333; }
+        .status-indicator { font-weight: bold; padding: 12px 25px; border-radius: 50px; display: inline-block; margin-bottom: 10px; transition: 0.5s; color: white; font-size: 0.9em; }
+        .online { background: #27ae60; box-shadow: 0 0 15px rgba(39, 174, 96, 0.4); }
+        .standby { background: #c0392b; box-shadow: 0 0 15px rgba(192, 57, 43, 0.4); }
+        
+        /* FENÊTRES AGRANDIES */
+        .label-text { display: block; text-align: left; margin: 15px 0 5px 10px; font-weight: bold; color: #d4af37; font-size: 0.9em; }
+        textarea { 
+            width: 100%; 
+            height: 350px; /* Taille augmentée par défaut */
+            border-radius: 15px; 
+            border: 1px solid #444; 
+            padding: 15px; 
+            background: #000; 
+            color: #00ff00; 
+            font-family: 'Courier New', monospace; 
+            box-sizing: border-box; 
+            font-size: 14px;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+            resize: vertical; /* Permet de tirer sur le coin pour agrandir encore plus */
+        }
+        textarea:focus { border-color: #d4af37; outline: none; background: #0a0a0a; height: 500px; } /* S'agrandit au clic */
+
+        .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px 30px; width: 100%; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-magic { background: #d4af37; color: black; font-size: 1em; }
+        .btn-load { background: #2980b9; color: white; }
+        .btn-copy { background: #ffffff; color: black; }
+        .btn:active { transform: scale(0.98); }
+
+        .footer-link { margin-top: 25px; font-size: 0.75em; color: #555; }
         a { color: #d4af37; text-decoration: none; }
     </style>
 </head>
@@ -25,7 +46,7 @@
 
 <div class="admin-box">
     <h1>🏛️ COMMANDE DU SANCTUAIRE</h1>
-    <p>Pointage actuel : <strong>emmanuel-dpv.pages.dev</strong> ⚡</p>
+    <p style="font-size: 0.8em; color: #888;">Propulsion : <strong>Cloudflare DPV</strong> ⚡</p>
 
     <div class="status-panel">
         <div id="statusInd" class="status-indicator online">● SITE EN LIGNE</div><br>
@@ -33,19 +54,19 @@
     </div>
 
     <div style="text-align: left;">
-        <label>📥 1. COLLEZ LE DATA.JSON DE GITHUB :</label>
-        <textarea id="inputJSON" placeholder="Collez ici..."></textarea>
-        <button class="btn btn-load" onclick="chargerDonnees()">📥 CHARGER & RÉORGANISER</button>
+        <label class="label-text">📥 1. COLLEZ LE DATA.JSON CI-DESSOUS :</label>
+        <textarea id="inputJSON" placeholder="Collez votre code GitHub ici pour l'organiser..."></textarea>
+        <button class="btn btn-load" onclick="chargerDonnees()">📥 CHARGER & RÉALIGNER LA STRUCTURE</button>
     </div>
 
-    <div style="text-align: left; margin-top: 20px;">
-        <label>📤 2. RÉSULTAT À COPIER :</label>
-        <textarea id="outputJSON" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
-        <button class="btn btn-copy" onclick="copier()">⚡ COPIER POUR GITHUB</button>
+    <div style="text-align: left; margin-top: 30px;">
+        <label class="label-text">📤 2. RÉSULTAT PRÊT POUR GITHUB :</label>
+        <textarea id="outputJSON" readonly placeholder="Le résultat organisé apparaîtra ici..."></textarea>
+        <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE CODE RÉORGANISÉ</button>
     </div>
 
     <div class="footer-link">
-        <p>Lien du site : <a href="https://emmanuel-dpv.pages.dev" target="_blank">emmanuel-dpv.pages.dev</a></p>
+        <p>Projet Emmanuel-DPV | <a href="https://emmanuel-dpv.pages.dev" target="_blank">Voir le site</a></p>
     </div>
 </div>
 
@@ -58,24 +79,18 @@
             const parsed = JSON.parse(raw);
             let msgs = parsed.messages || (Array.isArray(parsed) ? parsed : []);
             
-            // --- LOGIQUE D'ALIGNEMENT AUTO (Genèse à Apocalypse) ---
             if (msgs.length > 0) {
-                // On prend le dernier message (en bas de la liste) comme base
                 let dernierMsg = msgs[msgs.length - 1];
                 let refId = parseInt(dernierMsg.id) || msgs.length;
                 let refDate = new Date(dernierMsg.date);
-                
                 if (isNaN(refDate)) refDate = new Date();
 
-                // On remonte la file : chaque message précédent reçoit ID-1 et Date-1 jour
                 for (let i = msgs.length - 1; i >= 0; i--) {
                     msgs[i].id = refId;
-                    
                     let y = refDate.getFullYear();
                     let m = String(refDate.getMonth() + 1).padStart(2, '0');
                     let d = String(refDate.getDate()).padStart(2, '0');
                     msgs[i].date = `${y}-${m}-${d}`;
-
                     refId--;
                     refDate.setDate(refDate.getDate() - 1);
                 }
@@ -83,11 +98,10 @@
 
             fluxGlobal.messages = msgs;
             fluxGlobal.status = parsed.status || "online";
-            
             actualiserInterface();
-            alert("✅ Structure réorganisée avec succès !");
+            alert("⚖️ ARCHITECTURE RÉALIGNÉE !\nIDs et Dates ont été mis en ordre.");
         } catch (e) {
-            alert("❌ Erreur : Format JSON invalide.");
+            alert("❌ ERREUR : Le code collé n'est pas un JSON valide.");
         }
     }
 
@@ -95,13 +109,12 @@
         fluxGlobal.status = (fluxGlobal.status === "online") ? "standby" : "online";
         actualiserInterface();
         const mode = fluxGlobal.status === "online" ? "EN LIGNE 🟢" : "ARRÊTÉ (Stand-by) 🔴";
-        alert("Bouton Magique : Passage en " + mode);
+        alert("Bouton Magique : Statut " + mode);
     }
 
     function actualiserInterface() {
         const ind = document.getElementById('statusInd');
         const out = document.getElementById('outputJSON');
-        
         if (fluxGlobal.status === "standby") {
             ind.innerText = "● MODE STAND-BY ACTIVÉ";
             ind.className = "status-indicator standby";
@@ -111,7 +124,6 @@
             ind.className = "status-indicator online";
             ind.style.background = "#27ae60"; 
         }
-        
         out.value = JSON.stringify(fluxGlobal, null, 2);
     }
 
@@ -120,7 +132,7 @@
         out.select();
         out.setSelectionRange(0, 99999); 
         document.execCommand('copy');
-        alert("🎯 Code réorganisé et copié !");
+        alert("🎯 COPIÉ !\nTout est en ordre pour GitHub.");
     }
 </script>
 
