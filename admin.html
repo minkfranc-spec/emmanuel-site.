@@ -12,32 +12,13 @@
         .status-indicator { font-weight: bold; padding: 12px 25px; border-radius: 50px; display: inline-block; margin-bottom: 10px; transition: 0.5s; color: white; font-size: 0.9em; }
         .online { background: #27ae60; box-shadow: 0 0 15px rgba(39, 174, 96, 0.4); }
         .standby { background: #c0392b; box-shadow: 0 0 15px rgba(192, 57, 43, 0.4); }
-        
-        /* FENÊTRES AGRANDIES */
         .label-text { display: block; text-align: left; margin: 15px 0 5px 10px; font-weight: bold; color: #d4af37; font-size: 0.9em; }
-        textarea { 
-            width: 100%; 
-            height: 350px; /* Taille augmentée par défaut */
-            border-radius: 15px; 
-            border: 1px solid #444; 
-            padding: 15px; 
-            background: #000; 
-            color: #00ff00; 
-            font-family: 'Courier New', monospace; 
-            box-sizing: border-box; 
-            font-size: 14px;
-            line-height: 1.5;
-            transition: all 0.3s ease;
-            resize: vertical; /* Permet de tirer sur le coin pour agrandir encore plus */
-        }
-        textarea:focus { border-color: #d4af37; outline: none; background: #0a0a0a; height: 500px; } /* S'agrandit au clic */
-
+        textarea { width: 100%; height: 350px; border-radius: 15px; border: 1px solid #444; padding: 15px; background: #000; color: #00ff00; font-family: 'Courier New', monospace; box-sizing: border-box; font-size: 14px; line-height: 1.5; transition: all 0.3s ease; resize: vertical; }
+        textarea:focus { border-color: #d4af37; outline: none; background: #0a0a0a; height: 500px; }
         .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px 30px; width: 100%; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .btn-magic { background: #d4af37; color: black; font-size: 1em; }
         .btn-load { background: #2980b9; color: white; }
         .btn-copy { background: #ffffff; color: black; }
-        .btn:active { transform: scale(0.98); }
-
         .footer-link { margin-top: 25px; font-size: 0.75em; color: #555; }
         a { color: #d4af37; text-decoration: none; }
     </style>
@@ -54,15 +35,15 @@
     </div>
 
     <div style="text-align: left;">
-        <label class="label-text">📥 1. COLLEZ LE DATA.JSON CI-DESSOUS :</label>
-        <textarea id="inputJSON" placeholder="Collez votre code GitHub ici pour l'organiser..."></textarea>
-        <button class="btn btn-load" onclick="chargerDonnees()">📥 CHARGER & RÉALIGNER LA STRUCTURE</button>
+        <label class="label-text">📥 1. COLLEZ VOTRE CODE (Même avec erreurs de virgules) :</label>
+        <textarea id="inputJSON" placeholder="Collez ici... L'Admin va réparer la syntaxe."></textarea>
+        <button class="btn btn-load" onclick="chargerDonnees()">📥 RÉPARER & RÉALIGNER</button>
     </div>
 
     <div style="text-align: left; margin-top: 30px;">
-        <label class="label-text">📤 2. RÉSULTAT PRÊT POUR GITHUB :</label>
-        <textarea id="outputJSON" readonly placeholder="Le résultat organisé apparaîtra ici..."></textarea>
-        <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE CODE RÉORGANISÉ</button>
+        <label class="label-text">📤 2. RÉSULTAT PURIFIÉ :</label>
+        <textarea id="outputJSON" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
+        <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE CODE PURIFIÉ</button>
     </div>
 
     <div class="footer-link">
@@ -73,8 +54,23 @@
 <script>
     let fluxGlobal = { status: "online", messages: [] };
 
+    function reparerSyntaxe(str) {
+        // Tentative de nettoyage des erreurs communes de virgules
+        let clean = str
+            .replace(/,\s*}/g, "}") // Enlève la virgule avant une accolade fermante
+            .replace(/,\s*]/g, "]") // Enlève la virgule avant un crochet fermant
+            .replace(/}\s*{/g, "},{") // Ajoute une virgule entre deux objets s'il en manque
+            .replace(/]\s*\[/g, "],[") // Ajoute une virgule entre deux tableaux s'il en manque
+            .trim();
+        return clean;
+    }
+
     function chargerDonnees() {
-        const raw = document.getElementById('inputJSON').value.trim();
+        let raw = document.getElementById('inputJSON').value.trim();
+        
+        // Phase 1 : Purification du texte
+        raw = reparerSyntaxe(raw);
+
         try {
             const parsed = JSON.parse(raw);
             let msgs = parsed.messages || (Array.isArray(parsed) ? parsed : []);
@@ -99,9 +95,9 @@
             fluxGlobal.messages = msgs;
             fluxGlobal.status = parsed.status || "online";
             actualiserInterface();
-            alert("⚖️ ARCHITECTURE RÉALIGNÉE !\nIDs et Dates ont été mis en ordre.");
+            alert("✅ RÉPARÉ & RÉALIGNÉ !\nLes erreurs de virgules ont été purifiées.");
         } catch (e) {
-            alert("❌ ERREUR : Le code collé n'est pas un JSON valide.");
+            alert("❌ ERREUR CRITIQUE : La structure est trop endommagée pour être réparée automatiquement. Vérifiez les accolades { }.");
         }
     }
 
@@ -132,7 +128,7 @@
         out.select();
         out.setSelectionRange(0, 99999); 
         document.execCommand('copy');
-        alert("🎯 COPIÉ !\nTout est en ordre pour GitHub.");
+        alert("🎯 CODE PURIFIÉ COPIÉ !");
     }
 </script>
 
