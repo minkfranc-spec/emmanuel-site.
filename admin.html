@@ -1,76 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN | Emmanuel DPV</title>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background: #0f0f0f; color: white; padding: 20px; text-align: center; }
+        .admin-box { max-width: 700px; margin: auto; background: #1a1a1a; padding: 30px; border-radius: 25px; border: 2px solid #d4af37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+        h1 { color: #d4af37; font-size: 1.8em; margin-bottom: 10px; }
+        .status-panel { background: #222; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        .status-indicator { font-weight: bold; padding: 10px 20px; border-radius: 50px; display: inline-block; margin-bottom: 15px; transition: 0.5s; }
+        .online { background: #27ae60; box-shadow: 0 0 15px #27ae60; }
+        .standby { background: #c0392b; box-shadow: 0 0 15px #c0392b; }
+        textarea { width: 100%; height: 120px; border-radius: 10px; border: none; padding: 15px; background: #252525; color: #00ff00; font-family: monospace; margin-top: 10px; box-sizing: border-box; }
+        .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px 30px; width: 100%; margin-top: 15px; text-transform: uppercase; }
+        .btn-magic { background: #d4af37; color: black; font-size: 1.1em; }
+        .btn-load { background: #34495e; color: white; }
+        .btn-copy { background: white; color: black; }
+        .footer-link { margin-top: 20px; font-size: 0.8em; color: #666; }
+        a { color: #d4af37; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="admin-box">
+    <h1>🏛️ COMMANDE DU SANCTUAIRE</h1>
+    <p>Pointage actuel : <strong>emmanuel-dpv.pages.dev</strong> ⚡</p>
+
+    <div class="status-panel">
+        <div id="statusInd" class="status-indicator online">● SITE EN LIGNE</div><br>
+        <button class="btn btn-magic" onclick="basculerStandBy()">✨ BASCULER LE BOUTON MAGIQUE</button>
+    </div>
+
+    <div style="text-align: left;">
+        <label>📥 1. COLLEZ LE DATA.JSON DE GITHUB :</label>
+        <textarea id="inputJSON" placeholder="Collez ici..."></textarea>
+        <button class="btn btn-load" onclick="chargerDonnees()">📥 CHARGER LA STRUCTURE</button>
+    </div>
+
+    <div style="text-align: left; margin-top: 20px;">
+        <label>📤 2. RÉSULTAT À COPIER :</label>
+        <textarea id="outputJSON" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
+        <button class="btn btn-copy" onclick="copier()">⚡ COPIER POUR GITHUB</button>
+    </div>
+
+    <div class="footer-link">
+        <p>Lien du site : <a href="https://emmanuel-dpv.pages.dev" target="_blank">emmanuel-dpv.pages.dev</a></p>
+    </div>
+</div>
+
 <script>
-    // Initialisation avec la structure exacte attendue par index.html
-    let fluxGlobal = { 
-        status: "online", 
-        messages: [] 
-    };
+    let fluxGlobal = { status: "online", messages: [] };
 
-    // 1. Charger les données actuelles depuis GitHub
     function chargerDonnees() {
-        const inputField = document.getElementById('inputJSON');
-        const raw = inputField.value.trim();
-        
-        if (!raw) {
-            alert("⚠️ La case est vide. Collez le contenu de data.json d'abord.");
-            return;
-        }
-
+        const raw = document.getElementById('inputJSON').value.trim();
         try {
             const parsed = JSON.parse(raw);
-            
-            // On détecte la structure et on normalise
-            if (parsed.messages && Array.isArray(parsed.messages)) {
-                fluxGlobal.messages = parsed.messages;
+            if (parsed.messages) {
                 fluxGlobal.status = parsed.status || "online";
-            } else if (Array.isArray(parsed)) {
-                fluxGlobal.messages = parsed;
-                fluxGlobal.status = "online";
+                fluxGlobal.messages = parsed.messages;
             } else {
-                throw new Error("Structure inconnue");
+                fluxGlobal.messages = Array.isArray(parsed) ? parsed : [];
+                fluxGlobal.status = "online";
             }
-
             actualiserInterface();
-            alert("✅ Données synchronisées. Le bouton magique est prêt !");
+            alert("✅ Données chargées de la Genèse !");
         } catch (e) {
-            alert("❌ Erreur de format. Assurez-vous de copier TOUT le texte du fichier sur GitHub.");
+            alert("❌ Erreur : Format JSON invalide.");
         }
     }
 
-    // 2. LE BOUTON MAGIQUE (Injection de l'ordre de fermeture)
     function basculerStandBy() {
-        // Inversion du statut
         fluxGlobal.status = (fluxGlobal.status === "online") ? "standby" : "online";
-        
-        // Reconstruction immédiate
         actualiserInterface();
-        
-        const emoji = fluxGlobal.status === "online" ? "🟢 EN LIGNE" : "🔴 STAND-BY";
-        alert("Bouton Magique : Statut basculé sur " + emoji + ".\n\nCopiez maintenant le résultat vers GitHub !");
+        const mode = fluxGlobal.status === "online" ? "EN LIGNE 🟢" : "STAND-BY 🔴";
+        alert("Bouton Magique : Passage en " + mode);
     }
 
-    // 3. Mise à jour visuelle et technique
     function actualiserInterface() {
         const ind = document.getElementById('statusInd');
         const out = document.getElementById('outputJSON');
-
-        // Mise à jour du voyant
+        
         if (fluxGlobal.status === "standby") {
             ind.innerText = "● MODE STAND-BY ACTIVÉ";
-            ind.style.background = "#c0392b"; // Rouge
             ind.className = "status-indicator standby";
         } else {
             ind.innerText = "● SITE EN LIGNE";
-            ind.style.background = "#27ae60"; // Vert
             ind.className = "status-indicator online";
         }
         
-        // On génère le JSON final que Cloudflare/index.html va lire
-        // On s'assure que status est bien à la racine du JSON
-        const jsonFinal = {
-            status: fluxGlobal.status,
-            messages: fluxGlobal.messages
-        };
+        out.value = JSON.stringify(fluxGlobal, null, 2);
+    }
 
-        out.value = JSON.stringify(jsonFinal, null, 2);
+    function copier() {
+        const out = document.getElementById('outputJSON');
+        out.select();
+        document.execCommand('copy');
+        alert("🎯 Code copié ! Collez-le maintenant sur GitHub dans data.json");
     }
 </script>
+
+</body>
+</html>
