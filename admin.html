@@ -35,7 +35,7 @@
     <div style="text-align: left;">
         <label>📥 1. COLLEZ LE DATA.JSON DE GITHUB :</label>
         <textarea id="inputJSON" placeholder="Collez ici..."></textarea>
-        <button class="btn btn-load" onclick="chargerDonnees()">📥 CHARGER LA STRUCTURE</button>
+        <button class="btn btn-load" onclick="chargerDonnees()">📥 CHARGER & RÉORGANISER</button>
     </div>
 
     <div style="text-align: left; margin-top: 20px;">
@@ -52,26 +52,45 @@
 <script>
     let fluxGlobal = { status: "online", messages: [] };
 
-    // 1. Charger les données pour ne rien perdre
     function chargerDonnees() {
         const raw = document.getElementById('inputJSON').value.trim();
         try {
             const parsed = JSON.parse(raw);
-            if (parsed.messages) {
-                fluxGlobal.status = parsed.status || "online";
-                fluxGlobal.messages = parsed.messages;
-            } else {
-                fluxGlobal.messages = Array.isArray(parsed) ? parsed : [];
-                fluxGlobal.status = "online";
+            let msgs = parsed.messages || (Array.isArray(parsed) ? parsed : []);
+            
+            // --- LOGIQUE D'ALIGNEMENT AUTO (Genèse à Apocalypse) ---
+            if (msgs.length > 0) {
+                // On prend le dernier message (en bas de la liste) comme base
+                let dernierMsg = msgs[msgs.length - 1];
+                let refId = parseInt(dernierMsg.id) || msgs.length;
+                let refDate = new Date(dernierMsg.date);
+                
+                if (isNaN(refDate)) refDate = new Date();
+
+                // On remonte la file : chaque message précédent reçoit ID-1 et Date-1 jour
+                for (let i = msgs.length - 1; i >= 0; i--) {
+                    msgs[i].id = refId;
+                    
+                    let y = refDate.getFullYear();
+                    let m = String(refDate.getMonth() + 1).padStart(2, '0');
+                    let d = String(refDate.getDate()).padStart(2, '0');
+                    msgs[i].date = `${y}-${m}-${d}`;
+
+                    refId--;
+                    refDate.setDate(refDate.getDate() - 1);
+                }
             }
+
+            fluxGlobal.messages = msgs;
+            fluxGlobal.status = parsed.status || "online";
+            
             actualiserInterface();
-            alert("✅ Données chargées de la Genèse !");
+            alert("✅ Structure réorganisée avec succès !");
         } catch (e) {
             alert("❌ Erreur : Format JSON invalide.");
         }
     }
 
-    // 2. LE BOUTON MAGIQUE (Celui qui doit marcher !)
     function basculerStandBy() {
         fluxGlobal.status = (fluxGlobal.status === "online") ? "standby" : "online";
         actualiserInterface();
@@ -79,7 +98,6 @@
         alert("Bouton Magique : Passage en " + mode);
     }
 
-    // 3. Mise à jour du voyant ET du texte final
     function actualiserInterface() {
         const ind = document.getElementById('statusInd');
         const out = document.getElementById('outputJSON');
@@ -87,11 +105,11 @@
         if (fluxGlobal.status === "standby") {
             ind.innerText = "● MODE STAND-BY ACTIVÉ";
             ind.className = "status-indicator standby";
-            ind.style.background = "#c0392b"; // Force le rouge
+            ind.style.background = "#c0392b"; 
         } else {
             ind.innerText = "● SITE EN LIGNE";
             ind.className = "status-indicator online";
-            ind.style.background = "#27ae60"; // Force le vert
+            ind.style.background = "#27ae60"; 
         }
         
         out.value = JSON.stringify(fluxGlobal, null, 2);
@@ -100,9 +118,9 @@
     function copier() {
         const out = document.getElementById('outputJSON');
         out.select();
-        out.setSelectionRange(0, 99999); // Pour mobile
+        out.setSelectionRange(0, 99999); 
         document.execCommand('copy');
-        alert("🎯 Code copié ! Collez-le maintenant sur GitHub dans data.json");
+        alert("🎯 Code réorganisé et copié !");
     }
 </script>
 
