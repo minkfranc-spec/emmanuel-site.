@@ -35,13 +35,13 @@
     </div>
 
     <div style="text-align: left;">
-        <label class="label-text">📥 1. COLLEZ VOTRE CODE (Même avec erreurs) :</label>
-        <textarea id="inputJSON" placeholder="Collez ici... L'Admin va purifier et faire monter les dates."></textarea>
-        <button class="btn btn-load" onclick="chargerDonnees()">📥 PURIFIER & FAIRE MONTER</button>
+        <label class="label-text">📥 1. COLLEZ VOTRE CODE (Même incomplet ou avec erreurs) :</label>
+        <textarea id="inputJSON" placeholder="Collez ici les messages..."></textarea>
+        <button class="btn btn-load" onclick="chargerDonnees()">📥 PURIFIER & RÉORDONNER EN MONTANT</button>
     </div>
 
     <div style="text-align: left; margin-top: 30px;">
-        <label class="label-text">📤 2. RÉSULTAT ASCENDANT :</label>
+        <label class="label-text">📤 2. RÉSULTAT FINAL (ID & DATES MONTANTS) :</label>
         <textarea id="outputJSON" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
         <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE CODE PURIFIÉ</button>
     </div>
@@ -54,58 +54,68 @@
 <script>
     let fluxGlobal = { status: "online", messages: [] };
 
-    function reparerSyntaxe(str) {
-        return str
+    function purifierTexte(str) {
+        let s = str.trim();
+        // Si ça ne commence pas par {, on tente de l'emballer
+        if (!s.startsWith("{") && !s.startsWith("[")) {
+            s = "[" + s + "]";
+        }
+        
+        return s
             .replace(/,\s*}/g, "}") 
             .replace(/,\s*]/g, "]") 
             .replace(/}\s*{/g, "},{") 
-            .replace(/]\s*\[/g, "],[") 
-            .trim();
+            .replace(/]\s*\[/g, "],[")
+            .replace(/}\s*,?\s*]/g, "}]");
     }
 
     function chargerDonnees() {
         let raw = document.getElementById('inputJSON').value.trim();
-        raw = reparerSyntaxe(raw);
+        if (!raw) return alert("Veuillez coller du code !");
+
+        raw = purifierTexte(raw);
 
         try {
-            const parsed = JSON.parse(raw);
-            let msgs = parsed.messages || (Array.isArray(parsed) ? parsed : []);
+            let tempParsed = JSON.parse(raw);
+            let msgs = [];
             
+            // On extrait les messages peu importe le format collé
+            if (tempParsed.messages) msgs = tempParsed.messages;
+            else if (Array.isArray(tempParsed)) msgs = tempParsed;
+            else msgs = [tempParsed];
+
             if (msgs.length > 0) {
-                // RÉFÉRENCE : Le message TOUT EN BAS de la liste
+                // RÉFÉRENCE : Le message TOUT EN BAS (le dernier de la liste collée)
                 let dernierMsg = msgs[msgs.length - 1];
                 let refId = parseInt(dernierMsg.id) || 1;
                 let refDate = new Date(dernierMsg.date);
                 if (isNaN(refDate)) refDate = new Date();
 
-                // ASCENSION : On remonte l'index (i--) mais on AUGMENTE les valeurs
+                // ASCENSION : On remonte (i--) et on augmente les valeurs (ID++, Date++)
                 for (let i = msgs.length - 1; i >= 0; i--) {
                     msgs[i].id = refId;
-                    
                     let y = refDate.getFullYear();
                     let m = String(refDate.getMonth() + 1).padStart(2, '0');
                     let d = String(refDate.getDate()).padStart(2, '0');
                     msgs[i].date = `${y}-${m}-${d}`;
 
-                    // On fait monter l'ID et la Date pour le message au-dessus
                     refId++; 
                     refDate.setDate(refDate.getDate() + 1);
                 }
             }
 
             fluxGlobal.messages = msgs;
-            fluxGlobal.status = parsed.status || "online";
             actualiserInterface();
-            alert("✅ RÉPARÉ & ASCENDANT !\nLes dates et IDs montent vers le haut.");
+            alert("✅ RÉPARÉ & ASCENDANT !\nL'ID et la Date montent du bas vers le haut.");
         } catch (e) {
-            alert("❌ ERREUR CRITIQUE : Syntaxe trop corrompue.");
+            console.error(e);
+            alert("❌ ERREUR CRITIQUE : Même avec la purification, le code est illisible. Vérifiez qu'il ne manque pas une accolade { ou } au milieu d'un message.");
         }
     }
 
     function basculerStandBy() {
         fluxGlobal.status = (fluxGlobal.status === "online") ? "standby" : "online";
         actualiserInterface();
-        alert("Bouton Magique : Statut " + (fluxGlobal.status === "online" ? "EN LIGNE 🟢" : "ARRÊTÉ 🔴"));
     }
 
     function actualiserInterface() {
@@ -128,7 +138,7 @@
         out.select();
         out.setSelectionRange(0, 99999); 
         document.execCommand('copy');
-        alert("🎯 CODE PURIFIÉ ET ASCENDANT COPIÉ !");
+        alert("🎯 CODE PRÊT POUR GITHUB COPIÉ !");
     }
 </script>
 
