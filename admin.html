@@ -5,142 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADMIN | Emmanuel DPV</title>
     <style>
-        body { font-family: 'Montserrat', sans-serif; background: #0f0f0f; color: white; padding: 10px; text-align: center; }
-        .admin-box { max-width: 900px; margin: auto; background: #1a1a1a; padding: 25px; border-radius: 25px; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); }
-        h1 { color: #d4af37; font-size: 1.6em; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
-        .status-panel { background: #222; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #333; }
-        .status-indicator { font-weight: bold; padding: 12px 25px; border-radius: 50px; display: inline-block; margin-bottom: 10px; transition: 0.5s; color: white; font-size: 0.9em; }
-        .online { background: #27ae60; box-shadow: 0 0 15px rgba(39, 174, 96, 0.4); }
-        .standby { background: #c0392b; box-shadow: 0 0 15px rgba(192, 57, 43, 0.4); }
-        .label-text { display: block; text-align: left; margin: 15px 0 5px 10px; font-weight: bold; color: #d4af37; font-size: 0.9em; }
-        textarea { width: 100%; height: 350px; border-radius: 15px; border: 1px solid #444; padding: 15px; background: #000; color: #00ff00; font-family: 'Courier New', monospace; box-sizing: border-box; font-size: 14px; line-height: 1.5; transition: all 0.3s ease; resize: vertical; }
-        textarea:focus { border-color: #d4af37; outline: none; background: #0a0a0a; height: 500px; }
-        .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px 30px; width: 100%; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-magic { background: #d4af37; color: black; font-size: 1em; }
-        .btn-load { background: #2980b9; color: white; }
-        .btn-copy { background: #ffffff; color: black; }
-        .footer-link { margin-top: 25px; font-size: 0.75em; color: #555; }
-        a { color: #d4af37; text-decoration: none; }
+        :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: white; padding: 10px; text-align: center; }
+        .admin-box { max-width: 900px; margin: auto; background: var(--card); padding: 25px; border-radius: 25px; border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); margin-bottom: 40px; }
+        h1 { color: var(--gold); font-size: 1.6em; text-transform: uppercase; letter-spacing: 2px; }
+        
+        textarea { width: 100%; height: 250px; border-radius: 15px; border: 1px solid #444; padding: 15px; background: #000; color: #00ff00; font-family: 'Courier New', monospace; box-sizing: border-box; font-size: 14px; transition: 0.3s; resize: vertical; margin-bottom: 10px; }
+        textarea:focus { border-color: var(--gold); outline: none; }
+
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px; text-transform: uppercase; font-size: 0.85em; }
+        .btn-view { background: #2980b9; color: white; } /* Visionner sans changer */
+        .btn-fix { background: var(--gold); color: black; } /* Réorganiser IDs/Dates */
+        .btn-copy { background: #fff; color: #000; width: 100%; margin-top: 10px; }
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+
+        #preview-container { max-width: 800px; margin: auto; text-align: left; padding: 20px; border-top: 2px dashed var(--gold); }
+        .msg-card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 20px; margin-bottom: 25px; }
+        .msg-header { color: var(--gold); font-weight: bold; font-size: 1.2em; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .msg-meta { font-size: 0.8em; color: #777; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .msg-text { line-height: 1.7; white-space: pre-wrap; color: #ddd; font-size: 0.95em; }
+        .msg-badge { background: var(--gold); color: black; padding: 2px 10px; border-radius: 5px; font-size: 0.7em; }
+        .theorem-box { color: var(--gold); font-weight: bold; font-style: italic; display: block; margin: 10px 0; border-left: 3px solid var(--gold); padding-left: 10px; }
     </style>
 </head>
 <body>
 
 <div class="admin-box">
     <h1>🏛️ COMMANDE DU SANCTUAIRE</h1>
-    <div class="status-panel">
-        <div id="statusInd" class="status-indicator online">● SITE EN LIGNE</div><br>
-        <button class="btn btn-magic" onclick="basculerStandBy()">✨ BASCULER LE BOUTON MAGIQUE</button>
+    
+    <div style="text-align: left;">
+        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📥 COLLEZ VOTRE CODE :</label>
+        <textarea id="inputJSON" placeholder="Collez ici..."></textarea>
+        
+        <div class="btn-group">
+            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER (TEL QUEL)</button>
+            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER (ASCENDANT)</button>
+        </div>
     </div>
 
     <div style="text-align: left;">
-        <label class="label-text">📥 COLLEZ ICI (BRUT OU COMPLET) :</label>
-        <textarea id="inputJSON" placeholder="Collez vos messages ici..."></textarea>
-        <button class="btn btn-load" onclick="traiterDonnees()">📥 PURIFIER & RÉORDONNER EN MONTANT</button>
-    </div>
-
-    <div style="text-align: left; margin-top: 30px;">
-        <label class="label-text">📤 RÉSULTAT (RESPECTE VOTRE FORMAT) :</label>
-        <textarea id="outputJSON" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
+        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📤 SORTIE :</label>
+        <textarea id="outputJSON" readonly></textarea>
         <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT</button>
     </div>
 </div>
 
+<h2 style="color: var(--gold);">👁️ APERÇU AVANT PUBLICATION</h2>
+<div id="preview-container"></div>
+
 <script>
-    let modeComplet = false; 
-    let statutInterne = "online";
+    let formatComplet = false;
 
     function purifier(str) {
         let s = str.trim();
-        // Détecter si c'est un format complet ou un fragment
-        modeComplet = s.startsWith("{") && s.includes('"messages"');
-
-        // Si c'est un fragment (liste d'objets sans [ ]), on l'emballe pour le parser
-        if (!s.startsWith("[") && !s.startsWith("{")) {
-            s = "[" + s + "]";
-        } else if (s.startsWith("{") && !modeComplet) {
-            // C'est un objet seul, on le met en tableau
-            s = "[" + s + "]";
-        }
-
-        return s
-            .replace(/,\s*}/g, "}") 
-            .replace(/,\s*]/g, "]") 
-            .replace(/}\s*{/g, "},{") 
-            .replace(/}\s*,?\s*$/g, "}") 
-            .replace(/\]\s*,?\s*$/g, "]")
-            .replace(/}\s*,?\s*\]/g, "}]");
+        formatComplet = s.startsWith("{") && s.includes('"messages"');
+        if (!s.startsWith("[") && !s.startsWith("{")) s = "[" + s + "]";
+        else if (s.startsWith("{") && !formatComplet) s = "[" + s + "]";
+        
+        return s.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]").replace(/}\s*{/g, "},{");
     }
 
-    function traiterDonnees() {
+    function traiter(doitReorganiser) {
         let raw = document.getElementById('inputJSON').value.trim();
-        if (!raw) return alert("Le champ est vide !");
-
-        let clean = purifier(raw);
+        if (!raw) return;
 
         try {
+            let clean = purifier(raw);
             let parsed = JSON.parse(clean);
-            let msgs = [];
+            let msgs = formatComplet ? parsed.messages : (Array.isArray(parsed) ? parsed : [parsed]);
 
-            if (modeComplet) {
-                msgs = parsed.messages;
-                statutInterne = parsed.status || "online";
-            } else {
-                msgs = Array.isArray(parsed) ? parsed : [parsed];
-            }
-
-            // --- LOGIQUE D'ASCENSION (Bas vers Haut) ---
-            if (msgs.length > 0) {
-                let dernier = msgs[msgs.length - 1];
-                let refId = parseInt(dernier.id) || 1;
-                let refDate = new Date(dernier.date);
+            // ON NE RÉORGANISE QUE SI L'UTILISATEUR CLIQUE SUR LE BOUTON OR (⚖️)
+            if (doitReorganiser && msgs.length > 0) {
+                let refId = parseInt(msgs[msgs.length - 1].id) || 1;
+                let refDate = new Date(msgs[msgs.length - 1].date);
                 if (isNaN(refDate)) refDate = new Date();
 
                 for (let i = msgs.length - 1; i >= 0; i--) {
                     msgs[i].id = refId;
-                    let y = refDate.getFullYear();
-                    let m = String(refDate.getMonth() + 1).padStart(2, '0');
-                    let d = String(refDate.getDate()).padStart(2, '0');
-                    msgs[i].date = `${y}-${m}-${d}`;
-
+                    msgs[i].date = refDate.toISOString().split('T')[0];
                     refId++; 
                     refDate.setDate(refDate.getDate() + 1);
                 }
             }
 
-            // --- RESTITUTION DU FORMAT ---
+            // MISE À JOUR DU CODE DE SORTIE
             const out = document.getElementById('outputJSON');
-            if (modeComplet) {
-                out.value = JSON.stringify({ status: statutInterne, messages: msgs }, null, 2);
-            } else {
-                // Si c'était un fragment, on rend le tableau pur sans fioritures
-                out.value = JSON.stringify(msgs, null, 2);
-            }
-            
-            actualiserVisuel();
-            alert("✅ ASCENSION ADAPTATIVE RÉUSSIE !");
+            out.value = formatComplet ? JSON.stringify({status: "online", messages: msgs}, null, 2) : JSON.stringify(msgs, null, 2);
+
+            // MISE À JOUR DE L'APERÇU
+            renderPreview(msgs);
         } catch (e) {
-            alert("❌ SYNTAXE INCORRECTE : Vérifiez les guillemets ou les accolades fermantes.");
+            alert("❌ ERREUR : Structure JSON invalide.");
         }
     }
 
-    function basculerStandBy() {
-        statutInterne = (statutInterne === "online") ? "standby" : "online";
-        actualiserVisuel();
-    }
-
-    function actualiserVisuel() {
-        const ind = document.getElementById('statusInd');
-        ind.innerText = (statutInterne === "online") ? "● SITE EN LIGNE" : "● MODE STAND-BY ACTIVÉ";
-        ind.className = "status-indicator " + (statutInterne === "online" ? "online" : "standby");
+    function renderPreview(msgs) {
+        const container = document.getElementById('preview-container');
+        container.innerHTML = ""; 
+        msgs.forEach(m => {
+            let card = document.createElement('div');
+            card.className = "msg-card";
+            let textePreview = m.texte.replace(/\*\*(.*?)\*\*/g, '<span class="theorem-box">$1</span>');
+            card.innerHTML = `
+                <div class="msg-header"><span>${m.titre}</span><span class="msg-badge">ID: ${m.id}</span></div>
+                <div class="msg-meta">📅 ${m.date} | 🏷️ ${m.categorie}</div>
+                <div class="msg-text">${textePreview}</div>
+            `;
+            container.appendChild(card);
+        });
     }
 
     function copier() {
-        const out = document.getElementById('outputJSON');
-        out.select();
+        const target = document.getElementById('outputJSON');
+        target.select();
         document.execCommand('copy');
-        alert("🎯 COPIÉ DANS VOTRE FORMAT !");
+        alert("🎯 COPIÉ !");
     }
 </script>
-
 </body>
 </html>
