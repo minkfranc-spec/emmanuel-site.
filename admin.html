@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMIN | Emmanuel DPV</title>
+    <title>ADMIN MULTIMÉDIA | Emmanuel DPV</title>
     <style>
         :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: white; padding: 10px; text-align: center; }
@@ -11,19 +11,23 @@
         h1 { color: var(--gold); font-size: 1.6em; text-transform: uppercase; letter-spacing: 2px; }
         
         textarea { width: 100%; height: 250px; border-radius: 15px; border: 1px solid #444; padding: 15px; background: #000; color: #00ff00; font-family: 'Courier New', monospace; box-sizing: border-box; font-size: 14px; transition: 0.3s; resize: vertical; margin-bottom: 10px; }
-        textarea:focus { border-color: var(--gold); outline: none; }
-
+        
         .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px; text-transform: uppercase; font-size: 0.85em; }
-        .btn-view { background: #2980b9; color: white; } /* Visionner sans changer */
-        .btn-fix { background: var(--gold); color: black; } /* Réorganiser IDs/Dates */
+        .btn-view { background: #2980b9; color: white; }
+        .btn-fix { background: var(--gold); color: black; }
         .btn-copy { background: #fff; color: #000; width: 100%; margin-top: 10px; }
-        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
 
+        /* PREVIEW STYLE */
         #preview-container { max-width: 800px; margin: auto; text-align: left; padding: 20px; border-top: 2px dashed var(--gold); }
-        .msg-card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 20px; margin-bottom: 25px; }
+        .msg-card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 20px; margin-bottom: 25px; overflow: hidden; }
         .msg-header { color: var(--gold); font-weight: bold; font-size: 1.2em; margin-bottom: 5px; display: flex; justify-content: space-between; }
         .msg-meta { font-size: 0.8em; color: #777; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        
+        /* IMAGE & AUDIO */
+        .preview-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; border: 1px solid #333; }
+        audio { width: 100%; height: 35px; margin: 10px 0; border-radius: 5px; filter: sepia(20%) saturate(70%) grayscale(1) contrast(99%) invert(12%); }
+        
         .msg-text { line-height: 1.7; white-space: pre-wrap; color: #ddd; font-size: 0.95em; }
         .msg-badge { background: var(--gold); color: black; padding: 2px 10px; border-radius: 5px; font-size: 0.7em; }
         .theorem-box { color: var(--gold); font-weight: bold; font-style: italic; display: block; margin: 10px 0; border-left: 3px solid var(--gold); padding-left: 10px; }
@@ -32,18 +36,15 @@
 <body>
 
 <div class="admin-box">
-    <h1>🏛️ COMMANDE DU SANCTUAIRE</h1>
-    
+    <h1>🏛️ COMMANDE MULTIMÉDIA</h1>
     <div style="text-align: left;">
         <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📥 COLLEZ VOTRE CODE :</label>
         <textarea id="inputJSON" placeholder="Collez ici..."></textarea>
-        
         <div class="btn-group">
-            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER (TEL QUEL)</button>
-            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER (ASCENDANT)</button>
+            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER AVEC MÉDIAS</button>
+            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER & VISIONNER</button>
         </div>
     </div>
-
     <div style="text-align: left;">
         <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📤 SORTIE :</label>
         <textarea id="outputJSON" readonly></textarea>
@@ -51,7 +52,7 @@
     </div>
 </div>
 
-<h2 style="color: var(--gold);">👁️ APERÇU AVANT PUBLICATION</h2>
+<h2 style="color: var(--gold);">👁️ APERÇU COMPLET (SON & IMAGE)</h2>
 <div id="preview-container"></div>
 
 <script>
@@ -62,42 +63,30 @@
         formatComplet = s.startsWith("{") && s.includes('"messages"');
         if (!s.startsWith("[") && !s.startsWith("{")) s = "[" + s + "]";
         else if (s.startsWith("{") && !formatComplet) s = "[" + s + "]";
-        
         return s.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]").replace(/}\s*{/g, "},{");
     }
 
     function traiter(doitReorganiser) {
         let raw = document.getElementById('inputJSON').value.trim();
         if (!raw) return;
-
         try {
             let clean = purifier(raw);
             let parsed = JSON.parse(clean);
             let msgs = formatComplet ? parsed.messages : (Array.isArray(parsed) ? parsed : [parsed]);
 
-            // ON NE RÉORGANISE QUE SI L'UTILISATEUR CLIQUE SUR LE BOUTON OR (⚖️)
             if (doitReorganiser && msgs.length > 0) {
                 let refId = parseInt(msgs[msgs.length - 1].id) || 1;
                 let refDate = new Date(msgs[msgs.length - 1].date);
                 if (isNaN(refDate)) refDate = new Date();
-
                 for (let i = msgs.length - 1; i >= 0; i--) {
                     msgs[i].id = refId;
                     msgs[i].date = refDate.toISOString().split('T')[0];
-                    refId++; 
-                    refDate.setDate(refDate.getDate() + 1);
+                    refId++; refDate.setDate(refDate.getDate() + 1);
                 }
             }
-
-            // MISE À JOUR DU CODE DE SORTIE
-            const out = document.getElementById('outputJSON');
-            out.value = formatComplet ? JSON.stringify({status: "online", messages: msgs}, null, 2) : JSON.stringify(msgs, null, 2);
-
-            // MISE À JOUR DE L'APERÇU
+            document.getElementById('outputJSON').value = formatComplet ? JSON.stringify({status: "online", messages: msgs}, null, 2) : JSON.stringify(msgs, null, 2);
             renderPreview(msgs);
-        } catch (e) {
-            alert("❌ ERREUR : Structure JSON invalide.");
-        }
+        } catch (e) { alert("❌ ERREUR JSON !"); }
     }
 
     function renderPreview(msgs) {
@@ -106,10 +95,20 @@
         msgs.forEach(m => {
             let card = document.createElement('div');
             card.className = "msg-card";
+            
+            // Gestion de l'image
+            let imgHtml = m.image ? `<img src="${m.image}" class="preview-img" alt="Illustration" onerror="this.style.display='none'">` : '';
+            
+            // Gestion de l'audio
+            let audioHtml = m.audio ? `<audio controls src="${m.audio}"></audio>` : '';
+            
             let textePreview = m.texte.replace(/\*\*(.*?)\*\*/g, '<span class="theorem-box">$1</span>');
+            
             card.innerHTML = `
+                ${imgHtml}
                 <div class="msg-header"><span>${m.titre}</span><span class="msg-badge">ID: ${m.id}</span></div>
                 <div class="msg-meta">📅 ${m.date} | 🏷️ ${m.categorie}</div>
+                ${audioHtml}
                 <div class="msg-text">${textePreview}</div>
             `;
             container.appendChild(card);
@@ -117,8 +116,7 @@
     }
 
     function copier() {
-        const target = document.getElementById('outputJSON');
-        target.select();
+        document.getElementById('outputJSON').select();
         document.execCommand('copy');
         alert("🎯 COPIÉ !");
     }
