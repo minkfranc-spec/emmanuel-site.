@@ -27,71 +27,74 @@
 
 <div class="admin-box">
     <h1>🏛️ COMMANDE DU SANCTUAIRE</h1>
-    <p style="font-size: 0.8em; color: #888;">Propulsion : <strong>Cloudflare DPV</strong> ⚡</p>
-
     <div class="status-panel">
         <div id="statusInd" class="status-indicator online">● SITE EN LIGNE</div><br>
         <button class="btn btn-magic" onclick="basculerStandBy()">✨ BASCULER LE BOUTON MAGIQUE</button>
     </div>
 
     <div style="text-align: left;">
-        <label class="label-text">📥 1. COLLEZ VOTRE CODE (Même incomplet ou avec erreurs) :</label>
-        <textarea id="inputJSON" placeholder="Collez ici les messages..."></textarea>
-        <button class="btn btn-load" onclick="chargerDonnees()">📥 PURIFIER & RÉORDONNER EN MONTANT</button>
+        <label class="label-text">📥 COLLEZ ICI (BRUT OU COMPLET) :</label>
+        <textarea id="inputJSON" placeholder="Collez vos messages ici..."></textarea>
+        <button class="btn btn-load" onclick="traiterDonnees()">📥 PURIFIER & RÉORDONNER EN MONTANT</button>
     </div>
 
     <div style="text-align: left; margin-top: 30px;">
-        <label class="label-text">📤 2. RÉSULTAT FINAL (ID & DATES MONTANTS) :</label>
+        <label class="label-text">📤 RÉSULTAT (RESPECTE VOTRE FORMAT) :</label>
         <textarea id="outputJSON" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
-        <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE CODE PURIFIÉ</button>
-    </div>
-
-    <div class="footer-link">
-        <p>Projet Emmanuel-DPV | <a href="https://emmanuel-dpv.pages.dev" target="_blank">Voir le site</a></p>
+        <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT</button>
     </div>
 </div>
 
 <script>
-    let fluxGlobal = { status: "online", messages: [] };
+    let modeComplet = false; 
+    let statutInterne = "online";
 
-    function purifierTexte(str) {
+    function purifier(str) {
         let s = str.trim();
-        // Si ça ne commence pas par {, on tente de l'emballer
-        if (!s.startsWith("{") && !s.startsWith("[")) {
+        // Détecter si c'est un format complet ou un fragment
+        modeComplet = s.startsWith("{") && s.includes('"messages"');
+
+        // Si c'est un fragment (liste d'objets sans [ ]), on l'emballe pour le parser
+        if (!s.startsWith("[") && !s.startsWith("{")) {
+            s = "[" + s + "]";
+        } else if (s.startsWith("{") && !modeComplet) {
+            // C'est un objet seul, on le met en tableau
             s = "[" + s + "]";
         }
-        
+
         return s
             .replace(/,\s*}/g, "}") 
             .replace(/,\s*]/g, "]") 
             .replace(/}\s*{/g, "},{") 
-            .replace(/]\s*\[/g, "],[")
-            .replace(/}\s*,?\s*]/g, "}]");
+            .replace(/}\s*,?\s*$/g, "}") 
+            .replace(/\]\s*,?\s*$/g, "]")
+            .replace(/}\s*,?\s*\]/g, "}]");
     }
 
-    function chargerDonnees() {
+    function traiterDonnees() {
         let raw = document.getElementById('inputJSON').value.trim();
-        if (!raw) return alert("Veuillez coller du code !");
+        if (!raw) return alert("Le champ est vide !");
 
-        raw = purifierTexte(raw);
+        let clean = purifier(raw);
 
         try {
-            let tempParsed = JSON.parse(raw);
+            let parsed = JSON.parse(clean);
             let msgs = [];
-            
-            // On extrait les messages peu importe le format collé
-            if (tempParsed.messages) msgs = tempParsed.messages;
-            else if (Array.isArray(tempParsed)) msgs = tempParsed;
-            else msgs = [tempParsed];
 
+            if (modeComplet) {
+                msgs = parsed.messages;
+                statutInterne = parsed.status || "online";
+            } else {
+                msgs = Array.isArray(parsed) ? parsed : [parsed];
+            }
+
+            // --- LOGIQUE D'ASCENSION (Bas vers Haut) ---
             if (msgs.length > 0) {
-                // RÉFÉRENCE : Le message TOUT EN BAS (le dernier de la liste collée)
-                let dernierMsg = msgs[msgs.length - 1];
-                let refId = parseInt(dernierMsg.id) || 1;
-                let refDate = new Date(dernierMsg.date);
+                let dernier = msgs[msgs.length - 1];
+                let refId = parseInt(dernier.id) || 1;
+                let refDate = new Date(dernier.date);
                 if (isNaN(refDate)) refDate = new Date();
 
-                // ASCENSION : On remonte (i--) et on augmente les valeurs (ID++, Date++)
                 for (let i = msgs.length - 1; i >= 0; i--) {
                     msgs[i].id = refId;
                     let y = refDate.getFullYear();
@@ -104,41 +107,38 @@
                 }
             }
 
-            fluxGlobal.messages = msgs;
-            actualiserInterface();
-            alert("✅ RÉPARÉ & ASCENDANT !\nL'ID et la Date montent du bas vers le haut.");
+            // --- RESTITUTION DU FORMAT ---
+            const out = document.getElementById('outputJSON');
+            if (modeComplet) {
+                out.value = JSON.stringify({ status: statutInterne, messages: msgs }, null, 2);
+            } else {
+                // Si c'était un fragment, on rend le tableau pur sans fioritures
+                out.value = JSON.stringify(msgs, null, 2);
+            }
+            
+            actualiserVisuel();
+            alert("✅ ASCENSION ADAPTATIVE RÉUSSIE !");
         } catch (e) {
-            console.error(e);
-            alert("❌ ERREUR CRITIQUE : Même avec la purification, le code est illisible. Vérifiez qu'il ne manque pas une accolade { ou } au milieu d'un message.");
+            alert("❌ SYNTAXE INCORRECTE : Vérifiez les guillemets ou les accolades fermantes.");
         }
     }
 
     function basculerStandBy() {
-        fluxGlobal.status = (fluxGlobal.status === "online") ? "standby" : "online";
-        actualiserInterface();
+        statutInterne = (statutInterne === "online") ? "standby" : "online";
+        actualiserVisuel();
     }
 
-    function actualiserInterface() {
+    function actualiserVisuel() {
         const ind = document.getElementById('statusInd');
-        const out = document.getElementById('outputJSON');
-        if (fluxGlobal.status === "standby") {
-            ind.innerText = "● MODE STAND-BY ACTIVÉ";
-            ind.className = "status-indicator standby";
-            ind.style.background = "#c0392b"; 
-        } else {
-            ind.innerText = "● SITE EN LIGNE";
-            ind.className = "status-indicator online";
-            ind.style.background = "#27ae60"; 
-        }
-        out.value = JSON.stringify(fluxGlobal, null, 2);
+        ind.innerText = (statutInterne === "online") ? "● SITE EN LIGNE" : "● MODE STAND-BY ACTIVÉ";
+        ind.className = "status-indicator " + (statutInterne === "online" ? "online" : "standby");
     }
 
     function copier() {
         const out = document.getElementById('outputJSON');
         out.select();
-        out.setSelectionRange(0, 99999); 
         document.execCommand('copy');
-        alert("🎯 CODE PRÊT POUR GITHUB COPIÉ !");
+        alert("🎯 COPIÉ DANS VOTRE FORMAT !");
     }
 </script>
 
