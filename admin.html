@@ -1,54 +1,76 @@
 <script>
-    let fluxGlobal = { status: "online", messages: [] };
+    // Initialisation avec la structure exacte attendue par index.html
+    let fluxGlobal = { 
+        status: "online", 
+        messages: [] 
+    };
 
     // 1. Charger les données actuelles depuis GitHub
     function chargerDonnees() {
-        const raw = document.getElementById('inputJSON').value.trim();
+        const inputField = document.getElementById('inputJSON');
+        const raw = inputField.value.trim();
+        
+        if (!raw) {
+            alert("⚠️ La case est vide. Collez le contenu de data.json d'abord.");
+            return;
+        }
+
         try {
             const parsed = JSON.parse(raw);
-            // On s'assure de bien séparer le status et la liste des messages
-            if (parsed.messages) {
-                fluxGlobal.status = parsed.status || "online";
+            
+            // On détecte la structure et on normalise
+            if (parsed.messages && Array.isArray(parsed.messages)) {
                 fluxGlobal.messages = parsed.messages;
-            } else {
-                // Si on colle une ancienne version sans status
-                fluxGlobal.messages = Array.isArray(parsed) ? parsed : [];
+                fluxGlobal.status = parsed.status || "online";
+            } else if (Array.isArray(parsed)) {
+                fluxGlobal.messages = parsed;
                 fluxGlobal.status = "online";
+            } else {
+                throw new Error("Structure inconnue");
             }
+
             actualiserInterface();
-            alert("✅ Système chargé et prêt !");
+            alert("✅ Données synchronisées. Le bouton magique est prêt !");
         } catch (e) {
-            alert("❌ Erreur : Collez bien tout le contenu de votre fichier data.json");
+            alert("❌ Erreur de format. Assurez-vous de copier TOUT le texte du fichier sur GitHub.");
         }
     }
 
-    // 2. LE BOUTON MAGIQUE (Basculer Stand-by)
+    // 2. LE BOUTON MAGIQUE (Injection de l'ordre de fermeture)
     function basculerStandBy() {
-        if (fluxGlobal.status === "online") {
-            fluxGlobal.status = "standby";
-        } else {
-            fluxGlobal.status = "online";
-        }
+        // Inversion du statut
+        fluxGlobal.status = (fluxGlobal.status === "online") ? "standby" : "online";
         
-        // On force la reconstruction du texte final immédiatement
+        // Reconstruction immédiate
         actualiserInterface();
         
-        // Petit message pour confirmer l'action du bouton
-        const mode = fluxGlobal.status === "online" ? "OUVERT 🟢" : "FERMÉ (Stand-by) 🔴";
-        alert("Bouton magique activé : Le site est maintenant " + mode);
+        const emoji = fluxGlobal.status === "online" ? "🟢 EN LIGNE" : "🔴 STAND-BY";
+        alert("Bouton Magique : Statut basculé sur " + emoji + ".\n\nCopiez maintenant le résultat vers GitHub !");
     }
 
+    // 3. Mise à jour visuelle et technique
     function actualiserInterface() {
         const ind = document.getElementById('statusInd');
+        const out = document.getElementById('outputJSON');
+
+        // Mise à jour du voyant
         if (fluxGlobal.status === "standby") {
             ind.innerText = "● MODE STAND-BY ACTIVÉ";
+            ind.style.background = "#c0392b"; // Rouge
             ind.className = "status-indicator standby";
         } else {
             ind.innerText = "● SITE EN LIGNE";
+            ind.style.background = "#27ae60"; // Vert
             ind.className = "status-indicator online";
         }
         
-        // Génère le JSON propre avec le nouveau statut
-        document.getElementById('outputJSON').value = JSON.stringify(fluxGlobal, null, 2);
+        // On génère le JSON final que Cloudflare/index.html va lire
+        // On s'assure que status est bien à la racine du JSON
+        const jsonFinal = {
+            status: fluxGlobal.status,
+            messages: fluxGlobal.messages
+        };
+
+        out.value = JSON.stringify(jsonFinal, null, 2);
     }
 </script>
