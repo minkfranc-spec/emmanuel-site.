@@ -2,131 +2,124 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>ADMIN REPAIR | Emmanuel DPV</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN MULTIMÉDIA | Emmanuel DPV</title>
     <style>
-        :root { --gold: #d4af37; --bg: #0a0a0a; --error: #ff4d4d; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: white; padding: 20px; }
-        .container { max-width: 1100px; margin: auto; }
-        h1 { color: var(--gold); text-align: center; text-transform: uppercase; letter-spacing: 3px; }
+        :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: white; padding: 10px; text-align: center; }
+        .admin-box { max-width: 900px; margin: auto; background: var(--card); padding: 25px; border-radius: 25px; border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); margin-bottom: 40px; }
+        h1 { color: var(--gold); font-size: 1.6em; text-transform: uppercase; letter-spacing: 2px; }
         
-        .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        textarea { width: 100%; height: 400px; background: #000; color: #00ff00; border: 1px solid #333; padding: 15px; border-radius: 10px; font-family: 'Courier New', monospace; resize: none; }
+        textarea { width: 100%; height: 250px; border-radius: 15px; border: 1px solid #444; padding: 15px; background: #000; color: #00ff00; font-family: 'Courier New', monospace; box-sizing: border-box; font-size: 14px; transition: 0.3s; resize: vertical; margin-bottom: 10px; }
         
-        .diagnostic-box { background: #1a1a1a; border: 1px solid #333; border-radius: 15px; padding: 20px; margin-top: 20px; }
-        .error-item { border-left: 4px solid var(--error); background: rgba(255, 77, 77, 0.1); padding: 10px; margin-bottom: 10px; color: #ffcccc; }
-        .success-item { border-left: 4px solid #27ae60; background: rgba(39, 174, 96, 0.1); padding: 10px; margin-bottom: 5px; color: #ccffcc; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px; text-transform: uppercase; font-size: 0.85em; }
+        .btn-view { background: #2980b9; color: white; }
+        .btn-fix { background: var(--gold); color: black; }
+        .btn-copy { background: #fff; color: #000; width: 100%; margin-top: 10px; }
 
-        .btn { cursor: pointer; border: none; padding: 15px; border-radius: 50px; font-weight: bold; width: 100%; text-transform: uppercase; margin-top: 10px; }
-        .btn-repair { background: var(--gold); color: black; font-size: 1.1em; }
-        .btn-copy { background: white; color: black; }
-
-        #preview-media { margin-top: 30px; border-top: 2px solid var(--gold); padding-top: 20px; text-align: left; }
-        .card { background: #111; padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #222; }
-        img { max-width: 100%; border-radius: 10px; margin-bottom: 10px; }
+        /* PREVIEW STYLE */
+        #preview-container { max-width: 800px; margin: auto; text-align: left; padding: 20px; border-top: 2px dashed var(--gold); }
+        .msg-card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 20px; margin-bottom: 25px; overflow: hidden; }
+        .msg-header { color: var(--gold); font-weight: bold; font-size: 1.2em; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .msg-meta { font-size: 0.8em; color: #777; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        
+        /* IMAGE & AUDIO */
+        .preview-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; border: 1px solid #333; }
+        audio { width: 100%; height: 35px; margin: 10px 0; border-radius: 5px; filter: sepia(20%) saturate(70%) grayscale(1) contrast(99%) invert(12%); }
+        
+        .msg-text { line-height: 1.7; white-space: pre-wrap; color: #ddd; font-size: 0.95em; }
+        .msg-badge { background: var(--gold); color: black; padding: 2px 10px; border-radius: 5px; font-size: 0.7em; }
+        .theorem-box { color: var(--gold); font-weight: bold; font-style: italic; display: block; margin: 10px 0; border-left: 3px solid var(--gold); padding-left: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🏛️ LE RESTAURATEUR DE STRUCTURE</h1>
-    
-    <div class="layout">
-        <div>
-            <label>📥 COLLEZ LE CODE TOTAL (MÊME CASSÉ) :</label>
-            <textarea id="inputJSON" placeholder="Collez votre JSON complet ici..."></textarea>
-            <button class="btn btn-repair" onclick="restaurer()">🛠️ ANALYSER & RÉPARER LA TOTALITÉ</button>
-        </div>
-        <div>
-            <label>📤 CODE PURIFIÉ & RÉALIGNE :</label>
-            <textarea id="outputJSON" readonly></textarea>
-            <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT FINAL</button>
+<div class="admin-box">
+    <h1>🏛️ COMMANDE MULTIMÉDIA</h1>
+    <div style="text-align: left;">
+        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📥 COLLEZ VOTRE CODE :</label>
+        <textarea id="inputJSON" placeholder="Collez ici..."></textarea>
+        <div class="btn-group">
+            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER AVEC MÉDIAS</button>
+            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER & VISIONNER</button>
         </div>
     </div>
-
-    <div class="diagnostic-box">
-        <h3>🔍 DIAGNOSTIC DE JUSTICE (Ligne par Ligne)</h3>
-        <div id="diagLog">En attente d'analyse...</div>
+    <div style="text-align: left;">
+        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📤 SORTIE :</label>
+        <textarea id="outputJSON" readonly></textarea>
+        <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT</button>
     </div>
-
-    <div id="preview-media"></div>
 </div>
 
+<h2 style="color: var(--gold);">👁️ APERÇU COMPLET (SON & IMAGE)</h2>
+<div id="preview-container"></div>
+
 <script>
-    function restaurer() {
+    let formatComplet = false;
+
+    function purifier(str) {
+        let s = str.trim();
+        formatComplet = s.startsWith("{") && s.includes('"messages"');
+        if (!s.startsWith("[") && !s.startsWith("{")) s = "[" + s + "]";
+        else if (s.startsWith("{") && !formatComplet) s = "[" + s + "]";
+        return s.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]").replace(/}\s*{/g, "},{");
+    }
+
+    function traiter(doitReorganiser) {
         let raw = document.getElementById('inputJSON').value.trim();
-        const diag = document.getElementById('diagLog');
-        const out = document.getElementById('outputJSON');
-        const preview = document.getElementById('preview-media');
-        
-        diag.innerHTML = "";
-        preview.innerHTML = "";
-        
-        // --- ÉTAPE 1 : DÉCOUPAGE CHIRURGICAL ---
-        // On sépare par le mot "id" pour isoler chaque bloc
-        let fragments = raw.split(/"id"\s*:/);
-        let validMessages = [];
-        
-        if (fragments.length <= 1) {
-            diag.innerHTML = "<div class='error-item'>❌ AUCUN MESSAGE DÉTECTÉ. Vérifiez que vous avez bien des champs 'id'.</div>";
-            return;
-        }
+        if (!raw) return;
+        try {
+            let clean = purifier(raw);
+            let parsed = JSON.parse(clean);
+            let msgs = formatComplet ? parsed.messages : (Array.isArray(parsed) ? parsed : [parsed]);
 
-        diag.innerHTML += `<div class='success-item'>✔️ Analyse de ${fragments.length - 1} blocs potentiels...</div>`;
-
-        // On traite chaque fragment (le premier est souvent vide ou contient l'entête)
-        for (let i = 1; i < fragments.length; i++) {
-            let chunk = '"id":' + fragments[i];
-            
-            // On tente de nettoyer le chunk pour qu'il ressemble à un objet { ... }
-            let cleanChunk = chunk.trim();
-            if (!cleanChunk.startsWith('{')) cleanChunk = '{' + cleanChunk;
-            
-            // On enlève les virgules ou crochets qui traînent à la fin
-            cleanChunk = cleanChunk.replace(/[,\]}]+$/, ''); 
-            cleanChunk = cleanChunk + '}'; // On ferme proprement
-
-            try {
-                let obj = JSON.parse(cleanChunk);
-                validMessages.push(obj);
-                diag.innerHTML += `<div class='success-item'>🔹 Message ID ${obj.id || i} : Structure Purifiée.</div>`;
-            } catch (e) {
-                diag.innerHTML += `<div class='error-item'>🔴 RUPTURE DÉTECTÉE près de l'ID situé en position ${i}. Vérifiez les guillemets ou les virgules internes.</div>`;
+            if (doitReorganiser && msgs.length > 0) {
+                let refId = parseInt(msgs[msgs.length - 1].id) || 1;
+                let refDate = new Date(msgs[msgs.length - 1].date);
+                if (isNaN(refDate)) refDate = new Date();
+                for (let i = msgs.length - 1; i >= 0; i--) {
+                    msgs[i].id = refId;
+                    msgs[i].date = refDate.toISOString().split('T')[0];
+                    refId++; refDate.setDate(refDate.getDate() + 1);
+                }
             }
-        }
+            document.getElementById('outputJSON').value = formatComplet ? JSON.stringify({status: "online", messages: msgs}, null, 2) : JSON.stringify(msgs, null, 2);
+            renderPreview(msgs);
+        } catch (e) { alert("❌ ERREUR JSON !"); }
+    }
 
-        // --- ÉTAPE 2 : RÉORDONNER (ASCENDANT) ---
-        if (validMessages.length > 0) {
-            validMessages.sort((a, b) => a.id - b.id); // On remet dans l'ordre numérique
+    function renderPreview(msgs) {
+        const container = document.getElementById('preview-container');
+        container.innerHTML = ""; 
+        msgs.forEach(m => {
+            let card = document.createElement('div');
+            card.className = "msg-card";
             
-            // On applique la logique de date si nécessaire ou on laisse tel quel
-            let finalJSON = {
-                status: "online",
-                messages: validMessages
-            };
+            // Gestion de l'image
+            let imgHtml = m.image ? `<img src="${m.image}" class="preview-img" alt="Illustration" onerror="this.style.display='none'">` : '';
             
-            out.value = JSON.stringify(finalJSON, null, 2);
+            // Gestion de l'audio
+            let audioHtml = m.audio ? `<audio controls src="${m.audio}"></audio>` : '';
             
-            // --- ÉTAPE 3 : VISIONNAGE ---
-            validMessages.forEach(m => {
-                preview.innerHTML += `
-                    <div class="card">
-                        <div style="color:var(--gold); font-weight:bold;">${m.titre || 'SANS TITRE'} (ID: ${m.id})</div>
-                        <div style="font-size:0.8em; color:#666;">${m.date}</div>
-                        ${m.image ? `<img src="${m.image}">` : ''}
-                        ${m.audio ? `<audio controls src="${m.audio}" style="width:100%"></audio>` : ''}
-                        <p style="font-size:0.9em; white-space:pre-wrap;">${m.texte ? m.texte.substring(0, 150) : ''}...</p>
-                    </div>
-                `;
-            });
-        }
+            let textePreview = m.texte.replace(/\*\*(.*?)\*\*/g, '<span class="theorem-box">$1</span>');
+            
+            card.innerHTML = `
+                ${imgHtml}
+                <div class="msg-header"><span>${m.titre}</span><span class="msg-badge">ID: ${m.id}</span></div>
+                <div class="msg-meta">📅 ${m.date} | 🏷️ ${m.categorie}</div>
+                ${audioHtml}
+                <div class="msg-text">${textePreview}</div>
+            `;
+            container.appendChild(card);
+        });
     }
 
     function copier() {
         document.getElementById('outputJSON').select();
         document.execCommand('copy');
-        alert("🎯 CODE TOTAL RÉPARÉ COPIÉ !");
+        alert("🎯 COPIÉ !");
     }
 </script>
-
 </body>
 </html>
