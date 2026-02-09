@@ -3,116 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMMANUEL | Administrateur Final</title>
+    <title>EMMANUEL | Administrateur Suprême</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 10px; }
-        .admin-box { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 20px; border-top: 10px solid #d4af37; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .control-room { background: #1a1a1a; color: white; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
-        .status-badge { display: inline-block; padding: 10px 25px; border-radius: 50px; font-weight: bold; margin-bottom: 10px; }
+        body { font-family: 'Montserrat', sans-serif; background: #f0f2f5; padding: 20px; }
+        .admin-box { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 10px solid #d4af37; }
+        .status-panel { background: #1a1a1a; color: white; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 25px; }
+        .status-indicator { font-size: 1.2em; font-weight: bold; padding: 10px 20px; border-radius: 50px; display: inline-block; margin-bottom: 15px; }
         .online { background: #27ae60; } .standby { background: #c0392b; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        textarea { width: 100%; height: 100px; border-radius: 10px; border: 1px solid #ddd; padding: 10px; box-sizing: border-box; }
-        input { width: 100%; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
-        .btn-add { background: #1a1a1a; color: white; padding: 15px; width: 100%; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 20px; }
-        .organisateur { background: #fffdf5; padding: 15px; border: 2px dashed #d4af37; border-radius: 15px; margin-top: 30px; }
-        #jsonOutput { background: #1a1a1a; color: #00ff00; height: 300px; font-family: monospace; }
-        .btn-copy { background: #d4af37; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+        textarea { width: 100%; height: 150px; border-radius: 10px; border: 1px solid #ddd; padding: 10px; font-family: monospace; background: #fafafa; }
+        .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px 30px; text-transform: uppercase; }
+        .btn-status { background: #d4af37; color: white; margin-top: 10px; }
+        .btn-copy { background: #1a1a1a; color: white; width: 100%; margin-top: 20px; font-size: 1.1em; }
+        .zone-reparation { margin-top: 30px; border: 2px dashed #d4af37; padding: 20px; border-radius: 15px; }
     </style>
 </head>
 <body>
 
 <div class="admin-box">
-    <h1>🏛️ EMMANUEL : CONTRÔLE TOTAL</h1>
+    <h1>🏛️ COMMANDE DU SANCTUAIRE</h1>
 
-    <div class="control-room">
-        <div id="statusBadge" class="status-badge online">● SITE EN LIGNE</div><br>
-        <button onclick="toggleStatus()" style="padding: 10px; cursor:pointer; border-radius: 20px; font-weight:bold;">CHANGER LE STATUT</button>
+    <div class="status-panel">
+        <div id="statusInd" class="status-indicator online">● SITE EN LIGNE</div><br>
+        <button class="btn btn-status" onclick="basculerStandBy()">BASCULER LE MODE STAND-BY</button>
+        <p style="font-size: 0.8em; opacity: 0.7; margin-top: 10px;">(Cliquez puis copiez le JSON vers data.json sur Cloudflare)</p>
     </div>
 
-    <div class="grid">
-        <div class="col">
-            <label>🆔 ID</label><input type="number" id="id">
-            <label>📅 Date</label><input type="date" id="date">
-            <label>🏆 Titre</label><input type="text" id="titre_fr">
-        </div>
-        <div class="col">
-            <label>📖 Message (FR)</label><textarea id="txt_fr"></textarea>
-            <label>📖 Message (EN)</label><textarea id="txt_en"></textarea>
-        </div>
-    </div>
-    <button class="btn-add" onclick="ajouterAuFlux()">⚡ AJOUTER LE MESSAGE</button>
-
-    <div class="organisateur">
-        <label>🛠️ ZONE DE RÉPARATION (Collez votre fichier cccc.txt ici)</label>
-        <textarea id="jsonInput" placeholder="Collez le contenu de cccc.txt..."></textarea>
-        <button onclick="reparer()" style="background:#34495e; color:white; padding:10px; cursor:pointer; margin-top:10px; border-radius:5px;">RÉPARER LA STRUCTURE MAINTENANT</button>
+    <div class="zone-reparation">
+        <label>📥 1. COLLEZ VOTRE <strong>DATA.JSON</strong> ACTUEL ICI :</label>
+        <textarea id="inputJSON" placeholder="Collez le contenu de votre fichier data.json ici pour le modifier..."></textarea>
+        <button class="btn btn-status" style="background:#34495e;" onclick="chargerDonnees()">CHARGER LES DONNÉES</button>
     </div>
 
-    <div style="margin-top:30px;">
-        <button class="btn-copy" onclick="copier()">COPIER LE JSON PRÊT POUR LE SITE</button>
-        <textarea id="jsonOutput" readonly></textarea>
+    <div style="margin-top: 30px;">
+        <label>📤 2. RÉSULTAT À COPIER DANS CLOUDFLARE :</label>
+        <textarea id="outputJSON" readonly></textarea>
+        <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT FINAL</button>
     </div>
 </div>
 
 <script>
-    let listeMessages = [];
-    let siteStatus = "online";
+    let fluxGlobal = { status: "online", messages: [] };
 
-    function toggleStatus() {
-        siteStatus = (siteStatus === "online") ? "standby" : "online";
-        document.getElementById('statusBadge').innerText = (siteStatus === "online") ? "● SITE EN LIGNE" : "● SITE EN STAND-BY";
-        document.getElementById('statusBadge').className = "status-badge " + siteStatus;
-        maj();
-    }
-
-    function ajouterAuFlux() {
-        const m = {
-            id: parseInt(document.getElementById('id').value),
-            date: document.getElementById('date').value,
-            titre: document.getElementById('titre_fr').value,
-            texte: document.getElementById('txt_fr').value,
-            texte_en: document.getElementById('txt_en').value
-        };
-        listeMessages.unshift(m);
-        maj();
-    }
-
-    function reparer() {
-        let brut = document.getElementById('jsonInput').value.trim();
+    // 1. CHARGER LE JSON POUR NE PAS PERDRE LES MESSAGES
+    function chargerDonnees() {
+        const raw = document.getElementById('inputJSON').value.trim();
         try {
-            // Nettoyage des points erronés
-            let propre = brut.replace(/\}\s*\.\s*\{/g, '},{');
-            let data = JSON.parse(propre);
-
-            // ⚡ EXTRACTION RADICALE (On cherche récursivement les messages)
-            function extraire(obj) {
-                if (Array.isArray(obj)) return obj;
-                if (obj.messages) return extraire(obj.messages);
-                return [];
-            }
-
-            listeMessages = extraire(data);
-            siteStatus = data.status || "online";
+            const parsed = JSON.parse(raw);
+            // On s'assure de bien capturer le status et les messages
+            fluxGlobal.status = parsed.status || "online";
+            fluxGlobal.messages = parsed.messages || [];
             
-            maj();
-            alert("✅ Structure réparée ! Les couches inutiles ont été supprimées.");
+            actualiserInterface();
+            alert("✅ Données chargées avec succès !");
         } catch (e) {
-            alert("❌ Erreur critique. Vérifiez qu'il n'y a pas de texte hors du JSON.");
+            alert("❌ Erreur : Le format collé n'est pas un JSON valide.");
         }
     }
 
-    function maj() {
-        document.getElementById('jsonOutput').value = JSON.stringify({
-            status: siteStatus,
-            messages: listeMessages
-        }, null, 2);
+    // 2. CHANGER LE MODE STAND-BY
+    function basculerStandBy() {
+        fluxGlobal.status = (fluxGlobal.status === "online") ? "standby" : "online";
+        actualiserInterface();
     }
 
+    // 3. METTRE À JOUR L'AFFICHAGE ET LE CODE DE SORTIE
+    function actualiserInterface() {
+        const ind = document.getElementById('statusInd');
+        if (fluxGlobal.status === "standby") {
+            ind.innerText = "● MODE STAND-BY ACTIVÉ";
+            ind.className = "status-indicator standby";
+        } else {
+            ind.innerText = "● SITE EN LIGNE";
+            ind.className = "status-indicator online";
+        }
+        
+        // Génère le code final
+        document.getElementById('outputJSON').value = JSON.stringify(fluxGlobal, null, 2);
+    }
+
+    // 4. COPIER
     function copier() {
-        const out = document.getElementById("jsonOutput");
+        const out = document.getElementById('outputJSON');
         out.select();
-        navigator.clipboard.writeText(out.value);
-        alert("JSON Copié !");
+        document.execCommand('copy');
+        alert("🎯 JSON Copié ! Allez sur Cloudflare et remplacez le contenu de data.json");
     }
 </script>
 
