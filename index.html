@@ -32,26 +32,17 @@
     <title>EMMANUEL | La Voix de la Vérité</title>
 
     <link rel="canonical" href="https://emmanuel-dpv.pages.dev">
-    
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
-    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* DESIGN PASTEUR EMMANUEL - HARMONISÉ */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { 
-            margin: 0; 
-            padding: 0; 
-            width: 100%; 
-            background: #fdfdfd; 
-            color: #1a1a1a; 
-            font-family: 'Lora', serif; 
-            text-align: center; 
-            overflow-x: hidden; 
-            -webkit-font-smoothing: antialiased; 
-            -moz-osx-font-smoothing: grayscale;
+            margin: 0; padding: 0; width: 100%; 
+            background: #fdfdfd; color: #1a1a1a; 
+            font-family: 'Lora', serif; text-align: center; 
+            overflow-x: hidden; -webkit-font-smoothing: antialiased; 
         }
         
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-in-out; }
@@ -66,30 +57,47 @@
             100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
-        /* --- STYLE DE LA LAMPE DE L'AUTEL --- */
+        /* --- STYLE DE LA LAMPE DE L'AUTEL (BRILLANCE RENFORCÉE) --- */
         #sanctuary-light-wrapper { position: fixed; right: 20px; top: 20px; z-index: 5000; }
-        #altar-lamp { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+        #altar-lamp { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+        
         #notif-count {
             background: #e74c3c; color: #fff; font-weight: bold; font-family: 'Montserrat';
             font-size: 10px; width: 18px; height: 18px; border-radius: 50%;
-            position: absolute; top: -2px; right: -2px; display: flex; align-items: center; justify-content: center;
-            z-index: 10; transition: 0.5s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: absolute; top: 2px; right: 2px; display: flex; align-items: center; justify-content: center;
+            z-index: 10; transition: 0.5s; box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
         }
-        .flame-core { position: absolute; width: 10px; height: 10px; background: #d4af37; border-radius: 50%; box-shadow: 0 0 15px #d4af37; z-index: 2; animation: flicker 2s infinite ease-in-out; }
-        .flame-glow { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, rgba(212, 175, 55, 0) 75%); border-radius: 50%; animation: breathe 4s infinite ease-in-out; }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.6; } }
-        @keyframes flicker { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.85); opacity: 0.7; } }
+
+        /* LA FLAMME RÉELLE */
+        .flame-core { 
+            position: absolute; width: 14px; height: 14px; 
+            background: #fff; /* Cœur blanc pour la brillance */
+            border-radius: 50%; 
+            box-shadow: 0 0 15px #d4af37, 0 0 30px #ffcc00; 
+            z-index: 2; animation: flicker 1.5s infinite ease-in-out; 
+        }
+
+        .flame-glow { 
+            position: absolute; width: 120%; height: 120%; 
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.5) 0%, rgba(212, 175, 55, 0) 70%); 
+            border-radius: 50%; animation: breathe 3s infinite ease-in-out; 
+        }
+
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.6); opacity: 0.8; } }
+        @keyframes flicker { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(0.9); filter: brightness(1.3); } }
 
         #notif-panel {
             position: fixed; right: -320px; top: 0; height: 100vh; width: 280px;
-            background: #ffffff; border-left: 1px solid #eee; padding: 40px 25px;
+            background: #ffffff; border-left: 2px solid #d4af37; padding: 40px 25px;
             transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); opacity: 0; z-index: 4999;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.05); text-align: left;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.1); text-align: left;
+            overflow-y: auto;
         }
         #notif-panel.active { right: 0; opacity: 1; }
+        .notif-scroll-area { margin-top: 20px; }
         .notif-item { margin-bottom: 25px; border-bottom: 1px solid #f5f5f5; padding-bottom: 15px; }
         .notif-tag { font-family: 'Montserrat'; font-size: 8px; color: #d4af37; letter-spacing: 2px; font-weight: 900; }
-        .notif-item p { font-size: 12px; color: #666; margin-top: 8px; line-height: 1.5; }
+        .notif-item p { font-size: 12px; color: #333; margin-top: 8px; line-height: 1.6; }
 
         /* --- FIN STYLE LAMPE --- */
 
@@ -109,33 +117,16 @@
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
         .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
         
-        .msg-content { 
-            text-align: justify; 
-            line-height: 1.6; 
-            font-size: 1.05em; 
-            white-space: pre-line; 
-            color: #1a1a1a; 
-            font-weight: 400;
-        } 
-        
+        .msg-content { text-align: justify; line-height: 1.6; font-size: 1.05em; white-space: pre-line; color: #1a1a1a; font-weight: 400; } 
         .msg-content strong { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000000; }
         
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
         .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
 
         #shareModal {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            z-index: 3000;
-            padding: 30px 20px;
-            border-radius: 30px 30px 0 0;
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.2);
-            animation: slideUp 0.3s ease-out;
-            text-align: center;
+            display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+            z-index: 3000; padding: 30px 20px; border-radius: 30px 30px 0 0;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.2); animation: slideUp 0.3s ease-out; text-align: center;
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2500; }
@@ -181,18 +172,25 @@
             <span id="notif-count">1</span>
             <div class="flame-glow"></div>
             <div class="flame-core"></div>
-            <span style="font-size: 14px; position: relative; z-index: 3;">🕯️</span>
+            <span style="font-size: 20px; position: relative; z-index: 3; filter: drop-shadow(0 0 5px #d4af37);">🕯️</span>
         </div>
         <div id="notif-panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h3 style="margin:0; color:#d4af37; font-family:'Montserrat'; font-size:9px; letter-spacing:3px;">COMMUNION</h3>
-                <button onclick="closeCommunion()" style="background:none; border:none; color:#ccc; cursor:pointer; font-size:22px;">×</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                <h3 style="margin:0; color:#d4af37; font-family:'Montserrat'; font-size:10px; letter-spacing:3px;">COMMUNION</h3>
+                <button onclick="closeCommunion()" style="background:none; border:none; color:#ccc; cursor:pointer; font-size:25px;">×</button>
             </div>
-            <div class="notif-item">
-                <span class="notif-tag">RACCORDEMENT</span>
-                <p>Bienvenue sur notre sanctuaire numérique. Votre adresse officielle est désormais <strong>emmanuel-dpv.pages.dev</strong></p>
+            
+            <div class="notif-scroll-area">
+                <div class="notif-item">
+                    <span class="notif-tag">RÉVÉLATION</span>
+                    <p><strong>Pasteur Emmanuel</strong> vous souhaite la bienvenue.<br><br>
+                    Le sanctuaire est désormais ancré sur <strong>emmanuel-dpv.pages.dev</strong>. Explorez les archives pour nourrir votre âme.</p>
+                </div>
             </div>
-            <p style="font-size:9px; color:#aaa; font-style:italic; margin-top:30px; text-align:center;">La lampe reste allumée pour votre paix.</p>
+
+            <p style="font-size:9px; color:#aaa; font-style:italic; margin-top:40px; text-align:center;">
+                Le chiffre disparaît après lecture, mais la flamme veille sur vous.
+            </p>
         </div>
     </div>
 
@@ -271,14 +269,16 @@
         let msgPartageTemp = "";
         let titrePartageTemp = "";
 
-        /* FONCTIONS DE LA LAMPE */
+        /* FONCTIONS DE LA LAMPE AMÉLIORÉES */
         function igniteCommunion() {
             document.getElementById('bellSound').play();
             document.getElementById('notif-panel').classList.add('active');
+            
+            // L'EFFACEMENT : Le chiffre disparaît quand on a lu
             const count = document.getElementById('notif-count');
             if (count) {
-                count.style.opacity = '0';
-                setTimeout(() => { count.remove(); }, 500);
+                count.style.transform = 'scale(0)';
+                setTimeout(() => { count.style.display = 'none'; }, 500);
             }
         }
 
@@ -295,12 +295,7 @@
                 const data = await res.json();
                 
                 if (data.status === "standby") {
-                    document.body.innerHTML = `
-                        <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#1a1a1a; color:#d4af37; text-align:center; padding:20px;">
-                            <h1 style="color:#d4af37; font-size:3em; font-family:'Montserrat';">🏛️ EMMANUEL</h1>
-                            <p style="font-family:'Lora'; font-size:1.5em;">Le sanctuaire est momentanément fermé pour maintenance.</p>
-                            <p style="font-style:italic; opacity:0.7;">La Voix de la Vérité revient bientôt.</p>
-                        </div>`;
+                    document.body.innerHTML = `<div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#1a1a1a; color:#d4af37; text-align:center; padding:20px;"><h1 style="color:#d4af37; font-size:3em; font-family:'Montserrat';">🏛️ EMMANUEL</h1><p style="font-family:'Lora'; font-size:1.5em;">Le sanctuaire est momentanément fermé.</p></div>`;
                     return;
                 }
 
@@ -323,7 +318,7 @@
                     setTimeout(() => { loader.style.display = 'none'; }, 500); 
                 }
             } catch (err) { 
-                console.error("Erreur de chargement:", err);
+                console.error("Erreur:", err);
                 const loader = document.getElementById('loading-screen');
                 if (loader) loader.style.display = 'none';
             }
@@ -353,7 +348,6 @@
             const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
-            
             let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
             
             return `<div class="message-card">
@@ -384,17 +378,10 @@
         function actionPartage(type) {
             const url = "https://emmanuel-dpv.pages.dev";
             const messageComplet = `${titrePartageTemp}\n\n${msgPartageTemp}\n\nLire la suite : ${url}`;
-
-            if (type === 'wa') {
-                window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(messageComplet), '_blank');
-            } else if (type === 'fb') {
-                window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), '_blank');
-            } else if (type === 'mail') {
-                window.location.href = `mailto:?subject=${encodeURIComponent(titrePartageTemp)}&body=${encodeURIComponent(messageComplet)}`;
-            } else if (type === 'copy') {
-                navigator.clipboard.writeText(messageComplet);
-                alert(translations[currentLang].copied);
-            }
+            if (type === 'wa') window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(messageComplet), '_blank');
+            else if (type === 'fb') window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), '_blank');
+            else if (type === 'mail') window.location.href = `mailto:?subject=${encodeURIComponent(titrePartageTemp)}&body=${encodeURIComponent(messageComplet)}`;
+            else if (type === 'copy') { navigator.clipboard.writeText(messageComplet); alert(translations[currentLang].copied); }
             fermerPartage();
         }
 
