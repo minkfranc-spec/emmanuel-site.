@@ -13,20 +13,24 @@
         
         .gold-text { color: #d4af37; font-family: 'Montserrat'; font-weight: 900; }
         
-        /* --- NOTIFICATIONS --- */
+        /* --- POINT 3: LAMPE VIBRANTE AMPLIFIÉE --- */
         #sanctuary-light-wrapper { position: fixed; right: 20px; top: 20px; z-index: 5000; }
-        #altar-lamp { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
-        .flame-core { position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px #d4af37, 0 0 30px #ffcc00; animation: flicker 1.5s infinite; }
+        #altar-lamp { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; animation: shiver 0.5s infinite alternate; }
+        .flame-core { position: absolute; width: 16px; height: 16px; background: #fff; border-radius: 50%; box-shadow: 0 0 20px #d4af37, 0 0 40px #ffcc00, 0 0 60px #d4af37; animation: flicker 1s infinite; z-index: 2; }
+        
+        @keyframes shiver { from { transform: translate(0,0); } to { transform: translate(1px, 1px); } }
+        @keyframes flicker { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } }
+
         #notif-panel { position: fixed; right: -320px; top: 0; height: 100vh; width: 280px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-left: 2px solid #d4af37; padding: 40px 25px; transition: 0.6s; z-index: 4999; text-align: left; }
         #notif-panel.active { right: 0; }
         .close-notif { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; font-weight: 900; }
 
-        /* --- ARCHIVES (6x2) --- */
+        /* --- POINT 1: CONTOURS DORÉS ARCHIVES --- */
         .archive-section { margin: 40px auto; width: 92%; max-width: 540px; }
         .archive-main-btn { background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-family: 'Montserrat'; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; }
         
-        #archive-box { display: none; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .months-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 20px; }
+        #archive-box { display: none; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2); border: 2px solid #d4af37; }
+        .months-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 20px; border: 1px solid #d4af37; padding: 10px; border-radius: 10px; }
         .month-btn { background: #f8f8f8; border: 1px solid #eee; padding: 10px 2px; border-radius: 8px; cursor: pointer; font-family: 'Montserrat'; font-size: 9px; font-weight: 700; color: #777; transition: 0.3s; }
         .month-btn.active { background: #d4af37; color: white; border-color: #d4af37; }
 
@@ -35,8 +39,9 @@
 
         .btn-retour { background: #f1f1f1; border: none; padding: 10px 20px; border-radius: 30px; font-family: 'Montserrat'; font-size: 10px; font-weight: 900; cursor: pointer; margin-top: 15px; color: #d4af37; }
 
-        /* --- MESSAGES --- */
-        .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; }
+        /* --- POINT 2: ANIMATION DES MESSAGES AU SURVOL --- */
+        .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; transition: transform 0.4s ease, box-shadow 0.4s ease; }
+        .message-card:hover { transform: translateY(-10px); box-shadow: 0 15px 50px rgba(212, 175, 55, 0.15); }
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; }
 
         /* --- COMPTEUR BILINGUE --- */
@@ -44,8 +49,6 @@
         .stat-title { font-family: 'Montserrat'; font-weight: 900; font-size: 1.1em; }
         .stat-subtitle { font-family: 'Montserrat'; font-size: 0.8em; color: #d4af37; font-weight: 700; margin-top: 5px; }
         .refresh-text { font-family: 'Montserrat'; font-size: 10px; color: #95a5a6; margin-top: 15px; font-weight: 700; }
-
-        @keyframes flicker { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.9); } }
     </style>
 </head>
 <body>
@@ -149,16 +152,13 @@
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
             const btn = document.getElementById('m-'+m);
             if(btn) btn.classList.add('active');
-            
             const messagesMois = tousLesMessages.filter(msg => msg.date.split('-')[1] === m).sort((a,b) => a.id - b.id);
             const list = document.getElementById('list-titles');
-            
             if(messagesMois.length === 0) {
                 list.innerHTML = "<li style='padding:20px; font-size:0.8em; color:#999;'>Aucun message ce mois.</li>";
             } else {
                 list.innerHTML = messagesMois.map(msg => `<li class="title-item" onclick="voirMessage(${msg.id})">${msg.titre}</li>`).join('');
             }
-            
             document.getElementById('titles-container').style.display = 'block';
             document.getElementById('selected-msg-container').innerHTML = '';
             document.querySelector('.months-grid').style.display = 'none';
