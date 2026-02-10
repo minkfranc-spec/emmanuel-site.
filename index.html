@@ -11,38 +11,40 @@
         * { box-sizing: border-box; scroll-behavior: smooth; }
         body { margin: 0; padding: 0; background: #fdfdfd; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; }
         
-        /* --- STYLE DORÉ & ANIMATIONS --- */
         .gold-text { color: #d4af37; font-family: 'Montserrat'; font-weight: 900; }
-        @keyframes titleDance { 0% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 100% { transform: translateX(-5px); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        
         /* --- NOTIFICATIONS --- */
         #sanctuary-light-wrapper { position: fixed; right: 20px; top: 20px; z-index: 5000; }
         #altar-lamp { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
         .flame-core { position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px #d4af37, 0 0 30px #ffcc00; animation: flicker 1.5s infinite; }
         #notif-panel { position: fixed; right: -320px; top: 0; height: 100vh; width: 280px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-left: 2px solid #d4af37; padding: 40px 25px; transition: 0.6s; z-index: 4999; text-align: left; }
         #notif-panel.active { right: 0; }
-        .close-notif { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; font-family: 'Montserrat'; font-weight: 900; }
+        .close-notif { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; font-weight: 900; }
 
-        /* --- ARCHIVES DYNAMIQUES --- */
+        /* --- ARCHIVES (6x2) --- */
         .archive-section { margin: 40px auto; width: 92%; max-width: 540px; }
         .archive-main-btn { background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-family: 'Montserrat'; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; }
         
         #archive-box { display: none; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .months-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .month-btn { background: #f8f8f8; border: 1px solid #eee; padding: 12px; border-radius: 10px; cursor: pointer; font-family: 'Montserrat'; font-size: 0.7em; font-weight: 700; color: #777; transition: 0.3s; }
-        .month-btn.active { background: #d4af37; color: white; border-color: #d4af37; box-shadow: 0 4px 10px rgba(212,175,55,0.3); }
+        .months-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 20px; }
+        .month-btn { background: #f8f8f8; border: 1px solid #eee; padding: 10px 2px; border-radius: 8px; cursor: pointer; font-family: 'Montserrat'; font-size: 9px; font-weight: 700; color: #777; transition: 0.3s; }
+        .month-btn.active { background: #d4af37; color: white; border-color: #d4af37; }
 
-        .titles-list { list-style: none; padding: 0; margin: 20px 0; }
-        .title-item { padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-family: 'Montserrat'; font-weight: 700; color: #1a1a1a; font-size: 0.9em; animation: titleDance 4s infinite ease-in-out; }
-        .title-item:hover { color: #d4af37; }
+        .title-item { padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-family: 'Montserrat'; font-weight: 700; animation: titleDance 4s infinite ease-in-out; }
+        @keyframes titleDance { 0%, 100% { transform: translateX(-3px); } 50% { transform: translateX(3px); } }
 
-        .btn-retour { background: #f1f1f1; border: none; padding: 10px 20px; border-radius: 30px; font-family: 'Montserrat'; font-size: 0.7em; font-weight: 900; cursor: pointer; margin-top: 15px; color: #d4af37; }
+        .btn-retour { background: #f1f1f1; border: none; padding: 10px 20px; border-radius: 30px; font-family: 'Montserrat'; font-size: 10px; font-weight: 900; cursor: pointer; margin-top: 15px; color: #d4af37; }
 
-        /* --- CARDS --- */
-        .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: fadeIn 0.5s; }
+        /* --- MESSAGES --- */
+        .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; }
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; }
-        
+
+        /* --- COMPTEUR BILINGUE --- */
+        .flag-counter-box { background: white; padding: 30px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
+        .stat-title { font-family: 'Montserrat'; font-weight: 900; font-size: 1.1em; }
+        .stat-subtitle { font-family: 'Montserrat'; font-size: 0.8em; color: #d4af37; font-weight: 700; margin-top: 5px; }
+        .refresh-text { font-family: 'Montserrat'; font-size: 10px; color: #95a5a6; margin-top: 15px; font-weight: 700; }
+
         @keyframes flicker { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.9); } }
     </style>
 </head>
@@ -64,19 +66,30 @@
     </div>
 
     <h1 class="gold-text" style="font-size: 2.5em; margin-top: 60px;">EMMANUEL</h1>
-    <p style="font-family:'Montserrat'; letter-spacing:3px; color:#95a5a6;">LA VOIX DE LA VÉRITÉ</p>
+    <p style="font-family:'Montserrat'; letter-spacing:3px; color:#95a5a6; font-weight: 700;">LA VOIX DE LA VÉRITÉ</p>
 
     <div id="flux-messages"></div>
 
     <div class="archive-section">
         <button class="archive-main-btn" id="btn-toggle-archives" onclick="openArchiveBox()">📂 Consulter les Archives</button>
-        
         <div id="archive-box">
-            <div class="months-grid" id="months-list">
-                </div>
+            <div class="months-grid">
+                <button class="month-btn" id="m-01" onclick="selectMonth('01')">JAN</button>
+                <button class="month-btn" id="m-02" onclick="selectMonth('02')">FEB</button>
+                <button class="month-btn" id="m-03" onclick="selectMonth('03')">MAR</button>
+                <button class="month-btn" id="m-04" onclick="selectMonth('04')">APR</button>
+                <button class="month-btn" id="m-05" onclick="selectMonth('05')">MAY</button>
+                <button class="month-btn" id="m-06" onclick="selectMonth('06')">JUN</button>
+                <button class="month-btn" id="m-07" onclick="selectMonth('07')">JUL</button>
+                <button class="month-btn" id="m-08" onclick="selectMonth('08')">AUG</button>
+                <button class="month-btn" id="m-09" onclick="selectMonth('09')">SEP</button>
+                <button class="month-btn" id="m-10" onclick="selectMonth('10')">OCT</button>
+                <button class="month-btn" id="m-11" onclick="selectMonth('11')">NOV</button>
+                <button class="month-btn" id="m-12" onclick="selectMonth('12')">DEC</button>
+            </div>
             <div id="archive-view">
                 <div id="titles-container" style="display:none;">
-                    <ul class="titles-list" id="list-titles"></ul>
+                    <ul style="list-style:none; padding:0;" id="list-titles"></ul>
                     <button class="btn-retour" onclick="showMonthsOnly()">⬅ RETOUR</button>
                 </div>
                 <div id="selected-msg-container"></div>
@@ -84,12 +97,20 @@
         </div>
     </div>
 
-    <div style="margin: 40px 0;"><a href="https://info.flagcounter.com/ivJp"><img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0"></a></div>
+    <div class="flag-counter-box">
+        <div class="stat-title">LECTEURS PAR PAYS</div>
+        <div class="stat-subtitle">✨ Vues et statistiques ✨</div>
+        <a href="https://info.flagcounter.com/ivJp" target="_blank">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0" style="margin-top:15px; max-width:100%;">
+        </a>
+        <div class="refresh-text">
+            Le compteur s'actualise toutes les 15 min<br>
+            <span style="font-weight: 400; font-style: italic; opacity: 0.7;">The counter updates every 15 min</span>
+        </div>
+    </div>
 
     <script>
         let tousLesMessages = [];
-        const moisNoms = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
-
         function toggleCommunion(s) { document.getElementById('notif-panel').classList.toggle('active', s); if(s) document.getElementById('bellSound').play(); }
 
         async function charger() {
@@ -98,14 +119,11 @@
                 const data = await res.json();
                 const now = new Date();
                 const heureCam = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + 3600000);
-                
                 tousLesMessages = data.messages.filter(msg => {
                     const [a, m, j] = msg.date.split('-').map(Number);
                     return heureCam >= new Date(a, m - 1, j);
                 });
-
                 afficherFlux();
-                preparerArchives();
             } catch (e) { console.error(e); }
         }
 
@@ -127,41 +145,35 @@
             }
         }
 
-        function preparerArchives() {
-            const grid = document.getElementById('months-list');
-            grid.innerHTML = moisNoms.map((nom, i) => {
-                const numMois = (i + 1).toString().padStart(2, '0');
-                const aDesMessages = tousLesMessages.some(m => m.date.split('-')[1] === numMois);
-                return aDesMessages ? `<button class="month-btn" id="m-${numMois}" onclick="selectMonth('${numMois}')">${nom}</button>` : '';
-            }).join('');
-        }
-
         function selectMonth(m) {
-            // Activer le bouton doré
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('m-'+m).classList.add('active');
+            const btn = document.getElementById('m-'+m);
+            if(btn) btn.classList.add('active');
             
             const messagesMois = tousLesMessages.filter(msg => msg.date.split('-')[1] === m).sort((a,b) => a.id - b.id);
             const list = document.getElementById('list-titles');
-            list.innerHTML = messagesMois.map(msg => `<li class="title-item" onclick="voirMessage(${msg.id})">${msg.titre}</li>`).join('');
+            
+            if(messagesMois.length === 0) {
+                list.innerHTML = "<li style='padding:20px; font-size:0.8em; color:#999;'>Aucun message ce mois.</li>";
+            } else {
+                list.innerHTML = messagesMois.map(msg => `<li class="title-item" onclick="voirMessage(${msg.id})">${msg.titre}</li>`).join('');
+            }
             
             document.getElementById('titles-container').style.display = 'block';
             document.getElementById('selected-msg-container').innerHTML = '';
-            document.getElementById('months-list').style.display = 'none';
+            document.querySelector('.months-grid').style.display = 'none';
         }
 
         function showMonthsOnly() {
             document.getElementById('titles-container').style.display = 'none';
             document.getElementById('selected-msg-container').innerHTML = '';
-            document.getElementById('months-list').style.display = 'grid';
+            document.querySelector('.months-grid').style.display = 'grid';
         }
 
         function voirMessage(id) {
             const msg = tousLesMessages.find(m => m.id === id);
-            document.getElementById('selected-msg-container').innerHTML = creerCard(msg);
+            document.getElementById('selected-msg-container').innerHTML = creerCard(msg) + `<button class="btn-retour" onclick="selectMonth('${msg.date.split('-')[1]}')">⬅ RETOUR AUX TITRES</button>`;
             document.getElementById('titles-container').style.display = 'none';
-            // Ajout bouton retour sous le message
-            document.getElementById('selected-msg-container').innerHTML += `<button class="btn-retour" onclick="selectMonth('${msg.date.split('-')[1]}')">⬅ RETOUR AUX TITRES</button>`;
         }
 
         function creerCard(msg) {
@@ -173,7 +185,6 @@
                 <p style="text-align:right; font-size:0.8em; color:#d4af37; font-weight:700;">Publié le ${msg.date}</p>
             </div>`;
         }
-
         charger();
     </script>
 </body>
