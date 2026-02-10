@@ -3,23 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    
-    <script>
-      (function() {
-        var currentHost = window.location.hostname;
-        var targetHost = "emmanuel-dpv.pages.dev";
-        if (currentHost.includes("vercel.app")) {
-          window.location.replace("https://" + targetHost + window.location.pathname + window.location.search);
-        }
-      })();
-    </script>
-
-    <meta name="robots" content="index, follow">
-    <meta name="description" content="EMMANUEL - Un sanctuaire numérique pour la transformation de l'âme.">
-    <meta name="author" content="Pasteur Emmanuel">
     <title>EMMANUEL | La Voix de la Vérité</title>
 
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
@@ -31,103 +14,97 @@
             margin: 0; padding: 0; width: 100%; 
             background: #fdfdfd; color: #1a1a1a; 
             font-family: 'Lora', serif; text-align: center; 
-            overflow-x: hidden; -webkit-font-smoothing: antialiased; 
+            overflow-x: hidden;
         }
         
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-in-out; }
-        .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; animation: welcomeEntry 2s forwards; opacity: 0; }
+        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s; }
+        .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; }
 
-        @keyframes welcomeEntry { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes blockDance { 0% { opacity: 0; transform: scale(0.95) translateY(30px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-        
         /* --- STYLE DE LA LAMPE --- */
         #sanctuary-light-wrapper { position: fixed; right: 20px; top: 20px; z-index: 5000; }
         #altar-lamp { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
-        #notif-count { background: #e74c3c; color: #fff; font-weight: bold; font-family: 'Montserrat'; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; position: absolute; top: 2px; right: 2px; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 0 10px rgba(231, 76, 60, 0.5); }
-        .flame-core { position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px #d4af37, 0 0 30px #ffcc00; z-index: 2; animation: flicker 1.5s infinite ease-in-out; }
-        .flame-glow { position: absolute; width: 120%; height: 120%; background: radial-gradient(circle, rgba(212, 175, 55, 0.5) 0%, rgba(212, 175, 55, 0) 70%); border-radius: 50%; animation: breathe 3s infinite ease-in-out; }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.6); opacity: 0.8; } }
-        @keyframes flicker { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(0.9); filter: brightness(1.3); } }
+        #notif-count { background: #e74c3c; color: #fff; font-weight: bold; font-family: 'Montserrat'; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; position: absolute; top: 2px; right: 2px; display: flex; align-items: center; justify-content: center; z-index: 10; }
+        .flame-core { position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px #d4af37, 0 0 30px #ffcc00; z-index: 2; animation: flicker 1.5s infinite; }
+        .flame-glow { position: absolute; width: 120%; height: 120%; background: radial-gradient(circle, rgba(212, 175, 55, 0.4) 0%, rgba(212, 175, 55, 0) 70%); border-radius: 50%; animation: breathe 3s infinite; }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.6); opacity: 0.7; } }
+        @keyframes flicker { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.9); } }
 
-        /* PANNEAU COMMUNION */
-        #notif-panel { position: fixed; right: -320px; top: 0; height: 100vh; width: 280px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-left: 2px solid rgba(212, 175, 55, 0.4); padding: 40px 25px; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); opacity: 0; z-index: 4999; text-align: left; overflow-y: auto; }
-        #notif-panel.active { right: 0; opacity: 1; }
-        .notif-tag { font-family: 'Montserrat'; font-size: 8px; color: #d4af37; letter-spacing: 2px; font-weight: 900; }
-        .green-dot { height: 10px; width: 10px; background-color: #2ecc71; border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulseGreen 1.5s infinite; }
-        @keyframes pulseGreen { 0% { transform: scale(0.95); opacity: 0.7; } 70% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.7; } }
+        /* PANNEAU COMMUNION CORRIGÉ */
+        #notif-panel { position: fixed; right: -320px; top: 0; height: 100vh; width: 300px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-left: 2px solid #d4af37; padding: 60px 25px; transition: 0.5s ease; z-index: 4999; text-align: left; box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
+        #notif-panel.active { right: 0; }
+        .close-notif { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; color: #1a1a1a; font-family: 'Montserrat'; font-weight: 900; }
+        
+        .notif-item { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed #eee; }
+        .notif-tag { font-family: 'Montserrat'; font-size: 9px; color: #d4af37; letter-spacing: 2px; font-weight: 900; text-transform: uppercase; }
+        .notif-text { font-size: 0.95em; line-height: 1.5; margin-top: 8px; }
 
         /* DESIGN DES MESSAGES */
-        .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
-        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
-        .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
-        .msg-content { text-align: justify; line-height: 1.6; font-size: 1.05em; white-space: pre-line; color: #1a1a1a; }
-        .msg-content strong { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000; }
+        .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; }
+        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; }
+        .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; color: #1a1a1a; font-size: 1.1em; font-weight: 900; text-transform: uppercase; }
+        .msg-content { text-align: justify; line-height: 1.6; white-space: pre-line; margin-top: 15px; }
 
-        /* UI */
-        .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; }
-        .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; background: transparent; color: #95a5a6; font-size: 10px; }
-        .lang-btn.active { background: white; color: #e74c3c; }
-        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; }
-        .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; }
-
-        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; display: block; margin: 20px auto; text-transform: uppercase; }
-        
-        /* --- COMPTEUR (NON TOUCHÉ) --- */
-        .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; box-shadow: 0 10px 40px rgba(0,0,0,0.03); }
-        .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
-        .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
-        .update-notice { font-family: 'Montserrat', sans-serif; font-size: 0.7em; font-weight: 700; color: #95a5a6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
+        /* COMPTEUR (PROTECTION STRICTE) */
+        .flag-counter-box { background: white; padding: 30px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; }
+        .stat-title { font-family: 'Montserrat'; font-weight: 900; }
+        .stat-subtitle { color: #d4af37; font-size: 0.8em; margin-bottom: 15px; font-weight: 700; }
     </style>
 </head>
 <body>
 
     <audio id="bellSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
-    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
+    <div id="loading-screen"><div class="welcome-text">Bienvenue</div></div>
 
     <div id="sanctuary-light-wrapper">
-        <div id="altar-lamp" onclick="igniteCommunion()">
+        <div id="altar-lamp" onclick="toggleCommunion(true)">
             <span id="notif-count">1</span>
             <div class="flame-glow"></div><div class="flame-core"></div>
             <span style="font-size: 20px; position: relative; z-index: 3;">🕯️</span>
         </div>
+        
         <div id="notif-panel">
-            <h3 style="color:#d4af37; font-family:'Montserrat'; font-size:10px; letter-spacing:3px;">COMMUNION</h3>
-            <div class="notif-item"><span class="green-dot"></span><span class="notif-tag">RÉVÉLATION</span><p><strong>Pasteur Emmanuel</strong> vous souhaite la bienvenue.</p></div>
-        </div>
-    </div>
+            <div class="close-notif" onclick="toggleCommunion(false)">×</div>
+            <h3 style="color:#d4af37; font-family:'Montserrat'; font-size:12px; letter-spacing:3px; margin-bottom:30px;">COMMUNION</h3>
+            
+            <div class="notif-item">
+                <span class="notif-tag">📢 ANNONCE</span>
+                <p class="notif-text">Veuillez noter que l'adresse officielle est désormais : <strong>emmanuel-dpv.pages.dev</strong>. Mettez vos favoris à jour !</p>
+            </div>
 
-    <div class="lang-selector">
-        <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
-        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
+            <div class="notif-item">
+                <span class="notif-tag">✨ RÉVÉLATION</span>
+                <p class="notif-text">Pasteur Emmanuel vous souhaite la bienvenue dans ce sanctuaire numérique.</p>
+            </div>
+
+            <div style="margin-top: 50px; font-style: italic; color: #95a5a6; font-size: 0.85em; border-top: 1px solid #eee; padding-top: 20px;">
+                "La Lumière du Sanctuaire reste allumée sur l'Autel pour éclairer votre journée." 🕯️
+            </div>
+        </div>
     </div>
 
     <h1>EMMANUEL</h1>
-    <div class="intro-text" id="intro-txt">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
+    <p>La Voix de la Vérité</p>
 
     <div id="flux-messages"></div>
 
-    <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
-
     <div class="flag-counter-box">
-        <div class="stat-title" id="stat-title">COMMUNAUTÉ EMMANUEL</div>
-        <div class="stat-subtitle" id="stat-sub">✨ Lecteurs par pays et vues ✨</div>
-        <a href="https://info.flagcounter.com/ivJp" target="_blank">
-            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/?cache_refresh=1" alt="Statistiques" border="0" style="margin-top:20px; max-width: 100%;">
+        <div class="stat-title">COMMUNAUTÉ EMMANUEL</div>
+        <div class="stat-subtitle">✨ Lecteurs par pays et vues ✨</div>
+        <a href="https://info.flagcounter.com/ivJp">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
         </a>
-        <div class="update-notice" id="update-txt">
-            Le compteur s'actualise toutes les 15 min<br>
-            <span style="font-weight: 400; font-style: italic; opacity: 0.8;">The counter updates every 15 min</span>
-        </div>
     </div>
 
     <script>
-        let currentLang = 'fr';
-        let tousLesMessages = [];
-
-        function igniteCommunion() {
-            document.getElementById('bellSound').play();
-            document.getElementById('notif-panel').classList.add('active');
-            if (document.getElementById('notif-count')) document.getElementById('notif-count').style.display = 'none';
+        function toggleCommunion(show) {
+            const panel = document.getElementById('notif-panel');
+            if (show) {
+                panel.classList.add('active');
+                document.getElementById('bellSound').play();
+                document.getElementById('notif-count').style.display = 'none';
+            } else {
+                panel.classList.remove('active');
+            }
         }
 
         async function chargerMessages() {
@@ -136,44 +113,28 @@
                 const data = await res.json();
                 
                 const maintenant = new Date();
-                // Ajustement pour l'heure du Cameroun (UTC+1)
                 const heureCameroun = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000));
                 
-                tousLesMessages = data.messages.filter(msg => {
+                // Filtrage strict par date
+                const messagesFiltrés = data.messages.filter(msg => {
                     const [a, m, j] = msg.date.split('-').map(Number);
-                    const dateMsg = new Date(a, m - 1, j, 0, 0, 0);
-                    return heureCameroun >= dateMsg; // Filtre strict : cache le futur
+                    return heureCameroun >= new Date(a, m - 1, j);
                 });
 
-                afficherAccueil();
-                document.getElementById('loading-screen').style.display = 'none';
+                const container = document.getElementById('flux-messages');
+                container.innerHTML = messagesFiltrés.sort((a,b) => b.id - a.id).slice(0, 3).map(msg => `
+                    <div class="message-card">
+                        ${msg.image ? `<img src="${msg.image}" class="msg-img">` : ''}
+                        <h3 class="msg-title">${msg.titre}</h3>
+                        ${msg.audio ? `<audio src="${msg.audio}" controls style="width:100%; margin:15px 0;"></audio>` : ''}
+                        <div class="msg-content">${msg.texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                        <span style="display:block; text-align:right; color:#d4af37; font-size:0.8em; margin-top:15px;">Publié le ${msg.date}</span>
+                    </div>
+                `).join('');
+
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 500);
             } catch (err) { console.error(err); }
-        }
-
-        function creerCard(msg) {
-            const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
-            const texte = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
-            const texteFormate = texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            
-            // RESTAURATION IMAGE ET AUDIO
-            let imgPart = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
-            let audioPart = msg.audio ? `<audio src="${msg.audio}" controls style="width:100%; height:35px; margin:15px 0; border-radius:8px;"></audio>` : '';
-
-            return `
-                <div class="message-card">
-                    ${imgPart}
-                    <h3 class="msg-title">${titre}</h3>
-                    ${audioPart}
-                    <div class="msg-content">${texteFormate}</div>
-                    <button class="copy-btn" onclick="alert('Lien copié !')">PARTAGER</button>
-                    <span class="published-date">Publié le ${msg.date}</span>
-                </div>`;
-        }
-
-        function afficherAccueil() {
-            const container = document.getElementById('flux-messages');
-            const derniers = [...tousLesMessages].sort((a,b) => b.id - a.id).slice(0, 3);
-            container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
         }
 
         chargerMessages();
