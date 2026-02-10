@@ -57,7 +57,7 @@
             100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
-        /* --- STYLE DE LA LAMPE DE L'AUTEL (BRILLANCE RENFORCÉE) --- */
+        /* --- STYLE DE LA LAMPE ET DU PANNEAU (MODIFIÉ) --- */
         #sanctuary-light-wrapper { position: fixed; right: 20px; top: 20px; z-index: 5000; }
         #altar-lamp { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
         
@@ -68,10 +68,9 @@
             z-index: 10; transition: 0.5s; box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
         }
 
-        /* LA FLAMME RÉELLE */
         .flame-core { 
             position: absolute; width: 14px; height: 14px; 
-            background: #fff; /* Cœur blanc pour la brillance */
+            background: #fff; 
             border-radius: 50%; 
             box-shadow: 0 0 15px #d4af37, 0 0 30px #ffcc00; 
             z-index: 2; animation: flicker 1.5s infinite ease-in-out; 
@@ -86,18 +85,34 @@
         @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.6); opacity: 0.8; } }
         @keyframes flicker { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(0.9); filter: brightness(1.3); } }
 
+        /* PANNEAU TRANSPARENT (NUÉE) */
         #notif-panel {
             position: fixed; right: -320px; top: 0; height: 100vh; width: 280px;
-            background: #ffffff; border-left: 2px solid #d4af37; padding: 40px 25px;
+            background: rgba(255, 255, 255, 0.85); /* Fond transparent */
+            backdrop-filter: blur(10px); /* Effet flou arrière-plan */
+            -webkit-backdrop-filter: blur(10px);
+            border-left: 2px solid rgba(212, 175, 55, 0.4); padding: 40px 25px;
             transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); opacity: 0; z-index: 4999;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.1); text-align: left;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.05); text-align: left;
             overflow-y: auto;
         }
         #notif-panel.active { right: 0; opacity: 1; }
         .notif-scroll-area { margin-top: 20px; }
-        .notif-item { margin-bottom: 25px; border-bottom: 1px solid #f5f5f5; padding-bottom: 15px; }
+        .notif-item { margin-bottom: 25px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 15px; }
         .notif-tag { font-family: 'Montserrat'; font-size: 8px; color: #d4af37; letter-spacing: 2px; font-weight: 900; }
-        .notif-item p { font-size: 12px; color: #333; margin-top: 8px; line-height: 1.6; }
+        .notif-item p { font-size: 12px; color: #1a1a1a; margin-top: 8px; line-height: 1.6; }
+        
+        /* POINT VERT PULSANT */
+        .green-dot {
+            height: 10px; width: 10px; background-color: #2ecc71; border-radius: 50%;
+            display: inline-block; margin-right: 8px; box-shadow: 0 0 8px #2ecc71;
+            animation: pulseGreen 1.5s infinite;
+        }
+        @keyframes pulseGreen {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            70% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
 
         /* --- FIN STYLE LAMPE --- */
 
@@ -174,15 +189,19 @@
             <div class="flame-core"></div>
             <span style="font-size: 20px; position: relative; z-index: 3; filter: drop-shadow(0 0 5px #d4af37);">🕯️</span>
         </div>
+
         <div id="notif-panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 15px;">
                 <h3 style="margin:0; color:#d4af37; font-family:'Montserrat'; font-size:10px; letter-spacing:3px;">COMMUNION</h3>
                 <button onclick="closeCommunion()" style="background:none; border:none; color:#ccc; cursor:pointer; font-size:25px;">×</button>
             </div>
             
             <div class="notif-scroll-area">
                 <div class="notif-item">
-                    <span class="notif-tag">RÉVÉLATION</span>
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                        <span class="green-dot"></span>
+                        <span class="notif-tag">RÉVÉLATION</span>
+                    </div>
                     <p><strong>Pasteur Emmanuel</strong> vous souhaite la bienvenue.<br><br>
                     Le sanctuaire est désormais ancré sur <strong>emmanuel-dpv.pages.dev</strong>. Explorez les archives pour nourrir votre âme.</p>
                 </div>
@@ -192,7 +211,7 @@
                 Le chiffre disparaît après lecture, mais la flamme veille sur vous.
             </p>
         </div>
-    </div>
+        </div>
 
     <a href="javascript:void(0)" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="floating-container scroll-link" id="scrollTopLink">
         <span class="btn-label" id="label-top">Retour en haut</span>
@@ -269,12 +288,9 @@
         let msgPartageTemp = "";
         let titrePartageTemp = "";
 
-        /* FONCTIONS DE LA LAMPE AMÉLIORÉES */
         function igniteCommunion() {
             document.getElementById('bellSound').play();
             document.getElementById('notif-panel').classList.add('active');
-            
-            // L'EFFACEMENT : Le chiffre disparaît quand on a lu
             const count = document.getElementById('notif-count');
             if (count) {
                 count.style.transform = 'scale(0)';
@@ -346,7 +362,7 @@
             const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
             const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
             const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
-            const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            const texteFormate = texteOriginal.replace(/\*\?(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
             let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
             
