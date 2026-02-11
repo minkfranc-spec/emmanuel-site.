@@ -128,13 +128,13 @@
         .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
         .update-notice { font-family: 'Montserrat', sans-serif; font-size: 0.7em; font-weight: 700; color: #95a5a6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
 
-        /* --- BULLE DE COMMUNIQUÉS --- */
+        /* --- BULLE DE COMMUNIQUÉS - STYLE ÉPURÉ --- */
         #notif-bubble {
             position: fixed;
             top: 20px;
             right: 20px;
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: #d4af37;
             border-radius: 50%;
             display: none;
@@ -142,33 +142,52 @@
             align-items: center;
             cursor: pointer;
             z-index: 2100;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
             animation: lightPulse 2s infinite;
-            border: 3px solid #fff;
+            border: 2px solid #fff;
         }
         @keyframes lightPulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(212, 175, 55, 1); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); }
             100% { transform: scale(1); }
         }
         #notif-panel {
             display: none;
             position: fixed;
-            top: 80px;
+            top: 75px;
             right: 20px;
-            width: 300px;
+            width: 260px;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             z-index: 2100;
-            padding: 20px;
+            padding: 15px;
             text-align: left;
-            animation: slideInNotif 0.4s ease-out;
-            border-top: 5px solid #d4af37;
+            animation: slideInNotif 0.3s ease-out;
+            border-top: 4px solid #d4af37;
         }
-        @keyframes slideInNotif { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        .notif-item { font-family: 'Montserrat'; font-size: 0.85em; font-weight: 700; color: #1a1a1a; line-height: 1.5; margin-bottom: 15px; }
-        .close-notif { display: block; text-align: center; color: #e74c3c; font-family: 'Montserrat'; font-weight: 900; font-size: 11px; text-transform: uppercase; cursor: pointer; padding-top: 10px; border-top: 1px solid #eee; }
+        @keyframes slideInNotif { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Police plus petite et fine pour le communiqué */
+        .notif-item { 
+            font-family: 'Montserrat'; 
+            font-size: 11px; 
+            font-weight: 500; 
+            color: #555; 
+            line-height: 1.4; 
+            margin-bottom: 10px; 
+        }
+        .close-notif { 
+            display: block; 
+            text-align: center; 
+            color: #e74c3c; 
+            font-family: 'Montserrat'; 
+            font-weight: 900; 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            cursor: pointer; 
+            padding-top: 8px; 
+            border-top: 1px solid #eee; 
+        }
     </style>
 </head>
 <body>
@@ -176,12 +195,13 @@
     <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
 
     <div id="notif-bubble" onclick="toggleNotifPanel()">
-        <span style="color:white; font-size:20px;">🔔</span>
+        <span style="color:white; font-size:18px;">🔔</span>
     </div>
+    
     <div id="notif-panel">
-        <div style="font-family: 'Montserrat'; font-weight: 900; font-size: 11px; color: #d4af37; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">📢 Communiqués Officiels</div>
+        <div style="font-family: 'Montserrat'; font-weight: 900; font-size: 10px; color: #d4af37; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">📢 Message de l'Église</div>
         <div id="notif-list"></div>
-        <span class="close-notif" onclick="closeNotifPanel()">Fermer</span>
+        <span class="close-notif" onclick="closeNotifPanel()">Fermer & Masquer</span>
     </div>
 
     <a href="javascript:void(0)" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="floating-container scroll-link" id="scrollTopLink">
@@ -295,11 +315,15 @@
 
         function toggleNotifPanel() {
             const panel = document.getElementById('notif-panel');
+            const bubble = document.getElementById('notif-bubble');
             panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+            // On masque la bulle quand on ouvre le panneau pour éviter l'encombrement
+            bubble.style.display = 'none';
         }
 
         function closeNotifPanel() {
             document.getElementById('notif-panel').style.display = 'none';
+            document.getElementById('notif-bubble').style.display = 'none'; // Disparaît définitivement
         }
 
         function setLanguage(lang) {
