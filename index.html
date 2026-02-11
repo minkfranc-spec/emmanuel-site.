@@ -71,7 +71,7 @@
             margin: 15px auto 5px;
             width: 90%;
             max-width: 450px;
-            display: none; /* Caché par défaut, s'affiche si un communiqué existe */
+            display: none; 
         }
         .communique-trigger {
             font-family: 'Montserrat', sans-serif;
@@ -165,6 +165,7 @@
         .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
         .update-notice { font-family: 'Montserrat', sans-serif; font-size: 0.7em; font-weight: 700; color: #95a5a6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
 
+        /* --- BULLE DE COMMUNIQUÉS --- */
         #notif-bubble {
             position: fixed;
             top: 20px;
@@ -181,6 +182,7 @@
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
             animation: lightPulse 2s infinite;
             border: 2px solid #fff;
+            display: none; /* S'affiche via JS si un communiqué existe */
         }
         @keyframes lightPulse {
             0% { transform: scale(1); box-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
@@ -217,6 +219,7 @@
             padding-bottom: 8px;
             border-bottom: 1px solid #eee;
             color: #1a1a1a;
+            line-height: 1.4;
         }
         .close-notif {
             display: block;
@@ -235,15 +238,11 @@
 
     <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
 
-    <div id="communique-wrapper">
-        <div class="communique-trigger" onclick="toggleCommunique()">📜 Communiqué</div>
-        <div id="communique-box" class="communique-box"></div>
-    </div>
-
     <div id="notif-bubble" onclick="toggleNotifPanel()">
-        <span id="notif-count">3</span>
+        <span id="notif-count">1</span>
     </div>
     <div id="notif-panel">
+        <div style="font-family: 'Montserrat'; font-weight: 900; font-size: 12px; color: #d4af37; margin-bottom: 10px; text-transform: uppercase;">📢 Communiqués Officiels</div>
         <div id="notif-list"></div>
         <span class="close-notif" onclick="closeNotifPanel()">Fermer</span>
     </div>
@@ -331,10 +330,10 @@
                 const res = await fetch('data.json?v=' + Date.now());
                 const data = await res.json();
                 
-                // GESTION DU COMMUNIQUÉ FIN (Inexistant si vide)
+                // GESTION DES COMMUNIQUÉS VIA LA BULLE
                 if (data.communique && data.communique.trim() !== "") {
-                    document.getElementById('communique-wrapper').style.display = 'block';
-                    document.getElementById('communique-box').innerText = data.communique;
+                    document.getElementById('notif-bubble').style.display = 'flex';
+                    document.getElementById('notif-list').innerHTML = `<div class="notif-item">🔔 ${data.communique}</div>`;
                 }
 
                 if (data.status === "standby") {
@@ -351,27 +350,10 @@
                 });
                 afficherAccueil();
                 genererBoutonsMois();
-                preparerNotifications();
 
                 const loader = document.getElementById('loading-screen');
                 if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
             } catch (err) { console.error("Erreur:", err); if (document.getElementById('loading-screen')) document.getElementById('loading-screen').style.display = 'none'; }
-        }
-
-        function toggleCommunique() {
-            const box = document.getElementById('communique-box');
-            box.style.display = (box.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function preparerNotifications() {
-            const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
-            const list = document.getElementById('notif-list');
-            const count = document.getElementById('notif-count');
-            count.innerText = derniers.length;
-            list.innerHTML = derniers.map(msg => {
-                const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
-                return `<div class="notif-item">🔔 New: ${titre}</div>`;
-            }).join('');
         }
 
         function toggleNotifPanel() {
@@ -381,7 +363,6 @@
 
         function closeNotifPanel() {
             document.getElementById('notif-panel').style.display = 'none';
-            document.getElementById('notif-bubble').style.display = 'none';
         }
 
         function setLanguage(lang) {
@@ -396,7 +377,7 @@
             document.getElementById('label-help').innerText = translations[lang].help;
             document.getElementById('update-txt').innerHTML = translations[lang].update;
             document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
-            genererBoutonsMois(); afficherAccueil(); preparerNotifications();
+            genererBoutonsMois(); afficherAccueil();
         }
 
         function creerCard(msg) {
