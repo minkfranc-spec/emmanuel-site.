@@ -66,43 +66,6 @@
             100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
-        /* --- DESIGN FIN POUR LES COMMUNIQUÉS --- */
-        #communique-wrapper {
-            margin: 15px auto 5px;
-            width: 90%;
-            max-width: 450px;
-            display: none; 
-        }
-        .communique-trigger {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 9px;
-            letter-spacing: 2px;
-            color: #d4af37;
-            text-transform: uppercase;
-            cursor: pointer;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 5px 15px;
-            border-radius: 20px;
-            display: inline-block;
-            transition: 0.3s;
-        }
-        .communique-trigger:hover { background: rgba(212, 175, 55, 0.05); }
-        
-        .communique-box {
-            display: none;
-            margin-top: 10px;
-            padding: 15px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            font-size: 0.9em;
-            line-height: 1.5;
-            color: #7f8c8d;
-            border-left: 3px solid #d4af37;
-            text-align: left;
-            animation: blockDance 0.4s ease-out;
-        }
-
         .lang-selector { margin: 15px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
         .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
         
@@ -170,68 +133,42 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             background: #d4af37;
             border-radius: 50%;
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             z-index: 2100;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
             animation: lightPulse 2s infinite;
-            border: 2px solid #fff;
-            display: none; /* S'affiche via JS si un communiqué existe */
+            border: 3px solid #fff;
         }
         @keyframes lightPulse {
-            0% { transform: scale(1); box-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
-            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(212, 175, 55, 1); }
-            100% { transform: scale(1); box-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
-        }
-        #notif-count {
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 14px;
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(212, 175, 55, 1); }
+            100% { transform: scale(1); }
         }
         #notif-panel {
             display: none;
             position: fixed;
-            top: 75px;
+            top: 80px;
             right: 20px;
-            width: 280px;
+            width: 300px;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
             z-index: 2100;
             padding: 20px;
             text-align: left;
             animation: slideInNotif 0.4s ease-out;
-            border-top: 4px solid #d4af37;
+            border-top: 5px solid #d4af37;
         }
-        @keyframes slideInNotif { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .notif-item {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.85em;
-            font-weight: 700;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #eee;
-            color: #1a1a1a;
-            line-height: 1.4;
-        }
-        .close-notif {
-            display: block;
-            text-align: center;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 10px;
-            color: #e74c3c;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+        @keyframes slideInNotif { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .notif-item { font-family: 'Montserrat'; font-size: 0.85em; font-weight: 700; color: #1a1a1a; line-height: 1.5; margin-bottom: 15px; }
+        .close-notif { display: block; text-align: center; color: #e74c3c; font-family: 'Montserrat'; font-weight: 900; font-size: 11px; text-transform: uppercase; cursor: pointer; padding-top: 10px; border-top: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -239,10 +176,10 @@
     <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
 
     <div id="notif-bubble" onclick="toggleNotifPanel()">
-        <span id="notif-count">1</span>
+        <span style="color:white; font-size:20px;">🔔</span>
     </div>
     <div id="notif-panel">
-        <div style="font-family: 'Montserrat'; font-weight: 900; font-size: 12px; color: #d4af37; margin-bottom: 10px; text-transform: uppercase;">📢 Communiqués Officiels</div>
+        <div style="font-family: 'Montserrat'; font-weight: 900; font-size: 11px; color: #d4af37; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">📢 Communiqués Officiels</div>
         <div id="notif-list"></div>
         <span class="close-notif" onclick="closeNotifPanel()">Fermer</span>
     </div>
@@ -330,7 +267,7 @@
                 const res = await fetch('data.json?v=' + Date.now());
                 const data = await res.json();
                 
-                // GESTION DES COMMUNIQUÉS VIA LA BULLE
+                // GESTION DU COMMUNIQUÉ
                 if (data.communique && data.communique.trim() !== "") {
                     document.getElementById('notif-bubble').style.display = 'flex';
                     document.getElementById('notif-list').innerHTML = `<div class="notif-item">🔔 ${data.communique}</div>`;
@@ -358,7 +295,7 @@
 
         function toggleNotifPanel() {
             const panel = document.getElementById('notif-panel');
-            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
         }
 
         function closeNotifPanel() {
