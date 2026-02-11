@@ -69,12 +69,14 @@
         .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
         .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
         
-        /* EFFET VEILLEUSE FIXE SANS ANIMATION */
+        /* MODIFICATION : EFFET VEILLEUSE PAR L'INTÉRIEUR */
         .lang-btn.active { 
-            background: white; 
+            background: #fff; 
             color: #e74c3c; 
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); /* Éclat doux et constant */
-            border: 1px solid rgba(212, 175, 55, 0.4);
+            border: 1px solid #d4af37;
+            /* Lumière émise par dedans (inset) et légère aura autour */
+            box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.6), 0 0 10px rgba(212, 175, 55, 0.3);
+            text-shadow: 0 0 2px rgba(212, 175, 55, 0.2);
         }
 
         h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 15px 0 5px 0; }
@@ -215,40 +217,23 @@
             try {
                 const res = await fetch('data.json?v=' + Date.now());
                 const data = await res.json();
-                
                 if (data.status === "standby") {
-                    document.body.innerHTML = `
-                        <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#1a1a1a; color:#d4af37; text-align:center; padding:20px;">
-                            <h1 style="color:#d4af37; font-size:3em; font-family:'Montserrat';">🏛️ EMMANUEL</h1>
-                            <p style="font-family:'Lora'; font-size:1.5em;">Le sanctuaire est momentanément fermé pour maintenance.</p>
-                            <p style="font-style:italic; opacity:0.7;">La Voix de la Vérité revient bientôt.</p>
-                        </div>`;
+                    document.body.innerHTML = `<div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#1a1a1a; color:#d4af37; text-align:center; padding:20px;"><h1 style="color:#d4af37; font-size:3em; font-family:'Montserrat';">🏛️ EMMANUEL</h1><p style="font-family:'Lora'; font-size:1.5em;">Le sanctuaire est momentanément fermé pour maintenance.</p><p style="font-style:italic; opacity:0.7;">La Voix de la Vérité revient bientôt.</p></div>`;
                     return;
                 }
-
                 const listeBrute = data.messages || [];
                 const maintenant = new Date();
                 const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000)); 
-
                 tousLesMessages = listeBrute.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
                     const dateParution = new Date(annee, mois - 1, jour, 0, 0, 1);
                     return heureLocale >= dateParution;
                 });
-
                 afficherAccueil();
                 genererBoutonsMois();
-                
                 const loader = document.getElementById('loading-screen');
-                if (loader) { 
-                    loader.style.opacity = '0'; 
-                    setTimeout(() => { loader.style.display = 'none'; }, 500); 
-                }
-            } catch (err) { 
-                console.error("Erreur de chargement:", err);
-                const loader = document.getElementById('loading-screen');
-                if (loader) loader.style.display = 'none';
-            }
+                if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
+            } catch (err) { console.error("Erreur:", err); if (document.getElementById('loading-screen')) document.getElementById('loading-screen').style.display = 'none'; }
         }
 
         function setLanguage(lang) {
@@ -263,8 +248,7 @@
             document.getElementById('label-help').innerText = translations[lang].help;
             document.getElementById('update-txt').innerHTML = translations[lang].update;
             document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
-            genererBoutonsMois();
-            afficherAccueil();
+            genererBoutonsMois(); afficherAccueil();
         }
 
         function creerCard(msg) {
@@ -276,18 +260,7 @@
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
             let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
-            
-            return `<div class="message-card">
-                ${imgHtml}
-                <span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span>
-                <h3 class="msg-title">${titre}</h3>
-                ${audioHtml}
-                <div class="msg-content">${texteFormate}</div>
-                <button class="copy-btn" onclick="ouvrirMenuPartage('${btoa(unescape(encodeURIComponent(titre)))}', '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">
-                    ${translations[currentLang].shareBtn}
-                </button>
-                <span class="published-date">${translations[currentLang].published} ${dateAffichee}</span>
-            </div>`;
+            return `<div class="message-card">${imgHtml}<span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${btoa(unescape(encodeURIComponent(titre)))}', '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
         }
 
         function ouvrirMenuPartage(titreB64, texteB64) {
@@ -297,10 +270,7 @@
             document.getElementById('shareModal').style.display = 'block';
         }
 
-        function fermerPartage() {
-            document.getElementById('modalOverlay').style.display = 'none';
-            document.getElementById('shareModal').style.display = 'none';
-        }
+        function fermerPartage() { document.getElementById('modalOverlay').style.display = 'none'; document.getElementById('shareModal').style.display = 'none'; }
 
         function actionPartage(type) {
             const url = "https://emmanuel-dpv.pages.dev";
@@ -312,63 +282,32 @@
             fermerPartage();
         }
 
-        function afficherAccueil() {
-            const container = document.getElementById('flux-messages');
-            const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
-            container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
-        }
+        function afficherAccueil() { const container = document.getElementById('flux-messages'); const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3); container.innerHTML = derniers.map(msg => creerCard(msg)).join(''); }
 
-        function toggleArchives() {
-            const s = document.getElementById('archiveSection');
-            const btn = document.getElementById('btn-archive');
-            if (s.style.display === 'block') { s.style.display = 'none'; btn.innerText = translations[currentLang].archiveBtn; }
-            else { s.style.display = 'block'; btn.innerText = translations[currentLang].archiveBtnClose; }
-        }
+        function toggleArchives() { const s = document.getElementById('archiveSection'); const btn = document.getElementById('btn-archive'); if (s.style.display === 'block') { s.style.display = 'none'; btn.innerText = translations[currentLang].archiveBtn; } else { s.style.display = 'block'; btn.innerText = translations[currentLang].archiveBtnClose; } }
 
-        function genererBoutonsMois() {
-            const grid = document.getElementById('monthGrid');
-            const liste = moisNoms[currentLang];
-            grid.innerHTML = liste.map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join('');
-        }
+        function genererBoutonsMois() { const grid = document.getElementById('monthGrid'); const liste = moisNoms[currentLang]; grid.innerHTML = liste.map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join(''); }
 
         function afficherTitresDuMois(numMois, btn) {
-            const liste = document.getElementById('titres-liste');
-            const detail = document.getElementById('message-detail');
+            const liste = document.getElementById('titres-liste'); const detail = document.getElementById('message-detail');
             if (btn.classList.contains('active')) { btn.classList.remove('active'); liste.innerHTML = ''; detail.innerHTML = ''; return; }
-            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active'); detail.innerHTML = '';
+            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); detail.innerHTML = '';
             const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois).sort((a, b) => a.id - b.id);
             liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
         }
 
-        function voirDetail(id, numMois) {
-            const msg = tousLesMessages.find(m => m.id === id);
-            document.getElementById('titres-liste').innerHTML = '';
-            document.getElementById('message-detail').innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="revenirALaListe(${numMois})">${translations[currentLang].backList}</button>`;
-        }
+        function voirDetail(id, numMois) { const msg = tousLesMessages.find(m => m.id === id); document.getElementById('titres-liste').innerHTML = ''; document.getElementById('message-detail').innerHTML = creerCard(msg) + `<button class="archive-main-btn" onclick="revenirALaListe(${numMois})">${translations[currentLang].backList}</button>`; }
 
-        function revenirALaListe(numMois) {
-            const btn = document.querySelectorAll('.month-btn')[numMois-1];
-            btn.classList.remove('active');
-            afficherTitresDuMois(numMois, btn);
-        }
+        function revenirALaListe(numMois) { const btn = document.querySelectorAll('.month-btn')[numMois-1]; btn.classList.remove('active'); afficherTitresDuMois(numMois, btn); }
 
         function filtrerMessages() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const container = document.getElementById('flux-messages');
+            const query = document.getElementById('searchInput').value.toLowerCase(); const container = document.getElementById('flux-messages');
             if (query === "") { afficherAccueil(); return; }
-            const resultats = tousLesMessages.filter(msg => {
-                const searchIn = ((msg.titre || "") + (msg.titre_en || "") + (msg.texte || "") + (msg.texte_en || "") + (msg.categorie || "") + (msg.categorie_en || "")).toLowerCase();
-                return searchIn.includes(query);
-            });
+            const resultats = tousLesMessages.filter(msg => { const searchIn = ((msg.titre || "") + (msg.titre_en || "") + (msg.texte || "") + (msg.texte_en || "") + (msg.categorie || "") + (msg.categorie_en || "")).toLowerCase(); return searchIn.includes(query); });
             container.innerHTML = resultats.sort((a,b) => b.id - a.id).map(msg => creerCard(msg)).join('');
         }
 
-        window.onscroll = function() {
-            let btn = document.getElementById("scrollTopLink");
-            if (window.scrollY > 400) btn.style.display = "flex";
-            else btn.style.display = "none";
-        };
+        window.onscroll = function() { let btn = document.getElementById("scrollTopLink"); if (window.scrollY > 400) btn.style.display = "flex"; else btn.style.display = "none"; };
 
         chargerMessages();
     </script>
