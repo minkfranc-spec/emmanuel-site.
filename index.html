@@ -66,22 +66,15 @@
             100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
-        /* MODIFICATION : EFFET VEILLEUSE SUR LES BOUTONS ACTIFS */
-        @keyframes glowVeilleuse {
-            0% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.2), 0 0 10px rgba(212, 175, 55, 0.1); }
-            50% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.6), 0 0 25px rgba(212, 175, 55, 0.3); }
-            100% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.2), 0 0 10px rgba(212, 175, 55, 0.1); }
-        }
-
         .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
         .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
         
-        /* INJECTION DE L'EFFET VEILLEUSE ICI */
+        /* EFFET VEILLEUSE FIXE SANS ANIMATION */
         .lang-btn.active { 
             background: white; 
             color: #e74c3c; 
-            animation: glowVeilleuse 3s infinite ease-in-out;
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); /* Éclat doux et constant */
+            border: 1px solid rgba(212, 175, 55, 0.4);
         }
 
         h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 15px 0 5px 0; }
@@ -96,34 +89,13 @@
         .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
         .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
         
-        .msg-content { 
-            text-align: justify; 
-            line-height: 1.6; 
-            font-size: 1.05em; 
-            white-space: pre-line; 
-            color: #1a1a1a; 
-            font-weight: 400;
-        } 
-        
+        .msg-content { text-align: justify; line-height: 1.6; font-size: 1.05em; white-space: pre-line; color: #1a1a1a; font-weight: 400; } 
         .msg-content strong { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000000; }
         
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
         .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
 
-        #shareModal {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            z-index: 3000;
-            padding: 30px 20px;
-            border-radius: 30px 30px 0 0;
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.2);
-            animation: slideUp 0.3s ease-out;
-            text-align: center;
-        }
+        #shareModal { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: white; z-index: 3000; padding: 30px 20px; border-radius: 30px 30px 0 0; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); animation: slideUp 0.3s ease-out; text-align: center; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2500; }
         
@@ -255,7 +227,6 @@
                 }
 
                 const listeBrute = data.messages || [];
-
                 const maintenant = new Date();
                 const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000)); 
 
@@ -304,7 +275,6 @@
             const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
-            
             let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
             
             return `<div class="message-card">
@@ -335,17 +305,10 @@
         function actionPartage(type) {
             const url = "https://emmanuel-dpv.pages.dev";
             const messageComplet = `${titrePartageTemp}\n\n${msgPartageTemp}\n\nLire la suite : ${url}`;
-
-            if (type === 'wa') {
-                window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(messageComplet), '_blank');
-            } else if (type === 'fb') {
-                window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), '_blank');
-            } else if (type === 'mail') {
-                window.location.href = `mailto:?subject=${encodeURIComponent(titrePartageTemp)}&body=${encodeURIComponent(messageComplet)}`;
-            } else if (type === 'copy') {
-                navigator.clipboard.writeText(messageComplet);
-                alert(translations[currentLang].copied);
-            }
+            if (type === 'wa') window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(messageComplet), '_blank');
+            else if (type === 'fb') window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), '_blank');
+            else if (type === 'mail') window.location.href = `mailto:?subject=${encodeURIComponent(titrePartageTemp)}&body=${encodeURIComponent(messageComplet)}`;
+            else if (type === 'copy') { navigator.clipboard.writeText(messageComplet); alert(translations[currentLang].copied); }
             fermerPartage();
         }
 
