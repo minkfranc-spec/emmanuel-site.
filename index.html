@@ -66,15 +66,50 @@
             100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
-        .lang-selector { margin: 25px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
+        /* --- DESIGN FIN POUR LES COMMUNIQUÉS --- */
+        #communique-wrapper {
+            margin: 15px auto 5px;
+            width: 90%;
+            max-width: 450px;
+            display: none; /* Caché par défaut, s'affiche si un communiqué existe */
+        }
+        .communique-trigger {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: #d4af37;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            transition: 0.3s;
+        }
+        .communique-trigger:hover { background: rgba(212, 175, 55, 0.05); }
+        
+        .communique-box {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #7f8c8d;
+            border-left: 3px solid #d4af37;
+            text-align: left;
+            animation: blockDance 0.4s ease-out;
+        }
+
+        .lang-selector { margin: 15px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
         .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
         
-        /* MODIFICATION : EFFET VEILLEUSE PAR L'INTÉRIEUR */
         .lang-btn.active { 
             background: #fff; 
             color: #e74c3c; 
             border: 1px solid #d4af37;
-            /* Lumière émise par dedans (inset) et légère aura autour */
             box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.6), 0 0 10px rgba(212, 175, 55, 0.3);
             text-shadow: 0 0 2px rgba(212, 175, 55, 0.2);
         }
@@ -130,7 +165,6 @@
         .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
         .update-notice { font-family: 'Montserrat', sans-serif; font-size: 0.7em; font-weight: 700; color: #95a5a6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
 
-        /* --- NOUVELLE BULLE DE NOTIFICATION LUMINEUSE --- */
         #notif-bubble {
             position: fixed;
             top: 20px;
@@ -201,12 +235,16 @@
 
     <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
 
+    <div id="communique-wrapper">
+        <div class="communique-trigger" onclick="toggleCommunique()">📜 Communiqué</div>
+        <div id="communique-box" class="communique-box"></div>
+    </div>
+
     <div id="notif-bubble" onclick="toggleNotifPanel()">
         <span id="notif-count">3</span>
     </div>
     <div id="notif-panel">
-        <div id="notif-list">
-            </div>
+        <div id="notif-list"></div>
         <span class="close-notif" onclick="closeNotifPanel()">Fermer</span>
     </div>
 
@@ -292,6 +330,13 @@
             try {
                 const res = await fetch('data.json?v=' + Date.now());
                 const data = await res.json();
+                
+                // GESTION DU COMMUNIQUÉ FIN (Inexistant si vide)
+                if (data.communique && data.communique.trim() !== "") {
+                    document.getElementById('communique-wrapper').style.display = 'block';
+                    document.getElementById('communique-box').innerText = data.communique;
+                }
+
                 if (data.status === "standby") {
                     document.body.innerHTML = `<div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#1a1a1a; color:#d4af37; text-align:center; padding:20px;"><h1 style="color:#d4af37; font-size:3em; font-family:'Montserrat';">🏛️ EMMANUEL</h1><p style="font-family:'Lora'; font-size:1.5em;">Le sanctuaire est momentanément fermé pour maintenance.</p><p style="font-style:italic; opacity:0.7;">La Voix de la Vérité revient bientôt.</p></div>`;
                     return;
@@ -313,7 +358,11 @@
             } catch (err) { console.error("Erreur:", err); if (document.getElementById('loading-screen')) document.getElementById('loading-screen').style.display = 'none'; }
         }
 
-        // FONCTION NOTIFICATIONS
+        function toggleCommunique() {
+            const box = document.getElementById('communique-box');
+            box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+        }
+
         function preparerNotifications() {
             const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
             const list = document.getElementById('notif-list');
