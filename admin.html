@@ -56,6 +56,11 @@
 <script>
     let formatComplet = false;
 
+    // PROTECTION ANTI-BLOCAGE : On attend que tout soit chargé avant d'activer les scripts lourds
+    window.addEventListener('load', function() {
+        console.log("Système Emmanuel chargé et débloqué ✨");
+    });
+
     function purifier(str) {
         let s = str.trim();
         formatComplet = s.startsWith("{") && s.includes('"messages"');
@@ -73,17 +78,14 @@
             let msgs = formatComplet ? parsed.messages : (Array.isArray(parsed) ? parsed : [parsed]);
 
             if (doitReorganiser && msgs.length > 0) {
-                // On prend le DERNIER message comme base
                 let lastIndex = msgs.length - 1;
                 let currentId = parseInt(msgs[lastIndex].id) || 1;
                 let currentDate = new Date(msgs[lastIndex].date);
                 if (isNaN(currentDate)) currentDate = new Date();
 
-                // On remonte de l'avant-dernier jusqu'au premier (index 0)
                 for (let i = lastIndex - 1; i >= 0; i--) {
-                    currentId++; // On augmente l'ID
-                    currentDate.setDate(currentDate.getDate() + 1); // On augmente la date d'un jour
-                    
+                    currentId++; 
+                    currentDate.setDate(currentDate.getDate() + 1); 
                     msgs[i].id = currentId;
                     msgs[i].date = currentDate.toISOString().split('T')[0];
                 }
@@ -103,7 +105,6 @@
             card.className = "msg-card";
             let imgHtml = m.image ? `<img src="${m.image}" class="preview-img" onerror="this.style.display='none'">` : '';
             let audioHtml = m.audio ? `<audio controls src="${m.audio}"></audio>` : '';
-            // Rendu simple avec gras pour les phrases aimantes (sans bandeau théorème)
             let textePreview = m.texte.replace(/\*\*(.*?)\*\*/g, '<span class="highlight-text">$1</span>');
             
             card.innerHTML = `
