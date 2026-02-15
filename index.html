@@ -118,10 +118,8 @@
         .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
         .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; display: block; margin: 20px auto; text-transform: uppercase; max-width: 280px; }
         
-        .floating-container { position: fixed; right: 20px; z-index: 1500; display: flex; align-items: center; text-decoration: none; }
-        .scroll-link { bottom: 105px; opacity: 0; transition: 0.5s; pointer-events: none; }
-        .scroll-link.show { opacity: 1; pointer-events: auto; }
-        .whatsapp-link { bottom: 30px; }
+        .floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
+        .scroll-link { bottom: 105px; } .whatsapp-link { bottom: 30px; display: flex !important; }
         .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
         .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
         .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -218,7 +216,7 @@
         <a href="https://info.flagcounter.com/ivJp" target="_blank">
             <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/?cache_refresh=1" alt="Statistiques" border="0" style="margin-top:20px; max-width: 100%;">
         </a>
-        <div class="update-notice" id="update-txt">Le compteur s'actualise toutes les 15 min<br><span style="font-weight: 400; font-style: italic; opacity: 0.8;">The counter updates every 15 min</span></div>
+        <div class="update-notice" id="update-txt">Le compteur s'actualise toutes les 15 min</div>
     </div>
 
     <div id="modalOverlay" class="modal-overlay" onclick="fermerPartage()"></div>
@@ -244,14 +242,12 @@
             initMusique();
         }
 
-        function checkAnniversaire() {
-            const now = new Date();
-            const is17Feb = (now.getMonth() === 1 && now.getDate() === 17);
-            if (is17Feb) {
-                document.getElementById('welcome-txt').innerHTML = "✨ 1 MOIS DE GRÂCE - EMMANUEL ✨<br><small style='font-size:10px; letter-spacing:1px;'>Cliquez sur la cloche pour la playlist</small>";
-                document.getElementById('main-title').style.animation = "pulseGold 1.5s infinite";
-                lancerConfettis();
-            }
+        // FORCE L'ANNIVERSAIRE ET LES CONFETTIS
+        function activerCelebration() {
+            document.getElementById('welcome-txt').innerHTML = "✨ 1 MOIS DE GRÂCE - EMMANUEL ✨<br><small style='font-size:10px; letter-spacing:1px;'>Cliquez sur la cloche pour la playlist</small>";
+            document.getElementById('main-title').style.animation = "pulseGold 1.5s infinite";
+            document.getElementById('intro-txt').innerHTML = "<strong>Le Paradis est un positionnement, pas un sentiment.</strong><br>17 Janvier - 17 Février : Un mois de Substance.";
+            lancerConfettis();
         }
 
         function lancerConfettis() {
@@ -271,13 +267,8 @@
                     document.getElementById('notif-bubble').style.display = 'flex';
                     document.getElementById('notif-list').innerHTML = `<div class="notif-item">🔔 ${data.communique}</div>`;
                 }
-                const listeBrute = data.messages || []; const maintenant = new Date();
-                const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000));
-                tousLesMessages = listeBrute.filter(msg => {
-                    const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    return heureLocale >= new Date(annee, mois - 1, jour, 0, 0, 1);
-                });
-                checkAnniversaire(); afficherAccueil(); genererBoutonsMois(); genererBoutonsThemes();
+                tousLesMessages = data.messages || [];
+                activerCelebration(); afficherAccueil(); genererBoutonsMois(); genererBoutonsThemes();
                 setTimeout(() => {
                     const loader = document.getElementById('loading-screen');
                     if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
