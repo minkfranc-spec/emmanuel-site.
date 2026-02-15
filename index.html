@@ -264,9 +264,18 @@
                     document.getElementById('notif-bubble').style.display = 'flex';
                     document.getElementById('notif-list').innerHTML = `<div class="notif-item">🔔 ${data.communique}</div>`;
                 }
-                // TOUS LES MESSAGES SONT EXPOSÉS (PAS DE FILTRE DE DATE)
-                tousLesMessages = data.messages || [];
-                activerCelebration(); afficherAccueil(); genererBoutonsMois(); genererBoutonsThemes();
+
+                // FILTRE : On ne garde que les messages dont la date est passée ou aujourd'hui
+                const aujourdhui = new Date();
+                tousLesMessages = (data.messages || []).filter(msg => {
+                    const dateMsg = new Date(msg.date);
+                    return dateMsg <= aujourdhui;
+                });
+
+                // ON FORCE L'ANNIVERSAIRE SANS ATTENDRE LA DATE
+                activerCelebration(); 
+
+                afficherAccueil(); genererBoutonsMois(); genererBoutonsThemes();
                 setTimeout(() => {
                     const loader = document.getElementById('loading-screen');
                     if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
