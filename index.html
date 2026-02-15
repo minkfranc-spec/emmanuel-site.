@@ -32,10 +32,8 @@
     <title>EMMANUEL | La Voix de la Vérité</title>
 
     <link rel="canonical" href="https://emmanuel-dpv.pages.dev">
-    
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
-    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
@@ -58,7 +56,7 @@
             100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
-        .confetti { position: fixed; width: 10px; height: 10px; background-color: #d4af37; top: -10px; z-index: 2500; animation: fall linear forwards; }
+        .confetti { position: fixed; width: 10px; height: 10px; background-color: #d4af37; top: -10px; z-index: 2500; animation: fall linear forwards; pointer-events: none; }
         @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
 
         .lang-selector { margin: 15px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
@@ -241,15 +239,13 @@
         }
 
         function lancerConfettis() {
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti'; confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                    confetti.style.backgroundColor = ['#d4af37', '#f1c40f', '#e67e22'][Math.floor(Math.random() * 3)];
-                    document.body.appendChild(confetti); setTimeout(() => confetti.remove(), 5000);
-                }, i * 100);
-            }
+            setInterval(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti'; confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDuration = (Math.random() * 5 + 3) + 's';
+                confetti.style.backgroundColor = ['#d4af37', '#f1c40f', '#e67e22'][Math.floor(Math.random() * 3)];
+                document.body.appendChild(confetti); setTimeout(() => confetti.remove(), 8000);
+            }, 300);
         }
 
         async function chargerMessages() {
@@ -260,7 +256,7 @@
                     document.getElementById('notif-list').innerHTML = `<div class="notif-item">🔔 ${data.communique}</div>`;
                 }
                 if (data.status === "standby") {
-                    document.body.innerHTML = `<div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#1a1a1a; color:#d4af37; text-align:center; padding:20px;"><h1 style="color:#d4af37; font-size:3em; font-family:'Montserrat';">🏛️ EMMANUEL</h1><p style="font-family:'Lora'; font-size:1.5em;">Le sanctuaire est momentanément fermé pour maintenance.</p></div>`;
+                    document.body.innerHTML = `<div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#1a1a1a; color:#d4af37; text-align:center; padding:20px;"><h1 style="color:#d4af37; font-size:3em; font-family:'Montserrat';">🏛️ EMMANUEL</h1><p style="font-family:'Lora'; font-size:1.5em;">Le sanctuaire est momentanément fermé.</p></div>`;
                     return;
                 }
                 const listeBrute = data.messages || []; const maintenant = new Date();
@@ -270,9 +266,13 @@
                     return heureLocale >= new Date(annee, mois - 1, jour, 0, 0, 1);
                 });
                 checkAnniversaire(); afficherAccueil(); genererBoutonsMois(); genererBoutonsThemes();
-                const loader = document.getElementById('loading-screen');
-                if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
-            } catch (err) { console.error("Erreur:", err); }
+                
+                setTimeout(() => {
+                    const loader = document.getElementById('loading-screen');
+                    if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
+                }, 4000);
+
+            } catch (err) { console.error("Erreur:", err); if(document.getElementById('loading-screen')) document.getElementById('loading-screen').style.display = 'none'; }
         }
 
         function switchArchiveView(view) {
