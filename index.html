@@ -274,7 +274,7 @@
         let msgPartageTemp = "";
         let titrePartageTemp = "";
         const moisNoms = { fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] };
-        const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ LIEN COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min", selectTheme: "Choisir une thématique..." }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ LINK COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min", selectTheme: "Choose a theme..." } };
+        const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ LIEN COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min", selectTheme: "Choisir une thématique..." }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ LINK COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back", scrollTop: "Back to top", help: "Need help?", update: "Le compteur s'actualise toutes les 15 min", selectTheme: "Choose a theme..." } };
 
         async function chargerMessages() {
             try {
@@ -328,6 +328,15 @@
                 audio.volume = 0.1;
                 audio.play();
                 musicStarted = true;
+            }
+        }
+
+        // COUPE LA MUSIQUE D'AMBIANCE LORS DE LA LECTURE D'UN MESSAGE
+        function couperAmbiance() {
+            const bgMusic = document.getElementById('bg-music');
+            if (bgMusic) {
+                bgMusic.pause();
+                bgMusic.currentTime = 0;
             }
         }
 
@@ -407,7 +416,7 @@
             const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
-            let audioHtml = msg.audio ? `<audio src="${msg.audio}" onended="lireMessageSuivant(${msg.id})" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
+            let audioHtml = msg.audio ? `<audio src="${msg.audio}" onplay="couperAmbiance()" onended="lireMessageSuivant(${msg.id})" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
             return `<div class="message-card" id="msg-card-${msg.id}">${imgHtml}<span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${btoa(unescape(encodeURIComponent(titre)))}', '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
         }
 
@@ -421,7 +430,10 @@
                     setTimeout(() => {
                         cardActuelle.outerHTML = creerCard(suivant);
                         const nouvelAudio = document.querySelector(`#msg-card-${suivant.id} audio`);
-                        if (nouvelAudio) nouvelAudio.play();
+                        if (nouvelAudio) {
+                            nouvelAudio.play();
+                            couperAmbiance();
+                        }
                     }, 500);
                 }
             }
