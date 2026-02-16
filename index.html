@@ -159,11 +159,12 @@
         .notif-item { font-family: 'Montserrat'; font-size: 11px; font-weight: 500; color: #555; line-height: 1.4; margin-bottom: 10px; }
         .close-notif { display: block; text-align: center; color: #e74c3c; font-family: 'Montserrat'; font-weight: 900; font-size: 10px; text-transform: uppercase; cursor: pointer; padding-top: 8px; border-top: 1px solid #eee; }
 
-        /* INJECTION : STYLE DU BOUTON ARCHIVES FLOTTANT EN BAS DU COMMUNIQUÉ */
-        #archive-floating-btn {
-            position: fixed; top: 85px; right: 20px; width: 45px; height: 45px; background: #1a1a1a; border-radius: 50%; display: none; justify-content: center; align-items: center; cursor: pointer; z-index: 2090; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid #d4af37; transition: transform 0.3s ease;
+        /* INJECTION : STYLE DU BOUTON SOUS LE COMMUNIQUÉ */
+        .notif-archive-btn {
+            position: fixed; top: 80px; right: 10px; width: 65px; height: 65px; display: none; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; z-index: 2050; transition: 0.3s;
         }
-        #archive-floating-btn:hover { transform: scale(1.1); }
+        .notif-archive-circle { width: 40px; height: 40px; background: #1a1a1a; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid #d4af37; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .notif-archive-label { font-family: 'Montserrat'; font-size: 8px; font-weight: 900; color: #1a1a1a; text-transform: uppercase; margin-top: 4px; background: rgba(255,255,255,0.8); padding: 2px 4px; border-radius: 4px; }
     </style>
 </head>
 <body onclick="demarrerAmbiance()">
@@ -179,8 +180,9 @@
         <div class="notif-badge">1</div>
     </div>
     
-    <div id="archive-floating-btn" onclick="toggleArchives()">
-        <span style="font-size:18px;">📂</span>
+    <div id="quick-archive-btn" class="notif-archive-btn" onclick="allerAuxArchives()">
+        <div class="notif-archive-circle"><span style="font-size:16px;">📂</span></div>
+        <div class="notif-archive-label">ARCHIVES</div>
     </div>
 
     <div id="notif-panel">
@@ -286,6 +288,24 @@
         const moisNoms = { fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] };
         const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ LIEN COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min", selectTheme: "Choisir une thématique..." }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ LINK COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back", scrollTop: "Back to top", help: "Need help?", update: "Le compteur s'actualise toutes les 15 min", selectTheme: "Choose a theme..." } };
 
+        /* INJECTION : FONCTION POUR ARRÊTER LE DÉFILEMENT ET ALLER AUX ARCHIVES */
+        function allerAuxArchives() {
+            // 1. Réinitialiser la recherche et revenir aux 3 messages du jour
+            isSearching = false;
+            messagesAffiches = 3;
+            document.getElementById('searchInput').value = "";
+            afficherAccueil();
+            
+            // 2. Défiler vers le bouton d'archives d'origine
+            const btnArchive = document.getElementById('btn-archive');
+            if(btnArchive) {
+                btnArchive.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Petit effet de pulsation pour montrer où cliquer
+                btnArchive.style.transform = "scale(1.1)";
+                setTimeout(() => { btnArchive.style.transform = "scale(1)"; }, 500);
+            }
+        }
+
         async function chargerMessages() {
             try {
                 const res = await fetch('data.json?v=' + Date.now());
@@ -293,7 +313,8 @@
                 
                 if (data.communique && data.communique.trim() !== "") {
                     document.getElementById('notif-bubble').style.display = 'flex';
-                    document.getElementById('archive-floating-btn').style.display = 'flex'; // Affiche le bouton archive si notif
+                    // INJECTION : Affichage du bouton rapide
+                    document.getElementById('quick-archive-btn').style.display = 'flex';
                     document.getElementById('notif-list').innerHTML = `<div class="notif-item">🔔 ${data.communique}</div>`;
                 }
 
