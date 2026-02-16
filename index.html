@@ -42,8 +42,7 @@
         /* DESIGN PASTEUR EMMANUEL - HARMONISÉ */
         * { box-sizing: border-box; scroll-behavior: smooth; }
         html, body { 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             width: 100%; 
             background: #fdfdfd; 
             color: #1a1a1a; 
@@ -70,8 +69,7 @@
         .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
         
         .lang-btn.active { 
-            background: #fff; 
-            color: #e74c3c; 
+            background: #fff; color: #e74c3c; 
             border: 1px solid #d4af37;
             box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.6), 0 0 10px rgba(212, 175, 55, 0.3);
             text-shadow: 0 0 2px rgba(212, 175, 55, 0.2);
@@ -108,7 +106,6 @@
         .bg-copy { background: #34495E; }
         .close-modal { margin-top: 25px; color: #95a5a6; font-family: 'Montserrat', sans-serif; font-size: 12px; text-transform: uppercase; cursor: pointer; font-weight: 900; }
 
-        /* MODIFICATION ARCHIVES PASTEUR EMMANUEL */
         .archive-section { display: none; width: 92%; max-width: 500px; margin: 20px auto; padding-bottom: 40px; }
         
         .archive-nav-btns { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
@@ -119,21 +116,9 @@
         .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
         .month-btn.active { background: #d4af37; color: white; }
 
-        /* STYLE LISTE DÉROULANTE THÉMATIQUE */
         .theme-select-container { margin-bottom: 20px; padding: 0 10px; }
         .theme-dropdown { 
-            width: 100%; 
-            padding: 15px; 
-            border-radius: 12px; 
-            border: 2px solid #d4af37; 
-            background: white; 
-            font-family: 'Montserrat', sans-serif; 
-            font-weight: 700; 
-            font-size: 14px; 
-            color: #1a1a1a; 
-            outline: none; 
-            cursor: pointer;
-            appearance: none;
+            width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #d4af37; background: white; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; color: #1a1a1a; outline: none; cursor: pointer; appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23d4af37%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
             background-position: right 15px center;
@@ -155,23 +140,12 @@
         .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
         .update-notice { font-family: 'Montserrat', sans-serif; font-size: 0.7em; font-weight: 700; color: #95a5a6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
 
-        /* BULLE DE COMMUNIQUÉS */
+        /* BULLE DE COMMUNIQUÉS AVEC BADGE 1 */
         #notif-bubble {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 45px;
-            height: 45px;
-            background: #d4af37;
-            border-radius: 50%;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 2100;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-            animation: lightPulse 2s infinite;
-            border: 2px solid #fff;
+            position: fixed; top: 20px; right: 20px; width: 45px; height: 45px; background: #d4af37; border-radius: 50%; display: none; justify-content: center; align-items: center; cursor: pointer; z-index: 2100; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); animation: lightPulse 2s infinite; border: 2px solid #fff;
+        }
+        .notif-badge {
+            position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; font-family: 'Montserrat'; font-weight: 900; display: flex; justify-content: center; align-items: center; border: 2px solid white;
         }
         @keyframes lightPulse {
             0% { transform: scale(1); }
@@ -179,49 +153,24 @@
             100% { transform: scale(1); }
         }
         #notif-panel {
-            display: none;
-            position: fixed;
-            top: 75px;
-            right: 20px;
-            width: 260px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            z-index: 2100;
-            padding: 15px;
-            text-align: left;
-            animation: slideInNotif 0.3s ease-out;
-            border-top: 4px solid #d4af37;
+            display: none; position: fixed; top: 75px; right: 20px; width: 260px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 2100; padding: 15px; text-align: left; animation: slideInNotif 0.3s ease-out; border-top: 4px solid #d4af37;
         }
         @keyframes slideInNotif { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .notif-item { 
-            font-family: 'Montserrat'; 
-            font-size: 11px; 
-            font-weight: 500; 
-            color: #555; 
-            line-height: 1.4; 
-            margin-bottom: 10px; 
-        }
-        .close-notif { 
-            display: block; 
-            text-align: center; 
-            color: #e74c3c; 
-            font-family: 'Montserrat'; 
-            font-weight: 900; 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            cursor: pointer; 
-            padding-top: 8px; 
-            border-top: 1px solid #eee; 
-        }
+        .notif-item { font-family: 'Montserrat'; font-size: 11px; font-weight: 500; color: #555; line-height: 1.4; margin-bottom: 10px; }
+        .close-notif { display: block; text-align: center; color: #e74c3c; font-family: 'Montserrat'; font-weight: 900; font-size: 10px; text-transform: uppercase; cursor: pointer; padding-top: 8px; border-top: 1px solid #eee; }
     </style>
 </head>
-<body>
+<body onclick="demarrerAmbiance()">
+
+    <audio id="bg-music" loop>
+        <source src="adoration1.mp3" type="audio/mpeg">
+    </audio>
 
     <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
 
     <div id="notif-bubble" onclick="toggleNotifPanel()">
         <span style="color:white; font-size:18px;">🔔</span>
+        <div class="notif-badge">1</div>
     </div>
     
     <div id="notif-panel">
@@ -254,6 +203,7 @@
     </div>
 
     <div id="flux-messages"></div>
+    <div id="infinite-trigger" style="height: 10px;"></div>
 
     <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
     
@@ -281,6 +231,7 @@
     <div class="flag-counter-box">
         <div class="stat-title" id="stat-title">COMMUNAUTÉ EMMANUEL</div>
         <div class="stat-subtitle" id="stat-sub">✨ Lecteurs par pays et vues ✨</div>
+    
         <a href="https://info.flagcounter.com/ivJp" target="_blank">
             <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/?cache_refresh=1" alt="Statistiques" border="0" style="margin-top:20px; max-width: 100%;">
         </a>
@@ -317,9 +268,11 @@
     <script>
         let currentLang = 'fr';
         let tousLesMessages = [];
+        let messagesAffiches = 3;
+        let isSearching = false;
+        let musicStarted = false;
         let msgPartageTemp = "";
         let titrePartageTemp = "";
-
         const moisNoms = { fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] };
         const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ LIEN COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min", selectTheme: "Choisir une thématique..." }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ LINK COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min", selectTheme: "Choose a theme..." } };
 
@@ -331,6 +284,7 @@
                 if (data.communique && data.communique.trim() !== "") {
                     document.getElementById('notif-bubble').style.display = 'flex';
                     document.getElementById('notif-list').innerHTML = `<div class="notif-item">🔔 ${data.communique}</div>`;
+                    demanderNotification(data.communique);
                 }
 
                 if (data.status === "standby") {
@@ -339,20 +293,42 @@
                 }
                 const listeBrute = data.messages || [];
                 const maintenant = new Date();
-                const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000)); 
+                const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000));
                 tousLesMessages = listeBrute.filter(msg => {
                     const [annee, mois, jour] = msg.date.split('-').map(Number);
                     const dateParution = new Date(annee, mois - 1, jour, 0, 0, 1);
                     return heureLocale >= dateParution;
                 });
-
                 afficherAccueil();
                 genererBoutonsMois();
                 genererBoutonsThemes();
 
                 const loader = document.getElementById('loading-screen');
-                if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
-            } catch (err) { console.error("Erreur:", err); if (document.getElementById('loading-screen')) document.getElementById('loading-screen').style.display = 'none'; }
+                if (loader) { loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 500); }
+            } catch (err) { console.error("Erreur:", err);
+            if (document.getElementById('loading-screen')) document.getElementById('loading-screen').style.display = 'none'; }
+        }
+
+        /* --- NOTIFICATIONS --- */
+        function demanderNotification(msg) {
+            if ("Notification" in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification("EMMANUEL", { body: "Nouveau message du Site Emmanuel disponible", icon: "https://i.postimg.cc/RCwdK4zr/jesus2.jpg" });
+                    }
+                });
+            }
+        }
+
+        /* --- AMBIANCE SONORE --- */
+        function demarrerAmbiance() {
+            if (!musicStarted) {
+                const audio = document.getElementById('bg-music');
+                audio.volume = 0.1;
+                audio.play();
+                musicStarted = true;
+            }
         }
 
         /* --- LOGIQUE ARCHIVES --- */
@@ -364,27 +340,21 @@
             document.getElementById('titres-liste').innerHTML = '';
             document.getElementById('message-detail').innerHTML = '';
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
-            // Reset dropdown si on change de vue
             document.getElementById('themeDropdown').selectedIndex = 0;
         }
 
-        /* MODIFICATION : GÉNÉRATION DROPDOWN */
         function genererBoutonsThemes() {
             const select = document.getElementById('themeDropdown');
             const themes = [...new Set(tousLesMessages.map(m => m.categorie))].filter(t => t).sort();
-            
             let options = `<option value="">-- ${translations[currentLang].selectTheme} --</option>`;
             options += themes.map(t => `<option value="${t}">📂 ${t}</option>`).join('');
             select.innerHTML = options;
         }
 
-        /* MODIFICATION : ACTION DROPDOWN */
         function choisirThemeViaDropdown(theme) {
-            const liste = document.getElementById('titres-liste'); 
+            const liste = document.getElementById('titres-liste');
             const detail = document.getElementById('message-detail');
-            
             if (!theme) { liste.innerHTML = ''; detail.innerHTML = ''; return; }
-            
             detail.innerHTML = '';
             const filtered = tousLesMessages.filter(m => m.categorie === theme).sort((a,b) => b.id - a.id);
             liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, 'theme', '${theme.replace(/'/g, "\\'")}')">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
@@ -393,16 +363,17 @@
         function voirDetail(id, type, val) {
             const msg = tousLesMessages.find(m => m.id === id);
             document.getElementById('titres-liste').innerHTML = '';
-            let btnRetour = type === 'chrono' ? 
-                `<button class="archive-main-btn" onclick="revenirChrono(${val})">${translations[currentLang].backList}</button>` :
-                `<button class="archive-main-btn" onclick="revenirTheme('${val.replace(/'/g, "\\'")}')">${translations[currentLang].backList}</button>`;
+            let btnRetour = type === 'chrono' ?
+            `<button class="archive-main-btn" onclick="revenirChrono(${val})">${translations[currentLang].backList}</button>` :
+            `<button class="archive-main-btn" onclick="revenirTheme('${val.replace(/'/g, "\\'")}')">${translations[currentLang].backList}</button>`;
             document.getElementById('message-detail').innerHTML = creerCard(msg) + btnRetour;
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        function revenirChrono(num) { const btn = document.querySelectorAll('.month-btn')[num-1]; btn.classList.remove('active'); afficherTitresDuMois(num, btn); }
+        function revenirChrono(num) { const btn = document.querySelectorAll('.month-btn')[num-1];
+        btn.classList.remove('active'); afficherTitresDuMois(num, btn); }
         function revenirTheme(t) { document.getElementById('themeDropdown').value = t; choisirThemeViaDropdown(t); }
 
-        /* --- FONCTIONS EXISTANTES RÉ-HARMONISÉES --- */
         function toggleNotifPanel() {
             const panel = document.getElementById('notif-panel');
             panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
@@ -425,8 +396,9 @@
             document.getElementById('update-txt').innerHTML = translations[lang].update;
             document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
             document.getElementById('btn-archive').innerText = translations[lang].archiveBtn;
-            genererBoutonsMois(); genererBoutonsThemes(); afficherAccueil();
+            genererBoutonsMois(); genererBoutonsThemes(); messagesAffiches = 3; afficherAccueil();
         }
+
         function creerCard(msg) {
             const dateObj = new Date(msg.date);
             const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
@@ -435,9 +407,26 @@
             const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
             const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
-            let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
-            return `<div class="message-card">${imgHtml}<span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${btoa(unescape(encodeURIComponent(titre)))}', '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
+            let audioHtml = msg.audio ? `<audio src="${msg.audio}" onended="lireMessageSuivant(${msg.id})" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
+            return `<div class="message-card" id="msg-card-${msg.id}">${imgHtml}<span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${btoa(unescape(encodeURIComponent(titre)))}', '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
         }
+
+        function lireMessageSuivant(idActuel) {
+            const index = tousLesMessages.findIndex(m => m.id === idActuel);
+            if (index < tousLesMessages.length - 1) {
+                const suivant = tousLesMessages[index + 1];
+                const cardActuelle = document.getElementById(`msg-card-${idActuel}`);
+                if (cardActuelle) {
+                    cardActuelle.style.opacity = '0';
+                    setTimeout(() => {
+                        cardActuelle.outerHTML = creerCard(suivant);
+                        const nouvelAudio = document.querySelector(`#msg-card-${suivant.id} audio`);
+                        if (nouvelAudio) nouvelAudio.play();
+                    }, 500);
+                }
+            }
+        }
+
         function ouvrirMenuPartage(titreB64, texteB64) {
             titrePartageTemp = decodeURIComponent(escape(atob(titreB64)));
             msgPartageTemp = decodeURIComponent(escape(atob(texteB64))).replace(/\*\*/g, '');
@@ -445,6 +434,7 @@
             document.getElementById('shareModal').style.display = 'block';
         }
         function fermerPartage() { document.getElementById('modalOverlay').style.display = 'none'; document.getElementById('shareModal').style.display = 'none'; }
+        
         function actionPartage(type) {
             const url = "https://emmanuel-dpv.pages.dev";
             const messageComplet = `${titrePartageTemp}\n\n${msgPartageTemp}\n\nLire la suite : ${url}`;
@@ -454,23 +444,57 @@
             else if (type === 'copy') { navigator.clipboard.writeText(messageComplet); alert(translations[currentLang].copied); }
             fermerPartage();
         }
-        function afficherAccueil() { const container = document.getElementById('flux-messages'); const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3); container.innerHTML = derniers.map(msg => creerCard(msg)).join(''); }
-        function toggleArchives() { const s = document.getElementById('archiveSection'); const btn = document.getElementById('btn-archive'); if (s.style.display === 'block') { s.style.display = 'none'; btn.innerText = translations[currentLang].archiveBtn; } else { s.style.display = 'block'; btn.innerText = translations[currentLang].archiveBtnClose; } }
-        function genererBoutonsMois() { const grid = document.getElementById('monthGrid'); const liste = moisNoms[currentLang]; grid.innerHTML = liste.map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join(''); }
+
+        function afficherAccueil() { 
+            const container = document.getElementById('flux-messages');
+            const trie = [...tousLesMessages].sort((a, b) => b.id - a.id);
+            const aAfficher = trie.slice(0, messagesAffiches);
+            container.innerHTML = aAfficher.map(msg => creerCard(msg)).join('');
+        }
+
+        function toggleArchives() { 
+            const s = document.getElementById('archiveSection'); 
+            const btn = document.getElementById('btn-archive');
+            if (s.style.display === 'block') { s.style.display = 'none'; btn.innerText = translations[currentLang].archiveBtn; } 
+            else { s.style.display = 'block'; btn.innerText = translations[currentLang].archiveBtnClose; } 
+        }
+
+        function genererBoutonsMois() { 
+            const grid = document.getElementById('monthGrid'); 
+            const liste = moisNoms[currentLang];
+            grid.innerHTML = liste.map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join(''); 
+        }
+
         function afficherTitresDuMois(numMois, btn) {
-            const liste = document.getElementById('titres-liste'); const detail = document.getElementById('message-detail');
+            const liste = document.getElementById('titres-liste');
+            const detail = document.getElementById('message-detail');
             if (btn.classList.contains('active')) { btn.classList.remove('active'); liste.innerHTML = ''; detail.innerHTML = ''; return; }
             document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); detail.innerHTML = '';
             const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois).sort((a, b) => a.id - b.id);
             liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, 'chrono', ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
         }
+
         function filtrerMessages() {
-            const query = document.getElementById('searchInput').value.toLowerCase(); const container = document.getElementById('flux-messages');
-            if (query === "") { afficherAccueil(); return; }
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('flux-messages');
+            if (query === "") { isSearching = false; afficherAccueil(); return; }
+            isSearching = true;
             const resultats = tousLesMessages.filter(msg => { const searchIn = ((msg.titre || "") + (msg.titre_en || "") + (msg.texte || "") + (msg.texte_en || "") + (msg.categorie || "") + (msg.categorie_en || "")).toLowerCase(); return searchIn.includes(query); });
             container.innerHTML = resultats.sort((a,b) => b.id - a.id).map(msg => creerCard(msg)).join('');
         }
-        window.onscroll = function() { let btn = document.getElementById("scrollTopLink"); if (window.scrollY > 400) btn.style.display = "flex"; else btn.style.display = "none"; };
+
+        window.onscroll = function() { 
+            let btn = document.getElementById("scrollTopLink");
+            if (window.scrollY > 400) btn.style.display = "flex"; else btn.style.display = "none"; 
+
+            if (!isSearching && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                if (messagesAffiches < tousLesMessages.length) {
+                    messagesAffiches += 2;
+                    afficherAccueil();
+                }
+            }
+        };
+
         chargerMessages();
     </script>
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "bf6f1c5ebbda4d7488a5019cec8dab80"}'></script>    
