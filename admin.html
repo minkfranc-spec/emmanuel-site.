@@ -15,6 +15,7 @@
         .btn-view { background: #2980b9; color: white; }
         .btn-fix { background: var(--gold); color: black; }
         .btn-copy { background: #fff; color: #000; width: 100%; margin-top: 10px; }
+        .btn-clear { background: #c0392b; color: white; margin-top: 10px; font-size: 0.7em; padding: 8px; }
         #preview-container { max-width: 800px; margin: auto; text-align: left; padding: 20px; border-top: 2px dashed var(--gold); }
         .msg-card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 20px; margin-bottom: 25px; overflow: hidden; }
         .msg-header { color: var(--gold); font-weight: bold; font-size: 1.2em; margin-bottom: 5px; display: flex; justify-content: space-between; }
@@ -34,7 +35,7 @@
         <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📥 COLLEZ VOTRE CODE :</label>
         <textarea id="inputJSON" placeholder="Collez ici..."></textarea>
         <div class="btn-group">
-            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER</button>
+            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER & SAUVER</button>
             <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER & GARDER TOUT</button>
         </div>
     </div>
@@ -42,26 +43,36 @@
         <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📤 SORTIE :</label>
         <textarea id="outputJSON" readonly></textarea>
         <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT</button>
+        <button class="btn btn-clear" onclick="viderMemoire()">🗑️ VIDER LA MÉMOIRE CACHÉE</button>
     </div>
 </div>
 
-<h2 style="color: var(--gold);">👁️ APERÇU</h2>
+<h2 style="color: var(--gold);">👁️ APERÇU COMPLET</h2>
 <div id="preview-container"></div>
 
 <script>
+    // CHARGEMENT AUTOMATIQUE AU DÉMARRAGE
+    window.onload = function() {
+        let savedData = localStorage.getItem('emmanuel_backup');
+        if (savedData) {
+            document.getElementById('inputJSON').value = savedData;
+            traiter(false);
+        }
+    };
+
     function traiter(doitReorganiser) {
         let raw = document.getElementById('inputJSON').value.trim();
         if (!raw) return;
         
+        // Sauvegarde locale pour ne plus avoir à coller
+        localStorage.setItem('emmanuel_backup', raw);
+        
         try {
-            // Nettoyage de base
             let clean = raw.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]").replace(/}\s*{/g, "},{");
             let parsed = JSON.parse(clean);
             
-            // Sauvegarde du communiqué s'il existe (gère 'communique' ou 'communiques')
             let commVal = parsed.communique || parsed.communiques || null;
             let commKey = parsed.communique ? "communique" : "communiques";
-            
             let msgs = parsed.messages || (Array.isArray(parsed) ? parsed : [parsed]);
 
             if (doitReorganiser && msgs.length > 0) {
@@ -78,9 +89,8 @@
                 }
             }
             
-            // Reconstruction SANS perte
             let finalData = { status: parsed.status || "online" };
-            if (commVal) finalData[commKey] = commVal; // On réinjecte le communiqué ici !
+            if (commVal) finalData[commKey] = commVal;
             finalData.messages = msgs;
 
             document.getElementById('outputJSON').value = JSON.stringify(finalData, null, 2);
@@ -121,6 +131,13 @@
         document.getElementById('outputJSON').select();
         document.execCommand('copy');
         alert("🎯 COPIÉ !");
+    }
+
+    function viderMemoire() {
+        if(confirm("Voulez-vous vider la mémoire de prévisualisation ?")) {
+            localStorage.removeItem('emmanuel_backup');
+            location.reload();
+        }
     }
 </script>
 </body>
