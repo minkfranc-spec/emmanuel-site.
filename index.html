@@ -3,477 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    
-    <script>
-      (function() {
-        var currentHost = window.location.hostname;
-        var targetHost = "emmanuel-dpv.pages.dev";
-        if (currentHost.includes("vercel.app")) {
-          window.location.replace("https://" + targetHost + window.location.pathname + window.location.search);
-        }
-      })();
-    </script>
-
-    <meta name="robots" content="index, follow">
-    <meta name="googlebot" content="index, follow">
-    <meta name="description" content="EMMANUEL - Un sanctuaire numérique pour la transformation de l'âme, l'onction de prospérité et la liberté spirituelle par la Parole.">
-    <meta name="keywords" content="Pasteur Emmanuel, foi, onction, prospérité, bible, pardon, succès, sagesse divine, ministère">
-    <meta name="author" content="Pasteur Emmanuel">
-
-    <meta property="og:title" content="EMMANUEL | La Voix de la Vérité">
-    <meta property="og:description" content="Accédez à vos clés spirituelles pour une vie de victoire.">
-    <meta property="og:image" content="https://i.postimg.cc/cCXq2khG/Lancement.png">
-    <meta property="og:url" content="https://emmanuel-dpv.pages.dev">
-    <meta property="og:type" content="website">
-    
-    <title>EMMANUEL | La Voix de la Vérité</title>
-
-    <link rel="canonical" href="https://emmanuel-dpv.pages.dev">
-    
-    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-
+    <title>ADMIN MULTIMÉDIA | Emmanuel DPV</title>
     <style>
-        /* DESIGN PASTEUR EMMANUEL - HARMONISÉ */
-        * { box-sizing: border-box; scroll-behavior: smooth; }
-        html, body { 
-            margin: 0; padding: 0; 
-            width: 100%; 
-            background: #fdfdfd; 
-            color: #1a1a1a; 
-            font-family: 'Lora', serif; 
-            text-align: center; 
-            overflow-x: hidden; 
-            -webkit-font-smoothing: antialiased; 
-            -moz-osx-font-smoothing: grayscale;
+        :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: white; padding: 10px; text-align: center; }
+        .admin-box { max-width: 900px; margin: auto; background: var(--card); padding: 25px; border-radius: 25px; border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); margin-bottom: 40px; }
+        h1 { color: var(--gold); font-size: 1.6em; text-transform: uppercase; letter-spacing: 2px; }
+        textarea { width: 100%; height: 250px; border-radius: 15px; border: 1px solid #444; padding: 15px; background: #000; color: #00ff00; font-family: 'Courier New', monospace; box-sizing: border-box; font-size: 14px; transition: 0.3s; resize: vertical; margin-bottom: 10px; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px; text-transform: uppercase; font-size: 0.85em; }
+        .btn-view { background: #2980b9; color: white; }
+        .btn-fix { background: var(--gold); color: black; }
+        .btn-copy { background: #fff; color: #000; width: 100%; margin-top: 10px; }
+        .btn-clear { background: #c0392b; color: white; margin-top: 10px; font-size: 0.7em; padding: 8px; }
+        #preview-container { max-width: 800px; margin: auto; text-align: left; padding: 20px; border-top: 2px dashed var(--gold); }
+        .msg-card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 20px; margin-bottom: 25px; overflow: hidden; }
+        .msg-header { color: var(--gold); font-weight: bold; font-size: 1.2em; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .msg-meta { font-size: 0.8em; color: #777; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .preview-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; border: 1px solid #333; }
+        audio { width: 100%; height: 35px; margin: 10px 0; border-radius: 5px; filter: invert(1); }
+        .msg-text { line-height: 1.7; white-space: pre-wrap; color: #ddd; font-size: 0.95em; }
+        .highlight-text { color: var(--gold); font-weight: bold; }
+        
+        /* MODIFICATION : Taille de police augmentée pour le communiqué */
+        .comm-banner { 
+            background: rgba(212, 175, 55, 0.1); 
+            border: 1px solid var(--gold); 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin-bottom: 20px; 
+            color: var(--gold); 
+            font-weight: bold; 
+            font-size: 1.15em; /* Augmentation de la lisibilité */
+            line-height: 1.6;
+            white-space: pre-wrap;
         }
-        
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-in-out; }
-        .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; animation: welcomeEntry 2s forwards; opacity: 0; }
-
-        @keyframes welcomeEntry { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes blockDance { 0% { opacity: 0; transform: scale(0.95) translateY(30px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-        
-        @keyframes pulseGold {
-            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
-        }
-
-        .lang-selector { margin: 15px 0 15px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; }
-        .lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
-        
-        .lang-btn.active { 
-            background: #fff; color: #e74c3c; 
-            border: 1px solid #d4af37;
-            box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.6), 0 0 10px rgba(212, 175, 55, 0.3);
-            text-shadow: 0 0 2px rgba(212, 175, 55, 0.2);
-        }
-
-        h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 15px 0 5px 0; }
-        .intro-text { width: 85%; margin: 0 auto 10px auto; font-size: 1.1em; color: #95a5a6; font-style: italic; }
-
-        .search-container { position: relative; width: 85%; max-width: 400px; margin: 0 auto 25px; }
-        .search-input { width: 100%; padding: 12px 40px 12px 20px; border-radius: 30px; border: 1px solid #eee; font-family: 'Montserrat', sans-serif; font-size: 0.85em; transition: 0.3s; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .search-input:focus { border-color: #d4af37; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15); }
-        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #d4af37; font-size: 1.1em; pointer-events: none; }
-
-        .message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
-        .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
-        .msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px 0; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
-        
-        .msg-content { text-align: justify; line-height: 1.6; font-size: 1.05em; white-space: pre-line; color: #1a1a1a; font-weight: 400; } 
-        .msg-content strong { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000000; }
-        
-        .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
-        .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
-
-        #shareModal { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: white; z-index: 3000; padding: 30px 20px; border-radius: 30px 30px 0 0; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); animation: slideUp 0.3s ease-out; text-align: center; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2500; }
-        
-        .share-options { display: flex; justify-content: space-around; margin: 25px auto 0; max-width: 400px; }
-        .share-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: #1a1a1a; text-decoration: none; }
-        .share-icon { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; color: white; font-size: 24px; }
-        .bg-wa { background: #25D366; }
-        .bg-fb { background: #1877F2; } 
-        .bg-mail { background: #E74C3C; }
-        .bg-copy { background: #34495E; }
-        .close-modal { margin-top: 25px; color: #95a5a6; font-family: 'Montserrat', sans-serif; font-size: 12px; text-transform: uppercase; cursor: pointer; font-weight: 900; }
-
-        /* MODIFICATION ARCHIVES PASTEUR EMMANUEL */
-        .archive-section { display: none; width: 92%; max-width: 500px; margin: 20px auto; padding-bottom: 40px; }
-        
-        .archive-nav-btns { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
-        .nav-btn { font-family: 'Montserrat', sans-serif; background: white; border: 2px solid #d4af37; color: #d4af37; padding: 10px 15px; border-radius: 30px; cursor: pointer; font-weight: 900; font-size: 11px; text-transform: uppercase; transition: 0.3s; }
-        .nav-btn.active { background: #d4af37; color: white; }
-
-        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
-        .month-btn.active { background: #d4af37; color: white; }
-
-        /* STYLE LISTE DÉROULANTE THÉMATIQUE */
-        .theme-select-container { margin-bottom: 20px; padding: 0 10px; }
-        .theme-dropdown { 
-            width: 100%; padding: 15px; 
-            border-radius: 12px; 
-            border: 2px solid #d4af37; 
-            background: white; 
-            font-family: 'Montserrat', sans-serif; 
-            font-weight: 700; 
-            font-size: 14px; 
-            color: #1a1a1a; outline: none; 
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23d4af37%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-        }
-
-        .titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
-        
-        .archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; display: block; margin: 20px auto; text-transform: uppercase; max-width: 280px; }
-        
-        .floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
-        .scroll-link { bottom: 105px; }
-        .whatsapp-link { bottom: 30px; display: flex !important; }
-        .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
-        .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
-        .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        
-        .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; box-shadow: 0 10px 40px rgba(0,0,0,0.03); }
-        .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
-        .stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
-        .update-notice { font-family: 'Montserrat', sans-serif; font-size: 0.7em; font-weight: 700; color: #95a5a6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
-
-        /* BULLE DE COMMUNIQUÉS - CORRIGÉE POUR DÉFILEMENT */
-        #notif-bubble {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 45px;
-            height: 45px;
-            background: #d4af37;
-            border-radius: 50%;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 2100;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-            animation: lightPulse 2s infinite;
-            border: 2px solid #fff;
-        }
-        @keyframes lightPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); }
-            100% { transform: scale(1); }
-        }
-        #notif-panel {
-            display: none;
-            position: fixed;
-            top: 75px;
-            right: 20px;
-            width: 260px;
-            max-height: 80vh; /* Empêche de sortir de l'écran */
-            overflow-y: auto; /* Active le défilement si le texte est long */
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            z-index: 2100;
-            padding: 15px;
-            text-align: left;
-            animation: slideInNotif 0.3s ease-out;
-            border-top: 4px solid #d4af37;
-        }
-        @keyframes slideInNotif { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .notif-item { 
-            font-family: 'Montserrat';
-            font-size: 11px; 
-            font-weight: 500; 
-            color: #555; 
-            line-height: 1.4; 
-            margin-bottom: 10px;
-        }
-        .close-notif { 
-            display: block;
-            text-align: center; 
-            color: #e74c3c; 
-            font-family: 'Montserrat'; 
-            font-weight: 900; 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            cursor: pointer; 
-            padding: 10px 0; 
-            border-top: 1px solid #eee;
-            background: white;
-            position: sticky; /* Reste visible même en défilant */
-            bottom: -15px;
-            margin-top: 10px;
+        .comm-count {
+            background: var(--gold);
+            color: black;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            margin-left: 10px;
+            vertical-align: middle;
         }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
-
-    <div id="notif-bubble" onclick="toggleNotifPanel()">
-        <span style="color:white; font-size:18px;">🔔</span>
-    </div>
-    
-    <div id="notif-panel">
-        <div style="font-family: 'Montserrat'; font-weight: 900; font-size: 10px; color: #d4af37; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">📢 COMMUNICATIONS </div>
-        <div id="notif-list"></div>
-        <span class="close-notif" onclick="closeNotifPanel()">Masquer</span>
-    </div>
-
-    <a href="javascript:void(0)" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="floating-container scroll-link" id="scrollTopLink">
-        <span class="btn-label" id="label-top">Retour en haut</span>
-        <button class="scroll-btn">↑</button>
-    </a>
-    
-    <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link">
-        <span class="btn-label" id="label-help">Besoin d'aide ?</span>
-        <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="60"></div>
-    </a>
-
-    <div class="lang-selector">
-        <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
-        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
-    </div>
-
-    <h1>EMMANUEL</h1>
-    <div class="intro-text" id="intro-txt">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
-
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un message..." onkeyup="filtrerMessages()">
-        <span class="search-icon">🔍</span>
-    </div>
-
-    <div id="flux-messages"></div>
-
-    <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
-    
-    <div id="archiveSection" class="archive-section">
-        <div class="archive-nav-btns">
-            <button id="nav-chrono" class="nav-btn active" onclick="switchArchiveView('chrono')">📅 Chronologie</button>
-            <button id="nav-theme" class="nav-btn" onclick="switchArchiveView('theme')">📂 Thématiques</button>
-        </div>
-
-        <div id="view-chrono">
-            <div class="month-grid" id="monthGrid"></div>
-        </div>
-
-        <div id="view-theme" style="display:none;">
-            <div class="theme-select-container">
-                <select id="themeDropdown" class="theme-dropdown" onchange="choisirThemeViaDropdown(this.value)">
-                </select>
-            </div>
-        </div>
-
-        <div id="titres-liste"></div> 
-        <div id="message-detail"></div> 
-    </div>
-
-    <div class="flag-counter-box">
-        <div class="stat-title" id="stat-title">COMMUNAUTÉ EMMANUEL</div>
-        <div class="stat-subtitle" id="stat-sub">✨ Lecteurs par pays et vues ✨</div>
-    
-        <a href="https://info.flagcounter.com/ivJp" target="_blank">
-            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/?cache_refresh=1" alt="Statistiques" border="0" style="margin-top:20px; max-width: 100%;">
-        </a>
-        <div class="update-notice" id="update-txt">
-            Le compteur s'actualise toutes les 15 min<br>
-            <span style="font-weight: 400; font-style: italic; opacity: 0.8;">The counter updates every 15 min</span>
+<div class="admin-box">
+    <h1>🏛️ COMMANDE MULTIMÉDIA v2.2</h1>
+    <div style="text-align: left;">
+        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📥 COLLEZ (COMPLET OU MORCEAU) :</label>
+        <textarea id="inputJSON" placeholder="Collez votre code ici..."></textarea>
+        <div class="btn-group">
+            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER & SAUVER</button>
+            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER & RÉPARER</button>
         </div>
     </div>
-
-    <div id="modalOverlay" class="modal-overlay" onclick="fermerPartage()"></div>
-    <div id="shareModal">
-        <div style="font-family: 'Montserrat', sans-serif; font-weight: 900; color: #d4af37; text-transform: uppercase;">Partager la Parole</div>
-        <div class="share-options">
-            <div class="share-item" onclick="actionPartage('wa')">
-                <div class="share-icon bg-wa">💬</div>
-                WhatsApp
-            </div>
-            <div class="share-item" onclick="actionPartage('fb')">
-                <div class="share-icon bg-fb">🔵</div>
-                Facebook
-            </div>
-            <div class="share-item" onclick="actionPartage('mail')">
-                <div class="share-icon bg-mail">✉</div>
-                Email
-            </div>
-            <div class="share-item" onclick="actionPartage('copy')">
-                <div class="share-icon bg-copy">🔗</div>
-                Lien
-            </div>
-        </div>
-        <div class="close-modal" onclick="fermerPartage()">Annuler</div>
+    <div style="text-align: left;">
+        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📤 SORTIE PROPRE :</label>
+        <textarea id="outputJSON" readonly></textarea>
+        <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT</button>
+        <button class="btn btn-clear" onclick="viderMemoire()">🗑️ VIDER LA MÉMOIRE</button>
     </div>
+</div>
 
-    <script>
-        let currentLang = 'fr';
-        let tousLesMessages = [];
-        let msgPartageTemp = "";
-        let titrePartageTemp = "";
-        const moisNoms = { fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] };
-        const translations = { fr: { welcome: "Bienvenue à EMMANUEL", intro: "La Lumière qui éclaire chaque pas sur le chemin de la Vie.", searchPlaceholder: "Rechercher un message...", archiveBtn: "📂 Consulter les Archives", archiveBtnClose: "❌ Fermer les Archives", shareBtn: "📤 Partager", copied: "✨ LIEN COPIÉ !", published: "Publié le", statTitle: "COMMUNAUTÉ EMMANUEL", statSub: "✨ Lecteurs par pays et vues ✨", backList: "⬅ Retour", scrollTop: "Retour en haut", help: "Besoin d'aide ?", update: "Le compteur s'actualise toutes les 15 min", selectTheme: "Choisir une thématique..." }, en: { welcome: "Welcome to EMMANUEL", intro: "The Light that guides every step on the path of Life.", searchPlaceholder: "Search for a message...", archiveBtn: "📂 View Archives", archiveBtnClose: "❌ Close Archives", shareBtn: "📤 Share", copied: "✨ LINK COPIED!", published: "Published on", statTitle: "EMMANUEL COMMUNITY", statSub: "✨ Readers by country and views ✨", backList: "⬅ Back", scrollTop: "Back to top", help: "Need help?", update: "The counter updates every 15 min", selectTheme: "Choose a theme..." } };
+<h2 style="color: var(--gold);">👁️ APERÇU GÉNÉRAL</h2>
+<div id="preview-container"></div>
+
+<script>
+    window.onload = function() {
+        let savedData = localStorage.getItem('emmanuel_backup');
+        if (savedData) {
+            document.getElementById('inputJSON').value = savedData;
+            traiter(false);
+        }
+    };
+
+    function traiter(doitReorganiser) {
+        let raw = document.getElementById('inputJSON').value.trim();
+        if (!raw) return;
         
-        async function chargerMessages() {
-            try {
-                const res = await fetch('data.json?v=' + Date.now());
-                const data = await res.json();
-                
-                if (data.communique && data.communique.trim() !== "") {
-                    document.getElementById('notif-bubble').style.display = 'flex';
-                    document.getElementById('notif-list').innerHTML = `<div class="notif-item">🔔 ${data.communique}</div>`;
+        try {
+            if (raw.startsWith('{') && !raw.includes('"messages"')) {
+                raw = '{ "status": "online", "messages": [' + raw + '] }';
+            }
+            else if (raw.startsWith('[')) {
+                raw = '{ "status": "online", "messages": ' + raw + ' }';
+            }
+
+            let clean = raw.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]");
+            let parsed = JSON.parse(clean);
+            
+            let commVal = parsed.communique || parsed.communiques || null;
+            let commKey = parsed.communique ? "communique" : "communiques";
+            let msgs = parsed.messages || (Array.isArray(parsed) ? parsed : [parsed]);
+
+            if (doitReorganiser && msgs.length > 0) {
+                let lastIndex = msgs.length - 1;
+                let currentId = parseInt(msgs[lastIndex].id) || 1;
+                let currentDate = new Date(msgs[lastIndex].date);
+                if (isNaN(currentDate)) currentDate = new Date();
+
+                for (let i = lastIndex - 1; i >= 0; i--) {
+                    currentId++;
+                    currentDate.setDate(currentDate.getDate() + 1);
+                    msgs[i].id = currentId;
+                    msgs[i].date = currentDate.toISOString().split('T')[0];
                 }
+            }
+            
+            let finalData = { status: parsed.status || "online" };
+            if (commVal) finalData[commKey] = commVal;
+            finalData.messages = msgs;
 
-                if (data.status === "standby") {
-                    document.body.innerHTML = `<div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#1a1a1a; color:#d4af37; text-align:center; padding:20px;"><h1 style="color:#d4af37; font-size:3em; font-family:'Montserrat';">🏛️ EMMANUEL</h1><p style="font-family:'Lora'; font-size:1.5em;">Le sanctuaire est momentanément fermé pour maintenance.</p><p style="font-style:italic; opacity:0.7;">La Voix de la Vérité revient bientôt.</p></div>`;
-                    return;
-                }
-                const listeBrute = data.messages || [];
-                const maintenant = new Date();
-                const heureLocale = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000));
-                tousLesMessages = listeBrute.filter(msg => {
-                    const [annee, mois, jour] = msg.date.split('-').map(Number);
-                    const dateParution = new Date(annee, mois - 1, jour, 0, 0, 1);
-                    return heureLocale >= dateParution;
-                });
-                afficherAccueil();
-                genererBoutonsMois();
-                genererBoutonsThemes();
-
-                const loader = document.getElementById('loading-screen');
-                if (loader) { loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 500); }
-            } catch (err) { console.error("Erreur:", err);
-            if (document.getElementById('loading-screen')) document.getElementById('loading-screen').style.display = 'none'; }
+            let finalString = JSON.stringify(finalData, null, 2);
+            document.getElementById('outputJSON').value = finalString;
+            localStorage.setItem('emmanuel_backup', finalString);
+            
+            renderPreview(msgs, commVal);
+        } catch (e) { 
+            alert("❌ ERREUR STRUCTURE : Vérifiez les virgules entre les messages."); 
         }
+    }
 
-        function switchArchiveView(view) {
-            document.getElementById('view-chrono').style.display = (view === 'chrono') ? 'block' : 'none';
-            document.getElementById('view-theme').style.display = (view === 'theme') ? 'block' : 'none';
-            document.getElementById('nav-chrono').classList.toggle('active', view === 'chrono');
-            document.getElementById('nav-theme').classList.toggle('active', view === 'theme');
-            document.getElementById('titres-liste').innerHTML = '';
-            document.getElementById('message-detail').innerHTML = '';
-            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('themeDropdown').selectedIndex = 0;
+    function renderPreview(msgs, comm) {
+        const container = document.getElementById('preview-container');
+        container.innerHTML = ""; 
+        
+        if (comm && comm.trim() !== "") {
+            // SCRIPT DE COMPTAGE DES PARAGRAPHES
+            let paragraphes = comm.split(/\n\s*\n/).filter(p => p.trim() !== "");
+            let nbPara = paragraphes.length;
+            
+            let div = document.createElement('div');
+            div.className = "comm-banner";
+            div.innerHTML = `📢 COMMUNIQUÉ <span class="comm-count">${nbPara} message(s)</span><br><br>${comm}`;
+            container.appendChild(div);
         }
 
-        function genererBoutonsThemes() {
-            const select = document.getElementById('themeDropdown');
-            const themes = [...new Set(tousLesMessages.map(m => m.categorie))].filter(t => t).sort();
-            let options = `<option value="">-- ${translations[currentLang].selectTheme} --</option>`;
-            options += themes.map(t => `<option value="${t}">📂 ${t}</option>`).join('');
-            select.innerHTML = options;
-        }
+        msgs.forEach(m => {
+            let card = document.createElement('div');
+            card.className = "msg-card";
+            let imgHtml = m.image ? `<img src="${m.image}" class="preview-img">` : '';
+            let audioHtml = m.audio ? `<audio controls src="${m.audio}"></audio>` : '';
+            let textePreview = (m.texte || "").replace(/\*\*(.*?)\*\*/g, '<span class="highlight-text">$1</span>');
+            
+            card.innerHTML = `
+                ${imgHtml}
+                <div class="msg-header"><span>${m.titre}</span><span style="font-size:0.7em; opacity:0.5;">ID: ${m.id}</span></div>
+                <div class="msg-meta">📅 ${m.date} | 🏷️ ${m.categorie}</div>
+                ${audioHtml}
+                <div class="msg-text">${textePreview}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
 
-        function choisirThemeViaDropdown(theme) {
-            const liste = document.getElementById('titres-liste');
-            const detail = document.getElementById('message-detail');
-            if (!theme) { liste.innerHTML = ''; detail.innerHTML = ''; return; }
-            detail.innerHTML = '';
-            const filtered = tousLesMessages.filter(m => m.categorie === theme).sort((a,b) => b.id - a.id);
-            liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, 'theme', '${theme.replace(/'/g, "\\'")}')">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
-        }
+    function copier() {
+        document.getElementById('outputJSON').select();
+        document.execCommand('copy');
+        alert("🎯 CODE PROPRE COPIÉ !");
+    }
 
-        function voirDetail(id, type, val) {
-            const msg = tousLesMessages.find(m => m.id === id);
-            document.getElementById('titres-liste').innerHTML = '';
-            let btnRetour = type === 'chrono' ?
-            `<button class="archive-main-btn" onclick="revenirChrono(${val})">${translations[currentLang].backList}</button>` :
-            `<button class="archive-main-btn" onclick="revenirTheme('${val.replace(/'/g, "\\'")}')">${translations[currentLang].backList}</button>`;
-            document.getElementById('message-detail').innerHTML = creerCard(msg) + btnRetour;
+    function viderMemoire() {
+        if(confirm("Effacer l'historique de prévisualisation ?")) {
+            localStorage.removeItem('emmanuel_backup');
+            location.reload();
         }
-
-        function revenirChrono(num) { const btn = document.querySelectorAll('.month-btn')[num-1];
-        btn.classList.remove('active'); afficherTitresDuMois(num, btn); }
-        function revenirTheme(t) { document.getElementById('themeDropdown').value = t; choisirThemeViaDropdown(t); }
-
-        function toggleNotifPanel() {
-            const panel = document.getElementById('notif-panel');
-            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-            document.getElementById('notif-bubble').style.display = 'none';
-        }
-        function closeNotifPanel() {
-            document.getElementById('notif-panel').style.display = 'none';
-            document.getElementById('notif-bubble').style.display = 'none';
-        }
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            document.getElementById('welcome-txt').innerText = translations[lang].welcome;
-            document.getElementById('intro-txt').innerText = translations[lang].intro;
-            document.getElementById('stat-title').innerText = translations[lang].statTitle;
-            document.getElementById('stat-sub').innerText = translations[lang].statSub;
-            document.getElementById('label-top').innerText = translations[lang].scrollTop;
-            document.getElementById('label-help').innerText = translations[lang].help;
-            document.getElementById('update-txt').innerHTML = translations[lang].update;
-            document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
-            document.getElementById('btn-archive').innerText = translations[lang].archiveBtn;
-            genererBoutonsMois(); genererBoutonsThemes(); afficherAccueil();
-        }
-        function creerCard(msg) {
-            const dateObj = new Date(msg.date);
-            const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
-            const texteOriginal = (currentLang === 'en' && msg.texte_en) ? msg.texte_en : msg.texte;
-            const titre = (currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre;
-            const categorie = (currentLang === 'en' && msg.categorie_en) ? msg.categorie_en : msg.categorie;
-            const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            let imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img">` : '';
-            let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls style="width: 100%; height: 35px; margin: 15px 0; border-radius: 8px;"></audio>` : '';
-            return `<div class="message-card">${imgHtml}<span style="font-size:0.7em; color:#d4af37; font-weight:900; text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${btoa(unescape(encodeURIComponent(titre)))}', '${btoa(unescape(encodeURIComponent(texteOriginal)))}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
-        }
-        function ouvrirMenuPartage(titreB64, texteB64) {
-            titrePartageTemp = decodeURIComponent(escape(atob(titreB64)));
-            msgPartageTemp = decodeURIComponent(escape(atob(texteB64))).replace(/\*\*/g, '');
-            document.getElementById('modalOverlay').style.display = 'block';
-            document.getElementById('shareModal').style.display = 'block';
-        }
-        function fermerPartage() { document.getElementById('modalOverlay').style.display = 'none'; document.getElementById('shareModal').style.display = 'none'; }
-        function actionPartage(type) {
-            const url = "https://emmanuel-dpv.pages.dev";
-            const messageComplet = `${titrePartageTemp}\n\n${msgPartageTemp}\n\nLire la suite : ${url}`;
-            if (type === 'wa') window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(messageComplet), '_blank');
-            else if (type === 'fb') window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), '_blank');
-            else if (type === 'mail') window.location.href = `mailto:?subject=${encodeURIComponent(titrePartageTemp)}&body=${encodeURIComponent(messageComplet)}`;
-            else if (type === 'copy') { navigator.clipboard.writeText(messageComplet); alert(translations[currentLang].copied); }
-            fermerPartage();
-        }
-        function afficherAccueil() { const container = document.getElementById('flux-messages');
-        const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3); container.innerHTML = derniers.map(msg => creerCard(msg)).join(''); }
-        function toggleArchives() { const s = document.getElementById('archiveSection'); const btn = document.getElementById('btn-archive');
-        if (s.style.display === 'block') { s.style.display = 'none'; btn.innerText = translations[currentLang].archiveBtn; } else { s.style.display = 'block'; btn.innerText = translations[currentLang].archiveBtnClose; } }
-        function genererBoutonsMois() { const grid = document.getElementById('monthGrid'); const liste = moisNoms[currentLang];
-        grid.innerHTML = liste.map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join(''); }
-        function afficherTitresDuMois(numMois, btn) {
-            const liste = document.getElementById('titres-liste');
-            const detail = document.getElementById('message-detail');
-            if (btn.classList.contains('active')) { btn.classList.remove('active'); liste.innerHTML = ''; detail.innerHTML = ''; return; }
-            document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); detail.innerHTML = '';
-            const filtered = tousLesMessages.filter(msg => (new Date(msg.date).getMonth() + 1) === numMois).sort((a, b) => a.id - b.id);
-            liste.innerHTML = filtered.map(msg => `<div class="titre-archive-item" onclick="voirDetail(${msg.id}, 'chrono', ${numMois})">📖 ${(currentLang === 'en' && msg.titre_en) ? msg.titre_en : msg.titre}</div>`).join('');
-        }
-        function filtrerMessages() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const container = document.getElementById('flux-messages');
-            if (query === "") { afficherAccueil(); return; }
-            const resultats = tousLesMessages.filter(msg => { const searchIn = ((msg.titre || "") + (msg.titre_en || "") + (msg.texte || "") + (msg.texte_en || "") + (msg.categorie || "") + (msg.categorie_en || "")).toLowerCase(); return searchIn.includes(query); });
-            container.innerHTML = resultats.sort((a,b) => b.id - a.id).map(msg => creerCard(msg)).join('');
-        }
-        window.onscroll = function() { let btn = document.getElementById("scrollTopLink");
-        if (window.scrollY > 400) btn.style.display = "flex"; else btn.style.display = "none"; };
-        chargerMessages();
-    </script>
+    }
+</script>
 </body>
 </html>
