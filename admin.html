@@ -30,28 +30,27 @@
 <body>
 
 <div class="admin-box">
-    <h1>🏛️ COMMANDE MULTIMÉDIA</h1>
+    <h1>🏛️ COMMANDE MULTIMÉDIA v2.1</h1>
     <div style="text-align: left;">
-        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📥 COLLEZ VOTRE CODE :</label>
-        <textarea id="inputJSON" placeholder="Collez ici..."></textarea>
+        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📥 COLLEZ (COMPLET OU MORCEAU) :</label>
+        <textarea id="inputJSON" placeholder="Collez votre code ici..."></textarea>
         <div class="btn-group">
             <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER & SAUVER</button>
-            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER & GARDER TOUT</button>
+            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER & RÉPARER</button>
         </div>
     </div>
     <div style="text-align: left;">
-        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📤 SORTIE :</label>
+        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📤 SORTIE PROPRE :</label>
         <textarea id="outputJSON" readonly></textarea>
         <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT</button>
-        <button class="btn btn-clear" onclick="viderMemoire()">🗑️ VIDER LA MÉMOIRE CACHÉE</button>
+        <button class="btn btn-clear" onclick="viderMemoire()">🗑️ VIDER LA MÉMOIRE</button>
     </div>
 </div>
 
-<h2 style="color: var(--gold);">👁️ APERÇU COMPLET</h2>
+<h2 style="color: var(--gold);">👁️ APERÇU GÉNÉRAL</h2>
 <div id="preview-container"></div>
 
 <script>
-    // CHARGEMENT AUTOMATIQUE AU DÉMARRAGE
     window.onload = function() {
         let savedData = localStorage.getItem('emmanuel_backup');
         if (savedData) {
@@ -64,17 +63,28 @@
         let raw = document.getElementById('inputJSON').value.trim();
         if (!raw) return;
         
-        // Sauvegarde locale pour ne plus avoir à coller
-        localStorage.setItem('emmanuel_backup', raw);
-        
         try {
-            let clean = raw.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]").replace(/}\s*{/g, "},{");
+            // --- RÉPARATION INTELLIGENTE ---
+            // Si c'est juste un morceau qui commence par { (un message seul)
+            if (raw.startsWith('{') && !raw.includes('"messages"')) {
+                raw = '{ "status": "online", "messages": [' + raw + '] }';
+            }
+            // Si c'est juste un tableau de messages [{},{}]
+            else if (raw.startsWith('[')) {
+                raw = '{ "status": "online", "messages": ' + raw + ' }';
+            }
+
+            // Nettoyage des virgules traînantes (Erreurs JSON fatales)
+            let clean = raw.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]");
+            
             let parsed = JSON.parse(clean);
             
+            // On récupère les morceaux peu importe la structure
             let commVal = parsed.communique || parsed.communiques || null;
             let commKey = parsed.communique ? "communique" : "communiques";
             let msgs = parsed.messages || (Array.isArray(parsed) ? parsed : [parsed]);
 
+            // Toujours réordonner les IDs si demandé
             if (doitReorganiser && msgs.length > 0) {
                 let lastIndex = msgs.length - 1;
                 let currentId = parseInt(msgs[lastIndex].id) || 1;
@@ -89,13 +99,19 @@
                 }
             }
             
+            // Reconstruction solide
             let finalData = { status: parsed.status || "online" };
             if (commVal) finalData[commKey] = commVal;
             finalData.messages = msgs;
 
-            document.getElementById('outputJSON').value = JSON.stringify(finalData, null, 2);
+            let finalString = JSON.stringify(finalData, null, 2);
+            document.getElementById('outputJSON').value = finalString;
+            localStorage.setItem('emmanuel_backup', finalString); // Sauvegarde la version PROPRE
+            
             renderPreview(msgs, commVal);
-        } catch (e) { alert("❌ ERREUR JSON ! Verifiez vos virgules."); }
+        } catch (e) { 
+            alert("❌ ERREUR STRUCTURE : Le code est trop abîmé. Vérifiez s'il manque une virgule ENTRE deux messages."); 
+        }
     }
 
     function renderPreview(msgs, comm) {
@@ -105,7 +121,7 @@
         if (comm) {
             let div = document.createElement('div');
             div.className = "comm-banner";
-            div.innerHTML = `📢 COMMUNIQUÉ : ${comm}`;
+            div.innerHTML = `📢 COMMUNIQUÉ ACTIF : ${comm}`;
             container.appendChild(div);
         }
 
@@ -130,11 +146,11 @@
     function copier() {
         document.getElementById('outputJSON').select();
         document.execCommand('copy');
-        alert("🎯 COPIÉ !");
+        alert("🎯 CODE PROPRE COPIÉ !");
     }
 
     function viderMemoire() {
-        if(confirm("Voulez-vous vider la mémoire de prévisualisation ?")) {
+        if(confirm("Effacer l'historique de prévisualisation ?")) {
             localStorage.removeItem('emmanuel_backup');
             location.reload();
         }
