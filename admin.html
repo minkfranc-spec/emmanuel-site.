@@ -22,40 +22,37 @@
         .msg-meta { font-size: 0.8em; color: #777; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
         .preview-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; }
         audio { width: 100%; height: 35px; margin: 10px 0; border-radius: 5px; filter: invert(1); }
-        .msg-text { line-height: 1.7; white-space: pre-wrap; color: #ddd; font-size: 0.95em; }
+        .msg-text { line-height: 1.7; white-space: pre-wrap; color: #ddd; }
         .highlight-text { color: var(--gold); font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="admin-box">
-    <h1>🏛️ COMMANDE DÉCROISSANTE v3.5</h1>
+    <h1>🏛️ COMMANDE INTELLIGENTE v3.0</h1>
     <div style="text-align: left;">
-        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📥 COLLEZ LE JSON ICI :</label>
-        <textarea id="inputJSON" placeholder="Collez votre code..."></textarea>
+        <label style="color: var(--gold); font-weight: bold;">📥 ENTRÉE (JSON) :</label>
+        <textarea id="inputJSON" placeholder="Collez le code ici..."></textarea>
         <div class="btn-group">
-            <button class="btn btn-view" onclick="traiter(false)">👁️ APERÇU</button>
-            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORGANISER (DÉCROISSANT)</button>
+            <button class="btn btn-view" onclick="traiter(false)">👁️ APERÇU DIRECT</button>
+            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉPARER & CONTINUER IDs</button>
         </div>
     </div>
     <div style="text-align: left;">
-        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📤 SORTIE PROPRE (RÉCENT ➔ ANCIEN) :</label>
+        <label style="color: var(--gold); font-weight: bold;">📤 SORTIE (IDs CORRIGÉS) :</label>
         <textarea id="outputJSON" readonly></textarea>
-        <button class="btn btn-copy" onclick="copier()">⚡ COPIER & COLLER SUR LE SITE</button>
-        <button class="btn btn-clear" onclick="viderMemoire()">🗑️ VIDER LA MÉMOIRE</button>
+        <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT</button>
+        <button class="btn btn-clear" onclick="viderMemoire()">🗑️ VIDER</button>
     </div>
 </div>
 
-<h2 style="color: var(--gold);">👁️ APERÇU DU FLUX (ID LE PLUS HAUT EN PREMIER)</h2>
+<h2 style="color: var(--gold);">👁️ FLUX DU JOUR (PLUS RÉCENT EN HAUT)</h2>
 <div id="preview-container"></div>
 
 <script>
     window.onload = function() {
         let savedData = localStorage.getItem('emmanuel_backup');
-        if (savedData) {
-            document.getElementById('inputJSON').value = savedData;
-            traiter(false);
-        }
+        if (savedData) { document.getElementById('inputJSON').value = savedData; traiter(false); }
     };
 
     function traiter(doitReorganiser) {
@@ -63,68 +60,52 @@
         if (!raw) return;
         
         try {
-            if (raw.startsWith('{') && !raw.includes('"messages"')) {
-                raw = '{ "status": "online", "messages": [' + raw + '] }';
-            } else if (raw.startsWith('[')) {
-                raw = '{ "status": "online", "messages": ' + raw + ' }';
-            }
+            // Nettoyage structurel
+            if (raw.startsWith('{') && !raw.includes('"messages"')) raw = '{ "status": "online", "messages": [' + raw + '] }';
+            else if (raw.startsWith('[')) raw = '{ "status": "online", "messages": ' + raw + ' }';
 
             let clean = raw.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]");
             let parsed = JSON.parse(clean);
             let msgs = parsed.messages || [];
 
             if (doitReorganiser && msgs.length > 0) {
-                // 1. Trier d'abord par date ascendante pour réattribuer les IDs logiquement
+                // 1. TRI PAR DATE (Ancien vers Récent) pour la logique ID
                 msgs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-                // 2. Trouver l'ID maximum actuel pour continuer
-                let maxId = Math.max(...msgs.map(m => parseInt(m.id) || 0));
-                
-                // 3. Réparer les dates et IDs (base ascendante pour le calcul)
+                // 2. DETECTION DE L'ID DE DÉPART (Prend l'ID le plus bas existant)
+                let startId = Math.min(...msgs.map(m => parseInt(m.id) || 1));
+
+                // 3. RÉ-ATTRIBUTION PROPRE
                 msgs.forEach((m, index) => {
-                    // Si l'ID est trop petit (repart à 1), on le réajuste par rapport au max trouvé
-                    if (parseInt(m.id) < (maxId / 2)) {
-                         m.id = maxId + (index + 1);
-                    }
-                    
+                    m.id = startId + index;
+                    // Correction de date si invalide
                     let d = new Date(m.date);
                     if (isNaN(d)) {
-                        let baseDate = new Date();
-                        baseDate.setDate(baseDate.getDate() - (msgs.length - index));
-                        m.date = baseDate.toISOString().split('T')[0];
+                        let prevDate = index > 0 ? new Date(msgs[index-1].date) : new Date();
+                        prevDate.setDate(prevDate.getDate() + 1);
+                        m.date = prevDate.toISOString().split('T')[0];
                     }
                 });
-
-                // 4. TRI FINAL DÉCROISSANT (Plus récent / ID plus haut en premier)
-                msgs.sort((a, b) => b.id - a.id);
             }
             
-            let finalData = { 
-                status: parsed.status || "online",
-                communique: parsed.communique || "",
-                messages: msgs 
-            };
-
+            let finalData = { status: "online", communique: parsed.communique || "", messages: msgs };
             let finalString = JSON.stringify(finalData, null, 2);
             document.getElementById('outputJSON').value = finalString;
             localStorage.setItem('emmanuel_backup', finalString);
             
-            renderPreview(msgs, finalData.communique);
+            // 4. AFFICHAGE INVERSÉ (Récent = ID le plus haut = Haut de page)
+            renderPreview([...msgs].sort((a,b) => b.id - a.id), finalData.communique);
 
-        } catch (e) { 
-            alert("❌ ERREUR JSON : Vérifiez les virgules."); 
-        }
+        } catch (e) { alert("❌ ERREUR : Le JSON est mal formé."); }
     }
 
     function renderPreview(msgs, comm) {
         const container = document.getElementById('preview-container');
         container.innerHTML = ""; 
-        
         msgs.forEach(m => {
             let card = document.createElement('div');
             card.className = "msg-card";
             let textePreview = (m.texte || "").replace(/\*\*(.*?)\*\*/g, '<span class="highlight-text">$1</span>');
-            
             card.innerHTML = `
                 ${m.image ? `<img src="${m.image}" class="preview-img">` : ''}
                 <div class="msg-header"><span>${m.titre}</span><span style="opacity:0.5;">ID: ${m.id}</span></div>
@@ -139,15 +120,10 @@
     function copier() {
         document.getElementById('outputJSON').select();
         document.execCommand('copy');
-        alert("🎯 CODE DÉCROISSANT COPIÉ !");
+        alert("🎯 CODE COPIÉ !");
     }
 
-    function viderMemoire() {
-        if(confirm("Vider l'historique ?")) {
-            localStorage.removeItem('emmanuel_backup');
-            location.reload();
-        }
-    }
+    function viderMemoire() { if(confirm("Effacer ?")) { localStorage.removeItem('emmanuel_backup'); location.reload(); } }
 </script>
 </body>
 </html>
