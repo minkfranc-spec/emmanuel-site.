@@ -30,24 +30,24 @@
 <body>
 
 <div class="admin-box">
-    <h1>🏛️ COMMANDE MULTIMÉDIA v2.1</h1>
+    <h1>🏛️ COMMANDE MULTIMÉDIA v2.2</h1>
     <div style="text-align: left;">
-        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📥 COLLEZ (COMPLET OU MORCEAU) :</label>
+        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📥 COLLEZ LE CODE JSON :</label>
         <textarea id="inputJSON" placeholder="Collez votre code ici..."></textarea>
         <div class="btn-group">
-            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER & SAUVER</button>
-            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER & RÉPARER</button>
+            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER</button>
+            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORGANISER (CROISSANT)</button>
         </div>
     </div>
     <div style="text-align: left;">
-        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📤 SORTIE PROPRE :</label>
+        <label style="color: var(--gold); font-weight: bold; margin-left: 10px;">📤 SORTIE PROPRE (IDs : 1 ➔ 99) :</label>
         <textarea id="outputJSON" readonly></textarea>
         <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT</button>
         <button class="btn btn-clear" onclick="viderMemoire()">🗑️ VIDER LA MÉMOIRE</button>
     </div>
 </div>
 
-<h2 style="color: var(--gold);">👁️ APERÇU GÉNÉRAL</h2>
+<h2 style="color: var(--gold);">👁️ APERÇU (RÉCENT ➔ ANCIEN)</h2>
 <div id="preview-container"></div>
 
 <script>
@@ -64,53 +64,50 @@
         if (!raw) return;
         
         try {
-            // --- RÉPARATION INTELLIGENTE ---
-            // Si c'est juste un morceau qui commence par { (un message seul)
+            // Nettoyage de base pour les morceaux de code
             if (raw.startsWith('{') && !raw.includes('"messages"')) {
                 raw = '{ "status": "online", "messages": [' + raw + '] }';
-            }
-            // Si c'est juste un tableau de messages [{},{}]
-            else if (raw.startsWith('[')) {
+            } else if (raw.startsWith('[')) {
                 raw = '{ "status": "online", "messages": ' + raw + ' }';
             }
 
-            // Nettoyage des virgules traînantes (Erreurs JSON fatales)
             let clean = raw.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]");
-            
             let parsed = JSON.parse(clean);
-            
-            // On récupère les morceaux peu importe la structure
-            let commVal = parsed.communique || parsed.communiques || null;
-            let commKey = parsed.communique ? "communique" : "communiques";
-            let msgs = parsed.messages || (Array.isArray(parsed) ? parsed : [parsed]);
+            let msgs = parsed.messages || [];
 
-            // Toujours réordonner les IDs si demandé
             if (doitReorganiser && msgs.length > 0) {
-                let lastIndex = msgs.length - 1;
-                let currentId = parseInt(msgs[lastIndex].id) || 1;
-                let currentDate = new Date(msgs[lastIndex].date);
-                if (isNaN(currentDate)) currentDate = new Date();
+                // 1. Trier par date croissante (Ancien vers Récent)
+                msgs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-                for (let i = lastIndex - 1; i >= 0; i--) {
-                    currentId++;
-                    currentDate.setDate(currentDate.getDate() + 1);
-                    msgs[i].id = currentId;
-                    msgs[i].date = currentDate.toISOString().split('T')[0];
-                }
+                // 2. Réassigner les IDs et lisser les dates
+                // On repart du premier ID trouvé ou de 1
+                let startId = 1; 
+                let startDate = new Date(msgs[0].date);
+                if (isNaN(startDate)) startDate = new Date();
+
+                msgs.forEach((m, index) => {
+                    m.id = startId + index;
+                    let nextDate = new Date(startDate);
+                    nextDate.setDate(startDate.getDate() + index);
+                    m.date = nextDate.toISOString().split('T')[0];
+                });
             }
             
-            // Reconstruction solide
-            let finalData = { status: parsed.status || "online" };
-            if (commVal) finalData[commKey] = commVal;
-            finalData.messages = msgs;
+            let finalData = { 
+                status: parsed.status || "online",
+                communique: parsed.communique || "",
+                messages: msgs 
+            };
 
             let finalString = JSON.stringify(finalData, null, 2);
             document.getElementById('outputJSON').value = finalString;
-            localStorage.setItem('emmanuel_backup', finalString); // Sauvegarde la version PROPRE
+            localStorage.setItem('emmanuel_backup', finalString);
             
-            renderPreview(msgs, commVal);
+            // Pour l'affichage, on inverse : le plus récent (ID le plus haut) en haut
+            renderPreview([...msgs].reverse(), finalData.communique);
+
         } catch (e) { 
-            alert("❌ ERREUR STRUCTURE : Le code est trop abîmé. Vérifiez s'il manque une virgule ENTRE deux messages."); 
+            alert("❌ ERREUR JSON : Vérifiez la ponctuation entre les messages."); 
         }
     }
 
@@ -121,7 +118,7 @@
         if (comm) {
             let div = document.createElement('div');
             div.className = "comm-banner";
-            div.innerHTML = `📢 COMMUNIQUÉ ACTIF : ${comm}`;
+            div.innerHTML = `📢 COMMUNIQUÉ : ${comm}`;
             container.appendChild(div);
         }
 
@@ -146,11 +143,11 @@
     function copier() {
         document.getElementById('outputJSON').select();
         document.execCommand('copy');
-        alert("🎯 CODE PROPRE COPIÉ !");
+        alert("🎯 CODE RÉORDONNÉ COPIÉ !");
     }
 
     function viderMemoire() {
-        if(confirm("Effacer l'historique de prévisualisation ?")) {
+        if(confirm("Effacer tout ?")) {
             localStorage.removeItem('emmanuel_backup');
             location.reload();
         }
