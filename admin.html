@@ -29,7 +29,7 @@
 <body>
 
 <div class="admin-box">
-    <h1>🏛️ COMMANDE DÉCROISSANTE v4.0</h1>
+    <h1>🏛️ COMMANDE DÉCROISSANTE v5.0</h1>
     <div style="text-align: left;">
         <label style="color: var(--gold); font-weight: bold;">📥 ENTRÉE JSON :</label>
         <textarea id="inputJSON" placeholder="Collez votre code..."></textarea>
@@ -69,20 +69,20 @@
             let msgs = parsed.messages || [];
 
             if (doitReorganiser && msgs.length > 0) {
-                // 1. TRI FINAL DÉCROISSANT DIRECTEMENT
+                // 1. TRI DÉCROISSANT PAR ID
                 msgs.sort((a, b) => parseInt(b.id) - parseInt(a.id));
 
-                // 2. Réattribuer les IDs (décroissants continus)
-                msgs.forEach((m, index) => {
-                    m.id = msgs.length - index; 
-                });
+                // 2. Référence = premier élément après tri (le plus récent)
+                let refMsg = msgs[0]; 
+                let refId = parseInt(refMsg.id);
+                let refDate = new Date(refMsg.date);
 
-                // 3. Corriger les dates manquantes (ordre décroissant)
-                let today = new Date();
+                // 3. Réattribuer les IDs et corriger les dates en montant
                 msgs.forEach((m, index) => {
+                    m.id = refId - index; // IDs continus en descendant
                     if (!m.date || m.date.trim() === "") {
-                        let newD = new Date(today);
-                        newD.setDate(today.getDate() - index); 
+                        let newD = new Date(refDate);
+                        newD.setDate(refDate.getDate() - index);
                         m.date = newD.toISOString().split('T')[0];
                     }
                 });
