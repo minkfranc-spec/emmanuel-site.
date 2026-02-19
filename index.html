@@ -68,7 +68,7 @@
         .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
         .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
 
-        /* PANNEAU DÉROULANT AVEC BOUTON FIXE */
+        /* PANNEAU DÉROULANT */
         #notif-panel {
             display: none;
             position: fixed;
@@ -251,12 +251,32 @@
                     const dateParution = new Date(annee, mois - 1, jour, 0, 0, 1);
                     return heureLocale >= dateParution;
                 });
-                afficherAccueil();
+                
+                setLanguage('fr'); // ICI : On initialise bien la langue
                 genererBoutonsMois();
                 genererBoutonsThemes();
+                
                 const loader = document.getElementById('loading-screen');
                 if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 500); }
             } catch (err) { console.error("Erreur:", err); if (document.getElementById('loading-screen')) document.getElementById('loading-screen').style.display = 'none'; }
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('welcome-txt').innerText = translations[lang].welcome;
+            document.getElementById('intro-txt').innerText = translations[lang].intro;
+            document.getElementById('stat-title').innerText = translations[lang].statTitle;
+            document.getElementById('stat-sub').innerText = translations[lang].statSub;
+            document.getElementById('label-top').innerText = translations[lang].scrollTop;
+            document.getElementById('label-help').innerText = translations[lang].help;
+            document.getElementById('update-txt').innerHTML = translations[lang].update;
+            document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
+            document.getElementById('btn-archive').innerText = translations[lang].archiveBtn;
+            
+            afficherAccueil(); // On rafraîchit les messages avec la bonne langue
+            genererBoutonsMois();
         }
 
         function switchArchiveView(view) {
@@ -297,33 +317,9 @@
         function revenirChrono(num) { const btn = document.querySelectorAll('.month-btn')[num-1]; btn.classList.remove('active'); afficherTitresDuMois(num, btn); }
         function revenirTheme(t) { document.getElementById('themeDropdown').value = t; choisirThemeViaDropdown(t); }
 
-        /* FONCTIONS DE NOTIFICATION SÉCURISÉES */
-        function ouvrirNotif() {
-            const panel = document.getElementById('notif-panel');
-            panel.style.display = 'flex'; // On force l'ouverture sans alterner
-        }
-
-        function toutMasquer() {
-            document.getElementById('notif-panel').style.display = 'none';
-            document.getElementById('notif-bubble').style.display = 'none';
-        }
+        function ouvrirNotif() { document.getElementById('notif-panel').style.display = 'flex'; }
+        function toutMasquer() { document.getElementById('notif-panel').style.display = 'none'; document.getElementById('notif-bubble').style.display = 'none'; }
         
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            document.getElementById('welcome-txt').innerText = translations[lang].welcome;
-            document.getElementById('intro-txt').innerText = translations[lang].intro;
-            document.getElementById('stat-title').innerText = translations[lang].statTitle;
-            document.getElementById('stat-sub').innerText = translations[lang].statSub;
-            document.getElementById('label-top').innerText = translations[lang].scrollTop;
-            document.getElementById('label-help').innerText = translations[lang].help;
-            document.getElementById('update-txt').innerHTML = translations[lang].update;
-            document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
-            document.getElementById('btn-archive').innerText = translations[lang].archiveBtn;
-            genererBoutonsMois(); genererBoutonsThemes(); afficherAccueil();
-        }
-
         function creerCard(msg) {
             const dateObj = new Date(msg.date);
             const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
@@ -358,6 +354,7 @@
         function afficherAccueil() { const container = document.getElementById('flux-messages'); const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3); container.innerHTML = derniers.map(msg => creerCard(msg)).join(''); }
         function toggleArchives() { const s = document.getElementById('archiveSection'); const btn = document.getElementById('btn-archive'); if (s.style.display === 'block') { s.style.display = 'none'; btn.innerText = translations[currentLang].archiveBtn; } else { s.style.display = 'block'; btn.innerText = translations[currentLang].archiveBtnClose; } }
         function genererBoutonsMois() { const grid = document.getElementById('monthGrid'); const liste = moisNoms[currentLang]; grid.innerHTML = liste.map((nom, i) => `<button class="month-btn" onclick="afficherTitresDuMois(${i+1}, this)">${nom}</button>`).join(''); }
+        
         function afficherTitresDuMois(numMois, btn) {
             const liste = document.getElementById('titres-liste');
             const detail = document.getElementById('message-detail');
