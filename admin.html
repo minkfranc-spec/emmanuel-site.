@@ -26,7 +26,6 @@
         .msg-title { margin: 10px 0; font-size: 1.4em; text-align: center; color: #111; }
         .msg-cat { font-style: italic; color: #888; font-size: 0.75em; text-align: center; margin-bottom: 15px; text-transform: uppercase; }
         
-        /* Image et Audio placés en haut */
         .msg-media { margin-bottom: 20px; }
         .msg-img { width: 100%; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         audio { width: 100%; height: 40px; }
@@ -92,6 +91,12 @@
         alert("Communiqué converti !");
     }
 
+    // Petite fonction pour transformer les ** en <b> dans l'aperçu
+    function formaterGras(texte) {
+        if(!texte) return "";
+        return texte.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+    }
+
     function traiterTout() {
         let input = document.getElementById('jsonInput').value.trim();
         if(!input) return;
@@ -108,7 +113,6 @@
                 if(!currentCommuniqueHTML) currentCommuniqueHTML = obj.communique;
             }
 
-            // --- LOGIQUE D'ID ET DATE DEPUIS LE BAS ---
             let lastMsg = messages[messages.length - 1];
             let idTracker = parseInt(lastMsg.id);
             let dateTracker = new Date(lastMsg.date);
@@ -120,15 +124,12 @@
                 dateTracker.setDate(dateTracker.getDate() + 1);
             }
 
-            // --- TRI : RÉCENT EN HAUT ---
             messages.sort((a, b) => b.id - a.id);
 
-            // Export JSON
             let finalData = { "status": "online", "communique": currentCommuniqueHTML, "messages": messages };
             document.getElementById('jsonOutput').value = JSON.stringify(finalData, null, 2);
             localStorage.setItem('emmanuel_cache', input);
 
-            // --- RENDU VISUEL (MODIFIÉ SELON VOTRE DEMANDE) ---
             let html = "";
             if(currentCommuniqueHTML) html += `<div class="communique-view">${currentCommuniqueHTML}</div>`;
 
@@ -144,7 +145,7 @@
                         ${m.audio ? `<audio controls><source src="${m.audio}"></audio>` : ''}
                     </div>
 
-                    <div class="msg-body">${m.texte}</div>
+                    <div class="msg-body">${formaterGras(m.texte)}</div>
                 </div>`;
             });
             document.getElementById('sitePreview').innerHTML = html;
