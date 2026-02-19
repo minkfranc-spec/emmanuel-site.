@@ -1,19 +1,127 @@
-if (doitReorganiser && msgs.length > 0) {
-    // 1. TRI FINAL DÉCROISSANT DIRECTEMENT
-    msgs.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN MULTIMÉDIA | Emmanuel DPV</title>
+    <style>
+        :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: white; padding: 10px; text-align: center; }
+        .admin-box { max-width: 900px; margin: auto; background: var(--card); padding: 25px; border-radius: 25px; border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); margin-bottom: 40px; }
+        h1 { color: var(--gold); font-size: 1.6em; text-transform: uppercase; letter-spacing: 2px; }
+        textarea { width: 100%; height: 250px; border-radius: 15px; border: 1px solid #444; padding: 15px; background: #000; color: #00ff00; font-family: 'Courier New', monospace; box-sizing: border-box; font-size: 14px; transition: 0.3s; resize: vertical; margin-bottom: 10px; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .btn { cursor: pointer; border: none; border-radius: 50px; font-weight: bold; transition: 0.3s; padding: 15px; text-transform: uppercase; font-size: 0.85em; }
+        .btn-view { background: #2980b9; color: white; }
+        .btn-fix { background: var(--gold); color: black; }
+        .btn-copy { background: #fff; color: #000; width: 100%; margin-top: 10px; }
+        .btn-clear { background: #c0392b; color: white; margin-top: 10px; font-size: 0.7em; padding: 8px; }
+        #preview-container { max-width: 800px; margin: auto; text-align: left; padding: 20px; border-top: 2px dashed var(--gold); }
+        .msg-card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 20px; margin-bottom: 25px; border-left: 5px solid var(--gold); }
+        .msg-header { color: var(--gold); font-weight: bold; font-size: 1.2em; display: flex; justify-content: space-between; }
+        .msg-meta { font-size: 0.8em; color: #777; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .preview-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; }
+        audio { width: 100%; height: 35px; margin: 10px 0; border-radius: 5px; filter: invert(1); }
+        .msg-text { line-height: 1.7; white-space: pre-wrap; color: #ddd; font-size: 0.95em; }
+        .highlight-text { color: var(--gold); font-weight: bold; }
+    </style>
+</head>
+<body>
 
-    // 2. Réattribuer les IDs (décroissants continus)
-    msgs.forEach((m, index) => {
-        m.id = msgs.length - index; // ex: si 10 messages → 10,9,8...
-    });
+<div class="admin-box">
+    <h1>🏛️ COMMANDE DÉCROISSANTE v4.0</h1>
+    <div style="text-align: left;">
+        <label style="color: var(--gold); font-weight: bold;">📥 ENTRÉE JSON :</label>
+        <textarea id="inputJSON" placeholder="Collez votre code..."></textarea>
+        <div class="btn-group">
+            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER</button>
+            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER DÉCROISSANT</button>
+        </div>
+    </div>
+    <div style="text-align: left;">
+        <label style="color: var(--gold); font-weight: bold;">📤 SORTIE (PRÊT À COLLER) :</label>
+        <textarea id="outputJSON" readonly></textarea>
+        <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT</button>
+        <button class="btn btn-clear" onclick="viderMemoire()">🗑️ VIDER</button>
+    </div>
+</div>
 
-    // 3. Corriger les dates manquantes (ordre décroissant)
-    let today = new Date();
-    msgs.forEach((m, index) => {
-        if (!m.date || m.date.trim() === "") {
-            let newD = new Date(today);
-            newD.setDate(today.getDate() - index); 
-            m.date = newD.toISOString().split('T')[0];
-        }
-    });
-}
+<h2 style="color: var(--gold);">👁️ APERÇU (RÉCENT ➔ ANCIEN)</h2>
+<div id="preview-container"></div>
+
+<script>
+    window.onload = function() {
+        let savedData = localStorage.getItem('emmanuel_backup');
+        if (savedData) { document.getElementById('inputJSON').value = savedData; traiter(false); }
+    };
+
+    function traiter(doitReorganiser) {
+        let raw = document.getElementById('inputJSON').value.trim();
+        if (!raw) return;
+        
+        try {
+            // Nettoyage structurel
+            if (raw.startsWith('{') && !raw.includes('"messages"')) raw = '{ "status": "online", "messages": [' + raw + '] }';
+            else if (raw.startsWith('[')) raw = '{ "status": "online", "messages": ' + raw + ' }';
+
+            let clean = raw.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]");
+            let parsed = JSON.parse(clean);
+            let msgs = parsed.messages || [];
+
+            if (doitReorganiser && msgs.length > 0) {
+                // 1. TRI FINAL DÉCROISSANT DIRECTEMENT
+                msgs.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+
+                // 2. Réattribuer les IDs (décroissants continus)
+                msgs.forEach((m, index) => {
+                    m.id = msgs.length - index; 
+                });
+
+                // 3. Corriger les dates manquantes (ordre décroissant)
+                let today = new Date();
+                msgs.forEach((m, index) => {
+                    if (!m.date || m.date.trim() === "") {
+                        let newD = new Date(today);
+                        newD.setDate(today.getDate() - index); 
+                        m.date = newD.toISOString().split('T')[0];
+                    }
+                });
+            }
+            
+            let finalData = { status: "online", communique: parsed.communique || "", messages: msgs };
+            let finalString = JSON.stringify(finalData, null, 2);
+            document.getElementById('outputJSON').value = finalString;
+            localStorage.setItem('emmanuel_backup', finalString);
+            
+            renderPreview(msgs, finalData.communique);
+        } catch (e) { alert("❌ ERREUR : JSON mal formé. Vérifiez les virgules."); }
+    }
+
+    function renderPreview(msgs, comm) {
+        const container = document.getElementById('preview-container');
+        container.innerHTML = ""; 
+        msgs.forEach(m => {
+            let card = document.createElement('div');
+            card.className = "msg-card";
+            let textePreview = (m.texte || "").replace(/\*\*(.*?)\*\*/g, '<span class="highlight-text">$1</span>');
+            card.innerHTML = `
+                ${m.image ? `<img src="${m.image}" class="preview-img">` : ''}
+                <div class="msg-header"><span>${m.titre}</span><span style="opacity:0.5;">ID: ${m.id}</span></div>
+                <div class="msg-meta">📅 ${m.date} | 🏷️ ${m.categorie}</div>
+                ${m.audio ? `<audio controls src="${m.audio}"></audio>` : ''}
+                <div class="msg-text">${textePreview}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function copier() {
+        document.getElementById('outputJSON').select();
+        document.execCommand('copy');
+        alert("🎯 CODE COPIÉ !");
+    }
+
+    function viderMemoire() { if(confirm("Effacer ?")) { localStorage.removeItem('emmanuel_backup'); location.reload(); } }
+</script>
+</body>
+</html>
