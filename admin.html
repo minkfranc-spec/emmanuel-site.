@@ -22,31 +22,31 @@
         .msg-meta { font-size: 0.8em; color: #777; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
         .preview-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; }
         audio { width: 100%; height: 35px; margin: 10px 0; border-radius: 5px; filter: invert(1); }
-        .msg-text { line-height: 1.7; white-space: pre-wrap; color: #ddd; }
+        .msg-text { line-height: 1.7; white-space: pre-wrap; color: #ddd; font-size: 0.95em; }
         .highlight-text { color: var(--gold); font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="admin-box">
-    <h1>🏛️ COMMANDE INTELLIGENTE v3.0</h1>
+    <h1>🏛️ COMMANDE DÉCROISSANTE v4.0</h1>
     <div style="text-align: left;">
-        <label style="color: var(--gold); font-weight: bold;">📥 ENTRÉE (JSON) :</label>
-        <textarea id="inputJSON" placeholder="Collez le code ici..."></textarea>
+        <label style="color: var(--gold); font-weight: bold;">📥 ENTRÉE JSON :</label>
+        <textarea id="inputJSON" placeholder="Collez votre code..."></textarea>
         <div class="btn-group">
-            <button class="btn btn-view" onclick="traiter(false)">👁️ APERÇU DIRECT</button>
-            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉPARER & CONTINUER IDs</button>
+            <button class="btn btn-view" onclick="traiter(false)">👁️ VISIONNER</button>
+            <button class="btn btn-fix" onclick="traiter(true)">⚖️ RÉORDONNER DÉCROISSANT</button>
         </div>
     </div>
     <div style="text-align: left;">
-        <label style="color: var(--gold); font-weight: bold;">📤 SORTIE (IDs CORRIGÉS) :</label>
+        <label style="color: var(--gold); font-weight: bold;">📤 SORTIE (PRÊT À COLLER) :</label>
         <textarea id="outputJSON" readonly></textarea>
         <button class="btn btn-copy" onclick="copier()">⚡ COPIER LE RÉSULTAT</button>
         <button class="btn btn-clear" onclick="viderMemoire()">🗑️ VIDER</button>
     </div>
 </div>
 
-<h2 style="color: var(--gold);">👁️ FLUX DU JOUR (PLUS RÉCENT EN HAUT)</h2>
+<h2 style="color: var(--gold);">👁️ APERÇU (RÉCENT ➔ ANCIEN)</h2>
 <div id="preview-container"></div>
 
 <script>
@@ -69,23 +69,21 @@
             let msgs = parsed.messages || [];
 
             if (doitReorganiser && msgs.length > 0) {
-                // 1. TRI PAR DATE (Ancien vers Récent) pour la logique ID
-                msgs.sort((a, b) => new Date(a.date) - new Date(b.date));
+                // 1. On trie par ID (car les dates peuvent être vides)
+                msgs.sort((a, b) => parseInt(a.id) - parseInt(b.id));
 
-                // 2. DETECTION DE L'ID DE DÉPART (Prend l'ID le plus bas existant)
-                let startId = Math.min(...msgs.map(m => parseInt(m.id) || 1));
-
-                // 3. RÉ-ATTRIBUTION PROPRE
+                // 2. On répare les dates vides à partir d'aujourd'hui en reculant
+                let today = new Date();
                 msgs.forEach((m, index) => {
-                    m.id = startId + index;
-                    // Correction de date si invalide
-                    let d = new Date(m.date);
-                    if (isNaN(d)) {
-                        let prevDate = index > 0 ? new Date(msgs[index-1].date) : new Date();
-                        prevDate.setDate(prevDate.getDate() + 1);
-                        m.date = prevDate.toISOString().split('T')[0];
+                    if (!m.date || m.date.trim() === "") {
+                        let newD = new Date(today);
+                        newD.setDate(today.getDate() - (msgs.length - 1 - index));
+                        m.date = newD.toISOString().split('T')[0];
                     }
                 });
+
+                // 3. TRI FINAL DÉCROISSANT (ID 38 en haut, puis 37, 36...)
+                msgs.sort((a, b) => parseInt(b.id) - parseInt(a.id));
             }
             
             let finalData = { status: "online", communique: parsed.communique || "", messages: msgs };
@@ -93,10 +91,8 @@
             document.getElementById('outputJSON').value = finalString;
             localStorage.setItem('emmanuel_backup', finalString);
             
-            // 4. AFFICHAGE INVERSÉ (Récent = ID le plus haut = Haut de page)
-            renderPreview([...msgs].sort((a,b) => b.id - a.id), finalData.communique);
-
-        } catch (e) { alert("❌ ERREUR : Le JSON est mal formé."); }
+            renderPreview(msgs, finalData.communique);
+        } catch (e) { alert("❌ ERREUR : JSON mal formé. Vérifiez les virgules."); }
     }
 
     function renderPreview(msgs, comm) {
