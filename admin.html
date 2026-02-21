@@ -11,6 +11,7 @@
         
         .section { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 4px solid var(--gold); }
         textarea { width: 100%; min-height: 150px; background: #000; color: #00ff41; border: 1px solid #444; border-radius: 8px; padding: 15px; font-family: 'Courier New', monospace; font-size: 14px; resize: vertical; margin-top: 10px; }
+        input[type="text"] { width: 100%; padding: 12px; background: #000; color: #fff; border: 1px solid var(--gold); border-radius: 8px; margin-top: 10px; }
         
         .btn-group { display: flex; gap: 15px; justify-content: center; margin: 15px 0; }
         button { padding: 12px 25px; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
@@ -44,6 +45,15 @@
         <div class="btn-group">
             <button class="btn-gold" onclick="appliquerCommunique()">✨ Convertir le Communiqué</button>
         </div>
+    </div>
+
+    <div class="section">
+        <h2>🔗 Convertisseur Lien Google Drive</h2>
+        <input type="text" id="driveInput" placeholder="Collez le lien de partage Google Drive ici...">
+        <div class="btn-group">
+            <button class="btn-gold" onclick="convertirDrive()">🔄 Obtenir le Lien Direct</button>
+        </div>
+        <p style="font-size: 0.8em; color: var(--gold); text-align: center;">Note : Assurez-vous que le fichier est en mode "Tous les utilisateurs disposant du lien".</p>
     </div>
 
     <div class="section">
@@ -82,6 +92,20 @@
         }
     }
 
+    // FONCTION DE CONVERSION DRIVE
+    function convertirDrive() {
+        let url = document.getElementById('driveInput').value.trim();
+        let match = url.match(/\/d\/(.+?)\//) || url.match(/id=(.+?)(&|$)/);
+        
+        if (match && match[1]) {
+            let directLink = `https://docs.google.com/uc?export=download&id=${match[1]}`;
+            document.getElementById('driveInput').value = directLink;
+            alert("Lien Direct généré ! Vous pouvez le copier.");
+        } else {
+            alert("Lien Drive invalide. Copiez bien le lien de partage.");
+        }
+    }
+
     function appliquerCommunique() {
         let texte = document.getElementById('txtCommunique').value;
         currentCommuniqueHTML = texte
@@ -91,7 +115,6 @@
         alert("Communiqué converti !");
     }
 
-    // Petite fonction pour transformer les ** en <b> dans l'aperçu
     function formaterGras(texte) {
         if(!texte) return "";
         return texte.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
