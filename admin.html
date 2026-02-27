@@ -2,104 +2,166 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>🔧 ADMIN URGENCE</title>
+<title>🕯️ Admin Emmanuel</title>
 <style>
-body{background:#121212;color:#d4af37;font-family:Segoe UI,sans-serif;padding:20px}
-.container{max-width:900px;margin:auto;background:#1e1e1e;padding:30px;border-radius:15px}
-h1,h2{text-align:center;color:#d4af37}
-textarea{width:100%;min-height:200px;background:#000;color:#0f0;border:2px solid #444;border-radius:10px;padding:15px;font-family:monospace}
-.btn{padding:12px 24px;background:#d4af37;color:#000;border:0;border-radius:25px;cursor:pointer;font-weight:bold;margin:10px;font-size:16px}
-.btn:hover{transform:scale(1.05)}
-#status{padding:15px;margin:20px 0;border-radius:10px;text-align:center;font-weight:bold}
-.success{background:rgba(0,255,0,.2);border:2px solid #0f0;color:#0f0}
-.error{background:rgba(255,0,0,.2);border:2px solid #f00;color:#f00}
+:root{--g:#d4af37;--b:#121212;--c:#1e1e1e;--t:#f4f4f4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Segoe UI,sans-serif;background:var(--b);color:var(--t);padding:20px}
+.c{max-width:1100px;margin:auto;padding:20px;border:1px solid var(--g);border-radius:15px;background:var(--c);box-shadow:0 10px 30px #0004}
+h1,h2{color:var(--g);text-align:center;text-transform:uppercase;letter-spacing:2px;margin:20px 0}
+.s{background:rgba(255,255,255,.05);padding:20px;border-radius:10px;margin-bottom:20px;border-left:4px solid var(--g)}
+textarea{width:100%;min-height:150px;background:#000;color:#0f0;border:1px solid #444;border-radius:8px;padding:12px;font:14px/1.4 Courier New,monospace;resize:vertical;margin:10px 0}
+.bg{display:flex;gap:15px;justify-content:center;margin:15px 0;flex-wrap:wrap}
+button{padding:12px 24px;border:0;border-radius:30px;cursor:pointer;font-weight:700;text-transform:uppercase;transition:.3s;flex:1;max-width:200px}
+.bg>:first-child{background:var(--g);color:#000}
+.bg>:first-child:hover{transform:scale(1.05);background:#f0c742}
+.bg>:last-child{background:#e74c3c;color:#fff}
+.p{background:#fff;color:#333;padding:30px;border-radius:15px;margin:20px 0;min-height:200px}
+.cv{background:#fff9e6;border:2px dashed var(--g);padding:20px;margin-bottom:20px;border-radius:10px;text-align:center;line-height:1.8}
+.mc{border:1px solid #eee;padding:20px;margin-bottom:20px;border-radius:12px;box-shadow:0 4px 12px #0001;max-width:700px;margin:20px auto}
+.md{color:var(--g);font-weight:700;font-size:.85em;text-align:right}
+.mt{margin:10px 0;font-size:1.4em;text-align:center;color:#111}
+.cat{font-style:italic;color:#888;font-size:.75em;text-align:center;margin-bottom:15px;text-transform:uppercase}
+.mi{width:100%;border-radius:8px;margin-bottom:10px;box-shadow:0 4px 8px #0002}
+audio{width:100%;height:40px}
+.mb{white-space:pre-wrap;margin-top:20px;line-height:1.8;font-size:1.05em;color:#222}
+.status-ok{color:#0f0;font-weight:700}
+.status-err{color:#f44}
 </style>
 </head>
 <body>
-<div class="container">
-    <h1>🆘 ADMIN URGENCE - RESTAURATEUR</h1>
-    
-    <div id="status">🚀 Prêt à restaurer</div>
-    
-    <h2>📢 Communiqué (HTML OK)</h2>
-    <textarea id="communique" placeholder="Votre message HTML...">📜 <b>SITE RESTAURÉ</b> 📜</textarea>
-    
-    <h2>💾 RESTAURER SITE MAINTENANT</h2>
-    <button class="btn" onclick="restoreSite()">🟢 RESTAURER SITE</button>
-    <button class="btn" onclick="testJSON()">🔍 TEST JSON</button>
-    <button class="btn" onclick="clearCache()">🧹 VIDER CACHE</button>
-    
-    <h3>📝 Messages JSON (optionnel)</h3>
-    <textarea id="messages" placeholder='[]'></textarea>
+<div class="c">
+<h1>🕯️ Administration Emmanuel</h1>
+
+<div class="s">
+<h2>📢 Nouveau Communiqué</h2>
+<textarea id="t" placeholder="Tapez votre texte...\nUtilisez **gras** ou *italique*\n\nLignes multiples OK"></textarea>
+<div class="bg"><button onclick="a()">✨ Convertir</button></div>
+</div>
+
+<div class="s">
+<h2>📦 JSON Messages</h2>
+<textarea id="i" placeholder='[{"id":1,"date":"2026-02-27","titre":"Test","categorie":"Info","texte":"Contenu","image":"","audio":""}]\nor {"messages":[...],"communique":"..."}'></textarea>
+<div class="btn-group"><button onclick="p()">🛠️ Traiter & Corriger</button><button onclick="v()">🗑️ Vider Cache</button></div>
+</div>
+
+<h2>📄 JSON Final <span id="status"></span></h2>
+<textarea id="o" readonly></textarea>
+
+<h2>📱 Aperçu Site</h2>
+<div id="pr" class="p"><div style="text-align:center;color:#999;padding:40px">Aperçu s\'affiche ici...</div></div>
 </div>
 
 <script>
-function updateStatus(msg, type='') {
-    const status = document.getElementById('status');
-    status.textContent = msg;
-    status.className = type;
-}
-
-async function restoreSite() {
-    updateStatus('🔄 Restauration...', 'error');
-    
-    try {
-        const communique = document.getElementById('communique').value || 'Site restauré';
-        const messages = JSON.parse(document.getElementById('messages').value || '[]');
-        
-        const data = {
-            status: 'online',
-            communique: communique,
-            messages: messages.slice(0,5) // Limite 5 messages
-        };
-        
-        // Sauvegarde multiple
-        localStorage.setItem('adminData', JSON.stringify(data));
-        localStorage.setItem('data', JSON.stringify(data));
-        
-        // Fallback fichier (si service worker)
-        if ('caches' in window) {
-            caches.keys().then(names => {
-                names.forEach(name => caches.delete(name));
-            });
-        }
-        
-        updateStatus('✅ SITE RESTAURÉ! Rechargez index.html', 'success');
-        
-    } catch(e) {
-        updateStatus('❌ Erreur: ' + e.message, 'error');
-    }
-}
-
-function testJSON() {
-    try {
-        JSON.parse(document.getElementById('messages').value || '[]');
-        updateStatus('✅ JSON valide!', 'success');
-    } catch(e) {
-        updateStatus('❌ JSON invalide: ' + e.message, 'error');
-    }
-}
-
-function clearCache() {
-    localStorage.clear();
-    if ('caches' in window) {
-        caches.keys().then(names => names.forEach(name => caches.delete(name)));
-    }
-    updateStatus('🧹 Cache vidé! Rechargez', 'success');
-}
-
-// Auto-test au chargement
-window.onload = () => {
-    const data = localStorage.getItem('adminData');
-    if (data) {
-        try {
-            JSON.parse(data);
-            updateStatus('📊 Données OK - Cliquez RESTAURER', '');
-        } catch(e) {
-            updateStatus('⚠️ Données corrompues - Utilisez RESTAURER', 'error');
-        }
-    }
+let h="",isLoaded=!1;
+const fixJson=jsonStr=>{
+ try{
+  // Nettoyage avancé JSON
+  let clean=jsonStr.trim()
+   .replace(/,\s*([}\]])/g,"$1")  // Virgules traînantes
+   .replace(/([{,]\s*)"([^"]*)"\s*:/g,'$1"$2":') // Clés sans quotes
+   .replace(/\\"/g,'"') // Échappements
+   .replace(/'''/g,'"'); // Triple quotes
+  
+  return JSON.parse(clean);
+ }catch(e){
+  throw new Error("JSON invalide après correction");
+ }
+};
+const formatText=text=>{
+ if(!text)return"";
+ return text
+  .replace(/\*\*(.*?)\*\*/g,"<b>$1</b>")
+  .replace(/\*(.*?)\*/g,"<i>$1</i>")
+  .replace(/\\n/g,"<br>")
+  .replace(/\n/g,"<br>");
+};
+window.onload=()=>{
+ let m=localStorage.getItem("emmanuel_cache");
+ if(m){
+  i.value=m;
+  p();
+  isLoaded=!0;
+ }
+};
+v=()=>{
+ if(confirm("🗑️ Effacer tout le cache ?")){
+  localStorage.removeItem("emmanuel_cache");
+  i.value=o.value="";pr.innerHTML='<div style="text-align:center;color:#999;padding:40px">Cache vidé !</div>';
+  status.textContent="";
+  alert("✓ Cache vidé");
+ }
+};
+a=()=>{
+ t.value=t.value.trim();
+ h=formatText(t.value);
+ p();
+ setTimeout(()=>alert("✨ Communiqué converti & formaté !"),100);
+};
+p=()=>{
+ try{
+  status.textContent="🔄 Traitement...";
+  status.className="status-ok";
+  
+  let raw=i.value.trim();
+  if(!raw)return alert("📝 Entrez du JSON d'abord");
+  
+  let data=fixJson(raw);
+  let messages=Array.isArray(data)?data:data.messages||[];
+  if(!Array.isArray(messages))throw new Error("Aucun tableau 'messages' trouvé");
+  
+  // Récup communique si absent
+  if(!h&&data.communique)h=formatText(data.communique);
+  
+  if(messages.length===0)return alert("📭 Aucun message trouvé");
+  
+  // Re-numbering intelligent AVEC VERIF
+  let last=messages[messages.length-1];
+  if(!last.id||!last.date)throw new Error("Dernier message sans id/date");
+  
+  let id=parseInt(last.id)||1;
+  let dt=new Date(last.date);
+  if(isNaN(dt))dt=new Date();
+  
+  // Inversion + incrémentation
+  for(let k=messages.length-1;k>=0;k--){
+   messages[k].id=id;
+   messages[k].date=dt.toISOString().split`T`[0];
+   id++;dt.setDate(dt.getDate()+1);
+  }
+  
+  // Tri final (récent en 1er)
+  messages.sort((a,b)=>b.id-a.id);
+  
+  let final={status:"online",communique:h||"",messages};
+  o.value=JSON.stringify(final,null,2);
+  localStorage.setItem("emmanuel_cache",raw);
+  
+  // Aperçu
+  let r=h?`<div class="cv">${h}</div>`:"";
+  messages.forEach(m=>{
+   r+=`
+   <div class="mc">
+    <div class="md">📅 ${m.date} | ID:${m.id}</div>
+    <div class="mt">${m.titre||'Sans titre'}</div>
+    <div class="cat">${m.categorie||'Non catégorisé'}</div>
+    <div class="msg-media">
+     ${m.image?`<img src="${m.image}" class="mi" onerror="this.style.display='none'" alt="Image">`:""}
+     ${m.audio?`<audio controls><source src="${m.audio}" type="audio/mpeg"></audio>`:""}
+    </div>
+    <div class="mb">${formatText(m.texte||"")}</div>
+   </div>`;
+  });
+  pr.innerHTML=r;
+  status.textContent=`✓ ${messages.length} msg(s) traité(s)`;
+  
+ }catch(e){
+  status.textContent="❌ Erreur: "+e.message;
+  status.className="status-err";
+  o.value="ERREUR:\n"+e.message;
+  console.error(e);
+  alert("❌ "+e.message);
+ }
 };
 </script>
-</body>
-</html>
+</body></html>
