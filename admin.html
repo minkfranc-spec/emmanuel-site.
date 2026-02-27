@@ -8,7 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Segoe UI,sans-serif;background:var(--b);color:var(--t);padding:20px}
 .c{max-width:1100px;margin:auto;padding:20px;border:1px solid var(--g);border-radius:15px;background:var(--c);box-shadow:0 10px 30px #0004}
-h1,h2{color:var(--g);text-align:center;text-transform-uppercase;letter-spacing:2px;margin:20px 0}
+h1,h2{color:var(--g);text-align:center;text-transform:uppercase;letter-spacing:2px;margin:20px 0}
 .s{background:rgba(255,255,255,.05);padding:20px;border-radius:10px;margin-bottom:20px;border-left:4px solid var(--g)}
 textarea{width:100%;min-height:150px;background:#000;color:#0f0;border:1px solid #444;border-radius:8px;padding:12px;font:14px/1.4 Courier New,monospace;resize:vertical;margin:10px 0}
 .editor{min-height:200px;border:2px solid #444;border-radius:10px;padding:20px;background:#111;color:#fff;white-space:pre-wrap;font-family:Georgia,serif;line-height:1.6;font-size:16px;position:relative}
@@ -34,6 +34,7 @@ audio{width:100%;height:40px}
 .status-ok{color:#0f0;font-weight:700}
 .status-err{color:#f44}
 .preview-comm{padding:20px;background:#f8f8f8;border-radius:8px;margin-top:10px;border-left:4px solid var(--g);display:none}
+.json-debug{display:none;background:#222;color:#0f0;padding:10px;border-radius:5px;margin-top:5px;font-size:12px;max-height:100px;overflow:auto}
 </style>
 </head>
 <body>
@@ -47,8 +48,8 @@ audio{width:100%;height:40px}
 <button class="format-btn" onclick="formatItalic()">𝐈</button>
 <button class="format-btn" onclick="formatLine()">↵</button>
 </div>
-<div contenteditable="true" id="editor" class="editor" placeholder="Écrivez naturellement ici...\n\n**Ceci sera en gras**\n\n*Ceci en italique*\n\nChaque retour à la ligne = &lt;br&gt;\n\nCliquez B/I ou Ctrl+B/Ctrl+I pour formater"
-oninput="livePreview()" onkeydown="handleKey(event)">Écrivez votre communiqué ici...
+<div contenteditable="true" id="editor" class="editor" placeholder="Écrivez naturellement ici...\n\n**Ceci sera en gras**\n\n*Ceci en italique*\n\nChaque retour à la ligne = &lt;br&gt;\n\nCtrl+B/I pour formater"
+oninput="livePreview()" onkeydown="handleKey(event)">Écrivez votre communiqué...
 </div>
 <div class="preview-comm" id="commPreview"></div>
 <div class="bg"><button onclick="a()">✨ Convertir & Appliquer</button></div>
@@ -56,8 +57,9 @@ oninput="livePreview()" onkeydown="handleKey(event)">Écrivez votre communiqué 
 
 <div class="s">
 <h2>📦 JSON Messages</h2>
-<textarea id="i" placeholder='[{"id":1,"date":"2026-02-27","titre":"Test","categorie":"Info","texte":"Contenu","image":"","audio":""}]\nor {"messages":[...],"communique":"..."}'></textarea>
-<div class="bg"><button onclick="p()">🛠️ Traiter & Corriger</button><button onclick="v()">🗑️ Vider Cache</button></div>
+<textarea id="i" placeholder='Exemple avec image/audio:\n[{"id":1,"date":"2026-02-27","titre":"Test","categorie":"Info","texte":"Contenu","image":"https://exemple.com/img.jpg","audio":"https://exemple.com/audio.mp3"}]'></textarea>
+<div class="bg"><button onclick="p()">🛠️ Traiter & Corriger</button><button onclick="v()">🗑️ Vider</button></div>
+<div id="jsonDebug" class="json-debug"></div>
 </div>
 
 <h2>📄 JSON Final <span id="status"></span></h2>
@@ -71,20 +73,39 @@ oninput="livePreview()" onkeydown="handleKey(event)">Écrivez votre communiqué 
 let h="",isLoaded=!1;
 const editor=document.getElementById("editor");
 const commPreview=document.getElementById("commPreview");
+const jsonDebug=document.getElementById("jsonDebug");
 
 const fixJson=jsonStr=>{
  try{
-  let clean=jsonStr.trim()
-   .replace(/,\s*([}\]])/g,"$1")
-   .replace(/([{,]\s*)"([^"]*)"\s*:/g,'$1"$2":')
-   .replace(/\\"/g,'"')
-   .replace(/'''/g,'"');
-  return JSON.parse(clean);
- }catch(e){throw new Error("JSON invalide après correction");}
+  // CORRECTION ULTRA-ROBUSTE pour images/audios
+  let clean=jsonStr
+   // 1. Nettoie structure
+   .trim()
+   .replace(/,\s*([}\]])/g,"$1") // virgules
+   .replace(/([{,]\s+)([a-zA-Z0-9_]+)\s*:/g,'$1"$2":') // clés sans quotes
+   // 2. URLs et caractères spéciaux
+   .replace(/\\"/g,'"') // échappements
+   .replace(/''/g,'"') // simples
+   .replace(/'''/g,'"') // triples
+   // 3. Guillemets malformés
+   .replace(/"([^"]*)"(?=\s*:)/g,'"$1"') 
+   // 4. Nombres comme strings
+   .replace(/:"([0-9]+)"/g,':$1');
+   
+  jsonDebug.textContent="🔧 JSON nettoyé:\n"+clean;
+  jsonDebug.style.display="block";
+  
+  let parsed=JSON.parse(clean);
+  console.log("✅ JSON parsed:",parsed);
+  return parsed;
+ }catch(e){
+  jsonDebug.textContent="❌ ERREUR JSON:\n"+e.message+"\n\nRAW:\n"+jsonStr;
+  jsonDebug.style.display="block";
+  throw new Error("JSON impossible à corriger: "+e.message);
+ }
 };
 
 const formatText=text=>{
- if(!text)return"";
  return text
   .replace(/\*\*(.*?)\*\*/g,"<b>$1</b>")
   .replace(/\*(.*?)\*/g,"<i>$1</i>")
@@ -97,23 +118,9 @@ const livePreview=()=>{
  commPreview.style.display=html?"block":"none";
 };
 
-const formatBold=()=>{
- document.execCommand('bold');
- editor.focus();
- livePreview();
-};
-
-const formatItalic=()=>{
- document.execCommand('italic');
- editor.focus();
- livePreview();
-};
-
-const formatLine=()=>{
- let txt=editor.textContent;
- if(!txt.includes('\n\n'))editor.innerHTML+='<br><br>';
- editor.focus();
-};
+const formatBold=()=>{document.execCommand('bold');editor.focus();livePreview();};
+const formatItalic=()=>{document.execCommand('italic');editor.focus();livePreview();};
+const formatLine=()=>{editor.innerHTML+='<br><br>';editor.focus();};
 
 const handleKey=e=>{
  if(e.ctrlKey){
@@ -124,57 +131,55 @@ const handleKey=e=>{
 
 window.onload=()=>{
  let m=localStorage.getItem("emmanuel_cache");
- if(m){
-  i.value=m;
-  p();
-  isLoaded=!0;
- }
+ if(m){i.value=m;p();isLoaded=!0;}
  livePreview();
 };
 
 v=()=>{
- if(confirm("🗑️ Effacer tout le cache ?")){
+ if(confirm("🗑️ Vider cache ?")){
   localStorage.removeItem("emmanuel_cache");
-  i.value=o.value="";pr.innerHTML='<div style="text-align:center;color:#999;padding:40px">Cache vidé !</div>';
-  status.textContent="";h="";
-  editor.textContent="";
-  commPreview.style.display="none";
-  alert("✓ Cache vidé");
+  [i.value,o.value]="";pr.innerHTML='<div style="text-align:center;color:#999;padding:40px">Cache vidé !</div>';
+  document.getElementById("status").textContent="";h="";editor.textContent="";commPreview.style.display="none";
+  jsonDebug.style.display="none";alert("✓ Vidange OK");
  }
 };
 
 a=()=>{
  h=formatText(editor.textContent.trim());
- if(!h){alert("⚠️ Écrivez d'abord votre communiqué");return;}
- p();
- setTimeout(()=>alert("✨ Communiqué formaté & appliqué !"),100);
+ if(!h){alert("⚠️ Communiqué vide");return;}
+ p();setTimeout(()=>alert("✨ Communiqué OK !"),100);
 };
 
 p=()=>{
  try{
-  let s=document.getElementById("status");
-  s.textContent="🔄 Traitement...";s.className="status-ok";
+  let status=document.getElementById("status");
+  status.textContent="🔄 Parsing...";status.className="status-ok";
   
   let raw=i.value.trim();
-  if(!raw)return alert("📝 Entrez du JSON");
+  if(!raw){alert("📝 JSON requis");return;}
   
   let data=fixJson(raw);
   let messages=Array.isArray(data)?data:data.messages||[];
-  if(!Array.isArray(messages))throw new Error("Aucun tableau 'messages'");
+  
+  if(!Array.isArray(messages))throw new Error("'messages' absent ou pas tableau");
+  if(messages.length===0){alert("📭 Messages vides");return;}
   
   if(!h&&data.communique)h=formatText(data.communique);
   
-  if(messages.length===0)return alert("📭 Aucun message");
-  
+  // Validation chaque message
   let last=messages[messages.length-1];
-  if(!last.id||!last.date)throw new Error("Dernier msg sans id/date");
+  if(!last.titre||!last.texte)throw new Error("Champs titre/texte manquants");
   
-  let id=parseInt(last.id)||1,dt=new Date(last.date);
-  if(isNaN(dt))dt=new Date();
+  let id=parseInt(last.id)||1;
+  let dt=new Date(last.date||Date.now());
   
   for(let k=messages.length-1;k>=0;k--){
-   messages[k].id=id;
-   messages[k].date=dt.toISOString().split`T`[0];
+   let msg=messages[k];
+   msg.id=id;
+   msg.date=dt.toISOString().split`T`[0];
+   msg.titre=msg.titre||"Sans titre";
+   msg.categorie=msg.categorie||"Info";
+   msg.texte=formatText(msg.texte||"");
    id++;dt.setDate(dt.getDate()+1);
   }
   
@@ -184,28 +189,30 @@ p=()=>{
   o.value=JSON.stringify(final,null,2);
   localStorage.setItem("emmanuel_cache",raw);
   
+  // Aperçu COMPLET
   let r=h?`<div class="cv">${h}</div>`:"";
   messages.forEach(m=>{
    r+=`
    <div class="mc">
     <div class="md">📅 ${m.date} | ID:${m.id}</div>
-    <div class="mt">${m.titre||'Sans titre'}</div>
-    <div class="cat">${m.categorie||'Non catégorisé'}</div>
-    <div class="msg-media">
-     ${m.image?`<img src="${m.image}" class="mi" onerror="this.style.display='none'" alt="Image">`:""}
-     ${m.audio?`<audio controls><source src="${m.audio}" type="audio/mpeg"></audio>`:""}
+    <div class="mt"><b>${m.titre}</b></div>
+    <div class="cat">${m.categorie}</div>
+    <div>
+     ${m.image?`<img src="${m.image}" class="mi" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPkltYWdlIG5vbiBjaGFyZ2VlPC90ZXh0Pjwvc3ZnPg==';this.className+=' fallback'">`:""}
+     ${m.audio?`<audio controls preload="metadata"><source src="${m.audio}" type="audio/mpeg">Audio non supporté</audio>`:""}
     </div>
-    <div class="mb">${formatText(m.texte||"")}</div>
+    <div class="mb">${m.texte}</div>
    </div>`;
   });
+  
   pr.innerHTML=r;
-  s.textContent=`✓ ${messages.length} msg(s) + communiqué`;
+  status.textContent=`✅ ${messages.length} messages + communiqué`;
   
  }catch(e){
-  let s=document.getElementById("status");
-  s.textContent="❌ "+e.message;s.className="status-err";
-  o.value="ERREUR:\n"+e.message;
-  alert("❌ "+e.message);
+  let status=document.getElementById("status");
+  status.textContent="❌ "+e.message;status.className="status-err";
+  o.value="// ERREUR:\n"+e.message+"\n\n"+jsonDebug.textContent;
+  alert("❌ Détails dans zone debug ↑");
  }
 };
 </script>
