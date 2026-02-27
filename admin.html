@@ -11,12 +11,12 @@ body{font-family:Segoe UI,sans-serif;background:var(--b);color:var(--t);padding:
 h1,h2{color:var(--g);text-align:center;text-transform:uppercase;letter-spacing:2px;margin:20px 0}
 .s{background:rgba(255,255,255,.05);padding:20px;border-radius:10px;margin-bottom:20px;border-left:4px solid var(--g)}
 textarea{width:100%;min-height:150px;background:#000;color:#0f0;border:1px solid #444;border-radius:8px;padding:12px;font:14px/1.4 Courier New,monospace;resize:vertical;margin:10px 0}
-.bg{display:flex;gap:15px;justify-content:center;margin:15px 0;flex-wrap:wrap}
-button{padding:12px 24px;border:0;border-radius:30px;cursor:pointer;font-weight:700;text-transform:uppercase;transition:.3s;flex:1;max-width:200px}
+.bg{display:flex;gap:15px;justify-content:center;margin:15px 0}
+button{padding:12px 24px;border:0;border-radius:30px;cursor:pointer;font-weight:700;text-transform:uppercase;transition:.3s}
 .bg>:first-child{background:var(--g);color:#000}
 .bg>:first-child:hover{transform:scale(1.05);background:#f0c742}
 .bg>:last-child{background:#e74c3c;color:#fff}
-.p{background:#fff;color:#333;padding:30px;border-radius:15px;margin:20px 0;min-height:200px}
+.p{background:#fff;color:#333;padding:30px;border-radius:15px;margin:20px 0}
 .cv{background:#fff9e6;border:2px dashed var(--g);padding:20px;margin-bottom:20px;border-radius:10px;text-align:center;line-height:1.8}
 .mc{border:1px solid #eee;padding:20px;margin-bottom:20px;border-radius:12px;box-shadow:0 4px 12px #0001;max-width:700px;margin:20px auto}
 .md{color:var(--g);font-weight:700;font-size:.85em;text-align:right}
@@ -25,8 +25,6 @@ button{padding:12px 24px;border:0;border-radius:30px;cursor:pointer;font-weight:
 .mi{width:100%;border-radius:8px;margin-bottom:10px;box-shadow:0 4px 8px #0002}
 audio{width:100%;height:40px}
 .mb{white-space:pre-wrap;margin-top:20px;line-height:1.8;font-size:1.05em;color:#222}
-.status-ok{color:#0f0;font-weight:700}
-.status-err{color:#f44}
 </style>
 </head>
 <body>
@@ -35,133 +33,61 @@ audio{width:100%;height:40px}
 
 <div class="s">
 <h2>📢 Nouveau Communiqué</h2>
-<textarea id="t" placeholder="Tapez votre texte...\nUtilisez **gras** ou *italique*\n\nLignes multiples OK"></textarea>
+<textarea id="t" placeholder="Tapez votre texte... **gras**"></textarea>
 <div class="bg"><button onclick="a()">✨ Convertir</button></div>
 </div>
 
 <div class="s">
 <h2>📦 JSON Messages</h2>
-<textarea id="i" placeholder='[{"id":1,"date":"2026-02-27","titre":"Test","categorie":"Info","texte":"Contenu","image":"","audio":""}]\nor {"messages":[...],"communique":"..."}'></textarea>
-<div class="btn-group"><button onclick="p()">🛠️ Traiter & Corriger</button><button onclick="v()">🗑️ Vider Cache</button></div>
+<textarea id="i" placeholder="JSON ici..."></textarea>
+<div class="bg"><button onclick="p()">🛠️ Traiter</button><button onclick="v()">🗑️ Vider</button></div>
 </div>
 
-<h2>📄 JSON Final <span id="status"></span></h2>
+<h2>📄 JSON Final</h2>
 <textarea id="o" readonly></textarea>
 
-<h2>📱 Aperçu Site</h2>
-<div id="pr" class="p"><div style="text-align:center;color:#999;padding:40px">Aperçu s\'affiche ici...</div></div>
+<h2>📱 Aperçu</h2>
+<div id="pr" class="p">Aperçu ici...</div>
 </div>
 
 <script>
-let h="",isLoaded=!1;
-const fixJson=jsonStr=>{
- try{
-  // Nettoyage avancé JSON
-  let clean=jsonStr.trim()
-   .replace(/,\s*([}\]])/g,"$1")  // Virgules traînantes
-   .replace(/([{,]\s*)"([^"]*)"\s*:/g,'$1"$2":') // Clés sans quotes
-   .replace(/\\"/g,'"') // Échappements
-   .replace(/'''/g,'"'); // Triple quotes
-  
-  return JSON.parse(clean);
- }catch(e){
-  throw new Error("JSON invalide après correction");
- }
-};
-const formatText=text=>{
- if(!text)return"";
- return text
-  .replace(/\*\*(.*?)\*\*/g,"<b>$1</b>")
-  .replace(/\*(.*?)\*/g,"<i>$1</i>")
-  .replace(/\\n/g,"<br>")
-  .replace(/\n/g,"<br>");
-};
+let h=""; 
 window.onload=()=>{
- let m=localStorage.getItem("emmanuel_cache");
- if(m){
-  i.value=m;
-  p();
-  isLoaded=!0;
- }
+ let m=localStorage.emmanuel_cache;
+ if(m){i.value=m;p()}
 };
-v=()=>{
- if(confirm("🗑️ Effacer tout le cache ?")){
-  localStorage.removeItem("emmanuel_cache");
-  i.value=o.value="";pr.innerHTML='<div style="text-align:center;color:#999;padding:40px">Cache vidé !</div>';
-  status.textContent="";
-  alert("✓ Cache vidé");
- }
-};
+v=()=>confirm("Tout effacer?")?localStorage.removeItem("emmanuel_cache")||location.reload():0;
 a=()=>{
- t.value=t.value.trim();
- h=formatText(t.value);
- p();
- setTimeout(()=>alert("✨ Communiqué converti & formaté !"),100);
+ h=t.value.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\\n/g,"<br>");
+ p();alert("✓ Convertit!")
 };
 p=()=>{
  try{
-  status.textContent="🔄 Traitement...";
-  status.className="status-ok";
+  let j=i.value.trim().replace(/,\s*([}\]])/g,"$1");
+  let d=j[0]=="["?JSON.parse(j):JSON.parse(j).messages||[];
+  if(!h&&j[0]!="["&&JSON.parse(j).communique)h=JSON.parse(j).communique;
   
-  let raw=i.value.trim();
-  if(!raw)return alert("📝 Entrez du JSON d'abord");
-  
-  let data=fixJson(raw);
-  let messages=Array.isArray(data)?data:data.messages||[];
-  if(!Array.isArray(messages))throw new Error("Aucun tableau 'messages' trouvé");
-  
-  // Récup communique si absent
-  if(!h&&data.communique)h=formatText(data.communique);
-  
-  if(messages.length===0)return alert("📭 Aucun message trouvé");
-  
-  // Re-numbering intelligent AVEC VERIF
-  let last=messages[messages.length-1];
-  if(!last.id||!last.date)throw new Error("Dernier message sans id/date");
-  
-  let id=parseInt(last.id)||1;
-  let dt=new Date(last.date);
-  if(isNaN(dt))dt=new Date();
-  
-  // Inversion + incrémentation
-  for(let k=messages.length-1;k>=0;k--){
-   messages[k].id=id;
-   messages[k].date=dt.toISOString().split`T`[0];
-   id++;dt.setDate(dt.getDate()+1);
+  let l=d[d.length-1],id=parseInt(l.id),dt=new Date(l.date);
+  for(let k=d.length-1;k>=0;k--){
+   d[k].id=id;d[k].date=dt.toISOString().split`T`[0];id++;dt.setDate(dt.getDate()+1)
   }
+  d.sort((a,b)=>b.id-a.id);
   
-  // Tri final (récent en 1er)
-  messages.sort((a,b)=>b.id-a.id);
+  let f={status:"online",communique:h,messages:d};
+  o.value=JSON.stringify(f,null,2);
+  localStorage.emmanuel_cache=i.value;
   
-  let final={status:"online",communique:h||"",messages};
-  o.value=JSON.stringify(final,null,2);
-  localStorage.setItem("emmanuel_cache",raw);
-  
-  // Aperçu
   let r=h?`<div class="cv">${h}</div>`:"";
-  messages.forEach(m=>{
-   r+=`
+  d.forEach(m=>r+=`
    <div class="mc">
     <div class="md">📅 ${m.date} | ID:${m.id}</div>
-    <div class="mt">${m.titre||'Sans titre'}</div>
-    <div class="cat">${m.categorie||'Non catégorisé'}</div>
-    <div class="msg-media">
-     ${m.image?`<img src="${m.image}" class="mi" onerror="this.style.display='none'" alt="Image">`:""}
-     ${m.audio?`<audio controls><source src="${m.audio}" type="audio/mpeg"></audio>`:""}
-    </div>
-    <div class="mb">${formatText(m.texte||"")}</div>
-   </div>`;
-  });
-  pr.innerHTML=r;
-  status.textContent=`✓ ${messages.length} msg(s) traité(s)`;
-  
- }catch(e){
-  status.textContent="❌ Erreur: "+e.message;
-  status.className="status-err";
-  o.value="ERREUR:\n"+e.message;
-  console.error(e);
-  alert("❌ "+e.message);
- }
-};
+    <div class="mt"><b>${m.titre}</b></div>
+    <div class="cat">${m.categorie}</div>
+    <div>${m.image?`<img src="${m.image}" class="mi" onerror="this.style.display='none'">`:""}${m.audio?`<audio controls><source src="${m.audio}">`:''}</div>
+    <div class="mb">${m.texte.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>")}</div>
+   </div>`);
+  pr.innerHTML=r
+ }catch(e){alert("❌ JSON invalide")}
+}
 </script>
 </body></html>
