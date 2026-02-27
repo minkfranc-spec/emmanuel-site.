@@ -2,82 +2,104 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>🕯️ Admin Emmanuel</title>
+<title>🔧 ADMIN URGENCE</title>
 <style>
-/* Vos styles CSS ici - version complète */
+body{background:#121212;color:#d4af37;font-family:Segoe UI,sans-serif;padding:20px}
+.container{max-width:900px;margin:auto;background:#1e1e1e;padding:30px;border-radius:15px}
+h1,h2{text-align:center;color:#d4af37}
+textarea{width:100%;min-height:200px;background:#000;color:#0f0;border:2px solid #444;border-radius:10px;padding:15px;font-family:monospace}
+.btn{padding:12px 24px;background:#d4af37;color:#000;border:0;border-radius:25px;cursor:pointer;font-weight:bold;margin:10px;font-size:16px}
+.btn:hover{transform:scale(1.05)}
+#status{padding:15px;margin:20px 0;border-radius:10px;text-align:center;font-weight:bold}
+.success{background:rgba(0,255,0,.2);border:2px solid #0f0;color:#0f0}
+.error{background:rgba(255,0,0,.2);border:2px solid #f00;color:#f00}
 </style>
 </head>
 <body>
 <div class="container">
-    <h1>🔧 ADMINISTRATEUR</h1>
+    <h1>🆘 ADMIN URGENCE - RESTAURATEUR</h1>
     
-    <div class="section">
-        <h2>📢 Communiqué</h2>
-        <textarea id="communique" placeholder="HTML autorisé: &lt;b&gt;&lt;br&gt;"></textarea>
-        <small>✅ HTML passe toujours</small>
-    </div>
-
-    <div class="section">
-        <h2>💎 Messages (JSON Strict)</h2>
-        <textarea id="jsonMessages" class="editor" 
-                  placeholder='[
-  {
-    "id": 1,
-    "titre": "Titre sans guillemets",
-    "texte": "Texte avec \\"guillemets échappés\\" et \\'apostrophes',
-    "audio": "URL",
-    "image": "URL"
-  }
-]'></textarea>
-        <div class="format-bar">
-            <button onclick="escapeText()">✨ Échapper Texte</button>
-            <button onclick="validateJSON()">✅ Valider JSON</button>
-            <button onclick="saveAll()">💾 SAUVER</button>
-        </div>
-    </div>
-
-    <div class="status">
-        <div id="status">⏳ Prêt</div>
-    </div>
+    <div id="status">🚀 Prêt à restaurer</div>
+    
+    <h2>📢 Communiqué (HTML OK)</h2>
+    <textarea id="communique" placeholder="Votre message HTML...">📜 <b>SITE RESTAURÉ</b> 📜</textarea>
+    
+    <h2>💾 RESTAURER SITE MAINTENANT</h2>
+    <button class="btn" onclick="restoreSite()">🟢 RESTAURER SITE</button>
+    <button class="btn" onclick="testJSON()">🔍 TEST JSON</button>
+    <button class="btn" onclick="clearCache()">🧹 VIDER CACHE</button>
+    
+    <h3>📝 Messages JSON (optionnel)</h3>
+    <textarea id="messages" placeholder='[]'></textarea>
 </div>
 
 <script>
-// ✅ VALIDATEUR JSON ROBUSTE
-function escapeText() {
-    const textarea = document.getElementById('jsonMessages');
-    let content = textarea.value;
-    
-    // Règles strictes JSON
-    content = content
-        .replace(/'/g, "\\'")           // Apostrophes
-        .replace(/"/g, '\\"')           // Guillemets
-        .replace(/\n/g, '\\n')          // Sauts de ligne
-        .replace(/\\n(?!" )/g, '\\\\n'); // Double \\n
-        
-    textarea.value = content;
-    document.getElementById('status').textContent = '✅ Texte échappé!';
+function updateStatus(msg, type='') {
+    const status = document.getElementById('status');
+    status.textContent = msg;
+    status.className = type;
 }
 
-// ✅ VALIDATION + SAUVEGARDE
-function validateJSON() {
+async function restoreSite() {
+    updateStatus('🔄 Restauration...', 'error');
+    
     try {
-        const messages = JSON.parse(document.getElementById('jsonMessages').value);
-        const communique = document.getElementById('communique').value;
+        const communique = document.getElementById('communique').value || 'Site restauré';
+        const messages = JSON.parse(document.getElementById('messages').value || '[]');
         
         const data = {
             status: 'online',
             communique: communique,
-            messages: messages
+            messages: messages.slice(0,5) // Limite 5 messages
         };
         
-        // Sauvegarde
+        // Sauvegarde multiple
         localStorage.setItem('adminData', JSON.stringify(data));
-        document.getElementById('status').innerHTML = '🟢 <b>SAUVEGARDÉ!</b>';
+        localStorage.setItem('data', JSON.stringify(data));
+        
+        // Fallback fichier (si service worker)
+        if ('caches' in window) {
+            caches.keys().then(names => {
+                names.forEach(name => caches.delete(name));
+            });
+        }
+        
+        updateStatus('✅ SITE RESTAURÉ! Rechargez index.html', 'success');
         
     } catch(e) {
-        document.getElementById('status').innerHTML = '❌ JSON invalide: ' + e.message;
+        updateStatus('❌ Erreur: ' + e.message, 'error');
     }
 }
+
+function testJSON() {
+    try {
+        JSON.parse(document.getElementById('messages').value || '[]');
+        updateStatus('✅ JSON valide!', 'success');
+    } catch(e) {
+        updateStatus('❌ JSON invalide: ' + e.message, 'error');
+    }
+}
+
+function clearCache() {
+    localStorage.clear();
+    if ('caches' in window) {
+        caches.keys().then(names => names.forEach(name => caches.delete(name)));
+    }
+    updateStatus('🧹 Cache vidé! Rechargez', 'success');
+}
+
+// Auto-test au chargement
+window.onload = () => {
+    const data = localStorage.getItem('adminData');
+    if (data) {
+        try {
+            JSON.parse(data);
+            updateStatus('📊 Données OK - Cliquez RESTAURER', '');
+        } catch(e) {
+            updateStatus('⚠️ Données corrompues - Utilisez RESTAURER', 'error');
+        }
+    }
+};
 </script>
 </body>
 </html>
