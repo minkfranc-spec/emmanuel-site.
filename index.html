@@ -94,6 +94,7 @@
             padding-right: 5px;
         }
 
+        /* Modification 1 : Texte du communiqué justifié */
         .notif-item { 
             font-family: 'Montserrat';
             font-size: 13px;
@@ -101,6 +102,7 @@
             color: #333; 
             line-height: 1.6; 
             white-space: pre-wrap;
+            text-align: justify;
         }
 
         .close-notif { 
@@ -118,6 +120,27 @@
         }
 
         #notif-bubble { position: fixed; top: 20px; right: 20px; width: 45px; height: 45px; background: #d4af37; border-radius: 50%; display: none; justify-content: center; align-items: center; cursor: pointer; z-index: 2100; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); animation: lightPulse 2s infinite; border: 2px solid #fff; }
+        
+        /* Modification 2 : Style de la bulle avec le chiffre 1 */
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            font-family: 'Montserrat';
+            font-weight: 900;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 1px solid #fff;
+        }
+
         @keyframes lightPulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); } 100% { transform: scale(1); } }
         @keyframes slideInNotif { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -161,7 +184,7 @@
 
     <div id="notif-bubble" onclick="ouvrirNotif()">
         <span style="color:white; font-size:18px;">🔔</span>
-    </div>
+        </div>
     
     <div id="notif-panel">
         <div style="font-family: 'Montserrat'; font-weight: 900; font-size: 10px; color: #d4af37; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">📢 COMMUNICATIONS </div>
@@ -235,7 +258,11 @@
                 const data = await res.json();
                 
                 if (data.communique && data.communique.trim() !== "") {
-                    document.getElementById('notif-bubble').style.display = 'flex';
+                    // Modification : Ajout de la bulle "1" à la cloche
+                    const bubble = document.getElementById('notif-bubble');
+                    bubble.style.display = 'flex';
+                    bubble.innerHTML = '<span style="color:white; font-size:18px;">🔔</span><div class="notif-badge">1</div>';
+                    
                     document.getElementById('notif-list').innerHTML = `<div class="notif-item">${data.communique}</div>`;
                 }
 
@@ -252,7 +279,7 @@
                     return heureLocale >= dateParution;
                 });
                 
-                setLanguage('fr'); // ICI : On initialise bien la langue
+                setLanguage('fr'); 
                 genererBoutonsMois();
                 genererBoutonsThemes();
                 
@@ -275,7 +302,7 @@
             document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
             document.getElementById('btn-archive').innerText = translations[lang].archiveBtn;
             
-            afficherAccueil(); // On rafraîchit les messages avec la bonne langue
+            afficherAccueil(); 
             genererBoutonsMois();
         }
 
