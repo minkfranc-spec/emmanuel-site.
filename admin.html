@@ -83,7 +83,11 @@ p=()=>{
     <div class="md">📅 ${m.date} | ID:${m.id}</div>
     <div class="mt"><b>${m.titre}</b></div>
     <div class="cat">${m.categorie}</div>
-    <div>${m.image?`<img src="${m.image}" class="mi" onerror="this.style.display='none'">`:""}${m.audio?`<audio controls><source src="${m.audio}">`:''}</div>
+    <div>
+        ${m.image?`<img src="${m.image}" class="mi" onerror="this.style.display='none'">`:""}
+        ${m.audio?`<audio controls style="margin-bottom:5px;"><source src="${m.audio}"></audio>`:''}
+        ${m.audio2?`<audio controls><source src="${m.audio2}"></audio>`:''}
+    </div>
     <div class="mb">${m.texte.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>")}</div>
    </div>`);
   pr.innerHTML=r
