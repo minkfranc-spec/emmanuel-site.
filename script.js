@@ -7,7 +7,7 @@ let tousLesMessages = [];
 let msgPartageTemp = "";
 let titrePartageTemp = "";
 
-const CACHE_KEY = 'emmanuel_data';
+const CACHE_KEY = 'emmanuel_data_v2';
 const CACHE_TTL = 15 * 60 * 1000;
 
 const moisNoms = {
