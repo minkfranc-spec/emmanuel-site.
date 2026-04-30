@@ -37,7 +37,10 @@
 </head>
 <body>
 
-    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
+    <div id="loading-screen">
+        <div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div>
+        <div id="countdown" style="color:#d4af37; font-family:'Montserrat',sans-serif; font-size:13px; margin-top:35px; text-align:center; opacity:0.85;">Chargement dans <span id="count-num">7</span>s...</div>
+    </div>
 
     <div id="notif-bubble" onclick="ouvrirNotif()" aria-label="Notifications">
         <span style="color:white; font-size:18px;">🔔</span>
@@ -114,5 +117,15 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        (function() {
+            var n = 7, el = document.getElementById('count-num'), box = document.getElementById('countdown');
+            var t = setInterval(function() {
+                n--;
+                if (n <= 0) { clearInterval(t); if (box) box.style.display = 'none'; }
+                else if (el) el.textContent = n;
+            }, 1000);
+        })();
+    </script>
 </body>
 </html>
