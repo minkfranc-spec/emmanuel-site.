@@ -84,9 +84,8 @@ async function fetchData() {
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
         const { ts, data } = JSON.parse(cached);
-        const cachedDay = new Date(ts).toDateString();
-        const todayDay = new Date().toDateString();
-        if (Date.now() - ts < CACHE_TTL && cachedDay === todayDay) return data;
+        const toWatDate = t => new Date(t + 60 * 60000).toISOString().split('T')[0];
+        if (Date.now() - ts < CACHE_TTL && toWatDate(ts) === toWatDate(Date.now())) return data;
     }
 
     const res = await fetch('data.json?v=' + Date.now(), { cache: 'no-store' });
@@ -113,10 +112,8 @@ async function chargerMessages() {
 
         const listeBrute = data.messages || [];
         const maintenant = heureServeur || new Date();
-        // Date d'aujourd'hui en WAT (UTC+1) au format YYYY-MM-DD
-        const watOffset = 60 * 60000; // UTC+1
-        const watNow = new Date(maintenant.getTime() + maintenant.getTimezoneOffset() * 60000 + watOffset);
-        const aujourdhui = watNow.toISOString().split('T')[0];
+        // Date d'aujourd'hui en WAT (UTC+1) : on ajoute 1h à l'UTC
+        const aujourdhui = new Date(maintenant.getTime() + 60 * 60000).toISOString().split('T')[0];
 
         tousLesMessages = listeBrute.filter(msg => msg.date <= aujourdhui);
 
