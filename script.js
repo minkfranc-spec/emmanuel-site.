@@ -84,7 +84,9 @@ async function fetchData() {
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
         const { ts, data } = JSON.parse(cached);
-        if (Date.now() - ts < CACHE_TTL) return data;
+        const cachedDay = new Date(ts).toDateString();
+        const todayDay = new Date().toDateString();
+        if (Date.now() - ts < CACHE_TTL && cachedDay === todayDay) return data;
     }
 
     const res = await fetch('data.json?v=' + Date.now(), { cache: 'no-store' });
