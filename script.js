@@ -113,14 +113,12 @@ async function chargerMessages() {
 
         const listeBrute = data.messages || [];
         const maintenant = heureServeur || new Date();
-        // Convertit en heure WAT (UTC+1) pour comparer avec les dates des messages
-        const offsetWAT = 60; // UTC+1 en minutes
-        const heureRef = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() + offsetWAT) * 60000);
+        // Date d'aujourd'hui en WAT (UTC+1) au format YYYY-MM-DD
+        const watOffset = 60 * 60000; // UTC+1
+        const watNow = new Date(maintenant.getTime() + maintenant.getTimezoneOffset() * 60000 + watOffset);
+        const aujourdhui = watNow.toISOString().split('T')[0];
 
-        tousLesMessages = listeBrute.filter(msg => {
-            const [annee, mois, jour] = msg.date.split('-').map(Number);
-            return heureRef >= new Date(annee, mois - 1, jour, 0, 0, 0);
-        });
+        tousLesMessages = listeBrute.filter(msg => msg.date <= aujourdhui);
 
         setLanguage('fr');
         genererBoutonsThemes();
