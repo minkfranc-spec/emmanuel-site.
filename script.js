@@ -81,12 +81,13 @@ async function fetchData() {
         if (ts) heureServeur = new Date(parseFloat(ts[1]) * 1000);
     } catch (_) {}
 
-    const res = await fetch('data.json?v=' + Date.now(), { cache: 'no-store' });
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
         const { ts, data } = JSON.parse(cached);
         if (Date.now() - ts < CACHE_TTL) return data;
     }
+
+    const res = await fetch('data.json?v=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
     localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
     return data;
@@ -110,11 +111,13 @@ async function chargerMessages() {
 
         const listeBrute = data.messages || [];
         const maintenant = heureServeur || new Date();
-        const heureRef = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() * 60000) + (3600000));
+        // Convertit en heure WAT (UTC+1) pour comparer avec les dates des messages
+        const offsetWAT = 60; // UTC+1 en minutes
+        const heureRef = new Date(maintenant.getTime() + (maintenant.getTimezoneOffset() + offsetWAT) * 60000);
 
         tousLesMessages = listeBrute.filter(msg => {
             const [annee, mois, jour] = msg.date.split('-').map(Number);
-            return heureRef >= new Date(annee, mois - 1, jour, 0, 0, 1);
+            return heureRef >= new Date(annee, mois - 1, jour, 0, 0, 0);
         });
 
         setLanguage('fr');
