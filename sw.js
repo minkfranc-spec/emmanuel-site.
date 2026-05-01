@@ -1,4 +1,4 @@
-const CACHE = 'emmanuel-v4';
+const CACHE = 'emmanuel-v5';
 const STATIC = ['/index.html', '/styles.css', '/script.js', '/manifest.json'];
 
 self.addEventListener('install', e => {
