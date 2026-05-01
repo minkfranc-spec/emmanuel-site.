@@ -3,7 +3,7 @@ let tousLesMessages = [];
 let msgPartageTemp = "";
 let titrePartageTemp = "";
 
-const CACHE_KEY = 'emmanuel_data_v2';
+const CACHE_KEY = 'emmanuel_data_v3';
 const CACHE_TTL = 15 * 60 * 1000;
 
 const moisNoms = {
@@ -63,10 +63,10 @@ function afficherToast(msg) {
 }
 
 async function fetchData() {
+    const aujourdhui = new Date().toISOString().split('T')[0];
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
         const { ts, data } = JSON.parse(cached);
-        const aujourdhui = new Date().toISOString().split('T')[0];
         const dateCache = new Date(ts).toISOString().split('T')[0];
         if (Date.now() - ts < CACHE_TTL && dateCache === aujourdhui) return data;
     }
