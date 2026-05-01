@@ -9,6 +9,8 @@ let titrePartageTemp = "";
 
 const CACHE_KEY = 'emmanuel_data_v2';
 const CACHE_TTL = 15 * 60 * 1000;
+const VERSION_KEY = 'emmanuel_version';
+const CURRENT_VERSION = '2026.04.25'; // Format: YYYY.MM.DD - à changer chaque jour
 
 const moisNoms = {
     fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
@@ -81,16 +83,55 @@ async function fetchData() {
         if (ts) heureServeur = new Date(parseFloat(ts[1]) * 1000);
     } catch (_) {}
 
+    const maintenant = heureServeur || new Date();
+    const aujourdhuiWAT = new Date(maintenant.getTime() + 60 * 60000).toISOString().split('T')[0];
+    
+    // 1. VÉRIFICATION DE VERSION (force le vidage si version différente)
+    const savedVersion = localStorage.getItem(VERSION_KEY);
+    if (savedVersion !== CURRENT_VERSION) {
+        console.log(`Nouvelle version détectée: ${CURRENT_VERSION} (ancienne: ${savedVersion})`);
+        localStorage.clear(); // Vider TOUT le cache
+        localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+    }
+    
+    // 2. VÉRIFICATION DE CHANGEMENT DE JOUR
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
-        const { ts, data } = JSON.parse(cached);
-        const toWatDate = t => new Date(t + 60 * 60000).toISOString().split('T')[0];
-        if (Date.now() - ts < CACHE_TTL && toWatDate(ts) === toWatDate(Date.now())) return data;
+        const { ts, data, dateWAT } = JSON.parse(cached);
+        
+        // Si on a changé de jour WAT, vider le cache
+        if (dateWAT !== aujourdhuiWAT) {
+            console.log(`Changement de jour détecté: ${dateWAT} → ${aujourdhuiWAT}`);
+            localStorage.removeItem(CACHE_KEY);
+        }
+        // Si même jour et dans le TTL, utiliser le cache
+        else if (Date.now() - ts < CACHE_TTL) {
+            return data;
+        }
     }
 
-    const res = await fetch('data.json?v=' + Date.now(), { cache: 'no-store' });
+    // 3. FETCH AVEC CACHE-BUSTING AGRESSIF
+    const cacheBuster = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const headers = {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+    };
+    
+    const res = await fetch(`data.json?v=${cacheBuster}&t=${aujourdhuiWAT}`, { 
+        cache: 'no-store',
+        headers: headers
+    });
     const data = await res.json();
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+    
+    // Sauvegarder avec la date WAT
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ 
+        ts: Date.now(), 
+        data, 
+        dateWAT: aujourdhuiWAT,
+        version: CURRENT_VERSION
+    }));
+    
     return data;
 }
 
@@ -115,7 +156,16 @@ async function chargerMessages() {
         // Date d'aujourd'hui en WAT (UTC+1) : on ajoute 1h à l'UTC
         const aujourdhui = new Date(maintenant.getTime() + 60 * 60000).toISOString().split('T')[0];
 
-        tousLesMessages = listeBrute.filter(msg => msg.date <= aujourdhui);
+        // Filtrer les messages jusqu'à aujourd'hui inclus
+        tousLesMessages = listeBrute.filter(msg => {
+            const msgDate = new Date(msg.date + 'T00:00:00Z');
+            const todayDate = new Date(aujourdhui + 'T00:00:00Z');
+            return msgDate <= todayDate;
+        });
+        
+        console.log(`Date WAT actuelle: ${aujourdhui}`);
+        console.log(`Messages disponibles: ${tousLesMessages.length}/${listeBrute.length}`);
+        console.log(`Dernier message affiché: ${tousLesMessages.length > 0 ? tousLesMessages[tousLesMessages.length - 1].date : 'aucun'}`);
 
         setLanguage('fr');
         genererBoutonsThemes();
@@ -305,12 +355,100 @@ function filtrerMessages() {
     container.innerHTML = resultats.sort((a, b) => b.id - a.id).map(msg => creerCard(msg)).join('');
 }
 
+// FONCTION DE VIDAGE GLOBAL DU CACHE
+function forceGlobalCacheRefresh() {
+    try {
+        // 1. Vider le localStorage
+        const version = localStorage.getItem(VERSION_KEY);
+        localStorage.clear();
+        localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+        
+        // 2. Vider le sessionStorage
+        sessionStorage.clear();
+        
+        // 3. Tenter de vider le cache du navigateur (si supporté)
+        if ('caches' in window) {
+            caches.keys().then(names => {
+                names.forEach(name => {
+                    caches.delete(name);
+                });
+            });
+        }
+        
+        // 4. Forcer le rechargement des ressources critiques
+        const links = document.querySelectorAll('link[rel="stylesheet"]');
+        links.forEach(link => {
+            const href = link.href.split('?')[0];
+            link.href = `${href}?v=${Date.now()}`;
+        });
+        
+        console.log('Cache global vidé avec succès');
+        return true;
+    } catch (error) {
+        console.error('Erreur lors du vidage du cache:', error);
+        return false;
+    }
+}
+
+// Fonction pour forcer la mise à jour (utile pour le débogage)
+function forcerMiseAJour() {
+    forceGlobalCacheRefresh();
+    chargerMessages();
+    console.log('Mise à jour forcée effectuée');
+}
+
+// Exposer les fonctions globalement pour le débogage
+window.forcerMiseAJour = forcerMiseAJour;
+window.forceGlobalCacheRefresh = forceGlobalCacheRefresh;
+
 window.onscroll = function() {
     document.getElementById("scrollTopLink").style.display = window.scrollY > 400 ? "flex" : "none";
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // FORCER LE VIDAGE DU CACHE AU DÉMARRAGE
+    forceGlobalCacheRefresh();
+    
     chargerMessages();
+    
+    // Vérifier et mettre à jour les messages à minuit WAT
+    function planifierMiseAJourMinuit() {
+        const maintenant = new Date();
+        const minuitWAT = new Date(maintenant);
+        minuitWAT.setUTCHours(23, 0, 0, 0); // Minuit WAT = 23h UTC
+        
+        if (minuitWAT <= maintenant) {
+            minuitWAT.setUTCDate(minuitWAT.getUTCDate() + 1);
+        }
+        
+        const tempsJusquaMinuit = minuitWAT.getTime() - maintenant.getTime();
+        
+        setTimeout(() => {
+            console.log('Mise à jour automatique à minuit WAT');
+            forceGlobalCacheRefresh(); // Vidage complet
+            chargerMessages(); // Recharger les messages
+            planifierMiseAJourMinuit(); // Programmer la prochaine mise à jour
+        }, tempsJusquaMinuit);
+    }
+    
+    planifierMiseAJourMinuit();
+    
+    // Vérification périodique toutes les 30 minutes
+    setInterval(() => {
+        const maintenant = new Date();
+        const aujourdhuiWAT = new Date(maintenant.getTime() + 60 * 60000).toISOString().split('T')[0];
+        const cached = localStorage.getItem(CACHE_KEY);
+        
+        if (cached) {
+            const { dateWAT } = JSON.parse(cached);
+            if (dateWAT !== aujourdhuiWAT) {
+                console.log('Changement de jour détecté lors de la vérification périodique');
+                forceGlobalCacheRefresh();
+                chargerMessages();
+            }
+        }
+    }, 30 * 60 * 1000); // 30 minutes
+    
     document.addEventListener('click', e => {
         const panel = document.getElementById('notif-panel');
         const bubble = document.getElementById('notif-bubble');
