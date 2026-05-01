@@ -1,231 +1,118 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>🕯️ Admin Emmanuel</title>
-<style>
-  :root {
-    --gold: #d4af37;
-    --bg: #121212;
-    --card: #1e1e1e;
-    --text: #f4f4f4;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+    <script>
+      (function() {
+        if (window.location.hostname.includes("vercel.app")) {
+          window.location.replace("https://emmanuel-dpv.pages.dev" + window.location.pathname + window.location.search);
+        }
+      })();
+    </script>
 
-  body {
-    font-family: Segoe UI, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    padding: 20px;
-  }
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="description" content="EMMANUEL - Un sanctuaire numérique pour la transformation de l'âme, l'onction de prospérité et la liberté spirituelle par la Parole.">
+    <meta name="keywords" content="Pasteur Emmanuel, foi, onction, prospérité, bible, pardon, succès, sagesse divine, ministère">
+    <meta name="author" content="Pasteur Emmanuel">
 
-  .container {
-    max-width: 1100px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid var(--gold);
-    border-radius: 15px;
-    background: var(--card);
-    box-shadow: 0 10px 30px #0004;
-  }
+    <meta property="og:title" content="EMMANUEL | La Voix de la Vérité">
+    <meta property="og:description" content="Accédez à vos clés spirituelles pour une vie de victoire.">
+    <meta property="og:image" content="https://i.postimg.cc/cCXq2khG/Lancement.png">
+    <meta property="og:url" content="https://emmanuel-dpv.pages.dev">
+    <meta property="og:type" content="website">
 
-  h1, h2 {
-    color: var(--gold);
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin: 20px 0;
-  }
+    <title>EMMANUEL | La Voix de la Vérité</title>
 
-  .section {
-    background: rgba(255, 255, 255, .05);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    border-left: 4px solid var(--gold);
-  }
-
-  textarea {
-    width: 100%;
-    min-height: 150px;
-    background: #000;
-    color: #0f0;
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 12px;
-    font: 14px/1.4 'Courier New', monospace;
-    resize: vertical;
-    margin: 10px 0;
-  }
-
-  .btn-group {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin: 15px 0;
-  }
-
-  button {
-    padding: 12px 24px;
-    border: 0;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: 700;
-    text-transform: uppercase;
-    transition: .3s;
-  }
-
-  .btn-primary { background: var(--gold); color: #000; }
-  .btn-primary:hover { transform: scale(1.05); background: #f0c742; }
-  .btn-danger { background: #e74c3c; color: #fff; }
-
-  .preview-wrapper {
-    background: #fff;
-    color: #333;
-    padding: 30px;
-    border-radius: 15px;
-    margin: 20px 0;
-  }
-
-  .communique-box {
-    background: #fff9e6;
-    border: 2px dashed var(--gold);
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    text-align: center;
-    line-height: 1.8;
-  }
-
-  .message-card {
-    border: 1px solid #eee;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px #0001;
-    max-width: 700px;
-    margin: 20px auto;
-  }
-
-  .message-date { color: var(--gold); font-weight: 700; font-size: .85em; text-align: right; }
-  .message-title { margin: 10px 0; font-size: 1.4em; text-align: center; color: #111; }
-  .message-category { font-style: italic; color: #888; font-size: .75em; text-align: center; margin-bottom: 15px; text-transform: uppercase; }
-  .message-image { width: 100%; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 4px 8px #0002; }
-  audio { width: 100%; height: 40px; }
-  .message-text { white-space: pre-wrap; margin-top: 20px; line-height: 1.8; font-size: 1.05em; color: #222; }
-</style>
+    <link rel="canonical" href="https://emmanuel-dpv.pages.dev">
+    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="container">
-  <h1>🕯️ Administration Emmanuel</h1>
 
-  <div class="section">
-    <h2>📢 Nouveau Communiqué</h2>
-    <textarea id="communiqueInput" placeholder="Tapez votre texte... **gras**"></textarea>
-    <div class="btn-group">
-      <button class="btn-primary" onclick="convertCommunique()">✨ Convertir</button>
+    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
+
+    <div id="notif-bubble" onclick="ouvrirNotif()" aria-label="Notifications">
+        <span style="color:white; font-size:18px;">🔔</span>
     </div>
-  </div>
 
-  <div class="section">
-    <h2>📦 JSON Messages</h2>
-    <textarea id="jsonInput" placeholder="JSON ici..."></textarea>
-    <div class="btn-group">
-      <button class="btn-primary" onclick="processJSON()">🛠️ Traiter</button>
-      <button class="btn-danger" onclick="clearCache()">🗑️ Vider</button>
+    <div id="notif-panel">
+        <div style="font-family:'Montserrat'; font-weight:900; font-size:10px; color:#d4af37; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">📢 COMMUNICATIONS</div>
+        <div id="notif-list"></div>
+        <span class="close-notif" onclick="toutMasquer()">Masquer</span>
     </div>
-  </div>
 
-  <h2>📄 JSON Final</h2>
-  <textarea id="jsonOutput" readonly></textarea>
+    <a href="javascript:void(0)" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="floating-container scroll-link" id="scrollTopLink" aria-label="Retour en haut">
+        <span class="btn-label" id="label-top">Retour en haut</span>
+        <button class="scroll-btn">↑</button>
+    </a>
 
-  <h2>📱 Aperçu</h2>
-  <div id="preview" class="preview-wrapper">Aperçu ici...</div>
-</div>
+    <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link" aria-label="Contacter sur WhatsApp">
+        <span class="btn-label" id="label-help">Besoin d'aide ?</span>
+        <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="60"></div>
+    </a>
 
-<script>
-  let communiqueHTML = '';
+    <div class="lang-selector">
+        <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
+        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
+    </div>
 
-  window.onload = () => {
-    const cached = localStorage.getItem('emmanuel_cache');
-    if (cached) {
-      document.getElementById('jsonInput').value = cached;
-      processJSON();
-    }
-  };
+    <h1>EMMANUEL</h1>
+    <div class="intro-text" id="intro-txt">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
 
-  function clearCache() {
-    if (confirm('Tout effacer ?')) {
-      localStorage.removeItem('emmanuel_cache');
-      location.reload();
-    }
-  }
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un message..." onkeyup="filtrerMessages()">
+        <span class="search-icon">🔍</span>
+    </div>
 
-  function convertCommunique() {
-    const raw = document.getElementById('communiqueInput').value;
-    communiqueHTML = raw
-      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-      .replace(/\\n/g, '<br>');
-    processJSON();
-    alert('✓ Converti !');
-  }
+    <div id="flux-messages"><div class="skeleton"></div><div class="skeleton"></div></div>
 
-  function processJSON() {
-    try {
-      const raw = document.getElementById('jsonInput').value.trim().replace(/,\s*([}\]])/g, '$1');
-      const parsed = raw[0] === '[' ? JSON.parse(raw) : JSON.parse(raw);
-      const messages = raw[0] === '[' ? parsed : (parsed.messages || []);
+    <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
 
-      if (!communiqueHTML && parsed.communique) {
-        communiqueHTML = parsed.communique;
-      }
+    <div id="archiveSection" class="archive-section">
+        <div class="archive-nav-btns">
+            <button id="nav-chrono" class="nav-btn active" onclick="switchArchiveView('chrono')">📅 Chronologie</button>
+            <button id="nav-theme" class="nav-btn" onclick="switchArchiveView('theme')">📂 Thématiques</button>
+        </div>
+        <div id="view-chrono"><div class="month-grid" id="monthGrid"></div></div>
+        <div id="view-theme" style="display:none;">
+            <div class="theme-select-container">
+                <select id="themeDropdown" class="theme-dropdown" onchange="choisirThemeViaDropdown(this.value)"></select>
+            </div>
+        </div>
+        <div id="titres-liste"></div>
+        <div id="message-detail"></div>
+    </div>
 
-      // Recalcule les IDs et dates à partir du dernier message
-      const last = messages[messages.length - 1];
-      let currentId = parseInt(last.id);
-      let currentDate = new Date(last.date);
+    <div class="flag-counter-box">
+        <div class="stat-title" id="stat-title">COMMUNAUTÉ EMMANUEL</div>
+        <div class="stat-subtitle" id="stat-sub">✨ Lecteurs par pays et vues ✨</div>
+        <a href="https://info.flagcounter.com/ivJp" target="_blank">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/?cache_refresh=1" alt="Statistiques" border="0" style="margin-top:20px; max-width:100%;">
+        </a>
+        <div class="update-notice" id="update-txt">Le compteur s'actualise toutes les 15 min<br><span style="font-weight:400; font-style:italic; opacity:0.8;">The counter updates every 15 min</span></div>
+    </div>
 
-      for (let i = messages.length - 1; i >= 0; i--) {
-        messages[i].id = currentId;
-        messages[i].date = currentDate.toISOString().split('T')[0];
-        currentId++;
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
+    <div id="toast"></div>
+    <div id="modalOverlay" class="modal-overlay" onclick="fermerPartage()"></div>
+    <div id="shareModal">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:900; color:#d4af37; text-transform:uppercase;">Partager la Parole</div>
+        <div class="share-options">
+            <div class="share-item" onclick="actionPartage('wa')"><div class="share-icon bg-wa">💬</div>WhatsApp</div>
+            <div class="share-item" onclick="actionPartage('fb')"><div class="share-icon bg-fb">🔵</div>Facebook</div>
+            <div class="share-item" onclick="actionPartage('mail')"><div class="share-icon bg-mail">✉</div>Email</div>
+            <div class="share-item" onclick="actionPartage('copy')"><div class="share-icon bg-copy">🔗</div>Lien</div>
+        </div>
+        <div class="close-modal" onclick="fermerPartage()">Annuler</div>
+    </div>
 
-      messages.sort((a, b) => b.id - a.id);
-
-      const finalData = { status: 'online', communique: communiqueHTML, messages };
-      document.getElementById('jsonOutput').value = JSON.stringify(finalData, null, 2);
-      localStorage.setItem('emmanuel_cache', document.getElementById('jsonInput').value);
-
-      renderPreview(messages);
-    } catch (e) {
-      alert('❌ JSON invalide');
-    }
-  }
-
-  function renderPreview(messages) {
-    let html = communiqueHTML ? `<div class="communique-box">${communiqueHTML}</div>` : '';
-
-    messages.forEach(msg => {
-      const boldText = msg.texte.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-      html += `
-        <div class="message-card">
-          <div class="message-date">📅 ${msg.date} | ID: ${msg.id}</div>
-          <div class="message-title"><b>${msg.titre}</b></div>
-          <div class="message-category">${msg.categorie}</div>
-          <div>
-            ${msg.image ? `<img src="${msg.image}" class="message-image" onerror="this.style.display='none'">` : ''}
-            ${msg.audio ? `<audio controls style="margin-bottom:5px;"><source src="${msg.audio}"></audio>` : ''}
-            ${msg.audio2 ? `<audio controls><source src="${msg.audio2}"></audio>` : ''}
-          </div>
-          <div class="message-text">${boldText}</div>
-        </div>`;
-    });
-
-    document.getElementById('preview').innerHTML = html;
-  }
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
