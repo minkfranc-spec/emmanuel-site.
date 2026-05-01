@@ -1,5 +1,5 @@
-const CACHE = 'emmanuel-v3';
-const STATIC = ['/', '/index.html', '/styles.css', '/script.js', '/manifest.json'];
+const CACHE = 'emmanuel-v4';
+const STATIC = ['/index.html', '/styles.css', '/script.js', '/manifest.json'];
 
 self.addEventListener('install', e => {
     e.waitUntil(caches.open(CACHE).then(c => c.addAll(STATIC)));
