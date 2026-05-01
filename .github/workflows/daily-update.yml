@@ -1,0 +1,31 @@
+name: Message du jour
+
+on:
+  schedule:
+    - cron: '0 23 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Ajouter le message du jour
+        run: node update-messages.js
+
+      - name: Commit et push
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          if git diff --quiet data.json; then
+            echo "Aucun nouveau message aujourd'hui"
+          else
+            git add data.json
+            git commit -m "Message du $(TZ='Africa/Lagos' date '+%Y-%m-%d')"
+            git push
+          fi
