@@ -47,20 +47,48 @@
             const version = '2026.04.25'; // À changer chaque jour
             const savedVersion = localStorage.getItem('emmanuel_version');
             
+            console.log('🔍 Vérification version:', { actuelle: version, sauvée: savedVersion });
+            
             if (savedVersion !== version) {
-                console.log('Nouvelle version détectée, vidage du cache...');
+                console.log('🔄 Nouvelle version détectée, vidage du cache...');
                 try {
+                    // Vidage complet et agressif
                     localStorage.clear();
                     sessionStorage.clear();
+                    
+                    // Vider le cache du navigateur si possible
+                    if ('caches' in window) {
+                        caches.keys().then(names => {
+                            names.forEach(name => caches.delete(name));
+                            console.log('🗑️ Cache navigateur vidé');
+                        });
+                    }
+                    
                     localStorage.setItem('emmanuel_version', version);
                     
-                    // Forcer le rechargement si nécessaire
+                    // FORCER LE RECHARGEMENT COMPLET si ancienne version
                     if (savedVersion && savedVersion !== version) {
-                        window.location.reload(true);
+                        console.log('🔄 Rechargement forcé...');
+                        setTimeout(() => {
+                            window.location.reload(true);
+                        }, 100);
+                        return;
                     }
                 } catch(e) {
-                    console.error('Erreur vidage cache:', e);
+                    console.error('❌ Erreur vidage cache:', e);
                 }
+            } else {
+                console.log('✅ Version à jour:', version);
+            }
+            
+            // Forcer le no-cache sur les requêtes
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    registrations.forEach(registration => {
+                        registration.unregister();
+                        console.log('🔄 Service Worker désactivé');
+                    });
+                });
             }
         })();
     </script>
