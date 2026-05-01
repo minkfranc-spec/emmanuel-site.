@@ -76,53 +76,87 @@ function afficherToast(msg) {
 let heureServeur = null;
 
 async function fetchData() {
+    console.log('🌐 Début fetchData...');
+    
     try {
         const cfRes = await fetch('https://cloudflare.com/cdn-cgi/trace');
         const text = await cfRes.text();
         const ts = text.match(/ts=(\d+\.?\d*)/);
-        if (ts) heureServeur = new Date(parseFloat(ts[1]) * 1000);
-    } catch (_) {}
+        if (ts) {
+            heureServeur = new Date(parseFloat(ts[1]) * 1000);
+            console.log('⏰ Heure serveur:', heureServeur.toISOString());
+        }
+    } catch (e) {
+        console.log('⚠️ Impossible de récupérer l\'heure serveur, utilisation heure locale');
+    }
 
     const maintenant = heureServeur || new Date();
     const aujourdhuiWAT = new Date(maintenant.getTime() + 60 * 60000).toISOString().split('T')[0];
+    console.log('📅 Date WAT actuelle:', aujourdhuiWAT);
     
     // 1. VÉRIFICATION DE VERSION (force le vidage si version différente)
     const savedVersion = localStorage.getItem(VERSION_KEY);
+    console.log('🔍 Vérification version:', { actuelle: CURRENT_VERSION, sauvée: savedVersion });
+    
     if (savedVersion !== CURRENT_VERSION) {
-        console.log(`Nouvelle version détectée: ${CURRENT_VERSION} (ancienne: ${savedVersion})`);
+        console.log(`🆕 Nouvelle version détectée: ${CURRENT_VERSION} (ancienne: ${savedVersion})`);
         localStorage.clear(); // Vider TOUT le cache
         localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+        
+        // FORCER UN RECHARGEMENT COMPLET
+        setTimeout(() => {
+            console.log('🔄 Rechargement forcé pour nouvelle version...');
+            window.location.reload(true);
+        }, 500);
+        return null; // Arrêter l'exécution
     }
     
     // 2. VÉRIFICATION DE CHANGEMENT DE JOUR
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
-        const { ts, data, dateWAT } = JSON.parse(cached);
-        
-        // Si on a changé de jour WAT, vider le cache
-        if (dateWAT !== aujourdhuiWAT) {
-            console.log(`Changement de jour détecté: ${dateWAT} → ${aujourdhuiWAT}`);
+        try {
+            const { ts, data, dateWAT } = JSON.parse(cached);
+            console.log('📦 Cache trouvé:', { dateCache: dateWAT, dateActuelle: aujourdhuiWAT });
+            
+            // Si on a changé de jour WAT, vider le cache
+            if (dateWAT !== aujourdhuiWAT) {
+                console.log(`📅 Changement de jour détecté: ${dateWAT} → ${aujourdhuiWAT}`);
+                localStorage.removeItem(CACHE_KEY);
+            }
+            // Si même jour et dans le TTL, utiliser le cache
+            else if (Date.now() - ts < CACHE_TTL) {
+                console.log('✅ Utilisation du cache existant');
+                return data;
+            }
+        } catch (e) {
+            console.log('⚠️ Cache corrompu, suppression...');
             localStorage.removeItem(CACHE_KEY);
-        }
-        // Si même jour et dans le TTL, utiliser le cache
-        else if (Date.now() - ts < CACHE_TTL) {
-            return data;
         }
     }
 
-    // 3. FETCH AVEC CACHE-BUSTING AGRESSIF
+    // 3. FETCH AVEC CACHE-BUSTING ULTRA-AGRESSIF
     const cacheBuster = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const headers = {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
         'Pragma': 'no-cache',
-        'Expires': '0'
+        'Expires': '0',
+        'If-Modified-Since': 'Thu, 01 Jan 1970 00:00:00 GMT'
     };
     
-    const res = await fetch(`data.json?v=${cacheBuster}&t=${aujourdhuiWAT}`, { 
+    console.log('🌐 Fetch data.json avec cache-buster:', cacheBuster);
+    
+    const res = await fetch(`data.json?v=${cacheBuster}&t=${aujourdhuiWAT}&r=${Math.random()}`, { 
         cache: 'no-store',
-        headers: headers
+        headers: headers,
+        mode: 'cors'
     });
+    
+    if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    
     const data = await res.json();
+    console.log('📊 Données reçues:', { status: data.status, messages: data.messages?.length || 0 });
     
     // Sauvegarder avec la date WAT
     localStorage.setItem(CACHE_KEY, JSON.stringify({ 
@@ -355,51 +389,133 @@ function filtrerMessages() {
     container.innerHTML = resultats.sort((a, b) => b.id - a.id).map(msg => creerCard(msg)).join('');
 }
 
-// FONCTION DE VIDAGE GLOBAL DU CACHE
+// FONCTION DE VIDAGE GLOBAL DU CACHE - VERSION RENFORCÉE
 function forceGlobalCacheRefresh() {
+    console.log('🔄 Début du vidage global du cache...');
+    
     try {
         // 1. Vider le localStorage
         const version = localStorage.getItem(VERSION_KEY);
+        console.log('📦 Vidage localStorage...');
         localStorage.clear();
         localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
         
         // 2. Vider le sessionStorage
+        console.log('📦 Vidage sessionStorage...');
         sessionStorage.clear();
         
-        // 3. Tenter de vider le cache du navigateur (si supporté)
+        // 3. Vider le cache du navigateur (si supporté)
         if ('caches' in window) {
+            console.log('🗄️ Vidage cache navigateur...');
             caches.keys().then(names => {
                 names.forEach(name => {
                     caches.delete(name);
+                    console.log(`🗑️ Cache supprimé: ${name}`);
                 });
             });
         }
         
-        // 4. Forcer le rechargement des ressources critiques
+        // 4. Désactiver les Service Workers
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                registrations.forEach(registration => {
+                    registration.unregister();
+                    console.log('🔄 Service Worker désactivé');
+                });
+            });
+        }
+        
+        // 5. Forcer le rechargement des ressources critiques
         const links = document.querySelectorAll('link[rel="stylesheet"]');
         links.forEach(link => {
             const href = link.href.split('?')[0];
-            link.href = `${href}?v=${Date.now()}`;
+            link.href = `${href}?v=${Date.now()}&bust=${Math.random()}`;
         });
         
-        console.log('Cache global vidé avec succès');
+        // 6. Invalider les images en cache
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+            if (img.src && !img.src.includes('postimg.cc')) {
+                const src = img.src.split('?')[0];
+                img.src = `${src}?v=${Date.now()}`;
+            }
+        });
+        
+        console.log('✅ Cache global vidé avec succès');
         return true;
     } catch (error) {
-        console.error('Erreur lors du vidage du cache:', error);
+        console.error('❌ Erreur lors du vidage du cache:', error);
         return false;
     }
 }
 
 // Fonction pour forcer la mise à jour (utile pour le débogage)
 function forcerMiseAJour() {
+    console.log('🔄 MISE À JOUR FORCÉE DÉMARRÉE');
     forceGlobalCacheRefresh();
-    chargerMessages();
-    console.log('Mise à jour forcée effectuée');
+    setTimeout(() => {
+        chargerMessages();
+        console.log('✅ Mise à jour forcée terminée');
+    }, 1000);
+}
+
+// FONCTION DE DIAGNOSTIC COMPLÈTE
+function diagnosticCache() {
+    console.log('\n🔍 === DIAGNOSTIC CACHE EMMANUEL ===');
+    
+    // 1. Informations de base
+    const maintenant = new Date();
+    const watTime = new Date(maintenant.getTime() + 60 * 60000);
+    const dateWAT = watTime.toISOString().split('T')[0];
+    
+    console.log('🕰️ Heure locale:', maintenant.toLocaleString());
+    console.log('🌍 Heure WAT:', watTime.toLocaleString());
+    console.log('📅 Date WAT:', dateWAT);
+    
+    // 2. Version et cache
+    const savedVersion = localStorage.getItem(VERSION_KEY);
+    const cached = localStorage.getItem(CACHE_KEY);
+    
+    console.log('💻 Version actuelle:', CURRENT_VERSION);
+    console.log('📦 Version sauvée:', savedVersion);
+    console.log('📄 Cache présent:', !!cached);
+    
+    if (cached) {
+        try {
+            const { ts, dateWAT: cachedDate, data } = JSON.parse(cached);
+            const age = Math.round((Date.now() - ts) / 1000 / 60); // en minutes
+            console.log('📅 Date du cache:', cachedDate);
+            console.log('⏱️ Âge du cache:', age, 'minutes');
+            console.log('📊 Messages en cache:', data.messages?.length || 0);
+        } catch (e) {
+            console.log('❌ Cache corrompu:', e.message);
+        }
+    }
+    
+    // 3. Capacités du navigateur
+    console.log('🌐 Capacités navigateur:');
+    console.log('  - localStorage:', 'localStorage' in window);
+    console.log('  - sessionStorage:', 'sessionStorage' in window);
+    console.log('  - Cache API:', 'caches' in window);
+    console.log('  - Service Worker:', 'serviceWorker' in navigator);
+    
+    // 4. Messages disponibles
+    if (tousLesMessages && tousLesMessages.length > 0) {
+        const dernierMessage = tousLesMessages[tousLesMessages.length - 1];
+        console.log('📜 Messages chargés:', tousLesMessages.length);
+        console.log('📅 Dernier message:', dernierMessage.date);
+        console.log('📝 Titre:', dernierMessage.titre);
+    } else {
+        console.log('⚠️ Aucun message chargé');
+    }
+    
+    console.log('=== FIN DIAGNOSTIC ===\n');
 }
 
 // Exposer les fonctions globalement pour le débogage
 window.forcerMiseAJour = forcerMiseAJour;
 window.forceGlobalCacheRefresh = forceGlobalCacheRefresh;
+window.diagnosticCache = diagnosticCache;
 
 window.onscroll = function() {
     document.getElementById("scrollTopLink").style.display = window.scrollY > 400 ? "flex" : "none";
