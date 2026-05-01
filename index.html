@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Last-Modified" content="0">
+    <meta http-equiv="If-Modified-Since" content="0">
+    <meta name="cache-control" content="no-cache">
+    <meta name="expires" content="0">
+    <meta name="pragma" content="no-cache">
 
     <script>
       (function() {
@@ -34,6 +39,31 @@
     <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Script de vidage de cache au chargement -->
+    <script>
+        // Vidage agressif du cache au chargement de la page
+        (function() {
+            const version = '2026.04.25'; // À changer chaque jour
+            const savedVersion = localStorage.getItem('emmanuel_version');
+            
+            if (savedVersion !== version) {
+                console.log('Nouvelle version détectée, vidage du cache...');
+                try {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    localStorage.setItem('emmanuel_version', version);
+                    
+                    // Forcer le rechargement si nécessaire
+                    if (savedVersion && savedVersion !== version) {
+                        window.location.reload(true);
+                    }
+                } catch(e) {
+                    console.error('Erreur vidage cache:', e);
+                }
+            }
+        })();
+    </script>
 </head>
 <body>
 
