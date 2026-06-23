@@ -77,5 +77,24 @@ h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppe
 #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a1a; color: #d4af37; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; padding: 12px 24px; border-radius: 30px; opacity: 0; transition: opacity 0.3s, transform 0.3s; z-index: 4000; pointer-events: none; }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-.skeleton { background: #f0f0f0; border-radius: 16px; width: 92%; max-width: 540px; margin: 25px auto; height: 300px; animation: shimmer 1.5s infinite; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; }
+.lecture-controls { display: flex; justify-content: center; gap: 10px; margin: 8px 0 12px; }
+.btn-boucle, .btn-continue { background: transparent; border: 1.5px solid #d4af37; color: #d4af37; border-radius: 50%; width: 34px; height: 34px; font-size: 14px; cursor: pointer; transition: all 0.3s; opacity: 0.6; display: flex; align-items: center; justify-content: center; }
+.btn-boucle:hover, .btn-continue:hover { opacity: 1; }
+.btn-boucle.actif, .btn-continue.actif { background: #d4af37; color: white; opacity: 1; box-shadow: 0 0 10px rgba(212,175,55,0.5); }
+
+@keyframes invitePlay { 0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.0); } 50% { box-shadow: 0 0 0 6px rgba(212,175,55,0.35); } }
+.audio-invite { border-radius: 8px; animation: invitePlay 2s ease-in-out 3; }
+
+@keyframes sortieHaut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-60px); } }
+@keyframes montePlace { from { opacity: 0.6; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+.card-sortie-haut { animation: sortieHaut 0.5s ease-in forwards; pointer-events: none; }
+.card-monte { animation: montePlace 0.5s ease-out forwards; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.audio-chargement { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; color: #d4af37; text-align: center; padding: 6px 0; letter-spacing: 1px; opacity: 0.8; animation: pulseGold 1.2s infinite; }
+.barre-chargement { width: 100%; height: 3px; background: rgba(212,175,55,0.15); border-radius: 10px; margin: 6px 0; overflow: hidden; }
+.barre-remplissage { height: 100%; width: 0%; background: linear-gradient(90deg, #d4af37, #f5e07a, #d4af37); background-size: 200% 100%; border-radius: 10px; transition: width 0.3s ease; animation: shimmerGold 1.5s infinite; }
+@keyframes shimmerGold { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.skeleton { border-radius: 16px; width: 92%; max-width: 540px; margin: 25px auto; height: 300px; animation: shimmer 1.5s infinite; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }

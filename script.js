@@ -2,6 +2,10 @@ let currentLang = 'fr';
 let tousLesMessages = [];
 let msgPartageTemp = "";
 let titrePartageTemp = "";
+let lectureContineActive = false;
+let archivePlaylist = [];
+let archivePlayIndex = -1;
+let archiveContext = null;
 
 const CACHE_KEY = 'emmanuel_data_v3';
 const CACHE_TTL = 15 * 60 * 1000;
@@ -70,7 +74,6 @@ async function fetchData() {
         const dateCache = new Date(ts).toISOString().split('T')[0];
         if (Date.now() - ts < CACHE_TTL && dateCache === aujourdhui) return data;
     }
-
     const res = await fetch('data.json?v=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
     localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
@@ -152,7 +155,6 @@ function choisirThemeViaDropdown(theme) {
     const liste = document.getElementById('titres-liste');
     const detail = document.getElementById('message-detail');
     if (!theme) { liste.innerHTML = ''; detail.innerHTML = ''; return; }
-
     const vus = {};
     const uniqueResults = [];
     const sorted = tousLesMessages.filter(m => m.categorie === theme).sort((a, b) => b.id - a.id);
@@ -164,8 +166,24 @@ function choisirThemeViaDropdown(theme) {
 }
 
 function voirDetail(id, type, val) {
+    arreterLectureContinue();
     const msg = tousLesMessages.find(m => m.id === id);
     document.getElementById('titres-liste').innerHTML = '';
+
+    if (type === 'chrono') {
+        archivePlaylist = tousLesMessages.filter(m => (new Date(m.date).getMonth() + 1) === val).sort((a, b) => a.id - b.id).map(m => m.id);
+        archiveContext = { type, val };
+    } else {
+        const vus = {};
+        archivePlaylist = [];
+        tousLesMessages.filter(m => m.categorie === val).sort((a, b) => b.id - a.id).forEach(m => {
+            const k = (m.titre || '').trim().toLowerCase();
+            if (!vus[k]) { vus[k] = true; archivePlaylist.push(m.id); }
+        });
+        archiveContext = { type, val };
+    }
+    archivePlayIndex = archivePlaylist.indexOf(id);
+
     const btnRetour = type === 'chrono'
         ? `<button class="archive-main-btn" onclick="revenirChrono(${val})">${translations[currentLang].backList}</button>`
         : `<button class="archive-main-btn" onclick="revenirTheme('${val.replace(/'/g, "\\'")}')">${translations[currentLang].backList}</button>`;
@@ -189,7 +207,7 @@ function toutMasquer() {
     document.getElementById('notif-bubble').style.display = 'none';
 }
 
-function creerCard(msg) {
+function creerCard(msg, isPremiere = false) {
     const dateObj = new Date(msg.date);
     const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
     const texteOriginal = t(msg, 'texte');
@@ -198,13 +216,148 @@ function creerCard(msg) {
     const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
     const imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img" loading="lazy" alt="${titre}">` : '';
-    let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls style="width:100%;height:35px;margin:15px 0;border-radius:8px;"></audio>` : '';
-    if (msg.audio2) audioHtml += `<audio src="${msg.audio2}" controls style="width:100%;height:35px;margin:5px 0 15px 0;border-radius:8px;"></audio>`;
+    let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls preload="auto" style="width:100%;height:35px;margin:15px 0;border-radius:8px;" class="${isPremiere ? 'audio-premiere audio-invite' : ''}"></audio>` : '';
+    if (msg.audio2) audioHtml += `<audio src="${msg.audio2}" controls preload="auto" style="width:100%;height:35px;margin:5px 0 15px 0;border-radius:8px;"></audio>`;
 
     const titreEnc = encodeTexte(titre);
     const texteEnc = encodeTexte(texteOriginal);
+    const cardId = 'card-' + msg.id;
 
-    return `<div class="message-card">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
+    const boutonsLecture = msg.audio ? `
+        <div class="lecture-controls">
+            <button class="btn-boucle" id="btn-boucle-${msg.id}" onclick="toggleBoucle('${cardId}', ${msg.id})" title="Lecture en boucle">🔁</button>
+            <button class="btn-continue" id="btn-continue-${msg.id}" onclick="toggleLectureContinue('${cardId}', ${msg.id})" title="Lecture continue">⏭</button>
+        </div>` : '';
+
+    return `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}${boutonsLecture}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
+}
+
+function toggleBoucle(cardId, msgId) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const audio = card.querySelector('audio');
+    if (!audio) return;
+    const btnBoucle = document.getElementById('btn-boucle-' + msgId);
+    const btnContinue = document.getElementById('btn-continue-' + msgId);
+    const estActif = btnBoucle.classList.contains('actif');
+    if (estActif) {
+        audio.loop = false;
+        btnBoucle.classList.remove('actif');
+    } else {
+        if (btnContinue.classList.contains('actif')) arreterLectureContinue();
+        audio.loop = true;
+        btnBoucle.classList.add('actif');
+        audio.play().catch(() => {});
+    }
+}
+
+function toggleLectureContinue(cardId, msgId) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const audio = card.querySelector('audio');
+    if (!audio) return;
+    const btnContinue = document.getElementById('btn-continue-' + msgId);
+    const btnBoucle = document.getElementById('btn-boucle-' + msgId);
+    const estActif = btnContinue.classList.contains('actif');
+    if (estActif) {
+        arreterLectureContinue();
+    } else {
+        if (btnBoucle.classList.contains('actif')) {
+            audio.loop = false;
+            btnBoucle.classList.remove('actif');
+        }
+        lectureContineActive = true;
+        btnContinue.classList.add('actif');
+        // Construire la playlist de tous les messages par ordre thématique
+        // en excluant les 3 déjà affichés dans le flux
+        const idsFlux = [...document.querySelectorAll('#flux-messages .message-card')].map(c => parseInt(c.id.replace('card-', '')));
+        const sorted = [...tousLesMessages].sort((a, b) => {
+            if (a.categorie < b.categorie) return -1;
+            if (a.categorie > b.categorie) return 1;
+            return a.id - b.id;
+        });
+        archivePlaylist = sorted.filter(m => !idsFlux.includes(m.id)).map(m => m.id);
+        archivePlayIndex = -1;
+        archiveContext = { type: 'chrono', val: 0 };
+        audio.addEventListener('ended', surFinAudio, { once: true });
+        audio.play().catch(() => {});
+    }
+}
+
+function surFinAudio() {
+    if (!lectureContineActive) return;
+
+    // Mode archive
+    if (archivePlaylist.length > 0 && archivePlayIndex >= 0) {
+        let nextIndex = archivePlayIndex + 1;
+        while (nextIndex < archivePlaylist.length) {
+            const nextMsg = tousLesMessages.find(m => m.id === archivePlaylist[nextIndex]);
+            if (nextMsg && nextMsg.audio) break;
+            nextIndex++;
+        }
+        if (nextIndex >= archivePlaylist.length) { arreterLectureContinue(); return; }
+        archivePlayIndex = nextIndex;
+        const nextMsg = tousLesMessages.find(m => m.id === archivePlaylist[nextIndex]);
+        const { type, val } = archiveContext;
+        const btnRetour = type === 'chrono'
+            ? `<button class="archive-main-btn" onclick="revenirChrono(${val})">${translations[currentLang].backList}</button>`
+            : `<button class="archive-main-btn" onclick="revenirTheme('${val.replace(/'/g, "\\'")}')">${translations[currentLang].backList}</button>`;
+        document.getElementById('message-detail').innerHTML = creerCard(nextMsg) + btnRetour;
+        // Ouvrir la section archives si elle est fermée
+        document.getElementById('archiveSection').style.display = 'block';
+        document.getElementById('message-detail').scrollIntoView({ behavior: 'smooth' });
+        const audio = document.getElementById('card-' + nextMsg.id)?.querySelector('audio');
+        if (audio) {
+            const btn = document.getElementById('btn-continue-' + nextMsg.id);
+            if (btn) btn.classList.add('actif');
+            audio.addEventListener('ended', surFinAudio, { once: true });
+            audio.play().catch(() => {});
+        }
+        return;
+    }
+
+    // Mode flux accueil
+    const container = document.getElementById('flux-messages');
+    const cards = Array.from(container.querySelectorAll('.message-card'));
+    if (cards.length < 2) {
+        // Plus de carte suivante dans le flux, basculer vers la playlist archive
+        if (archivePlaylist.length > 0) {
+            surFinAudio();
+        } else {
+            arreterLectureContinue();
+        }
+        return;
+    }
+
+    cards[0].classList.add('card-sortie-haut');
+    cards[1].classList.add('card-monte');
+
+    setTimeout(() => {
+        cards[0].remove();
+        cards[1].classList.remove('card-monte');
+        const cardsRestantes = container.querySelectorAll('.message-card');
+        let audioSuivant = null;
+        for (const c of cardsRestantes) {
+            const a = c.querySelector('audio');
+            if (a) { audioSuivant = a; break; }
+        }
+        if (audioSuivant) {
+            audioSuivant.closest('.message-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            audioSuivant.addEventListener('ended', surFinAudio, { once: true });
+            audioSuivant.play().catch(() => {});
+        } else {
+            arreterLectureContinue();
+        }
+    }, 500);
+}
+
+function arreterLectureContinue() {
+    lectureContineActive = false;
+    archivePlaylist = [];
+    archivePlayIndex = -1;
+    archiveContext = null;
+    document.querySelectorAll('[id^="btn-continue-"]').forEach(b => b.classList.remove('actif'));
+    document.querySelectorAll('audio').forEach(a => a.removeEventListener('ended', surFinAudio));
 }
 
 function ouvrirMenuPartage(titreEnc, texteEnc) {
@@ -233,9 +386,10 @@ function actionPartage(type) {
 }
 
 function afficherAccueil() {
+    arreterLectureContinue();
     const container = document.getElementById('flux-messages');
     const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
-    container.innerHTML = derniers.map(msg => creerCard(msg)).join('');
+    container.innerHTML = derniers.map((msg, i) => creerCard(msg, i === 0)).join('');
 }
 
 function toggleArchives() {
@@ -282,8 +436,14 @@ function filtrerMessages() {
     container.innerHTML = resultats.sort((a, b) => b.id - a.id).map(msg => creerCard(msg)).join('');
 }
 
+let lastScrollY = window.scrollY;
 window.onscroll = function() {
     document.getElementById("scrollTopLink").style.display = window.scrollY > 400 ? "flex" : "none";
+    if (lectureContineActive && window.scrollY > lastScrollY + 30) {
+        arreterLectureContinue();
+        afficherAccueil();
+    }
+    lastScrollY = window.scrollY;
 };
 
 document.addEventListener('DOMContentLoaded', () => {
