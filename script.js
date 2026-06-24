@@ -491,8 +491,8 @@ function fermerPartage() {
 function actionPartage(type) {
     const url = "https://emmanuel-dpv.pages.dev";
     const messageComplet = `${titrePartageTemp}\n\n${msgPartageTemp}\n\nLire la suite : ${url}`;
-    if (type === 'wa') window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(messageComplet), '_blank');
-    else if (type === 'fb') window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), '_blank');
+    if (type === 'wa') { const w = window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(messageComplet), '_blank'); if (w) w.opener = null; }
+    else if (type === 'fb') { const w = window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), '_blank'); if (w) w.opener = null; }
     else if (type === 'mail') window.location.href = `mailto:?subject=${encodeURIComponent(titrePartageTemp)}&body=${encodeURIComponent(messageComplet)}`;
     else if (type === 'copy') {
         navigator.clipboard.writeText(messageComplet);
