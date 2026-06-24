@@ -296,8 +296,26 @@ function libererWakeLock() {
 }
 
 document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && scrollAudio && !scrollAudio.paused) activerWakeLock();
+    if (document.visibilityState === 'visible') {
+        const audios = document.querySelectorAll('audio');
+        const enCours = [...audios].some(a => !a.paused);
+        if (enCours) activerWakeLock(); else libererWakeLock();
+    }
 });
+
+function attacherWakeLockAudio(audio) {
+    audio.addEventListener('play', activerWakeLock);
+    audio.addEventListener('pause', libererWakeLock);
+    audio.addEventListener('ended', libererWakeLock);
+}
+
+const _wakeLockObserver = new MutationObserver(mutations => {
+    for (const m of mutations)
+        for (const node of m.addedNodes)
+            if (node.nodeName === 'AUDIO') attacherWakeLockAudio(node);
+            else if (node.querySelectorAll) node.querySelectorAll('audio').forEach(attacherWakeLockAudio);
+});
+_wakeLockObserver.observe(document.body, { childList: true, subtree: true });
 
 function arreterScrollSync() {
     if (scrollRAF) { cancelAnimationFrame(scrollRAF); scrollRAF = null; }
