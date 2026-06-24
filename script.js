@@ -9,6 +9,7 @@ let archiveContext = null;
 let scrollRAF = null;
 let scrollCard = null;
 let scrollAudio = null;
+let wakeLock = null;
 
 const CACHE_KEY = 'emmanuel_data_v3';
 const CACHE_TTL = 15 * 60 * 1000;
@@ -284,6 +285,20 @@ function toggleScrollSync(cardId, msgId) {
     }
 }
 
+async function activerWakeLock() {
+    if ('wakeLock' in navigator) {
+        try { wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
+    }
+}
+
+function libererWakeLock() {
+    if (wakeLock) { wakeLock.release(); wakeLock = null; }
+}
+
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && scrollAudio && !scrollAudio.paused) activerWakeLock();
+});
+
 function arreterScrollSync() {
     if (scrollRAF) { cancelAnimationFrame(scrollRAF); scrollRAF = null; }
     if (scrollCard) { scrollCard.classList.remove('scroll-actif'); scrollCard = null; }
@@ -307,8 +322,9 @@ function toggleBoucle(cardId, msgId) {
         audio.loop = true;
         btnBoucle.classList.add('actif');
         audio.play().catch(() => {});
+        activerWakeLock();
+        audio.addEventListener('pause', () => { arreterScrollSync(); libererWakeLock(); }, { once: true });
         demarrerScrollSync(card, audio);
-        audio.addEventListener('pause', arreterScrollSync, { once: true });
     }
 }
 
@@ -340,6 +356,7 @@ function toggleLectureContinue(cardId, msgId) {
         archiveContext = { type: 'chrono', val: 0 };
         audio.addEventListener('ended', surFinAudio, { once: true });
         audio.play().catch(() => {});
+        activerWakeLock();
         demarrerScrollSync(card, audio);
     }
 }
@@ -372,6 +389,7 @@ function surFinAudio() {
             if (btn) btn.classList.add('actif');
             audio.addEventListener('ended', surFinAudio, { once: true });
             audio.play().catch(() => {});
+            activerWakeLock();
             const nextCard = document.getElementById('card-' + nextMsg.id);
             if (nextCard) demarrerScrollSync(nextCard, audio);
         }
@@ -408,6 +426,7 @@ function surFinAudio() {
             cardSuivante?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             audioSuivant.addEventListener('ended', surFinAudio, { once: true });
             audioSuivant.play().catch(() => {});
+            activerWakeLock();
             if (cardSuivante) demarrerScrollSync(cardSuivante, audioSuivant);
         } else {
             arreterLectureContinue();
@@ -421,6 +440,7 @@ function arreterLectureContinue() {
     archivePlayIndex = -1;
     archiveContext = null;
     arreterScrollSync();
+    libererWakeLock();
     document.querySelectorAll('[id^="btn-continue-"]').forEach(b => b.classList.remove('actif'));
     document.querySelectorAll('audio').forEach(a => a.removeEventListener('ended', surFinAudio));
 }
