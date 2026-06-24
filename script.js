@@ -6,6 +6,9 @@ let lectureContineActive = false;
 let archivePlaylist = [];
 let archivePlayIndex = -1;
 let archiveContext = null;
+let scrollRAF = null;
+let scrollCard = null;
+let scrollAudio = null;
 
 const CACHE_KEY = 'emmanuel_data_v3';
 const CACHE_TTL = 15 * 60 * 1000;
@@ -227,9 +230,64 @@ function creerCard(msg, isPremiere = false) {
         <div class="lecture-controls">
             <button class="btn-boucle" id="btn-boucle-${msg.id}" onclick="toggleBoucle('${cardId}', ${msg.id})" title="Lecture en boucle">🔁</button>
             <button class="btn-continue" id="btn-continue-${msg.id}" onclick="toggleLectureContinue('${cardId}', ${msg.id})" title="Lecture continue">⏭</button>
+            <button class="btn-scroll" id="btn-scroll-${msg.id}" onclick="toggleScrollSync('${cardId}', ${msg.id})" title="Scroll synchronisé">📜</button>
         </div>` : '';
 
     return `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}${boutonsLecture}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
+}
+
+function demarrerScrollSync(card, audio) {
+    arreterScrollSync();
+    // Ne pas démarrer si le bouton scroll est désactivé pour cette carte
+    const cardId = card.id;
+    const msgId = cardId.replace('card-', '');
+    const btnScroll = document.getElementById('btn-scroll-' + msgId);
+    if (btnScroll && !btnScroll.classList.contains('actif')) return;
+
+    scrollCard = card;
+    scrollAudio = audio;
+    const contenu = card.querySelector('.msg-content');
+    if (!contenu) return;
+
+    function boucle() {
+        if (!scrollAudio || scrollAudio.paused || scrollAudio.ended) return;
+        const dur = scrollAudio.duration;
+        if (!dur || isNaN(dur)) { scrollRAF = requestAnimationFrame(boucle); return; }
+        const scrollable = contenu.scrollHeight - contenu.clientHeight;
+        if (scrollable <= 0) return;
+        contenu.scrollTop = (scrollAudio.currentTime / dur) * scrollable;
+        scrollRAF = requestAnimationFrame(boucle);
+    }
+
+    card.classList.add('scroll-actif');
+    audio.addEventListener('seeked', () => {
+        if (audio.currentTime < 1) contenu.scrollTop = 0;
+    });
+    scrollRAF = requestAnimationFrame(boucle);
+}
+
+function toggleScrollSync(cardId, msgId) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const audio = card.querySelector('audio');
+    const btnScroll = document.getElementById('btn-scroll-' + msgId);
+    const estActif = btnScroll.classList.contains('actif');
+    if (estActif) {
+        btnScroll.classList.remove('actif');
+        arreterScrollSync();
+    } else {
+        btnScroll.classList.add('actif');
+        // Si un audio est en cours, calculer la position actuelle et démarrer
+        if (audio && !audio.paused && !audio.ended) {
+            demarrerScrollSync(card, audio);
+        }
+    }
+}
+
+function arreterScrollSync() {
+    if (scrollRAF) { cancelAnimationFrame(scrollRAF); scrollRAF = null; }
+    if (scrollCard) { scrollCard.classList.remove('scroll-actif'); scrollCard = null; }
+    scrollAudio = null;
 }
 
 function toggleBoucle(cardId, msgId) {
@@ -243,11 +301,14 @@ function toggleBoucle(cardId, msgId) {
     if (estActif) {
         audio.loop = false;
         btnBoucle.classList.remove('actif');
+        arreterScrollSync();
     } else {
         if (btnContinue.classList.contains('actif')) arreterLectureContinue();
         audio.loop = true;
         btnBoucle.classList.add('actif');
         audio.play().catch(() => {});
+        demarrerScrollSync(card, audio);
+        audio.addEventListener('pause', arreterScrollSync, { once: true });
     }
 }
 
@@ -268,8 +329,6 @@ function toggleLectureContinue(cardId, msgId) {
         }
         lectureContineActive = true;
         btnContinue.classList.add('actif');
-        // Construire la playlist de tous les messages par ordre thématique
-        // en excluant les 3 déjà affichés dans le flux
         const idsFlux = [...document.querySelectorAll('#flux-messages .message-card')].map(c => parseInt(c.id.replace('card-', '')));
         const sorted = [...tousLesMessages].sort((a, b) => {
             if (a.categorie < b.categorie) return -1;
@@ -281,6 +340,7 @@ function toggleLectureContinue(cardId, msgId) {
         archiveContext = { type: 'chrono', val: 0 };
         audio.addEventListener('ended', surFinAudio, { once: true });
         audio.play().catch(() => {});
+        demarrerScrollSync(card, audio);
     }
 }
 
@@ -312,6 +372,8 @@ function surFinAudio() {
             if (btn) btn.classList.add('actif');
             audio.addEventListener('ended', surFinAudio, { once: true });
             audio.play().catch(() => {});
+            const nextCard = document.getElementById('card-' + nextMsg.id);
+            if (nextCard) demarrerScrollSync(nextCard, audio);
         }
         return;
     }
@@ -342,9 +404,11 @@ function surFinAudio() {
             if (a) { audioSuivant = a; break; }
         }
         if (audioSuivant) {
-            audioSuivant.closest('.message-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const cardSuivante = audioSuivant.closest('.message-card');
+            cardSuivante?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             audioSuivant.addEventListener('ended', surFinAudio, { once: true });
             audioSuivant.play().catch(() => {});
+            if (cardSuivante) demarrerScrollSync(cardSuivante, audioSuivant);
         } else {
             arreterLectureContinue();
         }
@@ -356,6 +420,7 @@ function arreterLectureContinue() {
     archivePlaylist = [];
     archivePlayIndex = -1;
     archiveContext = null;
+    arreterScrollSync();
     document.querySelectorAll('[id^="btn-continue-"]').forEach(b => b.classList.remove('actif'));
     document.querySelectorAll('audio').forEach(a => a.removeEventListener('ended', surFinAudio));
 }
