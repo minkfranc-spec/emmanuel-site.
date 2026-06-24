@@ -400,7 +400,9 @@ function surFinAudio() {
         document.getElementById('message-detail').innerHTML = creerCard(nextMsg) + btnRetour;
         // Ouvrir la section archives si elle est fermée
         document.getElementById('archiveSection').style.display = 'block';
+        scrollTransition = true;
         document.getElementById('message-detail').scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => { scrollTransition = false; }, 1000);
         const audio = document.getElementById('card-' + nextMsg.id)?.querySelector('audio');
         if (audio) {
             const btn = document.getElementById('btn-continue-' + nextMsg.id);
@@ -443,7 +445,9 @@ function surFinAudio() {
         }
         if (audioSuivant) {
             const cardSuivante = audioSuivant.closest('.message-card');
+            scrollTransition = true;
             cardSuivante?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => { scrollTransition = false; }, 1000);
             const msgIdSuivant = cardSuivante?.id?.replace('card-', '');
             if (msgIdSuivant) {
                 const btnC = document.getElementById('btn-continue-' + msgIdSuivant);
@@ -549,9 +553,10 @@ function filtrerMessages() {
 }
 
 let lastScrollY = window.scrollY;
+let scrollTransition = false;
 window.onscroll = function() {
     document.getElementById("scrollTopLink").style.display = window.scrollY > 400 ? "flex" : "none";
-    if (lectureContineActive && window.scrollY > lastScrollY + 30) {
+    if (lectureContineActive && !scrollTransition && window.scrollY > lastScrollY + 30) {
         arreterLectureContinue();
         afficherAccueil();
     }
