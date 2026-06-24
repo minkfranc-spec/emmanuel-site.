@@ -405,6 +405,8 @@ function surFinAudio() {
         if (audio) {
             const btn = document.getElementById('btn-continue-' + nextMsg.id);
             if (btn) btn.classList.add('actif');
+            const btnScroll = document.getElementById('btn-scroll-' + nextMsg.id);
+            if (btnScroll) btnScroll.classList.add('actif');
             audio.addEventListener('ended', surFinAudio, { once: true });
             audio.play().catch(() => {});
             activerWakeLock();
@@ -442,6 +444,13 @@ function surFinAudio() {
         if (audioSuivant) {
             const cardSuivante = audioSuivant.closest('.message-card');
             cardSuivante?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const msgIdSuivant = cardSuivante?.id?.replace('card-', '');
+            if (msgIdSuivant) {
+                const btnC = document.getElementById('btn-continue-' + msgIdSuivant);
+                if (btnC) btnC.classList.add('actif');
+                const btnS = document.getElementById('btn-scroll-' + msgIdSuivant);
+                if (btnS) btnS.classList.add('actif');
+            }
             audioSuivant.addEventListener('ended', surFinAudio, { once: true });
             audioSuivant.play().catch(() => {});
             activerWakeLock();
