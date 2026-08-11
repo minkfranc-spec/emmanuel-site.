@@ -229,9 +229,9 @@ function creerCard(msg, isPremiere = false) {
 
     const boutonsLecture = msg.audio ? `
         <div class="lecture-controls">
-            <button class="btn-boucle" id="btn-boucle-${msg.id}" onclick="toggleBoucle('${cardId}', ${msg.id})" title="Lecture en boucle">🔁</button>
-            <button class="btn-continue" id="btn-continue-${msg.id}" onclick="toggleLectureContinue('${cardId}', ${msg.id})" title="Lecture continue">⏭</button>
-            <button class="btn-scroll" id="btn-scroll-${msg.id}" onclick="toggleScrollSync('${cardId}', ${msg.id})" title="Scroll synchronisé">📜</button>
+            <button class="btn-boucle" id="btn-boucle-${msg.id}" onclick="toggleBoucle('${cardId}', ${msg.id})" data-tip="Répéter ce message">🔁</button>
+            <button class="btn-continue" id="btn-continue-${msg.id}" onclick="toggleLectureContinue('${cardId}', ${msg.id})" data-tip="Lecture enchaînée">⏭</button>
+            <button class="btn-scroll" id="btn-scroll-${msg.id}" onclick="toggleScrollSync('${cardId}', ${msg.id})" data-tip="Défiler avec l'audio">📜</button>
         </div>` : '';
 
     return `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}${boutonsLecture}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
