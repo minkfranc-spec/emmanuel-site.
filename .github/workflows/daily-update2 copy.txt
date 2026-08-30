@@ -2,23 +2,18 @@ name: Message du jour
 
 on:
   schedule:
-    - cron: '17 19 * * *'
+   - cron: '17 20 * * *'
   workflow_dispatch:
-
-permissions:
-  contents: read
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4.2.2
 
       - uses: actions/setup-node@v4.4.0
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Ajouter le message du jour
         run: node update-messages.js
