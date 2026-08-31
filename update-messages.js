@@ -1,39 +1,43 @@
 const fs = require('fs');
 
-// Obtient la date YYYY-MM-DD locale WAT (UTC+1)
+// Date du jour au format YYYY-MM-DD (Fuseau Afrique/Lagos / WAT)
 const aujourdhui = new Date().toLocaleDateString('sv-SE', { timeZone: 'Africa/Lagos' });
 
-console.log(`📅 Date WAT: ${aujourdhui}`);
+console.log(`📅 Date du jour (WAT) : ${aujourdhui}`);
 
 try {
-    // 1. Lire les deux fichiers
-    const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
-    const data2 = JSON.parse(fs.readFileSync('data2.json', 'utf8'));
+  // 1. Chargement des fichiers JSON
+  const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+  const data2 = JSON.parse(fs.readFileSync('data2.json', 'utf8'));
 
-    // 2. Chercher le message du jour dans data2.json
-    const messageduJour = data2.messages.find(msg => msg.date === aujourdhui);
+  const messagesSource = data2.messages || [];
+  const messagesCible = data.messages || [];
 
-    if (!messageduJour) {
-        console.log(`⚠️ Aucun message trouvé pour le ${aujourdhui}`);
-        process.exit(0);
-    }
+  // 2. Chercher le message correspondant à la date d'aujourd'hui dans data2.json
+  const messageduJour = messagesSource.find(msg => msg.date === aujourdhui);
 
-    // 3. Vérifier si le message existe déjà dans data.json
-    const dejaPresent = data.messages.find(msg => msg.id === messageduJour.id);
-    if (dejaPresent) {
-        console.log(`✅ Message du ${aujourdhui} déjà présent`);
-        process.exit(0);
-    }
+  if (!messageduJour) {
+    console.log(`⚠️ Aucun message trouvé pour le ${aujourdhui} dans data2.json`);
+    process.exit(0);
+  }
 
-    // 4. Ajouter le message EN HAUT de data.json
-    data.messages.unshift(messageduJour);
+  // 3. Vérifier si le message est déjà présent dans data.json
+  const dejaPresent = messagesCible.some(msg => msg.id === messageduJour.id || msg.date === aujourdhui);
 
-    // 5. Sauvegarder data.json
-    fs.writeFileSync('data.json', JSON.stringify(data, null, 4), 'utf8');
+  if (dejaPresent) {
+    console.log(`✅ Message du ${aujourdhui} (ID: ${messageduJour.id}) déjà présent dans data.json. Rien à faire.`);
+    process.exit(0);
+  }
 
-    console.log(`✅ Message ajouté: ${messageduJour.titre}`);
+  // 4. Insertion du nouveau message au début du tableau de data.json
+  data.messages.unshift(messageduJour);
+
+  // 5. Sauvegarde de data.json
+  fs.writeFileSync('data.json', JSON.stringify(data, null, 4), 'utf8');
+
+  console.log(`🎉 Succès : Message "${messageduJour.titre}" (ID: ${messageduJour.id}) ajouté à data.json`);
 
 } catch (err) {
-    console.error(`❌ Erreur dans le script: ${err.message}`);
-    process.exit(1); // Signale une erreur à GitHub Actions
+  console.error(`❌ Erreur dans le script : ${err.message}`);
+  process.exit(1);
 }
