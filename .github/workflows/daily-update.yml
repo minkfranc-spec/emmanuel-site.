@@ -2,7 +2,7 @@ name: Message du jour
 
 on:
   schedule:
-    - cron: '17 22 * * *'
+    - cron: '17 21 * * *'
   workflow_dispatch:
 
 permissions:
@@ -31,6 +31,6 @@ jobs:
             echo "Aucun nouveau message aujourd'hui"
           else
             git add data.json
-            git commit -m "Message du $(TZ='Africa/Lagos' date '+%Y-%m-%d')"
+            git commit -m "Message du $(TZ="Africa/Lagos" date "+%Y-%m-%d")"
             git push
           fi
