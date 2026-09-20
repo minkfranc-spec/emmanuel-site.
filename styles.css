@@ -54,10 +54,35 @@ h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppe
 
 .floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
 .scroll-link { bottom: 105px; }
-.whatsapp-link { bottom: 30px; display: flex !important; }
 .btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
 .floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
 .scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+/* --- Bouton Contact discret --- */
+.contact-btn { position: fixed; top: 75px; right: 20px; width: 45px; height: 45px; border-radius: 50%; background: #1a1a1a; color: #d4af37; border: 1.5px solid #d4af37; font-size: 17px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.18); transition: background 0.2s, transform 0.2s; display: flex; align-items: center; justify-content: center; }
+.contact-btn:hover { background: #d4af37; color: #1a1a1a; transform: scale(1.08); }
+.contact-btn-label { position: fixed; top: 78px; right: 72px; background: #1a1a1a; color: white; padding: 6px 12px; border-radius: 16px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; transform: translateX(6px); z-index: 1499; }
+.contact-btn:hover + .contact-btn-label,
+.contact-btn-label:hover { opacity: 1; transform: translateX(0); }
+.notif-bubble-label { position: fixed; top: 23px; right: 72px; background: #1a1a1a; color: white; padding: 6px 12px; border-radius: 16px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; transform: translateX(6px); z-index: 1499; }
+#notif-bubble:hover ~ .notif-bubble-label { opacity: 1; transform: translateX(0); }
+
+/* --- Overlay contact --- */
+#contact-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 2000; }
+#contact-overlay.open { display: block; }
+
+/* --- Panneau Contact --- */
+#contact-panel { display: none; position: fixed; top: 130px; right: 20px; width: 280px; background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); z-index: 2100; padding: 22px 20px 16px; border-top: 4px solid #d4af37; animation: slideUpContact 0.25s ease-out; }
+#contact-panel.open { display: block; }
+@keyframes slideUpContact { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+.contact-panel-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 13px; color: #d4af37; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.contact-panel-subtitle { font-family: 'Lora', serif; font-style: italic; font-size: 12px; color: #888; margin-bottom: 16px; }
+.contact-items { display: flex; flex-direction: column; gap: 10px; }
+.contact-item { display: flex; align-items: center; gap: 10px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: #1a1a1a; text-decoration: none; padding: 9px 12px; border-radius: 10px; background: #f9f6ef; transition: background 0.2s; }
+.contact-item:hover { background: #f0e8d0; }
+.contact-icon { font-size: 16px; min-width: 20px; text-align: center; }
+.contact-close { display: block; margin: 14px auto 0; background: none; border: 1px solid #ddd; color: #999; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; padding: 6px 20px; border-radius: 20px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: color 0.2s, border-color 0.2s; }
+.contact-close:hover { color: #1a1a1a; border-color: #1a1a1a; }
 
 .flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; box-shadow: 0 10px 40px rgba(0,0,0,0.03); }
 .stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }

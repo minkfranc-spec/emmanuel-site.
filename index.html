@@ -42,11 +42,12 @@
     <div id="notif-bubble" onclick="ouvrirNotif()" aria-label="Notifications">
         <span style="color:white; font-size:18px;">🔔</span>
     </div>
+    <span class="notif-bubble-label" id="label-notif">Notifications</span>
 
     <div id="notif-panel">
-        <div style="font-family:'Montserrat'; font-weight:900; font-size:10px; color:#d4af37; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">📢 COMMUNICATIONS</div>
+        <div id="notif-title" style="font-family:'Montserrat'; font-weight:900; font-size:10px; color:#d4af37; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">📢 COMMUNICATIONS</div>
         <div id="notif-list"></div>
-        <span class="close-notif" onclick="toutMasquer()">Masquer</span>
+        <span id="notif-hide-btn" class="close-notif" onclick="toutMasquer()">Masquer</span>
     </div>
 
     <a href="javascript:void(0)" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="floating-container scroll-link" id="scrollTopLink" aria-label="Retour en haut">
@@ -54,14 +55,36 @@
         <button class="scroll-btn">↑</button>
     </a>
 
-    <a href="https://wa.me/237678356844" target="_blank" class="floating-container whatsapp-link" aria-label="Contacter sur WhatsApp">
-        <span class="btn-label" id="label-help">Besoin d'aide ?</span>
-        <div class="whatsapp-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="60"></div>
-    </a>
+    <!-- Bouton Contact discret -->
+    <button class="contact-btn" id="contact-btn" onclick="toggleContact()" aria-label="Nous contacter">✉</button>
+    <span class="contact-btn-label" id="label-contact">Contacts</span>
+
+    <!-- Panneau Contact -->
+    <div id="contact-panel">
+        <div class="contact-panel-title" id="contact-title">Nous contacter</div>
+        <div class="contact-panel-subtitle" id="contact-subtitle">La porte est toujours ouverte.</div>
+        <div class="contact-items">
+            <a href="mailto:minkfranc@gmail.com" class="contact-item">
+                <span class="contact-icon">✉</span>
+                <span>minkfranc@gmail.com</span>
+            </a>
+            <a href="https://wa.me/237678356844" target="_blank" class="contact-item">
+                <span class="contact-icon">💬</span>
+                <span id="contact-wa-label">WhatsApp / +237 678 356 844</span>
+            </a>
+            <a href="tel:+237678356844" class="contact-item">
+                <span class="contact-icon">📞</span>
+                <span>+237 678 356 844</span>
+            </a>
+        </div>
+        <button class="contact-close" onclick="toggleContact()" id="contact-close-btn">Fermer</button>
+    </div>
+    <div id="contact-overlay" onclick="toggleContact()"></div>
 
     <div class="lang-selector">
         <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
         <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
+        <button id="btn-es" class="lang-btn" onclick="setLanguage('es')">ES</button>
     </div>
 
     <h1>EMMANUEL</h1>
@@ -103,14 +126,14 @@
     <div id="toast"></div>
     <div id="modalOverlay" class="modal-overlay" onclick="fermerPartage()"></div>
     <div id="shareModal">
-        <div style="font-family:'Montserrat',sans-serif; font-weight:900; color:#d4af37; text-transform:uppercase;">Partager la Parole</div>
+        <div id="share-modal-title" style="font-family:'Montserrat',sans-serif; font-weight:900; color:#d4af37; text-transform:uppercase;">Partager la Parole</div>
         <div class="share-options">
             <div class="share-item" onclick="actionPartage('wa')"><div class="share-icon bg-wa">💬</div>WhatsApp</div>
             <div class="share-item" onclick="actionPartage('fb')"><div class="share-icon bg-fb">🔵</div>Facebook</div>
             <div class="share-item" onclick="actionPartage('mail')"><div class="share-icon bg-mail">✉</div>Email</div>
             <div class="share-item" onclick="actionPartage('copy')"><div class="share-icon bg-copy">🔗</div>Lien</div>
         </div>
-        <div class="close-modal" onclick="fermerPartage()">Annuler</div>
+        <div id="share-cancel-btn" class="close-modal" onclick="fermerPartage()">Annuler</div>
     </div>
 
     <script src="script.js"></script>

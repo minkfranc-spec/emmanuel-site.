@@ -16,7 +16,8 @@ const CACHE_TTL = 15 * 60 * 1000;
 
 const moisNoms = {
     fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-    en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    es: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 };
 
 const translations = {
@@ -35,7 +36,22 @@ const translations = {
         scrollTop: "Retour en haut",
         help: "Besoin d'aide ?",
         update: "Le compteur s'actualise toutes les 15 min",
-        selectTheme: "Choisir une thématique..."
+        selectTheme: "Choisir une thématique...",
+        contactTitle: "Nous contacter",
+        contactSubtitle: "La porte est toujours ouverte.",
+        contactWa: "WhatsApp / +237 678 356 844",
+        contactClose: "Fermer",
+        tipBoucle: "Répéter ce message",
+        tipContinue: "Lecture enchaînée",
+        tipScroll: "Défiler avec l'audio",
+        archiveChrono: "📅 Chronologie",
+        archiveTheme: "📂 Thématiques",
+        shareTitle: "Partager la Parole",
+        shareCancel: "Annuler",
+        notifTitle: "📢 COMMUNICATIONS",
+        notifHide: "Masquer",
+        labelNotif: "Notifications",
+        labelContact: "Contacts"
     },
     en: {
         welcome: "Welcome to EMMANUEL",
@@ -52,12 +68,84 @@ const translations = {
         scrollTop: "Back to top",
         help: "Need help?",
         update: "The counter updates every 15 min",
-        selectTheme: "Choose a theme..."
+        selectTheme: "Choose a theme...",
+        contactTitle: "Contact us",
+        contactSubtitle: "The door is always open.",
+        contactWa: "WhatsApp / +237 678 356 844",
+        contactClose: "Close",
+        tipBoucle: "Repeat this message",
+        tipContinue: "Chained playback",
+        tipScroll: "Scroll with audio",
+        archiveChrono: "📅 Chronology",
+        archiveTheme: "📂 Themes",
+        shareTitle: "Share the Word",
+        shareCancel: "Cancel",
+        notifTitle: "📢 COMMUNICATIONS",
+        notifHide: "Hide",
+        labelNotif: "Notifications",
+        labelContact: "Contacts"
+    },
+    es: {
+        welcome: "Bienvenido a EMMANUEL",
+        intro: "La Luz que ilumina cada paso en el camino de la Vida.",
+        searchPlaceholder: "Buscar un mensaje...",
+        archiveBtn: "📂 Consultar Archivos",
+        archiveBtnClose: "❌ Cerrar Archivos",
+        shareBtn: "📤 Compartir",
+        copied: "✨ ¡Enlace copiado!",
+        published: "Publicado el",
+        statTitle: "COMUNIDAD EMMANUEL",
+        statSub: "✨ Lectores por país y vistas ✨",
+        backList: "⬅ Volver",
+        scrollTop: "Volver arriba",
+        help: "¿Necesitas ayuda?",
+        update: "El contador se actualiza cada 15 min",
+        selectTheme: "Elegir un tema...",
+        contactTitle: "Contáctenos",
+        contactSubtitle: "La puerta siempre está abierta.",
+        contactWa: "WhatsApp / +237 678 356 844",
+        contactClose: "Cerrar",
+        tipBoucle: "Repetir este mensaje",
+        tipContinue: "Reproducción encadenada",
+        tipScroll: "Desplazar con el audio",
+        archiveChrono: "📅 Cronología",
+        archiveTheme: "📂 Temáticas",
+        shareTitle: "Compartir la Palabra",
+        shareCancel: "Cancelar",
+        notifTitle: "📢 COMUNICACIONES",
+        notifHide: "Ocultar",
+        labelNotif: "Notificaciones",
+        labelContact: "Contactos"
     }
 };
 
 function t(msg, champ) {
-    return (currentLang === 'en' && msg[champ + '_en']) ? msg[champ + '_en'] : msg[champ];
+    if (currentLang === 'en' && msg[champ + '_en']) return msg[champ + '_en'];
+    return msg[champ];
+}
+
+// Cache des traductions espagnoles en mémoire
+const esCache = {};
+
+async function traduireES(texte, cacheKey) {
+    if (!texte) return '';
+    if (esCache[cacheKey]) return esCache[cacheKey];
+    try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=fr&tl=es&dt=t&q=${encodeURIComponent(texte)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const traduit = data[0].map(chunk => chunk[0]).join('');
+        esCache[cacheKey] = traduit;
+        return traduit;
+    } catch (e) {
+        return texte; // En cas d'erreur, on retourne le texte original
+    }
+}
+
+async function tES(msg, champ) {
+    const source = msg[champ + '_en'] || msg[champ];
+    const cacheKey = `${msg.id}_${champ}`;
+    return await traduireES(source, cacheKey);
 }
 
 function encodeTexte(str) { return encodeURIComponent(str); }
@@ -104,7 +192,9 @@ async function chargerMessages() {
         const aujourdhui = new Date().toISOString().split('T')[0];
         tousLesMessages = listeBrute.filter(msg => msg.date <= aujourdhui);
 
-        setLanguage('fr');
+        const syslang = (navigator.language || navigator.userLanguage || 'fr').toLowerCase();
+        const lang = syslang.startsWith('en') ? 'en' : syslang.startsWith('es') ? 'es' : 'fr';
+        setLanguage(lang);
         genererBoutonsThemes();
 
         const loader = document.getElementById('loading-screen');
@@ -123,15 +213,30 @@ function setLanguage(lang) {
     document.documentElement.lang = lang;
     document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
     document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
     document.getElementById('welcome-txt').innerText = translations[lang].welcome;
     document.getElementById('intro-txt').innerText = translations[lang].intro;
     document.getElementById('stat-title').innerText = translations[lang].statTitle;
     document.getElementById('stat-sub').innerText = translations[lang].statSub;
     document.getElementById('label-top').innerText = translations[lang].scrollTop;
-    document.getElementById('label-help').innerText = translations[lang].help;
     document.getElementById('update-txt').innerHTML = translations[lang].update;
     document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
     document.getElementById('btn-archive').innerText = translations[lang].archiveBtn;
+    document.getElementById('contact-title').innerText = translations[lang].contactTitle;
+    document.getElementById('contact-subtitle').innerText = translations[lang].contactSubtitle;
+    document.getElementById('contact-wa-label').innerText = translations[lang].contactWa;
+    document.getElementById('contact-close-btn').innerText = translations[lang].contactClose;
+    // Boutons navigation archives
+    document.getElementById('nav-chrono').innerText = translations[lang].archiveChrono;
+    document.getElementById('nav-theme').innerText = translations[lang].archiveTheme;
+    // Modal partage
+    document.getElementById('share-modal-title').innerText = translations[lang].shareTitle;
+    document.getElementById('share-cancel-btn').innerText = translations[lang].shareCancel;
+    // Panneau notifications
+    document.getElementById('notif-title').innerText = translations[lang].notifTitle;
+    document.getElementById('notif-hide-btn').innerText = translations[lang].notifHide;
+    document.getElementById('label-notif').innerText = translations[lang].labelNotif;
+    document.getElementById('label-contact').innerText = translations[lang].labelContact;
     afficherAccueil();
     genererBoutonsMois();
 }
@@ -229,10 +334,30 @@ function creerCard(msg, isPremiere = false) {
 
     const boutonsLecture = msg.audio ? `
         <div class="lecture-controls">
-            <button class="btn-boucle" id="btn-boucle-${msg.id}" onclick="toggleBoucle('${cardId}', ${msg.id})" data-tip="Répéter ce message">🔁</button>
-            <button class="btn-continue" id="btn-continue-${msg.id}" onclick="toggleLectureContinue('${cardId}', ${msg.id})" data-tip="Lecture enchaînée">⏭</button>
-            <button class="btn-scroll" id="btn-scroll-${msg.id}" onclick="toggleScrollSync('${cardId}', ${msg.id})" data-tip="Défiler avec l'audio">📜</button>
+            <button class="btn-boucle" id="btn-boucle-${msg.id}" onclick="toggleBoucle('${cardId}', ${msg.id})" data-tip="${translations[currentLang].tipBoucle}">🔁</button>
+            <button class="btn-continue" id="btn-continue-${msg.id}" onclick="toggleLectureContinue('${cardId}', ${msg.id})" data-tip="${translations[currentLang].tipContinue}">⏭</button>
+            <button class="btn-scroll" id="btn-scroll-${msg.id}" onclick="toggleScrollSync('${cardId}', ${msg.id})" data-tip="${translations[currentLang].tipScroll}">📜</button>
         </div>` : '';
+
+    // Pour l'espagnol, on génère d'abord avec le texte FR/EN, puis on traduit en arrière-plan
+    if (currentLang === 'es') {
+        const html = `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;" id="cat-${msg.id}">${categorie}</span><h3 class="msg-title" id="tit-${msg.id}">${titre}</h3>${audioHtml}${boutonsLecture}<div class="msg-content" id="txt-${msg.id}"><span style="color:#aaa;font-style:italic;">Traduciendo... ✨</span></div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateObj.toLocaleDateString('es-ES')}</span></div>`;
+        // Traduction en arrière-plan
+        (async () => {
+            const [titreTrad, texteTrad, categorieTrad] = await Promise.all([
+                tES(msg, 'titre'),
+                tES(msg, 'texte'),
+                tES(msg, 'categorie')
+            ]);
+            const elTit = document.getElementById('tit-' + msg.id);
+            const elTxt = document.getElementById('txt-' + msg.id);
+            const elCat = document.getElementById('cat-' + msg.id);
+            if (elTit) elTit.innerHTML = titreTrad;
+            if (elCat) elCat.innerHTML = categorieTrad;
+            if (elTxt) elTxt.innerHTML = texteTrad.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        })();
+        return html;
+    }
 
     return `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}${boutonsLecture}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
 }
@@ -572,4 +697,22 @@ document.addEventListener('DOMContentLoaded', () => {
             panel.style.display = 'none';
         }
     });
+});
+
+function toggleContact() {
+    const panel = document.getElementById('contact-panel');
+    const overlay = document.getElementById('contact-overlay');
+    const isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open', !isOpen);
+    overlay.classList.toggle('open', !isOpen);
+}
+
+// Label au survol de la cloche
+document.addEventListener('DOMContentLoaded', function() {
+    const bubble = document.getElementById('notif-bubble');
+    const labelNotif = document.getElementById('label-notif');
+    if (bubble && labelNotif) {
+        bubble.addEventListener('mouseenter', () => { labelNotif.style.opacity = '1'; labelNotif.style.transform = 'translateX(0)'; });
+        bubble.addEventListener('mouseleave', () => { labelNotif.style.opacity = '0'; labelNotif.style.transform = 'translateX(6px)'; });
+    }
 });
