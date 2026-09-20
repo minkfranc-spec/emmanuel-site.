@@ -10,6 +10,7 @@ let scrollRAF = null;
 let scrollCard = null;
 let scrollAudio = null;
 let wakeLock = null;
+let communiqueData = null; // stocke les 3 versions du communiqué
 
 const CACHE_KEY = 'emmanuel_data_v3';
 const CACHE_TTL = 15 * 60 * 1000;
@@ -177,10 +178,16 @@ async function chargerMessages() {
         const data = await fetchData();
 
         if (data.communique && data.communique.trim() !== "") {
+            // Stocker les 3 versions en mémoire
+            communiqueData = {
+                fr: data.communique,
+                en: data.communique_en || data.communique,
+                es: data.communique_es || data.communique
+            };
             const bubble = document.getElementById('notif-bubble');
             bubble.style.display = 'flex';
             bubble.innerHTML = '<span style="color:white; font-size:18px;">🔔</span><div class="notif-badge">1</div>';
-            document.getElementById('notif-list').innerHTML = `<div class="notif-item">${data.communique}</div>`;
+            document.getElementById('notif-list').innerHTML = `<div class="notif-item">${communiqueData.fr}</div>`;
         }
 
         if (data.status === "standby") {
@@ -237,6 +244,10 @@ function setLanguage(lang) {
     document.getElementById('notif-hide-btn').innerText = translations[lang].notifHide;
     document.getElementById('label-notif').innerText = translations[lang].labelNotif;
     document.getElementById('label-contact').innerText = translations[lang].labelContact;
+    // Mettre à jour le communiqué selon la langue
+    if (communiqueData) {
+        document.getElementById('notif-list').innerHTML = `<div class="notif-item">${communiqueData[lang] || communiqueData.fr}</div>`;
+    }
     afficherAccueil();
     genererBoutonsMois();
 }
