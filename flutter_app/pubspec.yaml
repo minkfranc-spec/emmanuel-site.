@@ -37,6 +37,10 @@ dependencies:
   cupertino_icons: ^1.0.6
   webview_flutter: ^4.8.0
   url_launcher: ^6.3.0
+  audio_service: ^0.18.15
+  audio_session: ^0.1.25
+  just_audio: ^0.9.39
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +65,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/gestion-franc.html
+    - assets/lecteur-messages.html
 
   # To add assets to your application, add an assets section, like this:
   # assets:

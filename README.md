@@ -20,3 +20,16 @@ modification.
 
 Après une modification de la page web, recopiez `gestion-franc.html` dans
 `flutter_app/assets/gestion-franc.html` avant de reconstruire l'APK.
+
+Pour générer le lecteur personnel avec lecture audio en arrière-plan :
+
+```sh
+cd flutter_app
+flutter build apk --flavor lecteur -t lib/lecteur.dart --release
+```
+
+L'APK est créé dans
+`flutter_app/build/app/outputs/flutter-apk/app-lecteur-release.apk`.
+Le lecteur embarque `lecteur-messages.html`, mais récupère toujours
+`data2.json` depuis le cloud. Après une modification de cette page, recopiez-la
+dans `flutter_app/assets/lecteur-messages.html` avant de reconstruire l'APK.

@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10141d">
+  <meta name="description" content="Lire et rechercher les messages de data2.json.">
+  <title>Messages · EMMANUEL</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #10141d;
+      --panel: #191f2b;
+      --panel-raised: #202837;
+      --line: #30394a;
+      --text: #f3f4f6;
+      --muted: #adb5c3;
+      --gold: #e1bd51;
+      --danger: #ffb4a9;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      padding: 0 0 calc(170px + env(safe-area-inset-bottom));
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, audio { font: inherit; }
+
+    button, a, input { -webkit-tap-highlight-color: transparent; }
+
+    a { color: inherit; }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 62px;
+      padding: 10px max(16px, env(safe-area-inset-left));
+      background: rgba(16, 20, 29, .96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      min-width: 0;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .02em;
+    }
+
+    .site-link {
+      flex: 0 0 auto;
+      padding: 9px 13px;
+      border: 1px solid rgba(225,189,81,.55);
+      border-radius: 999px;
+      color: var(--gold);
+      font-size: .85rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    main {
+      width: min(100%, 760px);
+      margin: 0 auto;
+      padding: 18px 14px 28px;
+    }
+
+    .intro { margin: 4px 2px 14px; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.45rem, 6vw, 2rem);
+      line-height: 1.25;
+    }
+
+    .intro p, #load-status {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .search-box {
+      position: sticky;
+      top: 62px;
+      z-index: 4;
+      padding: 8px 0 12px;
+      background: var(--bg);
+    }
+
+    #search {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      outline: none;
+      background: var(--panel);
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    #search:focus { border-color: var(--gold); }
+
+    #search::placeholder { color: #939cac; }
+
+    .data-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 3px 2px 2px;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    #refresh-data {
+      min-height: 36px;
+      padding: 6px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    #refresh-data:disabled { opacity: .55; }
+
+    .list-summary {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 3px 10px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    #message-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .message {
+      min-width: 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: var(--panel);
+      scroll-margin-top: 130px;
+    }
+
+    .message.is-playing {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px rgba(225,189,81,.16);
+    }
+
+    .message-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 5px 10px;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .message-id {
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    .message h2 {
+      margin: 9px 0 7px;
+      font-size: 1.16rem;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .category {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: .78rem;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .message-image {
+      display: block;
+      width: 100%;
+      max-height: 360px;
+      margin: 10px 0;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .message-text {
+      margin: 0;
+      color: #e5e8ee;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message-text strong { color: #fff1bd; }
+
+    .message-play {
+      min-height: 42px;
+      margin-top: 13px;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--panel-raised);
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .empty-state {
+      padding: 22px 16px;
+      border: 1px dashed var(--line);
+      border-radius: 15px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .player {
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 10;
+      padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      background: rgba(25,31,43,.98);
+      box-shadow: 0 -8px 30px rgba(0,0,0,.25);
+      backdrop-filter: blur(16px);
+    }
+
+    .player-inner {
+      width: min(100%, 760px);
+      margin: 0 auto;
+    }
+
+    .player-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: .82rem;
+    }
+
+    #player-status {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--muted);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .player-controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .player-controls button {
+      min-height: 43px;
+      padding: 8px 5px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--panel-raised);
+      color: var(--text);
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
+    .player-controls button.primary {
+      border-color: var(--gold);
+      background: var(--gold);
+      color: #171717;
+    }
+
+    #audio-player {
+      display: block;
+      width: 100%;
+      height: 38px;
+      margin-top: 7px;
+    }
+
+    .native-audio #audio-player { display: none; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (min-width: 700px) {
+      body { padding-bottom: 156px; }
+      main { padding: 26px 20px 40px; }
+      .message { padding: 21px; }
+      .player { padding-right: 20px; padding-left: 20px; }
+    }
+
+    @media (max-width: 360px) {
+      main { padding-right: 10px; padding-left: 10px; }
+      .message { padding: 13px; }
+      .player-controls { gap: 5px; }
+      .player-controls button { font-size: .74rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">EMMANUEL<small>Bibliothèque de messages</small></div>
+    <a class="site-link" href="https://emmanuel-dpv.pages.dev/" target="_blank" rel="noopener noreferrer" onclick="if(window.PublicSiteOpener){window.PublicSiteOpener.postMessage('open');return false;}">Voir le site ↗</a>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <h1 id="page-title">Tous les messages</h1>
+      <p>Du plus récent au premier message. Recherche par date, numéro, mot ou thème.</p>
+      <p id="load-status" role="status" aria-live="polite">Chargement de data2.json…</p>
+    </section>
+
+    <div class="data-toolbar">
+      <span>Source : data2.json en ligne</span>
+      <button id="refresh-data" type="button">Actualiser</button>
+    </div>
+
+    <div class="search-box">
+      <label class="sr-only" for="search">Rechercher les messages</label>
+      <input id="search" type="search" placeholder="Date, ID, phrase, mot ou thème…" autocomplete="off" disabled>
+    </div>
+
+    <div class="list-summary">
+      <span id="result-count">Chargement…</span>
+      <span id="sort-label">ID décroissant</span>
+    </div>
+    <section id="message-list" aria-label="Messages"></section>
+  </main>
+
+  <section class="player" aria-label="Lecteur audio">
+    <div class="player-inner">
+      <div class="player-heading">
+        <strong>Lecture continue</strong>
+        <span id="player-status" role="status" aria-live="polite">Prêt</span>
+      </div>
+      <div class="player-controls">
+        <button class="primary" id="play-all" type="button">Tout lire</button>
+        <button id="play-search" type="button">Lire recherche</button>
+        <button id="toggle-play" type="button">Pause</button>
+        <button id="stop-play" type="button">Arrêter</button>
+      </div>
+      <audio id="audio-player" controls preload="none" aria-label="Piste audio en cours"></audio>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const DATA_URL = 'https://emmanuel-dpv.pages.dev/data2.json';
+      const elements = {
+        status: document.getElementById('load-status'),
+        search: document.getElementById('search'),
+        resultCount: document.getElementById('result-count'),
+        list: document.getElementById('message-list'),
+        playerStatus: document.getElementById('player-status'),
+        audio: document.getElementById('audio-player')
+      };
+
+      let messages = [];
+      let searchIndex = [];
+      let playlist = [];
+      let trackIndex = -1;
+      let stopAfterTrack = false;
+      let searchTimer;
+      let wakeLock;
+      let nativePlayback = false;
+
+      function normalize(value) {
+        return String(value ?? '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLocaleLowerCase('fr')
+          .replace(/[^\p{L}\p{N}]+/gu, ' ')
+          .trim();
+      }
+
+      function searchableText(message) {
+        return normalize([
+          message.id,
+          message.date,
+          message.titre,
+          message.titre_en,
+          message.categorie,
+          message.categorie_en,
+          message.theme,
+          message.theme_en,
+          message.texte,
+          message.texte_en
+        ].join(' '));
+      }
+
+      function findMessages(query) {
+        const normalizedQuery = normalize(query);
+        if (!normalizedQuery) return messages;
+
+        const terms = normalizedQuery.split(' ').filter(Boolean);
+        return searchIndex
+          .map((entry) => {
+            let score = 0;
+            if (entry.text.includes(normalizedQuery)) score += 20;
+            if (entry.title.includes(normalizedQuery)) score += 30;
+            if (entry.category.includes(normalizedQuery)) score += 25;
+            if (entry.date === normalizedQuery || entry.id === normalizedQuery) score += 40;
+            for (const term of terms) {
+              if (entry.text.includes(term)) score += 2;
+              else return { message: entry.message, score: 0 };
+            }
+            return { message: entry.message, score };
+          })
+          .filter((entry) => entry.score > 0)
+          .sort((a, b) => b.score - a.score || Number(b.message.id) - Number(a.message.id))
+          .map((entry) => entry.message);
+      }
+
+      function appendFormattedText(container, value) {
+        const paragraphs = String(value ?? '').split(/\n+/);
+        paragraphs.forEach((paragraph, index) => {
+          if (index) container.append(document.createElement('br'), document.createElement('br'));
+          const parts = paragraph.split(/(\*\*[^*]+\*\*)/g);
+          parts.forEach((part) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+              const strong = document.createElement('strong');
+              strong.textContent = part.slice(2, -2);
+              container.append(strong);
+            } else {
+              container.append(document.createTextNode(part));
+            }
+          });
+        });
+      }
+
+      function validMediaUrl(value) {
+        try {
+          const url = new URL(value);
+          return url.protocol === 'https:' ? url.href : '';
+        } catch {
+          return '';
+        }
+      }
+
+      function createMessageCard(message) {
+        const article = document.createElement('article');
+        article.className = 'message';
+        article.id = `message-${Number(message.id) || 0}`;
+        article.dataset.id = String(message.id ?? '');
+
+        const meta = document.createElement('div');
+        meta.className = 'message-meta';
+        const id = document.createElement('span');
+        id.className = 'message-id';
+        id.textContent = `ID ${message.id ?? '—'}`;
+        const date = document.createElement('time');
+        date.textContent = message.date || 'Date non renseignée';
+        date.dateTime = /^\d{4}-\d{2}-\d{2}$/.test(message.date || '') ? message.date : '';
+        meta.append(id, date);
+
+        const title = document.createElement('h2');
+        title.textContent = message.titre || 'Message sans titre';
+
+        article.append(meta, title);
+        if (message.categorie || message.theme) {
+          const category = document.createElement('p');
+          category.className = 'category';
+          category.textContent = message.categorie || message.theme;
+          article.append(category);
+        }
+
+        const imageUrl = validMediaUrl(message.image);
+        if (imageUrl) {
+          const image = document.createElement('img');
+          image.className = 'message-image';
+          image.src = imageUrl;
+          image.alt = '';
+          image.loading = 'lazy';
+          image.decoding = 'async';
+          article.append(image);
+        }
+
+        const text = document.createElement('div');
+        text.className = 'message-text';
+        appendFormattedText(text, message.texte);
+        article.append(text);
+
+        if (trackListFor([message]).length) {
+          const play = document.createElement('button');
+          play.className = 'message-play';
+          play.type = 'button';
+          play.textContent = '▶ Lire ce message';
+          play.addEventListener('click', () => startQueue([message], 'Message'));
+          article.append(play);
+        }
+        return article;
+      }
+
+      function renderMessages(list) {
+        const fragment = document.createDocumentFragment();
+        for (const message of list) fragment.append(createMessageCard(message));
+        elements.list.replaceChildren(fragment);
+        elements.resultCount.textContent = elements.search.value.trim()
+          ? `${list.length} résultat${list.length > 1 ? 's' : ''} sur ${messages.length}`
+          : `${list.length} message${list.length > 1 ? 's' : ''}`;
+      }
+
+      function trackListFor(list) {
+        const tracks = [];
+        for (const message of list) {
+          for (const field of ['audio', 'audio2']) {
+            const url = validMediaUrl(message[field]);
+            if (url) {
+              tracks.push({
+                id: String(message.id ?? ''),
+                title: message.titre || 'Message sans titre',
+                date: message.date || '',
+                source: url,
+                part: field === 'audio2' ? 2 : 1
+              });
+            }
+          }
+        }
+        return tracks;
+      }
+
+      function sendToNative(action, tracks) {
+        if (!window.NativePlayer) return false;
+        try {
+          window.NativePlayer.postMessage(JSON.stringify({ action, tracks: tracks ?? [] }));
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      function updateMediaSession(track) {
+        if (!('mediaSession' in navigator)) return;
+        if (!track) {
+          navigator.mediaSession.metadata = null;
+          navigator.mediaSession.playbackState = 'none';
+          return;
+        }
+        if ('MediaMetadata' in window) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: track.title,
+            artist: `Message ${track.id}${track.part === 2 ? ' · piste 2' : ''}`,
+            album: 'EMMANUEL'
+          });
+        }
+        navigator.mediaSession.playbackState = elements.audio.paused ? 'paused' : 'playing';
+      }
+
+      function setPlayerStatus(track) {
+        if (!track) {
+          elements.playerStatus.textContent = 'Prêt';
+          document.querySelectorAll('.message.is-playing').forEach((card) => card.classList.remove('is-playing'));
+          updateMediaSession(null);
+          return;
+        }
+        elements.playerStatus.textContent = `${track.title} · ID ${track.id}${track.part === 2 ? ' · piste 2' : ''}`;
+        document.querySelectorAll('.message.is-playing').forEach((card) => card.classList.remove('is-playing'));
+        document.getElementById(`message-${track.id}`)?.classList.add('is-playing');
+        updateMediaSession(track);
+      }
+
+      window.onNativePlayback = (state) => {
+        nativePlayback = true;
+        if (state.track) {
+          trackIndex = playlist.findIndex((track) =>
+            track.id === String(state.track.id) && track.part === Number(state.track.part));
+          setPlayerStatus(state.track);
+          elements.playerStatus.textContent = `${state.track.title} · ID ${state.track.id}${state.track.part === 2 ? ' · piste 2' : ''}${state.playing ? '' : ' · en pause'}`;
+        } else if (state.status) {
+          elements.playerStatus.textContent = state.status;
+        }
+        if (state.ended) {
+          playlist = [];
+          trackIndex = -1;
+        }
+      };
+
+      async function requestWakeLock() {
+        if (!('wakeLock' in navigator) || wakeLock) return;
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', () => { wakeLock = null; });
+        } catch {
+          wakeLock = null;
+        }
+      }
+
+      async function startQueue(sourceMessages, label) {
+        const tracks = trackListFor(sourceMessages);
+        if (!tracks.length) {
+          elements.playerStatus.textContent = 'Aucun message avec une piste audio dans cette sélection.';
+          return;
+        }
+        playlist = tracks;
+        trackIndex = 0;
+        stopAfterTrack = false;
+        if (sendToNative('play', tracks)) {
+          nativePlayback = true;
+          elements.playerStatus.textContent = `${label} · ${sourceMessages.length} messages`;
+          return;
+        }
+        nativePlayback = false;
+        await playTrack(0);
+      }
+
+      async function playTrack(index) {
+        if (index < 0 || index >= playlist.length) {
+          stopPlayback('Lecture terminée.');
+          return;
+        }
+        trackIndex = index;
+        const track = playlist[index];
+        elements.audio.src = track.source;
+        setPlayerStatus(track);
+        await requestWakeLock();
+        try {
+          await elements.audio.play();
+        } catch {
+          elements.playerStatus.textContent = 'Appuie sur Lecture pour démarrer l’audio.';
+        }
+      }
+
+      function stopPlayback(message = 'Lecture arrêtée.') {
+        sendToNative('stop');
+        nativePlayback = false;
+        stopAfterTrack = true;
+        playlist = [];
+        trackIndex = -1;
+        elements.audio.pause();
+        elements.audio.removeAttribute('src');
+        elements.audio.load();
+        if (wakeLock) {
+          wakeLock.release().catch(() => {});
+          wakeLock = null;
+        }
+        setPlayerStatus(null);
+        elements.playerStatus.textContent = message;
+      }
+
+      elements.audio.addEventListener('ended', () => {
+        if (stopAfterTrack || nativePlayback) return;
+        playTrack(trackIndex + 1);
+      });
+
+      elements.audio.addEventListener('play', () => {
+        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+      });
+
+      elements.audio.addEventListener('pause', () => {
+        if ('mediaSession' in navigator && trackIndex >= 0) navigator.mediaSession.playbackState = 'paused';
+      });
+
+      elements.search.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => renderMessages(findMessages(elements.search.value)), 100);
+      });
+
+      document.getElementById('play-all').addEventListener('click', () => startQueue(messages, 'Tous les messages'));
+      document.getElementById('play-search').addEventListener('click', () => {
+        const query = elements.search.value.trim();
+        if (!query) {
+          elements.playerStatus.textContent = 'Saisis un thème ou une recherche avant de lancer la lecture thématique.';
+          elements.search.focus();
+          return;
+        }
+        startQueue(findMessages(query), 'Lecture thématique');
+      });
+      document.getElementById('toggle-play').addEventListener('click', async () => {
+        if (nativePlayback) {
+          sendToNative('toggle');
+          return;
+        }
+        if (elements.audio.paused && trackIndex >= 0) {
+          try {
+            await elements.audio.play();
+          } catch {
+            elements.playerStatus.textContent = 'La lecture n’a pas pu reprendre.';
+          }
+        } else if (!elements.audio.paused) {
+          elements.audio.pause();
+        } else {
+          elements.playerStatus.textContent = 'Lance une liste ou choisis un message.';
+        }
+      });
+      document.getElementById('stop-play').addEventListener('click', () => stopPlayback());
+
+      if ('mediaSession' in navigator) {
+        for (const [action, handler] of [
+          ['play', () => document.getElementById('toggle-play').click()],
+          ['pause', () => {
+            if (nativePlayback) sendToNative('pause');
+            else elements.audio.pause();
+          }],
+          ['stop', () => stopPlayback()],
+          ['nexttrack', () => {
+            if (nativePlayback) sendToNative('next');
+            else playTrack(trackIndex + 1);
+          }],
+          ['previoustrack', () => {
+            if (nativePlayback) sendToNative('previous');
+            else playTrack(Math.max(0, trackIndex - 1));
+          }]
+        ]) {
+          try { navigator.mediaSession.setActionHandler(action, handler); } catch {}
+        }
+      }
+
+      function displayMessages(data) {
+        if (!data || !Array.isArray(data.messages)) {
+          throw new Error('la structure attendue est { "messages": [...] }');
+        }
+        messages = data.messages
+          .filter((message) => message && typeof message === 'object')
+          .slice()
+          .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
+        searchIndex = messages.map((message) => ({
+          message,
+          id: normalize(message.id),
+          date: normalize(message.date),
+          title: normalize(`${message.titre || ''} ${message.titre_en || ''}`),
+          category: normalize(`${message.categorie || ''} ${message.theme || ''} ${message.categorie_en || ''} ${message.theme_en || ''}`),
+          text: searchableText(message)
+        }));
+        elements.search.disabled = false;
+        elements.status.textContent = `data2.json en ligne · ${messages.length} messages · aucune donnée enregistrée localement`;
+        renderMessages(messages);
+      }
+
+      window.receiveMessages = (json, error) => {
+        document.getElementById('refresh-data').disabled = false;
+        if (error) {
+          elements.status.textContent = `Chargement du data2.json en ligne impossible : ${error}. Vérifie ta connexion puis actualise.`;
+          elements.resultCount.textContent = 'Aucun message chargé';
+          elements.list.replaceChildren();
+          return;
+        }
+        try {
+          displayMessages(typeof json === 'string' ? JSON.parse(json) : json);
+        } catch (exception) {
+          elements.status.textContent = `data2.json invalide : ${exception.message}`;
+          elements.resultCount.textContent = 'Aucun message chargé';
+          elements.list.replaceChildren();
+        }
+      };
+
+      async function loadMessages() {
+        const refreshButton = document.getElementById('refresh-data');
+        refreshButton.disabled = true;
+        elements.status.textContent = 'Lecture du data2.json en ligne…';
+        if (window.NativeDataReader) {
+          window.NativeDataReader.postMessage('load');
+          return;
+        }
+        try {
+          const response = await fetch(DATA_URL, {
+            cache: 'no-store',
+            mode: 'cors',
+            credentials: 'omit'
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          displayMessages(await response.json());
+        } catch (error) {
+          elements.status.textContent = `Chargement du data2.json en ligne impossible : ${error.message}. Vérifie ta connexion puis actualise.`;
+          elements.resultCount.textContent = 'Aucun message chargé';
+          elements.list.replaceChildren();
+        } finally {
+          refreshButton.disabled = false;
+        }
+      }
+
+      document.getElementById('refresh-data').addEventListener('click', loadMessages);
+
+      window.addEventListener('pagehide', () => {
+        if (!nativePlayback && wakeLock) wakeLock.release().catch(() => {});
+      });
+
+      loadMessages();
+    })();
+  </script>
+</body>
+</html>

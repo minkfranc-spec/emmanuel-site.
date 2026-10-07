@@ -29,6 +29,24 @@ flutter build apk --flavor gestion -t lib/gestion.dart --release
 L'APK de gestion est généré dans
 `build/app/outputs/flutter-apk/app-gestion-release.apk`.
 
+## Lecteur personnel des messages
+
+Le lecteur embarque `assets/lecteur-messages.html`, charge les messages depuis
+`https://emmanuel-dpv.pages.dev/data2.json` et ouvre le site public avec un lien
+externe. L'audio utilise un service média Android et ses commandes de
+notification/écran verrouillé et Bluetooth. Android peut toujours interrompre
+une lecture pour un appel, une perte de focus ou une action de l'utilisateur.
+
+Après modification de `../lecteur-messages.html`, recopiez-le dans
+`assets/lecteur-messages.html`, puis construisez l'APK :
+
+```sh
+flutter build apk --flavor lecteur -t lib/lecteur.dart --release
+```
+
+Le fichier est généré dans
+`build/app/outputs/flutter-apk/app-lecteur-release.apk`.
+
 ## Tester l'application
 
 Depuis ce dossier, avec Flutter et le SDK Android installés :
