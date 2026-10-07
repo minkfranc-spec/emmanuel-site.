@@ -127,13 +127,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 10px;
       margin: 3px 2px 2px;
       color: var(--muted);
       font-size: .78rem;
     }
 
-    #refresh-data {
+    #refresh-data, #format-audit {
       min-height: 36px;
       padding: 6px 11px;
       border: 1px solid var(--line);
@@ -143,7 +144,22 @@
       font-weight: 700;
     }
 
-    #refresh-data:disabled { opacity: .55; }
+    #refresh-data:disabled, #format-audit:disabled { opacity: .55; }
+
+    #format-audit[aria-pressed="true"] {
+      border-color: var(--gold);
+      background: var(--gold);
+      color: #171717;
+    }
+
+    .audit-issues {
+      margin: 12px 0 0;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      color: var(--danger);
+      font-size: .85rem;
+      overflow-wrap: anywhere;
+    }
 
     .list-summary {
       display: flex;
@@ -289,7 +305,8 @@
       font-weight: 700;
     }
 
-    .player-controls button.primary {
+    .player-controls button.is-active,
+    .message-play.is-active {
       border-color: var(--gold);
       background: var(--gold);
       color: #171717;
@@ -350,6 +367,8 @@
 
     <div class="data-toolbar">
       <span>Source : data2.json en ligne</span>
+      <span id="audit-count" role="status" aria-live="polite"></span>
+      <button id="format-audit" type="button" aria-pressed="false">Vérifier le format</button>
       <button id="refresh-data" type="button">Actualiser</button>
     </div>
 
@@ -372,8 +391,8 @@
         <span id="player-status" role="status" aria-live="polite">Prêt</span>
       </div>
       <div class="player-controls">
-        <button class="primary" id="play-all" type="button">Tout lire</button>
-        <button id="play-search" type="button">Lire recherche</button>
+        <button id="play-all" type="button" aria-pressed="false">Tout lire</button>
+        <button id="play-search" type="button" aria-pressed="false">Lire recherche</button>
         <button id="toggle-play" type="button">Pause</button>
         <button id="stop-play" type="button">Arrêter</button>
       </div>
@@ -391,14 +410,21 @@
         search: document.getElementById('search'),
         resultCount: document.getElementById('result-count'),
         list: document.getElementById('message-list'),
+        auditButton: document.getElementById('format-audit'),
+        auditCount: document.getElementById('audit-count'),
         playerStatus: document.getElementById('player-status'),
         audio: document.getElementById('audio-player')
       };
 
       let messages = [];
+      let sourceMessages = [];
       let searchIndex = [];
+      let auditItems = [];
+      let auditMode = false;
+      let visibleMessages = [];
       let playlist = [];
       let trackIndex = -1;
+      let activeModeButton = null;
       let stopAfterTrack = false;
       let searchTimer;
       let wakeLock;
@@ -411,6 +437,26 @@
           .toLocaleLowerCase('fr')
           .replace(/[^\p{L}\p{N}]+/gu, ' ')
           .trim();
+      }
+
+      const synonymGroups = [
+        ['foi', 'confiance', 'faith', 'trust'],
+        ['peur', 'crainte', 'angoisse', 'fear'],
+        ['prière', 'oraison', 'prayer'],
+        ['amour', 'charité', 'love'],
+        ['espoir', 'espérance', 'hope'],
+        ['joie', 'bonheur', 'joy'],
+        ['paix', 'sérénité', 'peace'],
+        ['épreuve', 'difficulté', 'trial'],
+        ['guérison', 'restauration', 'healing'],
+        ['gratitude', 'reconnaissance', 'thanksgiving'],
+        ['doute', 'questionnement', 'doubt'],
+        ['solitude', 'isolement', 'loneliness']
+      ];
+      const synonymIndex = new Map();
+      for (const group of synonymGroups) {
+        const terms = group.map(normalize);
+        for (const term of terms) synonymIndex.set(term, terms.filter((candidate) => candidate !== term));
       }
 
       function searchableText(message) {
@@ -435,15 +481,25 @@
         const terms = normalizedQuery.split(' ').filter(Boolean);
         return searchIndex
           .map((entry) => {
-            let score = 0;
-            if (entry.text.includes(normalizedQuery)) score += 20;
-            if (entry.title.includes(normalizedQuery)) score += 30;
-            if (entry.category.includes(normalizedQuery)) score += 25;
-            if (entry.date === normalizedQuery || entry.id === normalizedQuery) score += 40;
+            const paddedText = ` ${entry.text} `;
+            const paddedTitle = ` ${entry.title} `;
+            const paddedCategory = ` ${entry.category} `;
+            let exactMatches = 0;
+            let synonymMatches = 0;
             for (const term of terms) {
-              if (entry.text.includes(term)) score += 2;
-              else return { message: entry.message, score: 0 };
+              if (entry.words.has(term)) {
+                exactMatches += 1;
+              } else if ((synonymIndex.get(term) || []).some((synonym) => entry.words.has(synonym))) {
+                synonymMatches += 1;
+              } else {
+                return { message: entry.message, score: 0 };
+              }
             }
+            let score = exactMatches * 100 + synonymMatches * 10;
+            if (paddedText.includes(` ${normalizedQuery} `)) score += 500;
+            if (paddedTitle.includes(` ${normalizedQuery} `)) score += 180;
+            if (paddedCategory.includes(` ${normalizedQuery} `)) score += 150;
+            if (entry.date === normalizedQuery || entry.id === normalizedQuery) score += 1000;
             return { message: entry.message, score };
           })
           .filter((entry) => entry.score > 0)
@@ -475,6 +531,83 @@
         } catch {
           return '';
         }
+      }
+
+      function auditMessageFormat(source) {
+        const idCounts = new Map();
+        for (const message of source) {
+          if (!message || typeof message !== 'object' || message.id == null || message.id === '') continue;
+          const id = String(message.id);
+          idCounts.set(id, (idCounts.get(id) || 0) + 1);
+        }
+
+        const textFields = ['titre', 'titre_en', 'categorie', 'categorie_en', 'texte', 'texte_en'];
+        const mediaFields = ['image', 'audio'];
+        const optionalMediaFields = ['audio2'];
+        const labels = {
+          id: 'ID', date: 'date', titre: 'titre', titre_en: 'titre anglais',
+          categorie: 'catégorie', categorie_en: 'catégorie anglaise', texte: 'texte',
+          texte_en: 'texte anglais', image: 'image', audio: 'audio', audio2: 'audio 2'
+        };
+
+        return source.map((message) => {
+          const issues = [];
+          if (!message || typeof message !== 'object' || Array.isArray(message)) {
+            return { message: null, issues: ['Enregistrement non objet.'] };
+          }
+
+          if (!Number.isSafeInteger(message.id) || message.id < 1) issues.push('ID absent ou invalide.');
+          else if (idCounts.get(String(message.id)) > 1) issues.push(`ID ${message.id} en doublon.`);
+
+          const dateParts = typeof message.date === 'string' && /^(\d{4})-(\d{2})-(\d{2})$/.exec(message.date);
+          if (!dateParts) {
+            issues.push('Date absente ou au format invalide.');
+          } else {
+            const [, year, month, day] = dateParts;
+            const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+            if (date.getUTCFullYear() !== Number(year) || date.getUTCMonth() !== Number(month) - 1 || date.getUTCDate() !== Number(day)) {
+              issues.push('Date calendrier invalide.');
+            }
+          }
+
+          for (const field of textFields) {
+            if (typeof message[field] !== 'string' || !message[field].trim()) {
+              issues.push(`${labels[field]} absent ou invalide.`);
+            }
+          }
+
+          for (const field of mediaFields) {
+            if (!validMediaUrl(message[field])) issues.push(`${labels[field]} absent ou URL HTTPS invalide.`);
+          }
+          for (const field of optionalMediaFields) {
+            if (message[field] != null && message[field] !== '' && !validMediaUrl(message[field])) {
+              issues.push(`${labels[field]} URL HTTPS invalide.`);
+            }
+          }
+
+          return { message, issues };
+        }).filter((entry) => entry.issues.length > 0);
+      }
+
+      function renderAuditMessages() {
+        visibleMessages = auditItems.map((entry) => entry.message).filter(Boolean);
+        const fragment = document.createDocumentFragment();
+        for (const entry of auditItems) {
+          const card = createMessageCard(entry.message || {});
+          const issues = document.createElement('p');
+          issues.className = 'audit-issues';
+          issues.textContent = `À corriger : ${entry.issues.join(' · ')}`;
+          card.append(issues);
+          fragment.append(card);
+        }
+        if (!auditItems.length) {
+          const empty = document.createElement('p');
+          empty.className = 'empty-state';
+          empty.textContent = 'Tous les messages respectent le format attendu.';
+          fragment.append(empty);
+        }
+        elements.list.replaceChildren(fragment);
+        elements.resultCount.textContent = `${auditItems.length} message${auditItems.length > 1 ? 's' : ''} à vérifier`;
       }
 
       function createMessageCard(message) {
@@ -524,14 +657,22 @@
           const play = document.createElement('button');
           play.className = 'message-play';
           play.type = 'button';
+          play.setAttribute('aria-pressed', 'false');
           play.textContent = '▶ Lire ce message';
-          play.addEventListener('click', () => startQueue([message], 'Message'));
+          play.addEventListener('click', () => {
+            const messageIndex = visibleMessages.findIndex((item) => String(item.id) === String(message.id));
+            const queue = messageIndex < 0 ? [message] : visibleMessages.slice(0, messageIndex + 1).reverse();
+            startQueue(queue, 'Lecture continue', play);
+          });
           article.append(play);
         }
         return article;
       }
 
       function renderMessages(list) {
+        auditMode = false;
+        elements.auditButton.setAttribute('aria-pressed', 'false');
+        visibleMessages = list;
         const fragment = document.createDocumentFragment();
         for (const message of list) fragment.append(createMessageCard(message));
         elements.list.replaceChildren(fragment);
@@ -590,6 +731,7 @@
         if (!track) {
           elements.playerStatus.textContent = 'Prêt';
           document.querySelectorAll('.message.is-playing').forEach((card) => card.classList.remove('is-playing'));
+          setActiveModeButton(null);
           updateMediaSession(null);
           return;
         }
@@ -597,6 +739,18 @@
         document.querySelectorAll('.message.is-playing').forEach((card) => card.classList.remove('is-playing'));
         document.getElementById(`message-${track.id}`)?.classList.add('is-playing');
         updateMediaSession(track);
+      }
+
+      function setActiveModeButton(button) {
+        if (activeModeButton) {
+          activeModeButton.classList.remove('is-active');
+          activeModeButton.setAttribute('aria-pressed', 'false');
+        }
+        activeModeButton = button;
+        if (activeModeButton) {
+          activeModeButton.classList.add('is-active');
+          activeModeButton.setAttribute('aria-pressed', 'true');
+        }
       }
 
       window.onNativePlayback = (state) => {
@@ -612,6 +766,7 @@
         if (state.ended) {
           playlist = [];
           trackIndex = -1;
+          setActiveModeButton(null);
         }
       };
 
@@ -625,7 +780,7 @@
         }
       }
 
-      async function startQueue(sourceMessages, label) {
+      async function startQueue(sourceMessages, label, modeButton) {
         const tracks = trackListFor(sourceMessages);
         if (!tracks.length) {
           elements.playerStatus.textContent = 'Aucun message avec une piste audio dans cette sélection.';
@@ -634,6 +789,7 @@
         playlist = tracks;
         trackIndex = 0;
         stopAfterTrack = false;
+        setActiveModeButton(modeButton);
         if (sendToNative('play', tracks)) {
           nativePlayback = true;
           elements.playerStatus.textContent = `${label} · ${sourceMessages.length} messages`;
@@ -695,7 +851,8 @@
         searchTimer = setTimeout(() => renderMessages(findMessages(elements.search.value)), 100);
       });
 
-      document.getElementById('play-all').addEventListener('click', () => startQueue(messages, 'Tous les messages'));
+      document.getElementById('play-all').addEventListener('click', (event) =>
+        startQueue(messages, 'Tous les messages', event.currentTarget));
       document.getElementById('play-search').addEventListener('click', () => {
         const query = elements.search.value.trim();
         if (!query) {
@@ -703,7 +860,7 @@
           elements.search.focus();
           return;
         }
-        startQueue(findMessages(query), 'Lecture thématique');
+        startQueue(findMessages(query), 'Lecture thématique', document.getElementById('play-search'));
       });
       document.getElementById('toggle-play').addEventListener('click', async () => {
         if (nativePlayback) {
@@ -749,18 +906,29 @@
         if (!data || !Array.isArray(data.messages)) {
           throw new Error('la structure attendue est { "messages": [...] }');
         }
+        sourceMessages = data.messages;
+        auditItems = auditMessageFormat(sourceMessages);
+        auditMode = false;
+        elements.auditButton.setAttribute('aria-pressed', 'false');
+        elements.auditCount.textContent = auditItems.length
+          ? `${auditItems.length} anomalie${auditItems.length > 1 ? 's' : ''}`
+          : 'Format conforme';
         messages = data.messages
           .filter((message) => message && typeof message === 'object')
           .slice()
           .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
-        searchIndex = messages.map((message) => ({
-          message,
-          id: normalize(message.id),
-          date: normalize(message.date),
-          title: normalize(`${message.titre || ''} ${message.titre_en || ''}`),
-          category: normalize(`${message.categorie || ''} ${message.theme || ''} ${message.categorie_en || ''} ${message.theme_en || ''}`),
-          text: searchableText(message)
-        }));
+        searchIndex = messages.map((message) => {
+          const text = searchableText(message);
+          return {
+            message,
+            id: normalize(message.id),
+            date: normalize(message.date),
+            title: normalize(`${message.titre || ''} ${message.titre_en || ''}`),
+            category: normalize(`${message.categorie || ''} ${message.theme || ''} ${message.categorie_en || ''} ${message.theme_en || ''}`),
+            text,
+            words: new Set(text.split(' ').filter(Boolean))
+          };
+        });
         elements.search.disabled = false;
         elements.status.textContent = `data2.json en ligne · ${messages.length} messages · aucune donnée enregistrée localement`;
         renderMessages(messages);
@@ -809,6 +977,12 @@
       }
 
       document.getElementById('refresh-data').addEventListener('click', loadMessages);
+      elements.auditButton.addEventListener('click', () => {
+        auditMode = !auditMode;
+        elements.auditButton.setAttribute('aria-pressed', String(auditMode));
+        if (auditMode) renderAuditMessages();
+        else renderMessages(findMessages(elements.search.value));
+      });
 
       window.addEventListener('pagehide', () => {
         if (!nativePlayback && wakeLock) wakeLock.release().catch(() => {});
