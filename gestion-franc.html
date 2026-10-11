@@ -388,6 +388,7 @@
 
     .msg-header {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 10px;
       font-size: 0.72rem;
@@ -430,6 +431,28 @@
       filter: saturate(0.8);
     }
 
+    .audio-progress-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: -6px 0 14px;
+    }
+
+    .audio-progress-row input {
+      flex: 1;
+      min-width: 0;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    .audio-progress-time {
+      min-width: 88px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
     .msg-body {
       line-height: 1.8;
       color: #eaedf4;
@@ -460,9 +483,9 @@
       border-radius: 14px;
       padding: 14px 16px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
-      align-items: center;
       width: 100%;
       text-align: left;
       cursor: pointer;
@@ -653,6 +676,24 @@
       margin-bottom: 10px;
     }
 
+    .preview-favorite {
+      flex: 0 0 34px;
+      width: 34px;
+      height: 34px;
+      margin-left: auto;
+      border: 1px solid rgba(212,175,55,0.45);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--gold);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .preview-favorite.is-favorite {
+      border-color: rgba(231,76,60,0.65);
+      background: rgba(231,76,60,0.1);
+    }
+
     .search-label {
       font-size: 0.72rem;
       font-weight: 800;
@@ -680,7 +721,7 @@
       background: rgba(255,255,255,0.02);
       color: var(--text);
       border-radius: 12px;
-      padding: 12px 14px 12px 42px;
+      padding: 12px 44px 12px 42px;
       font-size: 0.88rem;
       outline: none;
     }
@@ -697,6 +738,37 @@
       transform: translateY(-50%);
       font-size: 1rem;
       color: var(--gold);
+    }
+
+    .search-clear {
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.3rem;
+      transform: translateY(-50%);
+    }
+
+    .search-clear:hover {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+    }
+
+    .search-summary {
+      min-height: 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .search-summary:not(:empty) {
+      margin-top: 8px;
     }
 
     .search-results {
@@ -943,16 +1015,21 @@
         </div>
       </header>
 
-      <div class="search-strip" aria-label="Recherche thématique">
+      <div class="search-strip" aria-label="Recherche de messages">
         <div class="search-header">
-          <span class="search-label">Recherche</span>
-          <span class="search-highlight">Sujet / thème</span>
+          <span class="search-label">Rechercher dans les messages</span>
+          <button type="button" class="ghost-btn" id="favoritesToggle" aria-expanded="false">
+            ⭐ Mes favoris <span id="favoriteCount">0</span>
+          </button>
         </div>
         <div class="search-input-wrap">
           <span class="search-icon">⌕</span>
-          <input id="themeSearch" type="search" placeholder="Cherchez un thème, un sujet, une intention..." aria-label="Rechercher des messages" autocomplete="off" />
+          <input id="themeSearch" type="search" placeholder="Titre, thème, contenu ou numéro..." aria-label="Rechercher par titre, thème, contenu ou numéro" autocomplete="off" />
+          <button type="button" class="search-clear" id="clearThemeSearch" aria-label="Effacer la recherche" title="Effacer" hidden>×</button>
         </div>
+        <div id="searchSummary" class="search-summary" role="status" aria-live="polite"></div>
         <div id="searchResults" class="search-results"></div>
+        <div id="favoriteResults" class="search-results" aria-label="Messages favoris"></div>
       </div>
 
       <section class="stats-grid">
@@ -1088,7 +1165,9 @@
   <script>
     let h = "";
     let currentMessageList = [];
+    let favoriteMessageIds = new Set();
     let activeThemePath = [];
+    const messageSearchIndex = new WeakMap();
     const meditationTree = [
       {
         name: 'Méditation authentique',
@@ -1177,6 +1256,28 @@
         .trim();
     }
 
+    function indexMessageForSearch(item) {
+      let index = messageSearchIndex.get(item);
+      if (index) return index;
+
+      const title = normalizeText(`${item.titre || ''} ${item.titre_en || ''}`);
+      const category = normalizeText(`${item.categorie || ''} ${item.categorie_en || ''}`);
+      const theme = normalizeText(`${item.theme || ''} ${item.theme_en || ''}`);
+      const content = normalizeText(`${item.texte || ''} ${item.texte_en || ''}`);
+      const all = normalizeText([
+        title,
+        category,
+        theme,
+        content,
+        item.date,
+        String(item.id || '')
+      ].join(' '));
+
+      index = { title, category, theme, content, all };
+      messageSearchIndex.set(item, index);
+      return index;
+    }
+
     function filterMessagesByTheme(messages, path) {
       if (!Array.isArray(messages)) return [];
       if (!Array.isArray(path) || !path.length) return messages;
@@ -1199,29 +1300,6 @@
       });
     }
 
-    function buildMessageKeywords(item = {}) {
-      const fields = [
-        item.titre,
-        item.titre_en,
-        item.categorie,
-        item.categorie_en,
-        item.theme,
-        item.theme_en,
-        item.texte,
-        item.texte_en,
-        item.date,
-        String(item.id || '')
-      ];
-
-      const words = new Set();
-      fields.forEach((field) => {
-        const normalized = normalizeText(String(field || ''));
-        normalized.split(' ').filter(Boolean).forEach((word) => words.add(word));
-      });
-
-      return words;
-    }
-
     function searchMessagesByTheme(messages, query) {
       if (!Array.isArray(messages) || !messages.length) return [];
 
@@ -1234,56 +1312,30 @@
       const phrase = normalizeText(raw);
 
       const scored = messages.map((item) => {
-        const fields = [
-          item.titre,
-          item.titre_en,
-          item.categorie,
-          item.categorie_en,
-          item.theme,
-          item.theme_en,
-          item.texte,
-          item.texte_en,
-          item.date,
-          String(item.id || '')
-        ];
-
-        const haystack = normalizeText(fields.join(' '));
-        const titleText = normalizeText(`${item.titre || ''} ${item.titre_en || ''}`);
-        const categoryText = normalizeText(`${item.categorie || ''} ${item.categorie_en || ''}`);
-        const themeText = normalizeText(`${item.theme || ''} ${item.theme_en || ''}`);
-        const keywordIndex = buildMessageKeywords(item);
+        const index = indexMessageForSearch(item);
 
         let score = 0;
-        let matchCount = 0;
         const matchedWords = [];
 
-        if (phrase && haystack.includes(phrase)) score += 12;
-        if (titleText.includes(phrase)) score += 10;
-        if (categoryText.includes(phrase)) score += 12;
-        if (themeText.includes(phrase)) score += 10;
+        if (phrase && index.all.includes(phrase)) score += 12;
+        if (index.title.includes(phrase)) score += 10;
+        if (index.category.includes(phrase)) score += 12;
+        if (index.theme.includes(phrase)) score += 10;
 
         tokens.forEach((token) => {
-          const found =
-            haystack.includes(token) ||
-            titleText.includes(token) ||
-            categoryText.includes(token) ||
-            themeText.includes(token) ||
-            keywordIndex.has(token);
+          const found = index.all.includes(token);
 
-          if (found) {
-            matchCount += 1;
-            matchedWords.push(token);
-          }
+          if (found) matchedWords.push(token);
 
-          if (haystack.includes(token)) score += 4;
-          if (titleText.includes(token)) score += 5;
-          if (categoryText.includes(token)) score += 6;
-          if (themeText.includes(token)) score += 5;
-          if (normalizeText(`${item.texte || ''} ${item.texte_en || ''}`).includes(token)) score += 2;
+          if (index.all.includes(token)) score += 4;
+          if (index.title.includes(token)) score += 5;
+          if (index.category.includes(token)) score += 6;
+          if (index.theme.includes(token)) score += 5;
+          if (index.content.includes(token)) score += 2;
         });
 
         const uniqueMatches = new Set(matchedWords).size;
-        const allTokensCovered = tokens.every(token => keywordIndex.has(token) || haystack.includes(token));
+        const allTokensCovered = tokens.every(token => index.all.includes(token));
 
         if (allTokensCovered) score += 8;
         if (uniqueMatches > 0) score += uniqueMatches * 4;
@@ -1305,32 +1357,112 @@
         });
     }
 
+    function favoriteButtonMarkup(id) {
+      const favorite = favoriteMessageIds.has(Number(id));
+      const label = favorite ? 'Retirer des favoris' : 'Ajouter aux favoris';
+      return `<button type="button" class="preview-favorite${favorite ? ' is-favorite' : ''}" data-favorite-id="${escapeHtml(id)}" aria-label="${label}" title="${label}" aria-pressed="${favorite}">${favorite ? '❤️' : '🤍'}</button>`;
+    }
+
+    function updateFavoriteButtons() {
+      document.querySelectorAll('.preview-favorite[data-favorite-id]').forEach((button) => {
+        const favorite = favoriteMessageIds.has(Number(button.dataset.favoriteId));
+        const label = favorite ? 'Retirer des favoris' : 'Ajouter aux favoris';
+        button.classList.toggle('is-favorite', favorite);
+        button.setAttribute('aria-pressed', String(favorite));
+        button.setAttribute('aria-label', label);
+        button.title = label;
+        button.textContent = favorite ? '❤️' : '🤍';
+      });
+      document.getElementById('favoriteCount').textContent = favoriteMessageIds.size;
+    }
+
+    function toggleFavoriteMessage(id) {
+      const messageId = Number(id);
+      if (!Number.isSafeInteger(messageId)) return;
+
+      const wasFavorite = favoriteMessageIds.has(messageId);
+      if (wasFavorite) favoriteMessageIds.delete(messageId);
+      else favoriteMessageIds.add(messageId);
+
+      try {
+        localStorage.setItem('emmanuel_favorite_messages_v1', JSON.stringify([...favoriteMessageIds]));
+      } catch (error) {
+        if (wasFavorite) favoriteMessageIds.add(messageId);
+        else favoriteMessageIds.delete(messageId);
+        console.error('Impossible d’enregistrer les favoris.', error);
+        document.getElementById('searchSummary').textContent = 'Impossible d’enregistrer les favoris sur cet appareil.';
+      }
+
+      updateFavoriteButtons();
+      if (document.getElementById('favoriteResults').classList.contains('visible')) {
+        renderFavoriteResults();
+      }
+    }
+
+    function renderFavoriteResults() {
+      const results = document.getElementById('favoriteResults');
+      const messagesById = new Map();
+      [...currentMessageList, ...futureMessages].forEach((item) => {
+        if (item && Number.isSafeInteger(Number(item.id))) messagesById.set(Number(item.id), item);
+      });
+      const favorites = [...favoriteMessageIds]
+        .map((id) => messagesById.get(id))
+        .filter(Boolean)
+        .sort((a, b) => Number(b.id) - Number(a.id));
+
+      results.innerHTML = favorites.map((item) => `
+        <button type="button" class="search-result-item favorite-result-item" data-id="${escapeHtml(item.id)}">
+          <strong>${escapeHtml(item.titre || 'Message sans titre')}</strong>
+          <div>${escapeHtml(item.categorie || 'Sans catégorie')} • ${escapeHtml(item.date || 'Date inconnue')}</div>
+        </button>
+      `).join('') || '<div class="search-result-item"><strong>Aucun favori disponible</strong><div>Ajoutez un cœur à un message prévisualisé pour le retrouver ici.</div></div>';
+
+      results.querySelectorAll('.favorite-result-item[data-id]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const item = messagesById.get(Number(button.dataset.id));
+          if (!item) return;
+          results.classList.remove('visible');
+          document.getElementById('favoritesToggle').setAttribute('aria-expanded', 'false');
+          document.getElementById('searchSummary').textContent = `Favori ouvert : ${item.titre || 'Message sans titre'}`;
+          renderPreview([item], h);
+          document.getElementById('pr')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    }
+
     function renderSearchResults(query) {
       const resultsBox = document.getElementById('searchResults');
+      const summary = document.getElementById('searchSummary');
       if (!resultsBox) return;
 
       if (!query.trim()) {
         resultsBox.classList.remove('visible');
         resultsBox.innerHTML = '';
+        summary.textContent = '';
         return;
       }
       const hits = searchMessagesByTheme(currentMessageList, query);
 
+      document.getElementById('favoriteResults').classList.remove('visible');
+      document.getElementById('favoritesToggle').setAttribute('aria-expanded', 'false');
       resultsBox.classList.add('visible');
-      resultsBox.innerHTML = hits.slice(0, 5).map(entry => {
+      const shown = hits.slice(0, 8);
+      summary.textContent = hits.length
+        ? `${hits.length} résultat${hits.length > 1 ? 's' : ''}${hits.length > shown.length ? ` · ${shown.length} affichés` : ''}`
+        : 'Aucun résultat. Essayez un synonyme, un thème ou un autre mot.';
+      resultsBox.innerHTML = shown.map(entry => {
         const item = entry.item;
         const matchLabel = entry.matchCount === 1 ? '1 mot trouvé' : `${entry.matchCount} mots trouvés`;
         return `
           <button type="button" class="search-result-item" data-id="${item.id || ''}">
-            <strong>${item.titre || 'Message sans titre'}</strong>
-            <div>${item.categorie || 'Sans catégorie'} • ${item.date || 'Date inconnue'}</div>
+            <strong>${escapeHtml(item.titre || 'Message sans titre')}</strong>
+            <div>${escapeHtml(item.categorie || 'Sans catégorie')} • ${escapeHtml(item.date || 'Date inconnue')}</div>
             <div class="search-result-meta">
               <span>${matchLabel}</span>
-              <span class="search-result-score">score ${entry.score}</span>
             </div>
           </button>
         `;
-      }).join('') || '<div class="search-result-item"><strong>Aucun résultat</strong><div>Essayez un autre terme ou un sujet proche.</div></div>';
+      }).join('');
 
       resultsBox.querySelectorAll('.search-result-item[data-id]').forEach((button) => {
         button.addEventListener('click', () => {
@@ -1341,6 +1473,7 @@
           resultsBox.classList.remove('visible');
           resultsBox.innerHTML = '';
           themeSearch.value = selected.titre || selected.categorie || '';
+          document.getElementById('searchSummary').textContent = `Message ouvert : ${selected.titre || 'Message sans titre'}`;
           renderPreview([selected], h);
           document.getElementById('pr')?.scrollIntoView({
             behavior: 'smooth',
@@ -1350,13 +1483,39 @@
       });
     }
 
+    document.getElementById('favoritesToggle').addEventListener('click', (event) => {
+      const results = document.getElementById('favoriteResults');
+      const isOpening = !results.classList.contains('visible');
+      document.getElementById('searchResults').classList.remove('visible');
+      document.getElementById('searchResults').innerHTML = '';
+      results.classList.toggle('visible', isOpening);
+      event.currentTarget.setAttribute('aria-expanded', String(isOpening));
+      document.getElementById('searchSummary').textContent = isOpening
+        ? `${favoriteMessageIds.size} message${favoriteMessageIds.size === 1 ? '' : 's'} favori${favoriteMessageIds.size === 1 ? '' : 's'}`
+        : '';
+      if (isOpening) renderFavoriteResults();
+    });
+
+    document.getElementById('clearThemeSearch').addEventListener('click', () => {
+      themeSearch.value = '';
+      document.getElementById('clearThemeSearch').hidden = true;
+      renderSearchResults('');
+      themeSearch.focus();
+    });
+
+    document.addEventListener('click', (event) => {
+      const button = event.target.closest('.preview-favorite[data-favorite-id]');
+      if (button) toggleFavoriteMessage(button.dataset.favoriteId);
+    });
+
     const themeSearch = document.getElementById('themeSearch');
     let themeSearchTimer;
     if (themeSearch) {
       themeSearch.addEventListener('input', (event) => {
         const q = event.target.value;
         clearTimeout(themeSearchTimer);
-        themeSearchTimer = setTimeout(() => renderSearchResults(q), 100);
+        document.getElementById('clearThemeSearch').hidden = !q;
+        themeSearchTimer = setTimeout(() => renderSearchResults(q), 50);
       });
     }
 
@@ -1469,12 +1628,13 @@
             <div class="msg-header">
               <span>${m.date || 'Date inconnue'}</span>
               <span>ID ${m.id || 0}</span>
+              ${favoriteButtonMarkup(m.id)}
             </div>
             <h3 class="msg-title">${m.titre || 'Message sans titre'}</h3>
             <span class="msg-category">${m.categorie || 'Sans catégorie'}</span>
             ${m.image ? `<img src="${m.image}" class="msg-image" alt="">` : ''}
-            ${m.audio ? `<audio controls><source src="${m.audio}"></audio>` : ''}
-            ${m.audio2 ? `<audio controls><source src="${m.audio2}"></audio>` : ''}
+            ${m.audio ? createAudioPlayerMarkup(m.audio) : ''}
+            ${m.audio2 ? createAudioPlayerMarkup(m.audio2) : ''}
             <div class="msg-body">${(m.texte || '').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</div>
           </div>
         `;
@@ -1482,6 +1642,57 @@
 
       pr.innerHTML = html;
     }
+
+    function formatAudioTime(seconds) {
+      if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = Math.floor(seconds % 60).toString().padStart(2, '0');
+      return `${minutes}:${remainingSeconds}`;
+    }
+
+    function updateAudioProgress(audio) {
+      const player = audio.closest('.audio-player');
+      if (!player) return;
+      const seek = player.querySelector('.audio-seek');
+      const time = player.querySelector('.audio-progress-time');
+      const duration = audio.duration;
+      const hasDuration = Number.isFinite(duration) && duration > 0;
+
+      seek.disabled = !hasDuration;
+      seek.value = hasDuration ? String(Math.round((audio.currentTime / duration) * 1000)) : '0';
+      time.textContent = `${formatAudioTime(audio.currentTime)} / ${formatAudioTime(duration)}`;
+    }
+
+    function createAudioPlayerMarkup(source) {
+      const url = safeMediaUrl(source);
+      if (!url) {
+        console.warn('Impossible d’afficher un lecteur : URL audio HTTPS invalide.', source);
+        return '';
+      }
+      return `
+        <div class="audio-player">
+          <audio controls preload="none" src="${escapeHtml(url)}"></audio>
+          <div class="audio-progress-row">
+            <input class="audio-seek" type="range" min="0" max="1000" value="0" aria-label="Barre d’avancement de la lecture" disabled>
+            <span class="audio-progress-time">0:00 / 0:00</span>
+          </div>
+        </div>`;
+    }
+
+    ['timeupdate', 'loadedmetadata', 'durationchange', 'play', 'pause', 'ended', 'seeking'].forEach((eventName) => {
+      document.addEventListener(eventName, (event) => {
+        if (event.target instanceof HTMLAudioElement) updateAudioProgress(event.target);
+      }, true);
+    });
+
+    document.addEventListener('input', (event) => {
+      const seek = event.target.closest('.audio-seek');
+      if (!seek) return;
+      const audio = seek.closest('.audio-player')?.querySelector('audio');
+      if (!audio || !Number.isFinite(audio.duration) || audio.duration <= 0) return;
+      audio.currentTime = (Number(seek.value) / 1000) * audio.duration;
+      updateAudioProgress(audio);
+    });
 
     function normalizeMessages(input) {
       if (!Array.isArray(input)) return [];
@@ -1584,6 +1795,18 @@
     const futurePageSize = 30;
     let futureMessages = [];
     let futureCurrentPage = 0;
+
+    function loadFavoriteMessages() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('emmanuel_favorite_messages_v1') || '[]');
+        if (!Array.isArray(saved)) throw new Error('Le format des favoris enregistrés est invalide.');
+        favoriteMessageIds = new Set(saved.filter(Number.isSafeInteger));
+      } catch (error) {
+        console.error('Impossible de charger les favoris enregistrés.', error);
+        document.getElementById('searchSummary').textContent = 'Impossible de charger les favoris sur cet appareil.';
+      }
+      updateFavoriteButtons();
+    }
 
     function setFutureStatus(message) {
       document.getElementById('future-status').textContent = message;
@@ -1721,12 +1944,12 @@
 
       preview.innerHTML = `
         <div class="preview-message">
-          <div class="msg-header"><span>${escapeHtml(item.date || 'Date inconnue')}</span><span>ID ${escapeHtml(item.id || 0)}</span></div>
+          <div class="msg-header"><span>${escapeHtml(item.date || 'Date inconnue')}</span><span>ID ${escapeHtml(item.id || 0)}</span>${favoriteButtonMarkup(item.id)}</div>
           <h3 class="msg-title">${escapeHtml(item.titre || 'Message sans titre')}</h3>
           <span class="msg-category">${escapeHtml(item.categorie || 'Sans catégorie')}</span>
           ${imageUrl ? `<img src="${escapeHtml(imageUrl)}" class="msg-image" alt="" loading="lazy">` : ''}
-          ${audioUrl ? `<audio controls preload="none" src="${escapeHtml(audioUrl)}"></audio>` : ''}
-          ${audio2Url ? `<audio controls preload="none" src="${escapeHtml(audio2Url)}"></audio>` : ''}
+          ${audioUrl ? createAudioPlayerMarkup(audioUrl) : ''}
+          ${audio2Url ? createAudioPlayerMarkup(audio2Url) : ''}
           <div class="msg-body">${safeText}</div>
         </div>`;
       preview.hidden = false;
@@ -1738,7 +1961,7 @@
       const query = event.target.value;
       futureCurrentPage = 0;
       clearTimeout(futureSearchTimer);
-      futureSearchTimer = setTimeout(() => renderFutureMessages(query), 120);
+      futureSearchTimer = setTimeout(() => renderFutureMessages(query), 50);
     });
 
     document.querySelectorAll('.nav-item').forEach((button) => {
@@ -1764,6 +1987,7 @@
     });
 
     window.onload = () => {
+      loadFavoriteMessages();
       const cached = localStorage.getItem('emmanuel_cache');
       const cachedOutput = localStorage.getItem('emmanuel_output_cache');
       const savedCommunique = localStorage.getItem('emmanuel_communique_draft');

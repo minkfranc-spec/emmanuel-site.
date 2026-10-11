@@ -164,6 +164,12 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
           await audioHandler.skipToNext();
         case 'previous':
           await audioHandler.skipToPrevious();
+        case 'seek':
+          final positionMs = command['positionMs'];
+          if (positionMs is! num || !positionMs.isFinite || positionMs < 0) {
+            throw const FormatException('Position de lecture invalide.');
+          }
+          await audioHandler.seek(Duration(milliseconds: positionMs.round()));
         case 'stop':
           await audioHandler.stop();
         default:

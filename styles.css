@@ -31,6 +31,15 @@ h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppe
 .msg-content strong { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000000; }
 
 .copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
+.message-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 8px 0 12px; }
+.message-actions .lecture-controls { margin: 0; }
+.favorite-toggle { flex: 0 0 34px; width: 34px; height: 34px; margin-left: auto; padding: 0; border: 1.5px solid #d4af37; border-radius: 50%; background: transparent; color: #8a6d13; font-size: 15px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.favorite-toggle.is-favorite { background: #fff6f5; border-color: #e74c3c; color: #c0392b; }
+.favorites-section { display: none; width: 92%; max-width: 540px; margin: 22px auto; scroll-margin-top: 20px; }
+.favorites-section h2 { font-family: 'Montserrat', sans-serif; font-size: 1.1em; text-transform: uppercase; }
+.favorites-list { display: grid; gap: 8px; }
+.favorite-item { width: 100%; }
+.favorites-empty { padding: 18px; border: 1px dashed #d4af37; border-radius: 10px; color: #777; font-family: 'Montserrat', sans-serif; font-size: 0.9em; }
 .published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
 
 #notif-panel { display: none; position: fixed; top: 75px; right: 20px; width: 280px; max-height: 70vh; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 2100; padding: 15px; text-align: left; animation: slideInNotif 0.3s ease-out; border-top: 4px solid #d4af37; flex-direction: column; }
@@ -64,6 +73,12 @@ h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppe
 .contact-btn-label { position: fixed; top: 78px; right: 72px; background: #1a1a1a; color: white; padding: 6px 12px; border-radius: 16px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; transform: translateX(6px); z-index: 1499; }
 .contact-btn:hover + .contact-btn-label,
 .contact-btn-label:hover { opacity: 1; transform: translateX(0); }
+.favorites-float-btn { position: fixed; top: 130px; right: 20px; width: 45px; height: 45px; border-radius: 50%; background: #1a1a1a; color: #d4af37; border: 1.5px solid #d4af37; font-size: 17px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.18); transition: background 0.2s, transform 0.2s; display: flex; align-items: center; justify-content: center; }
+.favorites-float-btn:hover { background: #d4af37; color: #1a1a1a; transform: scale(1.08); }
+.favorites-float-btn span { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 50%; background: #e74c3c; color: white; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 900; line-height: 18px; text-align: center; }
+.favorites-float-label { position: fixed; top: 133px; right: 72px; background: #1a1a1a; color: white; padding: 6px 12px; border-radius: 16px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; transform: translateX(6px); z-index: 1499; }
+.favorites-float-btn:hover + .favorites-float-label,
+.favorites-float-label:hover { opacity: 1; transform: translateX(0); }
 .notif-bubble-label { position: fixed; top: 23px; right: 72px; background: #1a1a1a; color: white; padding: 6px 12px; border-radius: 16px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; transform: translateX(6px); z-index: 1499; }
 #notif-bubble:hover ~ .notif-bubble-label { opacity: 1; transform: translateX(0); }
 

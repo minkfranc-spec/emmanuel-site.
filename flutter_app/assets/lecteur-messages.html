@@ -107,10 +107,37 @@
       background: var(--bg);
     }
 
+    .search-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .search-label {
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 700;
+    }
+
+    .search-actions button {
+      min-height: 38px;
+      padding: 7px 11px;
+      border: 1px solid rgba(225,189,81,.55);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--gold);
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
+    .search-input-wrap { position: relative; }
+
     #search {
       width: 100%;
       min-height: 50px;
-      padding: 12px 15px;
+      padding: 12px 48px 12px 15px;
       border: 1px solid var(--line);
       border-radius: 14px;
       outline: none;
@@ -122,6 +149,62 @@
     #search:focus { border-color: var(--gold); }
 
     #search::placeholder { color: #939cac; }
+
+    #clear-search {
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.3rem;
+      transform: translateY(-50%);
+    }
+
+    #clear-search:hover { background: var(--panel-raised); color: var(--text); }
+
+    #favorite-panel { margin: 0 0 14px; }
+
+    #favorite-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .favorite-item {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .favorite-item strong, .favorite-item span { display: block; }
+    .favorite-item span { margin-top: 3px; color: var(--muted); font-size: .78rem; }
+
+    #return-favorites {
+      margin: 0 0 12px;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    #search-summary {
+      min-height: 0;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: .78rem;
+    }
 
     .data-toolbar {
       display: flex;
@@ -193,7 +276,7 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 5px 10px;
       color: var(--muted);
       font-size: .78rem;
@@ -202,6 +285,25 @@
     .message-id {
       color: var(--gold);
       font-weight: 800;
+    }
+
+    .favorite-toggle {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      margin-left: auto;
+      border: 1px solid rgba(225,189,81,.55);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--gold);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .favorite-toggle.is-favorite {
+      border-color: var(--danger);
+      background: rgba(255,180,169,.1);
+      color: var(--danger);
     }
 
     .message h2 {
@@ -321,6 +423,28 @@
 
     .native-audio #audio-player { display: none; }
 
+    .playback-progress {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    #playback-seek {
+      width: 100%;
+      min-width: 0;
+      accent-color: var(--gold);
+    }
+
+    #playback-time {
+      min-width: 92px;
+      color: var(--muted);
+      font-size: .75rem;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
     .sr-only {
       position: absolute;
       width: 1px;
@@ -373,14 +497,26 @@
     </div>
 
     <div class="search-box">
-      <label class="sr-only" for="search">Rechercher les messages</label>
-      <input id="search" type="search" placeholder="Date, ID, phrase, mot ou thème…" autocomplete="off" disabled>
+      <div class="search-actions">
+        <label class="search-label" for="search">Recherche par date, ID, titre, thème ou contenu</label>
+        <button id="favorites-toggle" type="button" aria-expanded="false">⭐ Favoris <span id="favorite-count">0</span></button>
+      </div>
+      <div class="search-input-wrap">
+        <label class="sr-only" for="search">Rechercher les messages</label>
+        <input id="search" type="search" placeholder="Date, ID, titre, mot ou thème…" autocomplete="off" disabled>
+        <button id="clear-search" type="button" aria-label="Effacer la recherche" title="Effacer" hidden>×</button>
+      </div>
+      <div id="search-summary" role="status" aria-live="polite"></div>
+      <section id="favorite-panel" hidden aria-label="Messages favoris">
+        <div id="favorite-list"></div>
+      </section>
     </div>
 
     <div class="list-summary">
       <span id="result-count">Chargement…</span>
       <span id="sort-label">ID décroissant</span>
     </div>
+    <button id="return-favorites" type="button" hidden>← Retour aux favoris</button>
     <section id="message-list" aria-label="Messages"></section>
   </main>
 
@@ -397,6 +533,11 @@
         <button id="stop-play" type="button">Arrêter</button>
       </div>
       <audio id="audio-player" controls preload="none" aria-label="Piste audio en cours"></audio>
+      <div class="playback-progress">
+        <label class="sr-only" for="playback-seek">Avancement de la lecture</label>
+        <input id="playback-seek" type="range" min="0" max="1000" value="0" disabled>
+        <span id="playback-time">0:00 / 0:00</span>
+      </div>
     </div>
   </section>
 
@@ -408,17 +549,26 @@
       const elements = {
         status: document.getElementById('load-status'),
         search: document.getElementById('search'),
+        searchSummary: document.getElementById('search-summary'),
         resultCount: document.getElementById('result-count'),
         list: document.getElementById('message-list'),
+        favoritesToggle: document.getElementById('favorites-toggle'),
+        favoriteCount: document.getElementById('favorite-count'),
+        favoritePanel: document.getElementById('favorite-panel'),
+        favoriteList: document.getElementById('favorite-list'),
+        returnFavorites: document.getElementById('return-favorites'),
         auditButton: document.getElementById('format-audit'),
         auditCount: document.getElementById('audit-count'),
         playerStatus: document.getElementById('player-status'),
-        audio: document.getElementById('audio-player')
+        audio: document.getElementById('audio-player'),
+        playbackSeek: document.getElementById('playback-seek'),
+        playbackTime: document.getElementById('playback-time')
       };
 
       let messages = [];
       let sourceMessages = [];
       let searchIndex = [];
+      let favoriteIds = new Set();
       let auditItems = [];
       let auditMode = false;
       let visibleMessages = [];
@@ -485,17 +635,20 @@
             const paddedTitle = ` ${entry.title} `;
             const paddedCategory = ` ${entry.category} `;
             let exactMatches = 0;
+            let prefixMatches = 0;
             let synonymMatches = 0;
             for (const term of terms) {
               if (entry.words.has(term)) {
                 exactMatches += 1;
+              } else if ([...entry.words].some((word) => word.startsWith(term))) {
+                prefixMatches += 1;
               } else if ((synonymIndex.get(term) || []).some((synonym) => entry.words.has(synonym))) {
                 synonymMatches += 1;
               } else {
                 return { message: entry.message, score: 0 };
               }
             }
-            let score = exactMatches * 100 + synonymMatches * 10;
+            let score = exactMatches * 100 + prefixMatches * 50 + synonymMatches * 10;
             if (paddedText.includes(` ${normalizedQuery} `)) score += 500;
             if (paddedTitle.includes(` ${normalizedQuery} `)) score += 180;
             if (paddedCategory.includes(` ${normalizedQuery} `)) score += 150;
@@ -505,6 +658,120 @@
           .filter((entry) => entry.score > 0)
           .sort((a, b) => b.score - a.score || Number(b.message.id) - Number(a.message.id))
           .map((entry) => entry.message);
+      }
+
+      function loadFavorites() {
+        try {
+          const saved = JSON.parse(localStorage.getItem('emmanuel_favorite_messages_v1') || '[]');
+          if (!Array.isArray(saved)) throw new Error('Le format des favoris est invalide.');
+          favoriteIds = new Set(saved.filter((id) => Number.isSafeInteger(id) && id > 0));
+        } catch (error) {
+          console.error('Impossible de charger les favoris enregistrés.', error);
+          elements.searchSummary.textContent = 'Impossible de charger les favoris sur cet appareil.';
+          favoriteIds = new Set();
+        }
+        updateFavoriteButtons();
+      }
+
+      elements.list.addEventListener('click', (event) => {
+        const button = event.target.closest('.favorite-toggle[data-favorite-id]');
+        if (button) toggleFavorite(button.dataset.favoriteId);
+      });
+
+      elements.favoritesToggle.addEventListener('click', () => {
+        const opening = elements.favoritePanel.hidden;
+        elements.favoritePanel.hidden = !opening;
+        elements.favoritesToggle.setAttribute('aria-expanded', String(opening));
+        elements.returnFavorites.hidden = true;
+        if (opening) {
+          elements.searchSummary.textContent = `${favoriteIds.size} message${favoriteIds.size === 1 ? '' : 's'} favori${favoriteIds.size === 1 ? '' : 's'}`;
+          renderFavorites();
+        } else {
+          renderMessages(findMessages(elements.search.value));
+        }
+      });
+
+      elements.favoriteList.addEventListener('click', (event) => {
+        const button = event.target.closest('.favorite-item[data-id]');
+        if (!button) return;
+        const message = messages.find((item) => String(item.id) === button.dataset.id);
+        if (!message) return;
+        elements.favoritePanel.hidden = true;
+        elements.favoritesToggle.setAttribute('aria-expanded', 'false');
+        elements.returnFavorites.hidden = false;
+        elements.search.value = '';
+        document.getElementById('clear-search').hidden = true;
+        renderMessages([message]);
+        elements.searchSummary.textContent = `Favori ouvert : ${message.titre || 'Message sans titre'}`;
+        document.getElementById(`message-${Number(message.id) || 0}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      elements.returnFavorites.addEventListener('click', () => {
+        elements.returnFavorites.hidden = true;
+        elements.favoritePanel.hidden = false;
+        elements.favoritesToggle.setAttribute('aria-expanded', 'true');
+        renderFavorites();
+        renderMessages(findMessages(elements.search.value));
+        elements.searchSummary.textContent = `${favoriteIds.size} message${favoriteIds.size === 1 ? '' : 's'} favori${favoriteIds.size === 1 ? '' : 's'}`;
+      });
+
+      function updateFavoriteButtons() {
+        document.querySelectorAll('.favorite-toggle[data-favorite-id]').forEach((button) => {
+          const isFavorite = favoriteIds.has(Number(button.dataset.favoriteId));
+          const label = isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris';
+          button.classList.toggle('is-favorite', isFavorite);
+          button.setAttribute('aria-pressed', String(isFavorite));
+          button.setAttribute('aria-label', label);
+          button.title = label;
+          button.textContent = isFavorite ? '❤️' : '🤍';
+        });
+        elements.favoriteCount.textContent = String(favoriteIds.size);
+      }
+
+      function toggleFavorite(id) {
+        const messageId = Number(id);
+        if (!Number.isSafeInteger(messageId) || messageId < 1) return;
+
+        const wasFavorite = favoriteIds.has(messageId);
+        if (wasFavorite) favoriteIds.delete(messageId);
+        else favoriteIds.add(messageId);
+
+        try {
+          localStorage.setItem('emmanuel_favorite_messages_v1', JSON.stringify([...favoriteIds]));
+        } catch (error) {
+          if (wasFavorite) favoriteIds.add(messageId);
+          else favoriteIds.delete(messageId);
+          console.error('Impossible d’enregistrer les favoris.', error);
+          elements.searchSummary.textContent = 'Impossible d’enregistrer les favoris sur cet appareil.';
+        }
+        updateFavoriteButtons();
+        if (!elements.favoritePanel.hidden) renderFavorites();
+      }
+
+      function renderFavorites() {
+        const favorites = messages
+          .filter((message) => favoriteIds.has(Number(message.id)))
+          .sort((a, b) => Number(b.id) - Number(a.id));
+        elements.favoriteList.replaceChildren();
+        if (!favorites.length) {
+          const empty = document.createElement('p');
+          empty.className = 'empty-state';
+          empty.textContent = 'Aucun message favori pour le moment.';
+          elements.favoriteList.append(empty);
+          return;
+        }
+        for (const message of favorites) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'favorite-item';
+          button.dataset.id = String(message.id);
+          const title = document.createElement('strong');
+          title.textContent = message.titre || 'Message sans titre';
+          const details = document.createElement('span');
+          details.textContent = `${message.date || 'Date inconnue'} · ID ${message.id}`;
+          button.append(title, details);
+          elements.favoriteList.append(button);
+        }
       }
 
       function appendFormattedText(container, value) {
@@ -625,6 +892,19 @@
         date.textContent = message.date || 'Date non renseignée';
         date.dateTime = /^\d{4}-\d{2}-\d{2}$/.test(message.date || '') ? message.date : '';
         meta.append(id, date);
+        if (Number.isSafeInteger(Number(message.id)) && Number(message.id) > 0) {
+          const favorite = document.createElement('button');
+          favorite.className = 'favorite-toggle';
+          favorite.type = 'button';
+          favorite.dataset.favoriteId = String(message.id);
+          const isFavorite = favoriteIds.has(Number(message.id));
+          const label = isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris';
+          favorite.textContent = isFavorite ? '❤️' : '🤍';
+          favorite.setAttribute('aria-pressed', String(isFavorite));
+          favorite.setAttribute('aria-label', label);
+          favorite.title = label;
+          meta.append(favorite);
+        }
 
         const title = document.createElement('h2');
         title.textContent = message.titre || 'Message sans titre';
@@ -703,7 +983,10 @@
       function sendToNative(action, tracks) {
         if (!window.NativePlayer) return false;
         try {
-          window.NativePlayer.postMessage(JSON.stringify({ action, tracks: tracks ?? [] }));
+          const command = { action };
+          if (action === 'play') command.tracks = tracks ?? [];
+          if (action === 'seek') command.positionMs = tracks;
+          window.NativePlayer.postMessage(JSON.stringify(command));
           return true;
         } catch {
           return false;
@@ -755,6 +1038,7 @@
 
       window.onNativePlayback = (state) => {
         nativePlayback = true;
+        updatePlaybackProgress(Number(state.positionMs) || 0, Number(state.durationMs) || 0);
         if (state.track) {
           trackIndex = playlist.findIndex((track) =>
             track.id === String(state.track.id) && track.part === Number(state.track.part));
@@ -767,8 +1051,48 @@
           playlist = [];
           trackIndex = -1;
           setActiveModeButton(null);
+          updatePlaybackProgress(0, 0);
         }
       };
+
+      function formatTime(milliseconds) {
+        const totalSeconds = Math.floor(Math.max(0, milliseconds) / 1000);
+        return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, '0')}`;
+      }
+
+      function updatePlaybackProgress(positionMs, durationMs) {
+        const duration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : 0;
+        const position = Number.isFinite(positionMs) && positionMs > 0 ? positionMs : 0;
+        elements.playbackSeek.disabled = duration === 0;
+        elements.playbackSeek.value = duration
+          ? String(Math.min(1000, Math.round((position / duration) * 1000)))
+          : '0';
+        elements.playbackTime.textContent = `${formatTime(position)} / ${formatTime(duration)}`;
+        elements.playbackTime.dataset.durationMs = String(duration);
+      }
+
+      for (const eventName of ['timeupdate', 'loadedmetadata', 'durationchange', 'seeking', 'seeked']) {
+        elements.audio.addEventListener(eventName, () => {
+          if (!nativePlayback) {
+            updatePlaybackProgress(elements.audio.currentTime * 1000, elements.audio.duration * 1000);
+          }
+        });
+      }
+
+      elements.playbackSeek.addEventListener('change', () => {
+        if (elements.playbackSeek.disabled) return;
+        if (nativePlayback) {
+          const positionMs = Math.round(Number(elements.playbackSeek.value) / 1000 * (Number(elements.playbackTime.dataset.durationMs) || 0));
+          if (!sendToNative('seek', positionMs)) {
+            elements.playerStatus.textContent = 'Impossible de déplacer la lecture audio.';
+          }
+          return;
+        }
+        if (Number.isFinite(elements.audio.duration) && elements.audio.duration > 0) {
+          elements.audio.currentTime = Number(elements.playbackSeek.value) / 1000 * elements.audio.duration;
+          updatePlaybackProgress(elements.audio.currentTime * 1000, elements.audio.duration * 1000);
+        }
+      });
 
       async function requestWakeLock() {
         if (!('wakeLock' in navigator) || wakeLock) return;
@@ -806,6 +1130,7 @@
         }
         trackIndex = index;
         const track = playlist[index];
+        updatePlaybackProgress(0, 0);
         elements.audio.src = track.source;
         setPlayerStatus(track);
         await requestWakeLock();
@@ -825,6 +1150,7 @@
         elements.audio.pause();
         elements.audio.removeAttribute('src');
         elements.audio.load();
+        updatePlaybackProgress(0, 0);
         if (wakeLock) {
           wakeLock.release().catch(() => {});
           wakeLock = null;
@@ -847,8 +1173,19 @@
       });
 
       elements.search.addEventListener('input', () => {
+        document.getElementById('clear-search').hidden = !elements.search.value;
+        elements.favoritePanel.hidden = true;
+        elements.favoritesToggle.setAttribute('aria-expanded', 'false');
+        elements.returnFavorites.hidden = true;
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => renderMessages(findMessages(elements.search.value)), 100);
+        searchTimer = setTimeout(() => renderMessages(findMessages(elements.search.value)), 50);
+      });
+
+      document.getElementById('clear-search').addEventListener('click', () => {
+        elements.search.value = '';
+        document.getElementById('clear-search').hidden = true;
+        renderMessages(findMessages(''));
+        elements.search.focus();
       });
 
       document.getElementById('play-all').addEventListener('click', (event) =>
@@ -919,6 +1256,7 @@
           .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
         searchIndex = messages.map((message) => {
           const text = searchableText(message);
+          const words = new Set(text.split(' ').filter(Boolean));
           return {
             message,
             id: normalize(message.id),
@@ -926,12 +1264,15 @@
             title: normalize(`${message.titre || ''} ${message.titre_en || ''}`),
             category: normalize(`${message.categorie || ''} ${message.theme || ''} ${message.categorie_en || ''} ${message.theme_en || ''}`),
             text,
-            words: new Set(text.split(' ').filter(Boolean))
+            words,
+            wordList: [...words]
           };
         });
         elements.search.disabled = false;
+        loadFavorites();
+        document.getElementById('clear-search').hidden = !elements.search.value;
         elements.status.textContent = `data2.json en ligne · ${messages.length} messages · aucune donnée enregistrée localement`;
-        renderMessages(messages);
+        renderMessages(findMessages(elements.search.value));
       }
 
       window.receiveMessages = (json, error) => {

@@ -40,6 +40,8 @@ class EmmanuelAudioHandler extends BaseAudioHandler
         : null;
     return {
       'playing': _player.playing,
+      'positionMs': _player.position.inMilliseconds,
+      'durationMs': _player.duration?.inMilliseconds ?? 0,
       if (item != null)
         'track': {
           'id': item.extras?['messageId'] ?? '',

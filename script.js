@@ -14,6 +14,8 @@ let communiqueData = null; // stocke les 3 versions du communiqué
 
 const CACHE_KEY = 'emmanuel_data_v3';
 const CACHE_TTL = 15 * 60 * 1000;
+const FAVORITES_KEY = 'emmanuel_favorite_messages_v1';
+let messagesFavoris = new Set();
 
 const moisNoms = {
     fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
@@ -52,7 +54,14 @@ const translations = {
         notifTitle: "📢 COMMUNICATIONS",
         notifHide: "Masquer",
         labelNotif: "Notifications",
-        labelContact: "Contacts"
+        labelContact: "Contacts",
+        favoriteAdd: "J'aime",
+        favoriteRemove: "Retirer des favoris",
+        favoritesOpen: "Mes favoris",
+        favoritesTitle: "Mes messages favoris",
+        favoritesEmpty: "Tu n'as pas encore de message favori.",
+        favoritesBack: "⬅ Retour aux favoris",
+        favoritesSaveError: "Impossible d'enregistrer les favoris sur cet appareil."
     },
     en: {
         welcome: "Welcome to EMMANUEL",
@@ -84,7 +93,14 @@ const translations = {
         notifTitle: "📢 COMMUNICATIONS",
         notifHide: "Hide",
         labelNotif: "Notifications",
-        labelContact: "Contacts"
+        labelContact: "Contacts",
+        favoriteAdd: "Like",
+        favoriteRemove: "Remove from favorites",
+        favoritesOpen: "My favorites",
+        favoritesTitle: "My favorite messages",
+        favoritesEmpty: "You don't have any favorite messages yet.",
+        favoritesBack: "⬅ Back to favorites",
+        favoritesSaveError: "Favorites could not be saved on this device."
     },
     es: {
         welcome: "Bienvenido a EMMANUEL",
@@ -116,7 +132,14 @@ const translations = {
         notifTitle: "📢 COMUNICACIONES",
         notifHide: "Ocultar",
         labelNotif: "Notificaciones",
-        labelContact: "Contactos"
+        labelContact: "Contactos",
+        favoriteAdd: "Me gusta",
+        favoriteRemove: "Quitar de favoritos",
+        favoritesOpen: "Mis favoritos",
+        favoritesTitle: "Mis mensajes favoritos",
+        favoritesEmpty: "Todavía no tienes mensajes favoritos.",
+        favoritesBack: "⬅ Volver a favoritos",
+        favoritesSaveError: "No se pudieron guardar los favoritos en este dispositivo."
     }
 };
 
@@ -159,6 +182,17 @@ function afficherToast(msg) {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+function chargerFavoris() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+        if (!Array.isArray(saved)) throw new Error('Le format des favoris enregistrés est invalide.');
+        messagesFavoris = new Set(saved.filter(Number.isSafeInteger));
+    } catch (err) {
+        console.error("Erreur lors du chargement des favoris:", err);
+        messagesFavoris = new Set();
+    }
+}
+
 async function fetchData() {
     const aujourdhui = new Date().toISOString().split('T')[0];
     const cached = localStorage.getItem(CACHE_KEY);
@@ -187,7 +221,7 @@ async function chargerMessages() {
             const bubble = document.getElementById('notif-bubble');
             bubble.style.display = 'flex';
             bubble.innerHTML = '<span style="color:white; font-size:18px;">🔔</span><div class="notif-badge">1</div>';
-            document.getElementById('notif-list').innerHTML = `<div class="notif-item">${communiqueData.fr}</div>`;
+            afficherCommunique();
         }
 
         if (data.status === "standby") {
@@ -244,12 +278,19 @@ function setLanguage(lang) {
     document.getElementById('notif-hide-btn').innerText = translations[lang].notifHide;
     document.getElementById('label-notif').innerText = translations[lang].labelNotif;
     document.getElementById('label-contact').innerText = translations[lang].labelContact;
+    document.getElementById('label-favorites').innerText = translations[lang].favoritesOpen;
     // Mettre à jour le communiqué selon la langue
-    if (communiqueData) {
-        document.getElementById('notif-list').innerHTML = `<div class="notif-item">${communiqueData[lang] || communiqueData.fr}</div>`;
-    }
+    if (communiqueData) afficherCommunique();
+    document.getElementById('favorites-title').innerText = translations[lang].favoritesTitle;
+    mettreAJourBoutonsFavoris();
     afficherAccueil();
     genererBoutonsMois();
+}
+
+function afficherCommunique() {
+    const texte = communiqueData[currentLang] || communiqueData.fr;
+    document.getElementById('notif-list').innerHTML = `
+        <div class="notif-item">${texte}</div>`;
 }
 
 function switchArchiveView(view) {
@@ -327,6 +368,70 @@ function toutMasquer() {
     document.getElementById('notif-bubble').style.display = 'none';
 }
 
+function mettreAJourBoutonsFavoris() {
+    document.querySelectorAll('[data-favorite-id]').forEach(button => {
+        const isFavorite = messagesFavoris.has(Number(button.dataset.favoriteId));
+        button.classList.toggle('is-favorite', isFavorite);
+        button.setAttribute('aria-pressed', String(isFavorite));
+        const label = translations[currentLang][isFavorite ? 'favoriteRemove' : 'favoriteAdd'];
+        button.setAttribute('aria-label', label);
+        button.setAttribute('data-tip', label);
+        button.innerHTML = isFavorite ? '❤️' : '🤍';
+    });
+    document.getElementById('favorites-count').textContent = messagesFavoris.size;
+}
+
+function toggleFavori(id) {
+    const messageId = Number(id);
+    const wasFavorite = messagesFavoris.has(messageId);
+    if (wasFavorite) messagesFavoris.delete(messageId);
+    else messagesFavoris.add(messageId);
+
+    try {
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify([...messagesFavoris]));
+    } catch (err) {
+        if (wasFavorite) messagesFavoris.add(messageId);
+        else messagesFavoris.delete(messageId);
+        console.error("Erreur lors de l'enregistrement des favoris:", err);
+        afficherToast(translations[currentLang].favoritesSaveError);
+        mettreAJourBoutonsFavoris();
+        return;
+    }
+
+    mettreAJourBoutonsFavoris();
+}
+
+function afficherFavoris() {
+    const section = document.getElementById('favoritesSection');
+    const list = document.getElementById('favorites-list');
+    document.getElementById('notif-panel').style.display = 'none';
+    document.getElementById('favorite-detail').innerHTML = '';
+    list.style.display = 'grid';
+    list.innerHTML = tousLesMessages
+        .filter(msg => messagesFavoris.has(Number(msg.id)))
+        .sort((a, b) => b.id - a.id)
+        .map(msg => `<button type="button" class="titre-archive-item favorite-item" onclick="ouvrirFavori(${msg.id})">${t(msg, 'titre')}</button>`)
+        .join('') || `<div class="favorites-empty">${translations[currentLang].favoritesEmpty}</div>`;
+    section.style.display = 'block';
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function ouvrirFavori(id) {
+    const msg = tousLesMessages.find(message => Number(message.id) === Number(id));
+    if (!msg) return;
+    document.getElementById('favorites-list').style.display = 'none';
+    document.getElementById('favorite-detail').innerHTML = `
+        ${creerCard(msg)}
+        <button type="button" class="archive-main-btn" onclick="revenirAuxFavoris()">${translations[currentLang].favoritesBack}</button>`;
+    document.getElementById('favorite-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function revenirAuxFavoris() {
+    document.getElementById('favorite-detail').innerHTML = '';
+    document.getElementById('favorites-list').style.display = 'grid';
+    afficherFavoris();
+}
+
 function creerCard(msg, isPremiere = false) {
     const dateObj = new Date(msg.date);
     const dateAffichee = currentLang === 'fr' ? dateObj.toLocaleDateString('fr-FR') : dateObj.toLocaleDateString('en-US');
@@ -342,6 +447,8 @@ function creerCard(msg, isPremiere = false) {
     const titreEnc = encodeTexte(titre);
     const texteEnc = encodeTexte(texteOriginal);
     const cardId = 'card-' + msg.id;
+    const favorite = messagesFavoris.has(Number(msg.id));
+    const favoriteButton = `<button type="button" class="favorite-toggle${favorite ? ' is-favorite' : ''}" data-favorite-id="${msg.id}" data-tip="${translations[currentLang][favorite ? 'favoriteRemove' : 'favoriteAdd']}" aria-label="${translations[currentLang][favorite ? 'favoriteRemove' : 'favoriteAdd']}" aria-pressed="${favorite}" onclick="toggleFavori(${msg.id})">${favorite ? '❤️' : '🤍'}</button>`;
 
     const boutonsLecture = msg.audio ? `
         <div class="lecture-controls">
@@ -349,10 +456,11 @@ function creerCard(msg, isPremiere = false) {
             <button class="btn-continue" id="btn-continue-${msg.id}" onclick="toggleLectureContinue('${cardId}', ${msg.id})" data-tip="${translations[currentLang].tipContinue}">⏭</button>
             <button class="btn-scroll" id="btn-scroll-${msg.id}" onclick="toggleScrollSync('${cardId}', ${msg.id})" data-tip="${translations[currentLang].tipScroll}">📜</button>
         </div>` : '';
+    const messageActions = `<div class="message-actions">${boutonsLecture}${favoriteButton}</div>`;
 
     // Pour l'espagnol, on génère d'abord avec le texte FR/EN, puis on traduit en arrière-plan
     if (currentLang === 'es') {
-        const html = `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;" id="cat-${msg.id}">${categorie}</span><h3 class="msg-title" id="tit-${msg.id}">${titre}</h3>${audioHtml}${boutonsLecture}<div class="msg-content" id="txt-${msg.id}"><span style="color:#aaa;font-style:italic;">Traduciendo... ✨</span></div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateObj.toLocaleDateString('es-ES')}</span></div>`;
+        const html = `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;" id="cat-${msg.id}">${categorie}</span><h3 class="msg-title" id="tit-${msg.id}">${titre}</h3>${audioHtml}${messageActions}<div class="msg-content" id="txt-${msg.id}"><span style="color:#aaa;font-style:italic;">Traduciendo... ✨</span></div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateObj.toLocaleDateString('es-ES')}</span></div>`;
         // Traduction en arrière-plan
         (async () => {
             const [titreTrad, texteTrad, categorieTrad] = await Promise.all([
@@ -370,7 +478,7 @@ function creerCard(msg, isPremiere = false) {
         return html;
     }
 
-    return `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}${boutonsLecture}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
+    return `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}${messageActions}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
 }
 
 function demarrerScrollSync(card, audio) {
@@ -700,6 +808,7 @@ window.onscroll = function() {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    chargerFavoris();
     chargerMessages();
     document.addEventListener('click', e => {
         const panel = document.getElementById('notif-panel');

@@ -58,6 +58,10 @@
     <!-- Bouton Contact discret -->
     <button class="contact-btn" id="contact-btn" onclick="toggleContact()" aria-label="Nous contacter">✉</button>
     <span class="contact-btn-label" id="label-contact">Contacts</span>
+    <button class="favorites-float-btn" id="favorites-float-btn" onclick="afficherFavoris()" aria-label="Mes favoris">
+        ⭐<span id="favorites-count">0</span>
+    </button>
+    <span class="favorites-float-label" id="label-favorites">Mes favoris</span>
 
     <!-- Panneau Contact -->
     <div id="contact-panel">
@@ -96,6 +100,12 @@
     </div>
 
     <div id="flux-messages"><div class="skeleton"></div><div class="skeleton"></div></div>
+
+    <section id="favoritesSection" class="favorites-section">
+        <h2 id="favorites-title"></h2>
+        <div id="favorites-list" class="favorites-list"></div>
+        <div id="favorite-detail"></div>
+    </section>
 
     <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
 
