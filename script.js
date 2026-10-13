@@ -1,5 +1,6 @@
 let currentLang = 'fr';
 let tousLesMessages = [];
+let searchTimer = null;
 let msgPartageTemp = "";
 let titrePartageTemp = "";
 let lectureContineActive = false;
@@ -786,14 +787,17 @@ function afficherTitresDuMois(numMois, btn) {
 }
 
 function filtrerMessages() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    const container = document.getElementById('flux-messages');
-    if (query === "") { afficherAccueil(); return; }
-    const resultats = tousLesMessages.filter(msg => {
-        const searchIn = ((msg.titre || "") + (msg.titre_en || "") + (msg.texte || "") + (msg.texte_en || "") + (msg.categorie || "") + (msg.categorie_en || "")).toLowerCase();
-        return searchIn.includes(query);
-    });
-    container.innerHTML = resultats.sort((a, b) => b.id - a.id).map(msg => creerCard(msg)).join('');
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const container = document.getElementById('flux-messages');
+        if (query === "") { afficherAccueil(); return; }
+        const resultats = tousLesMessages.filter(msg => {
+            const searchIn = ((msg.titre || "") + (msg.titre_en || "") + (msg.texte || "") + (msg.texte_en || "") + (msg.categorie || "") + (msg.categorie_en || "")).toLowerCase();
+            return searchIn.includes(query);
+        });
+        container.innerHTML = resultats.sort((a, b) => b.id - a.id).map(msg => creerCard(msg)).join('');
+    }, 50);
 }
 
 let lastScrollY = window.scrollY;
