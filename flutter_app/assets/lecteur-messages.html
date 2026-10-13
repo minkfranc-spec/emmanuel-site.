@@ -445,6 +445,28 @@
       text-align: right;
     }
 
+    .back-to-top {
+      position: fixed;
+      right: max(16px, env(safe-area-inset-right));
+      bottom: calc(180px + env(safe-area-inset-bottom));
+      z-index: 11;
+      display: grid;
+      place-items: center;
+      width: 48px;
+      aspect-ratio: 1;
+      padding: 0;
+      border: 1px solid rgba(225,189,81,.7);
+      border-radius: 50%;
+      background: var(--panel-raised);
+      color: var(--gold);
+      box-shadow: 0 4px 16px rgba(0,0,0,.35);
+      font-size: 1.5rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .back-to-top[hidden] { display: none; }
+
     .sr-only {
       position: absolute;
       width: 1px;
@@ -520,6 +542,8 @@
     <section id="message-list" aria-label="Messages"></section>
   </main>
 
+  <button id="back-to-top" class="back-to-top" type="button" aria-label="Retour en haut" title="Retour en haut" hidden>↑</button>
+
   <section class="player" aria-label="Lecteur audio">
     <div class="player-inner">
       <div class="player-heading">
@@ -562,8 +586,16 @@
         playerStatus: document.getElementById('player-status'),
         audio: document.getElementById('audio-player'),
         playbackSeek: document.getElementById('playback-seek'),
-        playbackTime: document.getElementById('playback-time')
+        playbackTime: document.getElementById('playback-time'),
+        backToTop: document.getElementById('back-to-top')
       };
+
+      window.addEventListener('scroll', () => {
+        elements.backToTop.hidden = window.scrollY <= 240;
+      }, { passive: true });
+      elements.backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
 
       let messages = [];
       let sourceMessages = [];
