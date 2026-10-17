@@ -1330,7 +1330,10 @@
             const card = document.getElementById(`message-${Number(message.id) || 0}`);
             const isCurrentlyPlaying = card && card.classList.contains('is-playing');
             if (isCurrentlyPlaying) {
-              // 2ème clic pendant la lecture → colore en jaune + active lecture continue
+              // 2ème clic pendant la lecture → désactive la boucle + active lecture continue
+              loopMode = false;
+              document.getElementById('loop-badge')?.remove();
+              play.textContent = '🔁▶ En continu';
               const messageIndex = visibleMessages.findIndex((item) => String(item.id) === String(message.id));
               const sourceQueue = messageIndex < 0 ? [message] : visibleMessages.slice(0, messageIndex + 1).reverse();
               const newTracks = trackListFor(sourceQueue);
@@ -1345,7 +1348,11 @@
                 setActiveModeButton(play);
               }
             } else {
-              // 1er clic → lit ce message seul
+              // 1er clic → lit ce message en boucle
+              loopMode = true;
+              document.getElementById('loop-badge')?.remove();
+              elements.playerStatus.insertAdjacentHTML('beforeend', '<span class="loop-badge" id="loop-badge">\uD83D\uDD01 BOUCLE</span>');
+              play.textContent = '\uD83D\uDD01 En boucle — cliquer pour lire en continu';
               startQueue([message], `Message ${message.id}`, null);
             }
           });
@@ -1735,22 +1742,30 @@
         document.getElementById('clear-search').hidden = true;
       }
 
-      elements.search.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') return;
+      function handleSearchCommand() {
         const raw = elements.search.value.trim().toLowerCase();
-
-        // Commande boucle
-        if (raw === 'boucle') { event.preventDefault(); cmdBoucle(); return; }
-
-        // Commande id:X-id:Y
+        if (raw === 'boucle') { cmdBoucle(); return true; }
         const swapMatch = raw.match(/^id:(\d+)-id:(\d+)$/);
         if (swapMatch) {
-          event.preventDefault();
           elements.search.value = '';
           document.getElementById('clear-search').hidden = true;
           cmdSwapIds(swapMatch[1], swapMatch[2]);
-          return;
+          return true;
         }
+        return false;
+      }
+
+      elements.search.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+        if (handleSearchCommand()) { event.preventDefault(); event.stopPropagation(); }
+      });
+
+      // Loupe Android + Firefox submit
+      elements.search.addEventListener('search', () => { handleSearchCommand(); });
+
+      // Clavier Android : certains claviers envoient keyup avec key='Enter' ou 'Go'
+      elements.search.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter' || event.key === 'Go') { handleSearchCommand(); }
       });
 
       elements.search.addEventListener('input', () => {
