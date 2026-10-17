@@ -512,6 +512,63 @@
       .player-controls button { font-size: .7rem; }
     }
 
+    /* Rappel commandes */
+    .cmd-hint {
+      margin-top: 4px;
+      padding: 5px 10px;
+      border: 1px solid rgba(225,189,81,.25);
+      border-radius: 8px;
+      background: rgba(225,189,81,.06);
+      color: var(--muted);
+      font-size: .68rem;
+      line-height: 1.5;
+    }
+    .cmd-hint code {
+      color: var(--gold);
+      font-family: monospace;
+      font-size: .75rem;
+    }
+
+    /* Toast de feedback commande */
+    #cmd-toast {
+      position: fixed;
+      top: 54px;
+      left: 50%;
+      z-index: 99;
+      transform: translateX(-50%) translateY(-8px);
+      max-width: min(92vw, 420px);
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: var(--panel-raised);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: .82rem;
+      font-weight: 600;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s, transform .22s;
+    }
+    #cmd-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    #cmd-toast.success { border-color: var(--gold); color: var(--gold); }
+    #cmd-toast.error   { border-color: var(--danger); color: var(--danger); }
+
+    /* Badge boucle active */
+    .loop-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #171717;
+      font-size: .65rem;
+      font-weight: 800;
+      vertical-align: middle;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; }
     }
@@ -543,6 +600,10 @@
         <button id="clear-search" type="button" aria-label="Effacer la recherche" title="Effacer" hidden>×</button>
       </div>
       <div id="search-summary" role="status" aria-live="polite"></div>
+      <div class="cmd-hint" id="cmd-hint">
+        💡 Commandes : <code>boucle</code> — répéter le message en cours &nbsp;·&nbsp;
+        <code>id:X-id:Y</code> — échanger deux messages (ex: <code>id:5-id:12</code>)
+      </div>
       <section id="favorite-panel" hidden aria-label="Messages favoris">
         <div id="favorite-list"></div>
       </section>
@@ -557,6 +618,8 @@
   </main>
 
   <button id="back-to-top" class="back-to-top" type="button" aria-label="Retour en haut" title="Retour en haut" hidden>↑</button>
+
+  <div id="cmd-toast" role="alert" aria-live="assertive"></div>
 
   <section class="player" aria-label="Lecteur audio">
     <div class="player-inner">
@@ -584,6 +647,8 @@
       'use strict';
 
       const DATA_URL = 'https://emmanuel-dpv.pages.dev/data2.json';
+      const DATA_JSON_URL = 'https://emmanuel-dpv.pages.dev/data.json';
+      const FAVORIS_URL = 'https://emmanuel-dpv.pages.dev/favoris.json';
       const elements = {
         status: document.getElementById('load-status'),
         search: document.getElementById('search'),
@@ -601,7 +666,9 @@
         audio: document.getElementById('audio-player'),
         playbackSeek: document.getElementById('playback-seek'),
         playbackTime: document.getElementById('playback-time'),
-        backToTop: document.getElementById('back-to-top')
+        backToTop: document.getElementById('back-to-top'),
+        cmdToast: document.getElementById('cmd-toast'),
+        cmdHint: document.getElementById('cmd-hint')
       };
 
       window.addEventListener('scroll', () => {
@@ -622,11 +689,22 @@
       let trackIndex = -1;
       let activeModeButton = null;
       let stopAfterTrack = false;
+      let loopMode = false;
       let searchTimer;
+      let toastTimer;
       let wakeLock;
       let nativePlayback = false;
-      const prefetchAudio = new Audio(); // préchargement silencieux de la piste suivante
+      const prefetchAudio = new Audio();
       prefetchAudio.preload = 'auto';
+
+      // ── Toast de feedback ──────────────────────────────────────────────────
+      function showToast(message, type = 'success', durationMs = 3000) {
+        const toast = elements.cmdToast;
+        clearTimeout(toastTimer);
+        toast.textContent = message;
+        toast.className = `show ${type}`;
+        toastTimer = setTimeout(() => { toast.className = ''; }, durationMs);
+      }
 
       function normalize(value) {
         return String(value ?? '')
@@ -637,26 +715,53 @@
           .trim();
       }
 
+      // ════════════════════════════════════════════════════════════════════
+      // MOTEUR DE RECHERCHE — index pré-calculé, correction auto, intra-mot
+      // ════════════════════════════════════════════════════════════════════
+
+      // ── Synonymes enrichis (vocabulaire chrétien complet) ─────────────────
       const synonymGroups = [
-        ['foi', 'confiance', 'faith', 'trust'],
-        ['peur', 'crainte', 'angoisse', 'fear'],
-        ['prière', 'oraison', 'prayer'],
-        ['amour', 'charité', 'love'],
-        ['espoir', 'espérance', 'hope'],
-        ['joie', 'bonheur', 'joy'],
-        ['paix', 'sérénité', 'peace'],
-        ['épreuve', 'difficulté', 'trial'],
-        ['guérison', 'restauration', 'healing'],
-        ['gratitude', 'reconnaissance', 'thanksgiving'],
-        ['doute', 'questionnement', 'doubt'],
-        ['solitude', 'isolement', 'loneliness']
+        ['foi', 'confiance', 'faith', 'trust', 'croire', 'croyance', 'believe', 'belief'],
+        ['peur', 'crainte', 'angoisse', 'fear', 'inquietude', 'anxiete', 'anxiety', 'terreur'],
+        ['priere', 'oraison', 'prayer', 'intercession', 'supplication', 'implorer'],
+        ['amour', 'charite', 'love', 'tendresse', 'affection', 'dilection'],
+        ['espoir', 'esperance', 'hope', 'attente', 'confiance', 'promesse'],
+        ['joie', 'bonheur', 'joy', 'allegresse', 'jubile', 'allégresse'],
+        ['paix', 'serenite', 'peace', 'tranquillite', 'repos', 'quietude', 'shalom'],
+        ['epreuve', 'difficulte', 'trial', 'souffrance', 'tribulation', 'adversite', 'tempete'],
+        ['guerison', 'restauration', 'healing', 'delivrance', 'liberation', 'salut', 'deliverance'],
+        ['gratitude', 'reconnaissance', 'thanksgiving', 'louange', 'action de grace', 'merci'],
+        ['doute', 'questionnement', 'doubt', 'incertitude', 'hesitation'],
+        ['solitude', 'isolement', 'loneliness', 'abandon', 'delaissement'],
+        ['grace', 'misericorde', 'mercy', 'pardon', 'forgiveness', 'clemence', 'bonte'],
+        ['force', 'puissance', 'strength', 'power', 'vigueur', 'courage', 'autorite'],
+        ['lumiere', 'clarte', 'light', 'illumination', 'revelation', 'verite'],
+        ['chemin', 'voie', 'way', 'path', 'route', 'direction', 'guidance'],
+        ['victoire', 'triumph', 'victory', 'conquete', 'succes', 'reussite'],
+        ['resurrection', 'vie', 'life', 'eternite', 'eternity', 'salut', 'salvation'],
+        ['prophetie', 'vision', 'prophecy', 'revelation', 'parole', 'word'],
+        ['sanctification', 'saintete', 'holiness', 'purete', 'purity', 'consecration'],
+        ['humilite', 'humility', 'obeissance', 'obedience', 'soumission', 'submission'],
+        ['desert', 'epreuve', 'wilderness', 'traversee', 'pelerinage', 'journey'],
+        ['alliance', 'covenant', 'promesse', 'promise', 'engagement', 'serment'],
+        ['protection', 'garde', 'shield', 'bouclier', 'refuge', 'forteresse', 'fortress'],
+        ['benediction', 'blessing', 'faveur', 'favor', 'prosperite', 'abondance'],
+        ['repentance', 'conversion', 'repentir', 'retour', 'transformation'],
+        ['ange', 'angel', 'messager', 'messenger', 'gardien', 'guardian'],
+        ['coeur', 'ame', 'heart', 'soul', 'esprit', 'spirit', 'interieur'],
+        ['jesus', 'christ', 'messie', 'messiah', 'sauveur', 'savior', 'seigneur', 'lord'],
+        ['dieu', 'pere', 'father', 'god', 'createur', 'creator', 'eternel', 'eternal']
       ];
+
       const synonymIndex = new Map();
       for (const group of synonymGroups) {
         const terms = group.map(normalize);
-        for (const term of terms) synonymIndex.set(term, terms.filter((candidate) => candidate !== term));
+        for (const term of terms) {
+          synonymIndex.set(term, terms.filter((c) => c !== term));
+        }
       }
 
+      // ── Texte indexable ───────────────────────────────────────────────────
       function searchableText(message) {
         return normalize([
           message.id,
@@ -672,51 +777,246 @@
         ].join(' '));
       }
 
+      // ── Index global (construit une seule fois dans displayMessages) ──────
+      // prefixMap  : Map<prefix2chars, Set<word>>  — lookup O(1) par bigramme
+      // corpusWords: Set<word>                     — tous les mots du corpus (pour correction)
+      let prefixMap   = new Map();   // bigramme → Set de mots
+      let corpusWords = new Set();   // tous les mots distincts du corpus
+
+      function buildPrefixMap(index) {
+        prefixMap   = new Map();
+        corpusWords = new Set();
+        for (const entry of index) {
+          for (const word of entry.words) {
+            corpusWords.add(word);
+            // Indexe les 2 premiers caractères → lookup rapide pour intra-mot
+            const key2 = word.slice(0, 2);
+            if (!prefixMap.has(key2)) prefixMap.set(key2, new Set());
+            prefixMap.get(key2).add(word);
+          }
+        }
+      }
+
+      // ── Distance de Levenshtein bornée (max 2) — O(n) en pratique ────────
+      function levenshtein(a, b, maxDist = 2) {
+        if (Math.abs(a.length - b.length) > maxDist) return maxDist + 1;
+        const la = a.length, lb = b.length;
+        // Utilise deux lignes seulement pour économiser la mémoire
+        let prev = new Uint8Array(lb + 1);
+        let curr = new Uint8Array(lb + 1);
+        for (let j = 0; j <= lb; j++) prev[j] = j;
+        for (let i = 1; i <= la; i++) {
+          curr[0] = i;
+          let rowMin = curr[0];
+          for (let j = 1; j <= lb; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+            if (curr[j] < rowMin) rowMin = curr[j];
+          }
+          if (rowMin > maxDist) return maxDist + 1; // coupe tôt
+          [prev, curr] = [curr, prev];
+        }
+        return prev[lb];
+      }
+
+      // ── Correction automatique : trouve le mot du corpus le plus proche ──
+      // Ne cherche que parmi les mots de longueur similaire (±2)
+      // Retourne { word, dist } ou null
+      function findClosestWord(term) {
+        if (term.length < 3) return null; // trop court → pas de correction
+        const maxDist = term.length <= 5 ? 1 : 2;
+        let best = null;
+        let bestDist = maxDist + 1;
+
+        // Optimisation : ne compare qu'avec des mots de longueur proche
+        for (const word of corpusWords) {
+          if (Math.abs(word.length - term.length) > maxDist) continue;
+          if (word === term) return null; // déjà exact
+          const d = levenshtein(term, word, maxDist);
+          if (d > 0 && d < bestDist) {
+            bestDist = d;
+            best = word;
+          }
+        }
+        return best ? { word: best, dist: bestDist } : null;
+      }
+
+      // ── Vérification si un terme matche (exact, préfixe, intra-mot, synonyme) ─
+      // Retourne : 'exact' | 'prefix' | 'infix' | 'synonym' | null
+      function termMatchType(term, entry) {
+        // 1. Exact
+        if (entry.words.has(term)) return 'exact';
+
+        // 2. Préfixe (mot commence par le terme, min 2 chars)
+        if (term.length >= 2) {
+          const key2 = term.slice(0, 2);
+          const candidates = prefixMap.get(key2);
+          if (candidates) {
+            for (const word of candidates) {
+              if (word.startsWith(term) && entry.words.has(word)) return 'prefix';
+            }
+          }
+        }
+
+        // 3. Intra-mot (terme contenu dans un mot, min 3 chars)
+        if (term.length >= 3) {
+          for (const word of entry.words) {
+            if (word.length > term.length && word.includes(term)) return 'infix';
+          }
+        }
+
+        // 4. Synonyme
+        const syns = synonymIndex.get(term);
+        if (syns && syns.some((s) => entry.words.has(s))) return 'synonym';
+
+        return null;
+      }
+
+      // ── Moteur principal ─────────────────────────────────────────────────
       function findMessages(query) {
         const normalizedQuery = normalize(query);
         if (!normalizedQuery) return messages;
 
+        // Recherche par ID/numéro direct
+        const numericId = parseInt(normalizedQuery, 10);
+        if (!isNaN(numericId) && String(numericId) === normalizedQuery) {
+          const exact = messages.filter((m) => Number(m.id) === numericId);
+          if (exact.length) return exact;
+        }
+
         const terms = normalizedQuery.split(' ').filter(Boolean);
-        return searchIndex
-          .map((entry) => {
-            const paddedText = ` ${entry.text} `;
-            const paddedTitle = ` ${entry.title} `;
-            const paddedCategory = ` ${entry.category} `;
-            let exactMatches = 0;
-            let prefixMatches = 0;
-            let synonymMatches = 0;
-            for (const term of terms) {
-              if (entry.words.has(term)) {
-                exactMatches += 1;
-              } else if ([...entry.words].some((word) => word.startsWith(term))) {
-                prefixMatches += 1;
-              } else if ((synonymIndex.get(term) || []).some((synonym) => entry.words.has(synonym))) {
-                synonymMatches += 1;
-              } else {
-                return { message: entry.message, score: 0 };
-              }
-            }
-            let score = exactMatches * 100 + prefixMatches * 50 + synonymMatches * 10;
-            if (paddedText.includes(` ${normalizedQuery} `)) score += 500;
-            if (paddedTitle.includes(` ${normalizedQuery} `)) score += 180;
-            if (paddedCategory.includes(` ${normalizedQuery} `)) score += 150;
-            if (entry.date === normalizedQuery || entry.id === normalizedQuery) score += 1000;
-            return { message: entry.message, score };
-          })
-          .filter((entry) => entry.score > 0)
+
+        const scored = searchIndex.map((entry) => {
+          const paddedText     = ` ${entry.text} `;
+          const paddedTitle    = ` ${entry.title} `;
+          const paddedCategory = ` ${entry.category} `;
+
+          let score = 0;
+          let allMatched = true;
+
+          for (const term of terms) {
+            const matchType = termMatchType(term, entry);
+            if (!matchType) { allMatched = false; break; }
+            if      (matchType === 'exact')   score += 100;
+            else if (matchType === 'prefix')  score += 55;
+            else if (matchType === 'infix')   score += 30;
+            else if (matchType === 'synonym') score += 40;
+          }
+
+          if (!allMatched) return { message: entry.message, score: 0 };
+
+          // Bonus phrase exacte
+          if (paddedText.includes(` ${normalizedQuery} `))     score += 500;
+          if (paddedTitle.includes(` ${normalizedQuery} `))    score += 200;
+          if (paddedCategory.includes(` ${normalizedQuery} `)) score += 160;
+
+          // Bonus ID / date exact
+          if (entry.id === normalizedQuery || entry.date === normalizedQuery) score += 1000;
+
+          return { message: entry.message, score };
+        });
+
+        return scored
+          .filter((e) => e.score > 0)
           .sort((a, b) => b.score - a.score || Number(b.message.id) - Number(a.message.id))
-          .map((entry) => entry.message);
+          .map((e) => e.message);
       }
 
-      function loadFavorites() {
+      // ── Suggestions de correction ─────────────────────────────────────────
+      // Appelée après un délai, seulement si la recherche donne 0 résultat
+      let suggestionTimer = null;
+
+      function showSuggestion(query) {
+        const el = elements.searchSummary;
+        const normalizedQuery = normalize(query);
+        if (!normalizedQuery || normalizedQuery.length < 3) return;
+
+        const terms = normalizedQuery.split(' ').filter(Boolean);
+        const corrections = [];
+
+        for (const term of terms) {
+          // Saute si le terme matche déjà quelque chose dans le corpus
+          if (corpusWords.has(term)) continue;
+          const closest = findClosestWord(term);
+          if (closest) corrections.push({ original: term, suggestion: closest.word });
+        }
+
+        if (!corrections.length) return;
+
+        // Reconstruit la requête corrigée
+        let correctedQuery = query;
+        for (const { original, suggestion } of corrections) {
+          // Remplace le terme normalisé par la suggestion (sans accent, minuscule)
+          const re = new RegExp(original, 'gi');
+          correctedQuery = correctedQuery.replace(re, suggestion);
+        }
+
+        const suggestionText = corrections.map((c) => `"${c.suggestion}"`).join(', ');
+        el.innerHTML = `Vouliez-vous dire : <button class="suggestion-btn" data-query="${correctedQuery.replace(/"/g, '&quot;')}">${suggestionText}</button> ?`;
+      }
+
+      // ── Styles pour le bouton de suggestion ─────────────────────────────
+      // (injecté une seule fois)
+      (function injectSuggestionStyle() {
+        const style = document.createElement('style');
+        style.textContent = `
+          .suggestion-btn {
+            display: inline;
+            padding: 1px 8px;
+            border: 1px solid rgba(225,189,81,.6);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--gold);
+            font-size: .72rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+          }
+          .suggestion-btn:hover { background: rgba(225,189,81,.12); }
+        `;
+        document.head.appendChild(style);
+      })();
+
+      // Clic sur une suggestion → applique la correction
+      elements.searchSummary.addEventListener('click', (e) => {
+        const btn = e.target.closest('.suggestion-btn');
+        if (!btn) return;
+        const q = btn.dataset.query;
+        elements.search.value = q;
+        document.getElementById('clear-search').hidden = false;
+        elements.searchSummary.textContent = '';
+        renderMessages(findMessages(q));
+      });
+
+      // ── Favoris — chargement depuis favoris.json (GitHub) puis localStorage ──
+      async function loadFavorites() {
+        let remoteIds = null;
         try {
-          const saved = JSON.parse(localStorage.getItem('emmanuel_favorite_messages_v1') || '[]');
-          if (!Array.isArray(saved)) throw new Error('Le format des favoris est invalide.');
-          favoriteIds = new Set(saved.filter((id) => Number.isSafeInteger(id) && id > 0));
-        } catch (error) {
-          console.error('Impossible de charger les favoris enregistrés.', error);
-          elements.searchSummary.textContent = 'Impossible de charger les favoris sur cet appareil.';
-          favoriteIds = new Set();
+          const resp = await fetch(FAVORIS_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' });
+          if (resp.ok) {
+            const json = await resp.json();
+            if (Array.isArray(json.favoris)) {
+              remoteIds = json.favoris.filter((id) => Number.isSafeInteger(id) && id > 0);
+            }
+          }
+        } catch {
+          // silencieux — on tombera sur le localStorage
+        }
+
+        if (remoteIds !== null) {
+          favoriteIds = new Set(remoteIds);
+          // Synchronise le localStorage avec la source distante
+          try { localStorage.setItem('emmanuel_favorite_messages_v1', JSON.stringify(remoteIds)); } catch {}
+        } else {
+          // Fallback localStorage si favoris.json inaccessible
+          try {
+            const saved = JSON.parse(localStorage.getItem('emmanuel_favorite_messages_v1') || '[]');
+            if (!Array.isArray(saved)) throw new Error('Format favoris invalide.');
+            favoriteIds = new Set(saved.filter((id) => Number.isSafeInteger(id) && id > 0));
+          } catch (error) {
+            console.error('Impossible de charger les favoris.', error);
+            favoriteIds = new Set();
+          }
         }
         updateFavoriteButtons();
       }
@@ -784,14 +1084,26 @@
         if (wasFavorite) favoriteIds.delete(messageId);
         else favoriteIds.add(messageId);
 
+        const ids = [...favoriteIds];
+
+        // Sauvegarde localStorage (toujours)
         try {
-          localStorage.setItem('emmanuel_favorite_messages_v1', JSON.stringify([...favoriteIds]));
+          localStorage.setItem('emmanuel_favorite_messages_v1', JSON.stringify(ids));
         } catch (error) {
           if (wasFavorite) favoriteIds.add(messageId);
           else favoriteIds.delete(messageId);
-          console.error('Impossible d’enregistrer les favoris.', error);
-          elements.searchSummary.textContent = 'Impossible d’enregistrer les favoris sur cet appareil.';
+          console.error('Impossible d\'enregistrer les favoris.', error);
+          elements.searchSummary.textContent = 'Impossible d\'enregistrer les favoris sur cet appareil.';
+          return;
         }
+
+        // Sauvegarde favoris.json via pont natif si disponible
+        if (window.NativeFavorisWriter) {
+          try {
+            window.NativeFavorisWriter.postMessage(JSON.stringify({ favoris: ids }));
+          } catch {}
+        }
+
         updateFavoriteButtons();
         if (!elements.favoritePanel.hidden) renderFavorites();
       }
@@ -848,6 +1160,25 @@
         }
       }
 
+      // Valide un lien image : doit être HTTPS ET suivre le pattern i.ibb.co
+      // Pattern attendu : https://i.ibb.co/<code>/<nom>.<ext>
+      const IMAGE_URL_PATTERN = /^https:\/\/i\.ibb\.co\/[A-Za-z0-9]+\/[^/]+\.(jpg|jpeg|png|webp|gif)$/i;
+
+      function validImageUrl(value) {
+        if (!value || typeof value !== 'string') return '';
+        const href = validMediaUrl(value);
+        if (!href) return '';
+        return IMAGE_URL_PATTERN.test(href) ? href : '';
+      }
+
+      function imageUrlIssue(value) {
+        if (!value || value === '') return null; // champ absent = pas d'erreur ici (géré ailleurs)
+        const href = validMediaUrl(value);
+        if (!href) return 'image : URL invalide ou non HTTPS.';
+        if (!IMAGE_URL_PATTERN.test(href)) return `image : URL non conforme au format i.ibb.co (reçu : ${href}).`;
+        return null;
+      }
+
       function auditMessageFormat(source) {
         const idCounts = new Map();
         for (const message of source) {
@@ -898,6 +1229,14 @@
             if (message[field] != null && message[field] !== '' && !validMediaUrl(message[field])) {
               issues.push(`${labels[field]} URL HTTPS invalide.`);
             }
+          }
+
+          // Vérification image : champ obligatoire + pattern i.ibb.co
+          if (!message.image || typeof message.image !== 'string' || !message.image.trim()) {
+            issues.push('image : champ absent ou vide.');
+          } else {
+            const imgIssue = imageUrlIssue(message.image);
+            if (imgIssue) issues.push(imgIssue);
           }
 
           return { message, issues };
@@ -965,7 +1304,7 @@
           article.append(category);
         }
 
-        const imageUrl = validMediaUrl(message.image);
+        const imageUrl = validImageUrl(message.image);
         if (imageUrl) {
           const image = document.createElement('img');
           image.className = 'message-image';
@@ -1252,6 +1591,8 @@
         sendToNative('stop');
         nativePlayback = false;
         stopAfterTrack = true;
+        loopMode = false;
+        document.getElementById('loop-badge')?.remove();
         playlist = [];
         trackIndex = -1;
         elements.audio.pause();
@@ -1271,6 +1612,11 @@
 
       elements.audio.addEventListener('ended', () => {
         if (stopAfterTrack || nativePlayback) return;
+        if (loopMode) {
+          // Boucle : rejoue la même piste
+          playTrack(trackIndex);
+          return;
+        }
         playTrack(trackIndex + 1);
       });
 
@@ -1282,18 +1628,170 @@
         if ('mediaSession' in navigator && trackIndex >= 0) navigator.mediaSession.playbackState = 'paused';
       });
 
+      // ── Gestion commandes + recherche ─────────────────────────────────────
+
+      // Commande : boucle
+      function cmdBoucle() {
+        loopMode = !loopMode;
+        const badge = document.getElementById('loop-badge');
+        if (loopMode) {
+          elements.playerStatus.insertAdjacentHTML('beforeend', '<span class="loop-badge" id="loop-badge">🔁 BOUCLE</span>');
+          showToast('🔁 Boucle activée — le message en cours va se répéter', 'success');
+        } else {
+          badge?.remove();
+          showToast('Boucle désactivée', 'success');
+        }
+        elements.search.value = '';
+        document.getElementById('clear-search').hidden = true;
+      }
+
+      // Commande : id:X-id:Y — échange le contenu de deux messages
+      async function cmdSwapIds(rawA, rawB) {
+        const idA = parseInt(rawA, 10);
+        const idB = parseInt(rawB, 10);
+        if (!Number.isSafeInteger(idA) || !Number.isSafeInteger(idB) || idA < 1 || idB < 1) {
+          showToast('IDs invalides. Exemple : id:5-id:12', 'error');
+          return;
+        }
+        if (idA === idB) {
+          showToast('Les deux IDs sont identiques — rien à échanger.', 'error');
+          return;
+        }
+
+        showToast('Échange en cours…', 'success', 8000);
+
+        // Charge data2.json et data.json depuis GitHub
+        let d2, d1;
+        try {
+          const [r2, r1] = await Promise.all([
+            fetch(DATA_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' }),
+            fetch(DATA_JSON_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' })
+          ]);
+          if (!r2.ok) throw new Error(`data2.json HTTP ${r2.status}`);
+          if (!r1.ok) throw new Error(`data.json HTTP ${r1.status}`);
+          d2 = await r2.json();
+          d1 = await r1.json();
+        } catch (err) {
+          showToast(`Impossible de charger les fichiers : ${err.message}`, 'error', 6000);
+          return;
+        }
+
+        // Trouve les deux messages dans data2.json
+        const msgA2 = d2.messages?.find((m) => Number(m.id) === idA);
+        const msgB2 = d2.messages?.find((m) => Number(m.id) === idB);
+        if (!msgA2) { showToast(`Message ID ${idA} introuvable dans data2.json`, 'error'); return; }
+        if (!msgB2) { showToast(`Message ID ${idB} introuvable dans data2.json`, 'error'); return; }
+
+        // Champs à échanger (tout sauf id et date)
+        const swapFields = ['titre', 'titre_en', 'categorie', 'categorie_en',
+          'theme', 'theme_en', 'texte', 'texte_en', 'audio', 'audio2', 'image'];
+
+        function swapContent(objA, objB) {
+          for (const field of swapFields) {
+            const tmp = objA[field];
+            objA[field] = objB[field];
+            objB[field] = tmp;
+          }
+        }
+
+        swapContent(msgA2, msgB2);
+
+        // Même chose dans data.json si les deux IDs y sont présents
+        const msgA1 = d1.messages?.find((m) => Number(m.id) === idA);
+        const msgB1 = d1.messages?.find((m) => Number(m.id) === idB);
+        if (msgA1 && msgB1) swapContent(msgA1, msgB1);
+
+        // Envoie les fichiers modifiés via pont natif si disponible
+        if (window.NativeFileWriter) {
+          try {
+            window.NativeFileWriter.postMessage(JSON.stringify({
+              files: [
+                { name: 'data2.json', content: JSON.stringify(d2, null, 4) },
+                { name: 'data.json',  content: JSON.stringify(d1,  null, 4) }
+              ]
+            }));
+            showToast(`✅ ID ${idA} ↔ ID ${idB} échangés dans data2.json${(msgA1 && msgB1) ? ' et data.json' : ''}`, 'success', 5000);
+          } catch (err) {
+            showToast("Erreur lors de l'écriture des fichiers.", 'error', 5000);
+          }
+        } else {
+          // Fallback : propose le téléchargement des fichiers modifiés
+          function downloadJson(data, filename) {
+            const blob = new Blob([JSON.stringify(data, null, 4)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+          }
+          downloadJson(d2, 'data2.json');
+          if (msgA1 && msgB1) downloadJson(d1, 'data.json');
+          showToast(`✅ ID ${idA} ↔ ID ${idB} échangés — fichiers téléchargés`, 'success', 6000);
+        }
+
+        // Recharge les messages affichés
+        await loadMessages();
+        elements.search.value = '';
+        document.getElementById('clear-search').hidden = true;
+      }
+
+      elements.search.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+        const raw = elements.search.value.trim().toLowerCase();
+
+        // Commande boucle
+        if (raw === 'boucle') { event.preventDefault(); cmdBoucle(); return; }
+
+        // Commande id:X-id:Y
+        const swapMatch = raw.match(/^id:(\d+)-id:(\d+)$/);
+        if (swapMatch) {
+          event.preventDefault();
+          elements.search.value = '';
+          document.getElementById('clear-search').hidden = true;
+          cmdSwapIds(swapMatch[1], swapMatch[2]);
+          return;
+        }
+      });
+
       elements.search.addEventListener('input', () => {
-        document.getElementById('clear-search').hidden = !elements.search.value;
+        const val = elements.search.value;
+        document.getElementById('clear-search').hidden = !val;
         elements.favoritePanel.hidden = true;
         elements.favoritesToggle.setAttribute('aria-expanded', 'false');
         elements.returnFavorites.hidden = true;
+
+        // Annule les timers précédents
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => renderMessages(findMessages(elements.search.value)), 50);
+        clearTimeout(suggestionTimer);
+
+        // Si vide : réinitialise immédiatement sans délai
+        if (!val.trim()) {
+          elements.searchSummary.textContent = '';
+          renderMessages(messages);
+          return;
+        }
+
+        // Debounce adaptatif : court pour 1-3 chars (frappe rapide), plus long après
+        const delay = normalize(val).length <= 3 ? 80 : 120;
+
+        searchTimer = setTimeout(() => {
+          const results = findMessages(val);
+          renderMessages(results);
+
+          // Suggestions uniquement si 0 résultat et requête non vide
+          if (results.length === 0 && normalize(val).length >= 3) {
+            suggestionTimer = setTimeout(() => showSuggestion(val), 300);
+          } else {
+            elements.searchSummary.textContent = '';
+          }
+        }, delay);
       });
 
       document.getElementById('clear-search').addEventListener('click', () => {
         elements.search.value = '';
         document.getElementById('clear-search').hidden = true;
+        clearTimeout(suggestionTimer);
+        elements.searchSummary.textContent = '';
         renderMessages(findMessages(''));
         elements.search.focus();
       });
@@ -1318,7 +1816,7 @@
           try {
             await elements.audio.play();
           } catch {
-            elements.playerStatus.textContent = 'La lecture n’a pas pu reprendre.';
+            elements.playerStatus.textContent = 'La lecture n\'a pas pu reprendre.';
           }
         } else if (!elements.audio.paused) {
           elements.audio.pause();
@@ -1378,6 +1876,8 @@
             wordList: [...words]
           };
         });
+        // Construit l'index de préfixes et le corpus une seule fois
+        buildPrefixMap(searchIndex);
         elements.search.disabled = false;
         loadFavorites();
         document.getElementById('clear-search').hidden = !elements.search.value;
