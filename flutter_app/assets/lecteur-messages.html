@@ -301,6 +301,7 @@
       margin: 6px 0 5px;
       font-size: 1.05rem;
       line-height: 1.35;
+      scroll-margin-top: 110px;
       overflow-wrap: anywhere;
     }
 
@@ -380,11 +381,28 @@
 
     #player-status {
       min-width: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
       overflow: hidden;
       color: var(--gold);
       font-size: .72rem;
       text-overflow: ellipsis;
       white-space: nowrap;
+      text-align: right;
+    }
+
+    #player-status:enabled {
+      cursor: pointer;
+    }
+
+    #player-status:disabled {
+      cursor: default;
+    }
+
+    #player-status:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
     }
 
     .player-controls {
@@ -539,37 +557,7 @@
     #cmd-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     #cmd-toast.success { border-color: var(--gold); color: var(--gold); }
     #cmd-toast.error   { border-color: var(--danger); color: var(--danger); }
-
-    /* Badge boucle */
-    .loop-badge {
-      display: inline-block;
-      margin-left: 6px;
-      padding: 1px 7px;
-      border-radius: 999px;
-      background: var(--gold);
-      color: #171717;
-      font-size: .65rem;
-      font-weight: 800;
-      vertical-align: middle;
-    }
-
-    /* Rappel commandes */
-    .cmd-hint {
-      margin-top: 4px;
-      padding: 5px 10px;
-      border: 1px solid rgba(225,189,81,.25);
-      border-radius: 8px;
-      background: rgba(225,189,81,.06);
-      color: var(--muted);
-      font-size: .68rem;
-      line-height: 1.5;
-    }
-    .cmd-hint code {
-      color: var(--gold);
-      font-family: monospace;
-      font-size: .75rem;
-    }
-  </style>
+    </style>
 </head>
 <body>
   <header class="app-header">
@@ -597,7 +585,6 @@
         <button id="clear-search" type="button" aria-label="Effacer la recherche" title="Effacer" hidden>×</button>
       </div>
       <div id="search-summary" role="status" aria-live="polite"></div>
-      <div class="cmd-hint">💡 Commande : <code>boucle</code> + Entrée — répéter le message en cours</div>
       <section id="favorite-panel" hidden aria-label="Messages favoris">
         <div id="favorite-list"></div>
       </section>
@@ -618,7 +605,7 @@
     <div class="player-inner">
       <div class="player-heading">
         <strong>Lecteur</strong>
-        <span id="player-status" role="status" aria-live="polite">Prêt</span>
+        <button id="player-status" type="button" aria-live="polite" disabled>Prêt</button>
       </div>
       <div class="player-controls">
         <button id="play-all" type="button" aria-pressed="false">▶▶ Tout lire</button>
@@ -639,7 +626,7 @@
     (() => {
       'use strict';
 
-      const DATA_URL = 'https://emmanuel-dpv.pages.dev/data2.json';
+      const DATA_URL = 'https://raw.githubusercontent.com/minkfranc-spec/emmanuel-site./main/data2.json';
       const elements = {
         status: document.getElementById('load-status'),
         search: document.getElementById('search'),
@@ -660,6 +647,7 @@
         backToTop: document.getElementById('back-to-top'),
         cmdToast: document.getElementById('cmd-toast')
       };
+      elements.playerStatus.addEventListener('click', jumpToCurrentMessage);
 
       window.addEventListener('scroll', () => {
         elements.backToTop.hidden = window.scrollY <= 240;
@@ -677,6 +665,7 @@
       let visibleMessages = [];
       let playlist = [];
       let trackIndex = -1;
+      let loopStartIndex = 0;
       let activeModeButton = null;
       let stopAfterTrack = false;
       let loopMode = false;
@@ -685,6 +674,7 @@
       let suggestionTimer;
       let wakeLock;
       let nativePlayback = false;
+      let nativeDataChunks = [];
       const prefetchAudio = new Audio(); // préchargement silencieux de la piste suivante
       prefetchAudio.preload = 'auto';
 
@@ -903,15 +893,17 @@
 
       async function loadFavorites() {
         let remoteIds = null;
-        try {
-          const resp = await fetch(FAVORIS_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' });
-          if (resp.ok) {
-            const json = await resp.json();
-            if (Array.isArray(json.favoris)) {
-              remoteIds = json.favoris.filter((id) => Number.isSafeInteger(id) && id > 0);
+        if (!window.NativeDataReader) {
+          try {
+            const resp = await fetch(FAVORIS_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' });
+            if (resp.ok) {
+              const json = await resp.json();
+              if (Array.isArray(json.favoris)) {
+                remoteIds = json.favoris.filter((id) => Number.isSafeInteger(id) && id > 0);
+              }
             }
-          }
-        } catch {}
+          } catch {}
+        }
         if (remoteIds !== null) {
           favoriteIds = new Set(remoteIds);
           try { localStorage.setItem('emmanuel_favorite_messages_v1', JSON.stringify(remoteIds)); } catch {}
@@ -1195,10 +1187,9 @@
             const card = document.getElementById(`message-${Number(message.id) || 0}`);
             const isCurrentlyPlaying = card && card.classList.contains('is-playing');
             if (isCurrentlyPlaying) {
-              // 2ème clic pendant la lecture → désactive la boucle + active lecture continue
+              if (!loopMode) return;
+              // 2ème clic → lecture continue (enchaîne avec les suivants)
               loopMode = false;
-              document.getElementById('loop-badge')?.remove();
-              play.textContent = '🔁▶ En continu';
               const messageIndex = visibleMessages.findIndex((item) => String(item.id) === String(message.id));
               const sourceQueue = messageIndex < 0 ? [message] : visibleMessages.slice(0, messageIndex + 1).reverse();
               const newTracks = trackListFor(sourceQueue);
@@ -1211,14 +1202,14 @@
                 trackIndex = newIndex >= 0 ? newIndex : 0;
                 stopAfterTrack = false;
                 setActiveModeButton(play);
+                if (nativePlayback) {
+                  sendToNative('continue', trackListFor(sourceQueue.slice(1)));
+                }
               }
             } else {
-              // 1er clic → lit ce message en boucle
+              // 1er clic → lecture en boucle sur ce message uniquement
               loopMode = true;
-              document.getElementById('loop-badge')?.remove();
-              elements.playerStatus.insertAdjacentHTML('beforeend', '<span class="loop-badge" id="loop-badge">\uD83D\uDD01 BOUCLE</span>');
-              play.textContent = '\uD83D\uDD01 En boucle — cliquer pour lire en continu';
-              startQueue([message], `Message ${message.id}`, null);
+              startQueue([message], `Message ${message.id}`, null, { loop: true });
             }
           });
           article.append(play);
@@ -1257,11 +1248,13 @@
         return tracks;
       }
 
-      function sendToNative(action, tracks) {
+      function sendToNative(action, tracks, { loop = false } = {}) {
         if (!window.NativePlayer) return false;
         try {
           const command = { action };
           if (action === 'play') command.tracks = tracks ?? [];
+          if (action === 'play') command.loop = loop;
+          if (action === 'continue') command.tracks = tracks ?? [];
           if (action === 'seek') command.positionMs = tracks;
           window.NativePlayer.postMessage(JSON.stringify(command));
           return true;
@@ -1294,6 +1287,8 @@
 
       function setPlayerStatus(track) {
         if (!track) {
+          delete elements.playerStatus.dataset.messageId;
+          elements.playerStatus.disabled = true;
           elements.playerStatus.textContent = 'Prêt';
           document.querySelectorAll('.message.is-playing').forEach((card) => card.classList.remove('is-playing'));
           setActiveModeButton(null);
@@ -1301,13 +1296,36 @@
           setPlayerMode('idle');
           return;
         }
+        elements.playerStatus.dataset.messageId = String(track.id);
+        elements.playerStatus.disabled = false;
         elements.playerStatus.textContent = `${track.title} · ID ${track.id}${track.part === 2 ? ' · piste 2' : ''}`;
         document.querySelectorAll('.message.is-playing').forEach((card) => card.classList.remove('is-playing'));
         const activeCard = document.getElementById(`message-${track.id}`);
         activeCard?.classList.add('is-playing');
-        activeCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         updateMediaSession(track);
         setPlayerMode('playing');
+      }
+
+      function jumpToCurrentMessage() {
+        const messageId = elements.playerStatus.dataset.messageId;
+        if (!messageId) return;
+
+        let messageCard = document.getElementById(`message-${messageId}`);
+        if (!messageCard) {
+          const message = messages.find((item) => String(item.id) === messageId);
+          if (!message) return;
+
+          elements.favoritePanel.hidden = true;
+          elements.favoritesToggle.setAttribute('aria-expanded', 'false');
+          elements.returnFavorites.hidden = true;
+          elements.search.value = '';
+          document.getElementById('clear-search').hidden = true;
+          elements.searchSummary.textContent = '';
+          renderMessages(findMessages(''));
+          messageCard = document.getElementById(`message-${messageId}`);
+        }
+
+        messageCard?.querySelector('h2')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
       function setActiveModeButton(button) {
@@ -1331,6 +1349,8 @@
           setPlayerStatus(state.track);
           elements.playerStatus.textContent = `${state.track.title} · ID ${state.track.id}${state.track.part === 2 ? ' · piste 2' : ''}${state.playing ? '' : ' · en pause'}`;
         } else if (state.status) {
+          delete elements.playerStatus.dataset.messageId;
+          elements.playerStatus.disabled = true;
           elements.playerStatus.textContent = state.status;
         }
         if (state.ended) {
@@ -1358,10 +1378,25 @@
         elements.playbackTime.dataset.durationMs = String(duration);
       }
 
-      for (const eventName of ['timeupdate', 'loadedmetadata', 'durationchange', 'seeking', 'seeked']) {
+      // Mise à jour de la progression via requestAnimationFrame — fluide et sans blocage
+      let _rafId = null;
+      function _scheduleProgressUpdate() {
+        if (_rafId) return;
+        _rafId = requestAnimationFrame(() => {
+          _rafId = null;
+          if (!nativePlayback && !elements.audio.paused) {
+            updatePlaybackProgress(elements.audio.currentTime * 1000, elements.audio.duration * 1000);
+            _scheduleProgressUpdate(); // continue tant que lecture active
+          }
+        });
+      }
+
+      for (const eventName of ['loadedmetadata', 'durationchange', 'seeking', 'seeked', 'play', 'pause']) {
         elements.audio.addEventListener(eventName, () => {
           if (!nativePlayback) {
             updatePlaybackProgress(elements.audio.currentTime * 1000, elements.audio.duration * 1000);
+            if (eventName === 'play') _scheduleProgressUpdate();
+            if (eventName === 'pause' && _rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
           }
         });
       }
@@ -1391,7 +1426,7 @@
         }
       }
 
-      async function startQueue(sourceMessages, label, modeButton) {
+      async function startQueue(sourceMessages, label, modeButton, { loop = false } = {}) {
         const tracks = trackListFor(sourceMessages);
         if (!tracks.length) {
           elements.playerStatus.textContent = 'Aucun message avec une piste audio dans cette sélection.';
@@ -1399,9 +1434,11 @@
         }
         playlist = tracks;
         trackIndex = 0;
+        loopMode = loop;
+        loopStartIndex = 0;
         stopAfterTrack = false;
         setActiveModeButton(modeButton);
-        if (sendToNative('play', tracks)) {
+        if (sendToNative('play', tracks, { loop })) {
           nativePlayback = true;
           elements.playerStatus.textContent = `${label} · ${sourceMessages.length} messages`;
           return;
@@ -1464,7 +1501,7 @@
         nativePlayback = false;
         stopAfterTrack = true;
         loopMode = false;
-        document.getElementById('loop-badge')?.remove();
+        loopStartIndex = 0;
         playlist = [];
         trackIndex = -1;
         elements.audio.pause();
@@ -1484,7 +1521,7 @@
 
       elements.audio.addEventListener('ended', () => {
         if (stopAfterTrack || nativePlayback) return;
-        if (loopMode) { playTrack(trackIndex); return; }
+        if (loopMode) { playTrack(loopStartIndex); return; }
         playTrack(trackIndex + 1);
       });
 
@@ -1496,38 +1533,7 @@
         if ('mediaSession' in navigator && trackIndex >= 0) navigator.mediaSession.playbackState = 'paused';
       });
 
-      // Commande boucle (pas de swap dans l'APK) ──────────────────────────
-      function cmdBoucle() {
-        loopMode = !loopMode;
-        document.getElementById('loop-badge')?.remove();
-        if (loopMode) {
-          elements.playerStatus.insertAdjacentHTML('beforeend', '<span class="loop-badge" id="loop-badge">\uD83D\uDD01 BOUCLE</span>');
-          showToast('\uD83D\uDD01 Boucle activ\u00e9e', 'success');
-        } else {
-          showToast('Boucle d\u00e9sactiv\u00e9e', 'success');
-        }
-        elements.search.value = '';
-        document.getElementById('clear-search').hidden = true;
-      }
 
-      function handleSearchCommand() {
-        const raw = elements.search.value.trim().toLowerCase();
-        if (raw === 'boucle') { cmdBoucle(); return true; }
-        return false;
-      }
-
-      elements.search.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') return;
-        if (handleSearchCommand()) { event.preventDefault(); event.stopPropagation(); }
-      });
-
-      // Loupe Android + Firefox submit
-      elements.search.addEventListener('search', () => { handleSearchCommand(); });
-
-      // Clavier Android : certains claviers envoient keyup avec key='Enter' ou 'Go'
-      elements.search.addEventListener('keyup', (event) => {
-        if (event.key === 'Enter' || event.key === 'Go') { handleSearchCommand(); }
-      });
 
       elements.search.addEventListener('input', () => {
         const val = elements.search.value;
@@ -1666,6 +1672,7 @@
       window.receiveMessages = (json, error) => {
         document.getElementById('refresh-data').disabled = false;
         if (error) {
+          nativeDataChunks = [];
           elements.status.textContent = `Chargement du data2.json en ligne impossible : ${error}. Vérifie ta connexion puis actualise.`;
           elements.resultCount.textContent = 'Aucun message chargé';
           elements.list.replaceChildren();
@@ -1678,6 +1685,18 @@
           elements.resultCount.textContent = 'Aucun message chargé';
           elements.list.replaceChildren();
         }
+      };
+
+      window.beginNativeMessages = () => {
+        nativeDataChunks = [];
+      };
+      window.appendNativeMessagesChunk = (chunk) => {
+        nativeDataChunks.push(chunk);
+      };
+      window.finishNativeMessages = () => {
+        const json = nativeDataChunks.join('');
+        nativeDataChunks = [];
+        window.receiveMessages(json);
       };
 
       async function loadMessages() {

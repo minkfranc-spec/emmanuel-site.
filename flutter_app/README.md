@@ -32,10 +32,12 @@ L'APK de gestion est généré dans
 ## Lecteur personnel des messages
 
 Le lecteur embarque `assets/lecteur-messages.html`, charge les messages depuis
-`https://emmanuel-dpv.pages.dev/data2.json` et ouvre le site public avec un lien
-externe. L'audio utilise un service média Android et ses commandes de
-notification/écran verrouillé et Bluetooth. Android peut toujours interrompre
-une lecture pour un appel, une perte de focus ou une action de l'utilisateur.
+GitHub (`minkfranc-spec/emmanuel-site./main/data2.json`) et ouvre le site public
+avec un lien externe. Le service média Android permet de déplacer la position
+depuis la barre de lecture de la notification et de passer au message précédent
+ou suivant. Les commandes sont aussi disponibles sur l'écran verrouillé et les
+accessoires Bluetooth. Android peut toujours interrompre une lecture pour un
+appel, une perte de focus ou une action de l'utilisateur.
 
 Après modification de `../lecteur-messages.html`, recopiez-le dans
 `assets/lecteur-messages.html`, puis construisez l'APK :
@@ -46,6 +48,23 @@ flutter build apk --flavor lecteur -t lib/lecteur.dart --release
 
 Le fichier est généré dans
 `build/app/outputs/flutter-apk/app-lecteur-release.apk`.
+Les favoris du lecteur APK sont enregistrés localement sur l'appareil et ne sont
+pas remplacés par `favoris.json` du site. Ils restent présents après une mise à
+jour installée par-dessus l'application, tant que l'identifiant de l'application
+et sa signature restent les mêmes. Désinstaller l'application ou effacer ses
+données supprime aussi les favoris locaux.
+
+Pour vérifier leur conservation, ajoute un favori dans la version installée,
+installe le nouvel APK directement par-dessus sans désinstaller l'application,
+puis vérifie que le favori est toujours présent.
+
+Après compilation et installation sur Android, vérifie également les commandes
+audio suivantes :
+
+- déplacer la barre de progression dans la notification ;
+- passer au message précédent et au suivant depuis la notification ;
+- cliquer une fois sur « Lire ce message » pour le répéter, puis une deuxième
+  fois pour reprendre la lecture continue avec les messages suivants.
 
 ## Tester l'application
 

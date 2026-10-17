@@ -31,5 +31,5 @@ flutter build apk --flavor lecteur -t lib/lecteur.dart --release
 L'APK est créé dans
 `flutter_app/build/app/outputs/flutter-apk/app-lecteur-release.apk`.
 Le lecteur embarque `lecteur-messages.html`, mais récupère toujours
-`data2.json` depuis le cloud. Après une modification de cette page, recopiez-la
+`data2.json` directement depuis GitHub. Après une modification de cette page, recopiez-la
 dans `flutter_app/assets/lecteur-messages.html` avant de reconstruire l'APK.

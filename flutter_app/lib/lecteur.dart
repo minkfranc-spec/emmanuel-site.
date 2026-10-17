@@ -11,7 +11,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'audio_handler.dart';
 
-const _data2Uri = 'https://emmanuel-dpv.pages.dev/data2.json';
+const _data2Uri =
+    'https://raw.githubusercontent.com/minkfranc-spec/emmanuel-site./main/data2.json';
 const _siteUri = 'https://emmanuel-dpv.pages.dev/';
 late final EmmanuelAudioHandler audioHandler;
 
@@ -26,6 +27,8 @@ Future<void> main() async {
       androidNotificationChannelName: 'Messages EMMANUEL',
       androidNotificationChannelDescription:
           'Lecture continue des messages EMMANUEL',
+      androidNotificationIcon: 'drawable/ic_stat_emmanuel',
+      notificationColor: Color(0xFF10141D),
       androidNotificationOngoing: false,
       androidStopForegroundOnPause: false,
     ),
@@ -66,17 +69,23 @@ class MessageReaderPage extends StatefulWidget {
   State<MessageReaderPage> createState() => _MessageReaderPageState();
 }
 
-class _MessageReaderPageState extends State<MessageReaderPage> {
+class _MessageReaderPageState extends State<MessageReaderPage>
+    with WidgetsBindingObserver {
   late final WebViewController _controller;
   bool _isLoading = true;
   int _progress = 0;
   bool _pageReady = false;
   bool _cloudDataRequested = false;
 
+  // Dernier état envoyé à la page — évite les envois redondants
+  String _lastSentState = '';
+
   @override
   void initState() {
     super.initState();
-    audioHandler.onUpdate = _sendPlaybackState;
+    WidgetsBinding.instance.addObserver(this);
+    audioHandler.onUpdate = _onAudioUpdate;
+
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0xFF10141D))
@@ -106,6 +115,7 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
           },
           onPageStarted: (_) {
             _pageReady = false;
+            _lastSentState = '';
             if (mounted) setState(() => _isLoading = true);
           },
           onPageFinished: (_) {
@@ -119,6 +129,7 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
             unawaited(_controller.runJavaScript(
               "document.body.classList.add('native-audio');",
             ));
+            // Envoie l'état courant dès que la page est prête
             _sendPlaybackState(audioHandler.currentPageState);
             if (_cloudDataRequested) {
               _cloudDataRequested = false;
@@ -137,6 +148,15 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
     unawaited(_controller.loadFlutterAsset('assets/lecteur-messages.html'));
   }
 
+  // Appelé par audio_handler à chaque changement d'état (toutes les 500ms + events)
+  void _onAudioUpdate(Map<String, Object?> state) {
+    // Sérialise l'état pour détecter les vrais changements (évite spam inutile)
+    final encoded = jsonEncode(state);
+    if (encoded == _lastSentState) return;
+    _lastSentState = encoded;
+    _sendPlaybackState(state);
+  }
+
   Future<void> _handlePlayerCommand(String message) async {
     try {
       final command = jsonDecode(message);
@@ -149,7 +169,15 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
           if (tracks is! List) {
             throw const FormatException('Playlist invalide.');
           }
-          await audioHandler.playTracks(tracks);
+          // Réinitialise le dernier état envoyé pour forcer la synchro
+          _lastSentState = '';
+          await audioHandler.playTracks(tracks, loop: command['loop'] == true);
+        case 'continue':
+          final tracks = command['tracks'];
+          if (tracks is! List) {
+            throw const FormatException('Playlist invalide.');
+          }
+          await audioHandler.continueTracks(tracks);
         case 'pause':
           await audioHandler.pause();
         case 'resume':
@@ -158,6 +186,8 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
           if (audioHandler.playbackState.value.playing) {
             await audioHandler.pause();
           } else {
+            // Reprise — réinitialise pour que la notification se réactive
+            _lastSentState = '';
             await audioHandler.play();
           }
         case 'next':
@@ -171,6 +201,7 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
           }
           await audioHandler.seek(Duration(milliseconds: positionMs.round()));
         case 'stop':
+          _lastSentState = '';
           await audioHandler.stop();
         default:
           throw const FormatException('Action du lecteur inconnue.');
@@ -198,10 +229,32 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
       if (data is! Map<String, dynamic> || data['messages'] is! List) {
         throw const FormatException('Le fichier data2.json est invalide.');
       }
-      await _sendPageCall('window.receiveMessages', [response.body]);
+      await _sendMessagesToPage(response.body);
     } on Exception catch (error) {
       await _sendPageCall('window.receiveMessages', ['', error.toString()]);
     }
+  }
+
+  Future<void> _sendMessagesToPage(String json) async {
+    const chunkSize = 48 * 1024;
+    await _controller.runJavaScript('window.beginNativeMessages();');
+
+    var start = 0;
+    while (start < json.length) {
+      var end = start + chunkSize;
+      if (end > json.length) end = json.length;
+      if (end < json.length) {
+        final lastCodeUnit = json.codeUnitAt(end - 1);
+        if (lastCodeUnit >= 0xD800 && lastCodeUnit <= 0xDBFF) end--;
+      }
+      final chunk = json.substring(start, end);
+      await _controller.runJavaScript(
+        'window.appendNativeMessagesChunk(${jsonEncode(chunk)});',
+      );
+      start = end;
+    }
+
+    await _controller.runJavaScript('window.finishNativeMessages();');
   }
 
   Future<void> _sendPlaybackState(Map<String, Object?> state) async {
@@ -214,7 +267,7 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
     try {
       await _controller.runJavaScript('$function($encodedArguments);');
     } on PlatformException {
-      if (mounted) _showError('Impossible de communiquer avec le lecteur.');
+      // Silencieux — la page peut être en train de se recharger
     }
   }
 
@@ -240,14 +293,23 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
     return NavigationDecision.prevent;
   }
 
+  // Quand l'app revient au premier plan → resynchronise l'état
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _pageReady) {
+      _lastSentState = '';
+      _sendPlaybackState(audioHandler.currentPageState);
+    }
+  }
+
   Future<void> _openSite() => _openExternal(Uri.parse(_siteUri));
 
   Future<void> _openExternal(Uri uri) async {
     try {
       final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
-      if (!opened) _showError('Impossible d’ouvrir ce lien sur cet appareil.');
+      if (!opened) _showError("Impossible d'ouvrir ce lien sur cet appareil.");
     } on PlatformException {
-      _showError('Impossible d’ouvrir ce lien sur cet appareil.');
+      _showError("Impossible d'ouvrir ce lien sur cet appareil.");
     }
   }
 
@@ -260,6 +322,7 @@ class _MessageReaderPageState extends State<MessageReaderPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     audioHandler.onUpdate = null;
     super.dispose();
   }
