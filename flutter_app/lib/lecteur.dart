@@ -169,15 +169,22 @@ class _MessageReaderPageState extends State<MessageReaderPage>
           if (tracks is! List) {
             throw const FormatException('Playlist invalide.');
           }
+          final rawStartMessageId = command['startMessageId'];
+          if (rawStartMessageId != null && rawStartMessageId is! String) {
+            throw const FormatException('Message de départ invalide.');
+          }
+          final startMessageId = rawStartMessageId is String
+              ? rawStartMessageId
+              : null;
           // Réinitialise le dernier état envoyé pour forcer la synchro
           _lastSentState = '';
-          await audioHandler.playTracks(tracks, loop: command['loop'] == true);
+          await audioHandler.playTracks(
+            tracks,
+            loop: command['loop'] == true,
+            startMessageId: startMessageId,
+          );
         case 'continue':
-          final tracks = command['tracks'];
-          if (tracks is! List) {
-            throw const FormatException('Playlist invalide.');
-          }
-          await audioHandler.continueTracks(tracks);
+          await audioHandler.continueTracks();
         case 'pause':
           await audioHandler.pause();
         case 'resume':

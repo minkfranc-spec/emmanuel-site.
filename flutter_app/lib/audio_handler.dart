@@ -24,6 +24,12 @@ class EmmanuelAudioHandler extends BaseAudioHandler
       final item = index != null && index >= 0 && index < items.length
           ? items[index]
           : null;
+      if (_loopMessageId != null &&
+          item != null &&
+          item.extras?['messageId'] != _loopMessageId) {
+        unawaited(_player.seek(Duration.zero, index: _loopStartIndex));
+        return;
+      }
       mediaItem.add(item == null ? null : _withCurrentDuration(item));
       _notifyPage();
     });
@@ -41,7 +47,10 @@ class EmmanuelAudioHandler extends BaseAudioHandler
       _notifyPage();
 
       // Quand la lecture se termine naturellement → notifie "ended"
-      if (state.processingState == ProcessingState.completed) {
+      if (state.processingState == ProcessingState.completed &&
+          _loopMessageId != null) {
+        unawaited(_restartLoopedMessage());
+      } else if (state.processingState == ProcessingState.completed) {
         onUpdate?.call({...currentPageState, 'ended': true});
       }
     });
@@ -53,9 +62,25 @@ class EmmanuelAudioHandler extends BaseAudioHandler
     });
   }
 
+  void _setCurrentMediaItem(int index) {
+    final items = queue.value;
+    if (index >= 0 && index < items.length) {
+      mediaItem.add(_withCurrentDuration(items[index]));
+    }
+  }
+
+  Future<void> _restartLoopedMessage() async {
+    final loopMessageId = _loopMessageId;
+    if (loopMessageId == null) return;
+    await _player.seek(Duration.zero, index: _loopStartIndex);
+    if (_loopMessageId == loopMessageId) await _player.play();
+  }
+
   final AudioPlayer _player = AudioPlayer();
   late final Timer _positionTimer;
   ConcatenatingAudioSource? _audioSource;
+  String? _loopMessageId;
+  int _loopStartIndex = 0;
   ValueChanged<Map<String, Object?>>? onUpdate;
 
   Map<String, Object?> get currentPageState => _pageState;
@@ -71,6 +96,7 @@ class EmmanuelAudioHandler extends BaseAudioHandler
       'playing': _player.playing,
       'positionMs': _player.position.inMilliseconds,
       'durationMs': _player.duration?.inMilliseconds ?? 0,
+      'looping': _loopMessageId != null,
       if (item != null)
         'track': {
           'id': item.extras?['messageId'] ?? '',
@@ -84,7 +110,11 @@ class EmmanuelAudioHandler extends BaseAudioHandler
     };
   }
 
-  Future<void> playTracks(List<dynamic> tracks, {bool loop = false}) async {
+  Future<void> playTracks(
+    List<dynamic> tracks, {
+    bool loop = false,
+    String? startMessageId,
+  }) async {
     final items = _mediaItemsFor(tracks);
     if (items.isEmpty) {
       onUpdate?.call({
@@ -94,6 +124,13 @@ class EmmanuelAudioHandler extends BaseAudioHandler
       return;
     }
 
+    final startIndex = startMessageId == null
+        ? 0
+        : items.indexWhere(
+            (item) => item.extras?['messageId'] == startMessageId,
+          );
+    final resolvedStartIndex = startIndex < 0 ? 0 : startIndex;
+    _loopMessageId = null;
     await _player.stop();
     queue.add(items);
     final source = ConcatenatingAudioSource(
@@ -101,22 +138,24 @@ class EmmanuelAudioHandler extends BaseAudioHandler
       children: _audioSourcesFor(items),
     );
     _audioSource = source;
-    await _player.setAudioSource(source, initialIndex: 0);
-    await _player.setLoopMode(loop ? LoopMode.all : LoopMode.off);
+    _loopStartIndex = resolvedStartIndex;
+    final initialMessageId =
+        items[resolvedStartIndex].extras?['messageId'];
+    _loopMessageId =
+        loop && initialMessageId is String ? initialMessageId : null;
+    await _player.setAudioSource(source, initialIndex: resolvedStartIndex);
+    _setCurrentMediaItem(resolvedStartIndex);
+    _broadcastState(_player.playbackEvent);
+    await _player.setLoopMode(LoopMode.off);
     await _player.setShuffleModeEnabled(false);
     await play();
   }
 
-  Future<void> continueTracks(List<dynamic> tracks) async {
-    final source = _audioSource;
-    if (source == null) return;
-
+  Future<void> continueTracks() async {
+    if (_audioSource == null) return;
+    _loopMessageId = null;
     await _player.setLoopMode(LoopMode.off);
-    final items = _mediaItemsFor(tracks);
-    if (items.isEmpty) return;
-
-    queue.add([...queue.value, ...items]);
-    await source.addAll(_audioSourcesFor(items));
+    _notifyPage();
   }
 
   List<MediaItem> _mediaItemsFor(List<dynamic> tracks) {
@@ -206,7 +245,11 @@ class EmmanuelAudioHandler extends BaseAudioHandler
     }
 
     if (targetIndex >= 0 && targetIndex < items.length) {
+      _loopMessageId = null;
       await _player.seek(Duration.zero, index: targetIndex);
+    } else if (direction < 0 && items.isNotEmpty) {
+      _loopMessageId = null;
+      await _player.seek(Duration.zero, index: 0);
     }
   }
 
@@ -215,6 +258,7 @@ class EmmanuelAudioHandler extends BaseAudioHandler
     await _player.stop();
     queue.add(const []);
     _audioSource = null;
+    _loopMessageId = null;
     mediaItem.add(null);
     await super.stop();
     // Notifie la page que la lecture est arrêtée

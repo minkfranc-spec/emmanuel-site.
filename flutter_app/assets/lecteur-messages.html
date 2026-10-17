@@ -666,6 +666,7 @@
       let playlist = [];
       let trackIndex = -1;
       let loopStartIndex = 0;
+      let loopEndIndex = 0;
       let activeModeButton = null;
       let stopAfterTrack = false;
       let loopMode = false;
@@ -1190,6 +1191,12 @@
               if (!loopMode) return;
               // 2ème clic → lecture continue (enchaîne avec les suivants)
               loopMode = false;
+              if (nativePlayback) {
+                stopAfterTrack = false;
+                setActiveModeButton(play);
+                sendToNative('continue');
+                return;
+              }
               const messageIndex = visibleMessages.findIndex((item) => String(item.id) === String(message.id));
               const sourceQueue = messageIndex < 0 ? [message] : visibleMessages.slice(0, messageIndex + 1).reverse();
               const newTracks = trackListFor(sourceQueue);
@@ -1202,14 +1209,15 @@
                 trackIndex = newIndex >= 0 ? newIndex : 0;
                 stopAfterTrack = false;
                 setActiveModeButton(play);
-                if (nativePlayback) {
-                  sendToNative('continue', trackListFor(sourceQueue.slice(1)));
-                }
               }
             } else {
-              // 1er clic → lecture en boucle sur ce message uniquement
+              // Répète ce message, tout en gardant la file complète pour les commandes Android.
               loopMode = true;
-              startQueue([message], `Message ${message.id}`, null, { loop: true });
+              const queueMessages = visibleMessages.slice().reverse();
+              startQueue(queueMessages, `Message ${message.id}`, null, {
+                loop: true,
+                startMessageId: String(message.id)
+              });
             }
           });
           article.append(play);
@@ -1248,13 +1256,13 @@
         return tracks;
       }
 
-      function sendToNative(action, tracks, { loop = false } = {}) {
+      function sendToNative(action, tracks, { loop = false, startMessageId } = {}) {
         if (!window.NativePlayer) return false;
         try {
           const command = { action };
           if (action === 'play') command.tracks = tracks ?? [];
           if (action === 'play') command.loop = loop;
-          if (action === 'continue') command.tracks = tracks ?? [];
+          if (action === 'play' && startMessageId) command.startMessageId = startMessageId;
           if (action === 'seek') command.positionMs = tracks;
           window.NativePlayer.postMessage(JSON.stringify(command));
           return true;
@@ -1342,6 +1350,7 @@
 
       window.onNativePlayback = (state) => {
         nativePlayback = true;
+        loopMode = state.looping === true;
         updatePlaybackProgress(Number(state.positionMs) || 0, Number(state.durationMs) || 0);
         if (state.track) {
           trackIndex = playlist.findIndex((track) =>
@@ -1426,25 +1435,44 @@
         }
       }
 
-      async function startQueue(sourceMessages, label, modeButton, { loop = false } = {}) {
+      async function startQueue(
+        sourceMessages,
+        label,
+        modeButton,
+        { loop = false, startMessageId } = {}
+      ) {
         const tracks = trackListFor(sourceMessages);
         if (!tracks.length) {
           elements.playerStatus.textContent = 'Aucun message avec une piste audio dans cette sélection.';
           return;
         }
         playlist = tracks;
-        trackIndex = 0;
+        const requestedStartIndex = startMessageId
+          ? tracks.findIndex((track) => track.id === startMessageId)
+          : 0;
+        trackIndex = requestedStartIndex < 0 ? 0 : requestedStartIndex;
         loopMode = loop;
         loopStartIndex = 0;
+        while (loopMode &&
+          loopStartIndex < tracks.length &&
+          tracks[loopStartIndex].id !== startMessageId) {
+          loopStartIndex++;
+        }
+        if (loopStartIndex >= tracks.length) loopStartIndex = trackIndex;
+        loopEndIndex = loopStartIndex;
+        while (loopEndIndex + 1 < tracks.length &&
+          tracks[loopEndIndex + 1].id === tracks[loopStartIndex].id) {
+          loopEndIndex++;
+        }
         stopAfterTrack = false;
         setActiveModeButton(modeButton);
-        if (sendToNative('play', tracks, { loop })) {
+        if (sendToNative('play', tracks, { loop, startMessageId })) {
           nativePlayback = true;
           elements.playerStatus.textContent = `${label} · ${sourceMessages.length} messages`;
           return;
         }
         nativePlayback = false;
-        await playTrack(0);
+        await playTrack(trackIndex);
       }
 
       async function playTrack(index) {
@@ -1521,7 +1549,10 @@
 
       elements.audio.addEventListener('ended', () => {
         if (stopAfterTrack || nativePlayback) return;
-        if (loopMode) { playTrack(loopStartIndex); return; }
+        if (loopMode) {
+          playTrack(trackIndex < loopEndIndex ? trackIndex + 1 : loopStartIndex);
+          return;
+        }
         playTrack(trackIndex + 1);
       });
 
