@@ -909,6 +909,15 @@ function toggleAffichageTous() {
         btnArchive.style.display = '';
         afficherAccueil();
     }
+
+    // Afficher le label puis le masquer automatiquement après 4s (mobile)
+    label.style.opacity = '1';
+    label.style.transform = 'translateX(0)';
+    clearTimeout(window._labelTousTimer);
+    window._labelTousTimer = setTimeout(() => {
+        label.style.opacity = '0';
+        label.style.transform = 'translateX(10px)';
+    }, 4000);
 }
 
 function afficherAccueil() {
