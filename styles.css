@@ -149,9 +149,9 @@ h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppe
 
 /* === CORRECTIONS MOBILE === */
 
-/* Point 1 — intro-text: ne pas passer sous les icônes flottantes de droite */
+/* Point 1 — intro-text: centré avec marges symétriques pour éviter les icônes */
 @media (max-width: 600px) {
-    .intro-text { padding-right: 60px; box-sizing: border-box; }
+    .intro-text { padding-left: 60px; padding-right: 60px; box-sizing: border-box; text-align: center; }
 }
 
 /* Point 2 — supprimer la sélection bleue sur tous les boutons flottants (tous appareils) */

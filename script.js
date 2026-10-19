@@ -386,7 +386,12 @@ function revenirTheme(th) {
     choisirThemeViaDropdown(th);
 }
 
-function ouvrirNotif() { document.getElementById('notif-panel').style.display = 'flex'; }
+function ouvrirNotif() {
+    const panel = document.getElementById('notif-panel');
+    panel.style.display = 'flex';
+    clearTimeout(window._notifTimer);
+    window._notifTimer = setTimeout(() => { toutMasquer(); }, 4000);
+}
 function toutMasquer() {
     document.getElementById('notif-panel').style.display = 'none';
     document.getElementById('notif-bubble').style.display = 'none';
