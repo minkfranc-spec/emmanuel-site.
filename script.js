@@ -3,6 +3,7 @@ let tousLesMessages = [];
 let searchTimer = null;
 let msgPartageTemp = "";
 let titrePartageTemp = "";
+let idPartageTemp = "";
 let lectureContineActive = false;
 let archivePlaylist = [];
 let archivePlayIndex = -1;
@@ -245,6 +246,20 @@ async function chargerMessages() {
         setLanguage(lang);
         genererBoutonsThemes();
 
+        // Ouvrir directement un message si l'URL contient un hash #id
+        const hash = window.location.hash.replace('#', '').trim();
+        if (hash) {
+            const msgCible = tousLesMessages.find(m => String(m.id) === hash);
+            if (msgCible) {
+                const container = document.getElementById('flux-messages');
+                container.innerHTML = creerCard(msgCible, true);
+                setTimeout(() => {
+                    const card = document.getElementById('card-' + msgCible.id);
+                    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 400);
+            }
+        }
+
         const loader = document.getElementById('loading-screen');
         if (loader) {
             loader.style.opacity = '0';
@@ -455,6 +470,7 @@ function creerCard(msg, isPremiere = false) {
 
     const titreEnc = encodeTexte(titre);
     const texteEnc = encodeTexte(texteOriginal);
+    const idEnc = String(msg.id);
     const cardId = 'card-' + msg.id;
     const favorite = messagesFavoris.has(Number(msg.id));
     const favoriteButton = `<button type="button" class="favorite-toggle${favorite ? ' is-favorite' : ''}" data-favorite-id="${msg.id}" data-tip="${translations[currentLang][favorite ? 'favoriteRemove' : 'favoriteAdd']}" aria-label="${translations[currentLang][favorite ? 'favoriteRemove' : 'favoriteAdd']}" aria-pressed="${favorite}" onclick="toggleFavori(${msg.id})">${favorite ? '❤️' : '🤍'}</button>`;
@@ -469,7 +485,7 @@ function creerCard(msg, isPremiere = false) {
 
     // Pour l'espagnol, on génère d'abord avec le texte FR/EN, puis on traduit en arrière-plan
     if (currentLang === 'es') {
-        const html = `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;" id="cat-${msg.id}">${categorie}</span><h3 class="msg-title" id="tit-${msg.id}">${titre}</h3>${audioHtml}${messageActions}<div class="msg-content" id="txt-${msg.id}"><span style="color:#aaa;font-style:italic;">Traduciendo... ✨</span></div><button class="copy-btn" data-titre="${titreEnc}" data-texte="${texteEnc}">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateObj.toLocaleDateString('es-ES')}</span></div>`;
+        const html = `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;" id="cat-${msg.id}">${categorie}</span><h3 class="msg-title" id="tit-${msg.id}">${titre}</h3>${audioHtml}${messageActions}<div class="msg-content" id="txt-${msg.id}"><span style="color:#aaa;font-style:italic;">Traduciendo... ✨</span></div><button class="copy-btn" data-titre="${titreEnc}" data-texte="${texteEnc}" data-id="${idEnc}">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateObj.toLocaleDateString('es-ES')}</span></div>`;
         // Traduction en arrière-plan
         (async () => {
             const [titreTrad, texteTrad, categorieTrad] = await Promise.all([
@@ -487,7 +503,7 @@ function creerCard(msg, isPremiere = false) {
         return html;
     }
 
-    return `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}${messageActions}<div class="msg-content">${texteFormate}</div><button class="copy-btn" data-titre="${titreEnc}" data-texte="${texteEnc}">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
+    return `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}${messageActions}<div class="msg-content">${texteFormate}</div><button class="copy-btn" data-titre="${titreEnc}" data-texte="${texteEnc}" data-id="${idEnc}">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
 }
 
 function demarrerScrollSync(card, audio) {
@@ -626,6 +642,8 @@ function toggleLectureContinue(cardId, msgId) {
         archivePlayIndex = -1;
         archiveContext = { type: 'chrono', val: 0 };
         audio.addEventListener('ended', surFinAudio, { once: true });
+        audio.currentTime = 0;
+        audio.load();
         audio.play().catch(() => {});
         activerWakeLock();
         demarrerScrollSync(card, audio);
@@ -729,9 +747,10 @@ function arreterLectureContinue() {
     document.querySelectorAll('audio').forEach(a => a.removeEventListener('ended', surFinAudio));
 }
 
-function ouvrirMenuPartage(titreEnc, texteEnc) {
+function ouvrirMenuPartage(titreEnc, texteEnc, id) {
     titrePartageTemp = decodeTexte(titreEnc);
     msgPartageTemp = decodeTexte(texteEnc).replace(/\*\*/g, '');
+    idPartageTemp = id || "";
     document.getElementById('modalOverlay').style.display = 'block';
     document.getElementById('shareModal').style.display = 'block';
 }
@@ -742,13 +761,14 @@ function fermerPartage() {
 }
 
 function actionPartage(type) {
-    const url = "https://emmanuel-dpv.pages.dev";
-    const messageComplet = `${titrePartageTemp}\n\n${msgPartageTemp}\n\nLire la suite : ${url}`;
+    const baseUrl = "https://emmanuel-dpv.pages.dev";
+    const urlMessage = idPartageTemp ? `${baseUrl}/#${idPartageTemp}` : baseUrl;
+    const messageComplet = `${titrePartageTemp}\n\n${msgPartageTemp}\n\nLire la suite : ${urlMessage}`;
     if (type === 'wa') { const w = window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(messageComplet), '_blank'); if (w) w.opener = null; }
-    else if (type === 'fb') { const w = window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), '_blank'); if (w) w.opener = null; }
+    else if (type === 'fb') { const w = window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(urlMessage), '_blank'); if (w) w.opener = null; }
     else if (type === 'mail') window.location.href = `mailto:?subject=${encodeURIComponent(titrePartageTemp)}&body=${encodeURIComponent(messageComplet)}`;
     else if (type === 'copy') {
-        navigator.clipboard.writeText(messageComplet);
+        navigator.clipboard.writeText(urlMessage);
         afficherToast(translations[currentLang].copied);
     }
     else if (type === 'pdf') { fermerPartage(); telechargerPDF(); return; }
@@ -987,7 +1007,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!btn) return;
         const titreEnc = btn.getAttribute('data-titre');
         const texteEnc = btn.getAttribute('data-texte');
-        if (titreEnc && texteEnc) ouvrirMenuPartage(titreEnc, texteEnc);
+        const id = btn.getAttribute('data-id');
+        if (titreEnc && texteEnc) ouvrirMenuPartage(titreEnc, texteEnc, id);
     });
 
     // Label au survol du bouton "Tout afficher"

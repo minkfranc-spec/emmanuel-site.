@@ -146,3 +146,28 @@ h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppe
 
 .skeleton { border-radius: 16px; width: 92%; max-width: 540px; margin: 25px auto; height: 300px; animation: shimmer 1.5s infinite; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* === CORRECTIONS MOBILE === */
+
+/* Point 1 — intro-text: ne pas passer sous les icônes flottantes de droite */
+@media (max-width: 600px) {
+    .intro-text { padding-right: 60px; box-sizing: border-box; }
+}
+
+/* Point 2 — supprimer la sélection bleue sur tous les boutons flottants (tous appareils) */
+.floating-container,
+.floating-container *,
+.notif-bubble,
+.contact-btn,
+.favorites-float-btn,
+.scroll-btn,
+.copy-btn,
+.share-item,
+.btn-boucle,
+.btn-continue,
+.btn-scroll {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
