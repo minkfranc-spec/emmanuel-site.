@@ -55,6 +55,11 @@
         <button class="scroll-btn">↑</button>
     </a>
 
+    <div class="floating-container tous-link" id="tousLink" onclick="toggleAffichageTous()" aria-label="Tout afficher">
+        <span class="btn-label" id="label-tous">Tout afficher</span>
+        <button class="scroll-btn" id="btn-tous">☰</button>
+    </div>
+
     <!-- Bouton Contact discret -->
     <button class="contact-btn" id="contact-btn" onclick="toggleContact()" aria-label="Nous contacter">✉</button>
     <span class="contact-btn-label" id="label-contact">Contacts</span>
@@ -142,10 +147,15 @@
             <div class="share-item" onclick="actionPartage('fb')"><div class="share-icon bg-fb">🔵</div>Facebook</div>
             <div class="share-item" onclick="actionPartage('mail')"><div class="share-icon bg-mail">✉</div>Email</div>
             <div class="share-item" onclick="actionPartage('copy')"><div class="share-icon bg-copy">🔗</div>Lien</div>
+            <div class="share-item" onclick="actionPartage('pdf')"><div class="share-icon bg-pdf">📄</div><span id="share-pdf-label">PDF</span></div>
+            <div class="share-item" onclick="actionPartage('image')"><div class="share-icon bg-img">🖼</div><span id="share-img-label">Image</span></div>
         </div>
         <div id="share-cancel-btn" class="close-modal" onclick="fermerPartage()">Annuler</div>
     </div>
 
+    <!-- Bibliothèques pour PDF et Image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

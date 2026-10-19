@@ -62,7 +62,9 @@ const translations = {
         favoritesTitle: "Mes messages favoris",
         favoritesEmpty: "Tu n'as pas encore de message favori.",
         favoritesBack: "⬅ Retour aux favoris",
-        favoritesSaveError: "Impossible d'enregistrer les favoris sur cet appareil."
+        favoritesSaveError: "Impossible d'enregistrer les favoris sur cet appareil.",
+        tousBtn: "Tout afficher",
+        reduireBtn: "Réduire"
     },
     en: {
         welcome: "Welcome to EMMANUEL",
@@ -101,7 +103,9 @@ const translations = {
         favoritesTitle: "My favorite messages",
         favoritesEmpty: "You don't have any favorite messages yet.",
         favoritesBack: "⬅ Back to favorites",
-        favoritesSaveError: "Favorites could not be saved on this device."
+        favoritesSaveError: "Favorites could not be saved on this device.",
+        tousBtn: "Show all",
+        reduireBtn: "Reduce"
     },
     es: {
         welcome: "Bienvenido a EMMANUEL",
@@ -140,7 +144,9 @@ const translations = {
         favoritesTitle: "Mis mensajes favoritos",
         favoritesEmpty: "Todavía no tienes mensajes favoritos.",
         favoritesBack: "⬅ Volver a favoritos",
-        favoritesSaveError: "No se pudieron guardar los favoritos en este dispositivo."
+        favoritesSaveError: "No se pudieron guardar los favoritos en este dispositivo.",
+        tousBtn: "Ver todos",
+        reduireBtn: "Reducir"
     }
 };
 
@@ -280,6 +286,8 @@ function setLanguage(lang) {
     document.getElementById('label-notif').innerText = translations[lang].labelNotif;
     document.getElementById('label-contact').innerText = translations[lang].labelContact;
     document.getElementById('label-favorites').innerText = translations[lang].favoritesOpen;
+    // Mettre à jour le label du bouton "Tout afficher" selon la langue
+    document.getElementById('label-tous').innerText = affichageTousActif ? translations[lang].reduireBtn : translations[lang].tousBtn;
     // Mettre à jour le communiqué selon la langue
     if (communiqueData) afficherCommunique();
     document.getElementById('favorites-title').innerText = translations[lang].favoritesTitle;
@@ -461,7 +469,7 @@ function creerCard(msg, isPremiere = false) {
 
     // Pour l'espagnol, on génère d'abord avec le texte FR/EN, puis on traduit en arrière-plan
     if (currentLang === 'es') {
-        const html = `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;" id="cat-${msg.id}">${categorie}</span><h3 class="msg-title" id="tit-${msg.id}">${titre}</h3>${audioHtml}${messageActions}<div class="msg-content" id="txt-${msg.id}"><span style="color:#aaa;font-style:italic;">Traduciendo... ✨</span></div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateObj.toLocaleDateString('es-ES')}</span></div>`;
+        const html = `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;" id="cat-${msg.id}">${categorie}</span><h3 class="msg-title" id="tit-${msg.id}">${titre}</h3>${audioHtml}${messageActions}<div class="msg-content" id="txt-${msg.id}"><span style="color:#aaa;font-style:italic;">Traduciendo... ✨</span></div><button class="copy-btn" data-titre="${titreEnc}" data-texte="${texteEnc}">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateObj.toLocaleDateString('es-ES')}</span></div>`;
         // Traduction en arrière-plan
         (async () => {
             const [titreTrad, texteTrad, categorieTrad] = await Promise.all([
@@ -479,7 +487,7 @@ function creerCard(msg, isPremiere = false) {
         return html;
     }
 
-    return `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}${messageActions}<div class="msg-content">${texteFormate}</div><button class="copy-btn" onclick="ouvrirMenuPartage('${titreEnc}','${texteEnc}')">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
+    return `<div class="message-card" id="${cardId}">${imgHtml}<span style="font-size:0.7em;color:#d4af37;font-weight:900;text-transform:uppercase;">${categorie}</span><h3 class="msg-title">${titre}</h3>${audioHtml}${messageActions}<div class="msg-content">${texteFormate}</div><button class="copy-btn" data-titre="${titreEnc}" data-texte="${texteEnc}">${translations[currentLang].shareBtn}</button><span class="published-date">${translations[currentLang].published} ${dateAffichee}</span></div>`;
 }
 
 function demarrerScrollSync(card, audio) {
@@ -743,10 +751,140 @@ function actionPartage(type) {
         navigator.clipboard.writeText(messageComplet);
         afficherToast(translations[currentLang].copied);
     }
+    else if (type === 'pdf') { fermerPartage(); telechargerPDF(); return; }
+    else if (type === 'image') { fermerPartage(); telechargerImage(); return; }
     fermerPartage();
 }
 
-function afficherAccueil() {
+function telechargerPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const margeG = 20, margeD = 20, largeur = 210 - margeG - margeD;
+    const couleurOr = [212, 175, 55];
+    const couleurNoir = [26, 26, 26];
+    const couleurGris = [100, 100, 100];
+
+    // Fond blanc
+    doc.setFillColor(255, 255, 255);
+    doc.rect(0, 0, 210, 297, 'F');
+
+    // Bandeau supérieur doré
+    doc.setFillColor(...couleurOr);
+    doc.rect(0, 0, 210, 18, 'F');
+
+    // Nom de la congrégation
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(255, 255, 255);
+    doc.text('EMMANUEL — DPV', 105, 11, { align: 'center' });
+
+    // Ligne décorative sous le bandeau
+    doc.setDrawColor(...couleurOr);
+    doc.setLineWidth(0.5);
+    doc.line(margeG, 22, 210 - margeD, 22);
+
+    // Titre du message
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(...couleurNoir);
+    const lignesTitre = doc.splitTextToSize(titrePartageTemp.toUpperCase(), largeur);
+    doc.text(lignesTitre, 105, 34, { align: 'center' });
+
+    // Ligne séparatrice sous le titre
+    const hauteurTitre = 34 + lignesTitre.length * 7;
+    doc.setDrawColor(...couleurOr);
+    doc.setLineWidth(0.3);
+    doc.line(margeG, hauteurTitre + 3, 210 - margeD, hauteurTitre + 3);
+
+    // Texte du message
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(...couleurNoir);
+    const texteNettoye = msgPartageTemp.replace(/\*\*/g, '');
+    const lignesTexte = doc.splitTextToSize(texteNettoye, largeur);
+    let curseur = hauteurTitre + 12;
+    lignesTexte.forEach(ligne => {
+        if (curseur > 270) {
+            doc.addPage();
+            curseur = 20;
+        }
+        doc.text(ligne, margeG, curseur);
+        curseur += 6;
+    });
+
+    // Bas de page
+    doc.setDrawColor(...couleurOr);
+    doc.setLineWidth(0.5);
+    doc.line(margeG, 282, 210 - margeD, 282);
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(9);
+    doc.setTextColor(...couleurGris);
+    doc.text('emmanuel-dpv.pages.dev', 105, 288, { align: 'center' });
+
+    const nomFichier = titrePartageTemp.replace(/[^a-zA-Z0-9\u00C0-\u024F ]/g, '').trim().replace(/\s+/g, '_').slice(0, 50) || 'message';
+    doc.save(`${nomFichier}.pdf`);
+}
+
+function telechargerImage() {
+    // Créer une carte visuelle hors écran
+    const carte = document.createElement('div');
+    carte.style.cssText = `
+        position:fixed; left:-9999px; top:0;
+        width:540px; min-height:960px;
+        background: linear-gradient(160deg, #1a1a1a 0%, #2d2410 50%, #1a1a1a 100%);
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        padding:60px 40px; box-sizing:border-box; font-family:'Montserrat',sans-serif;
+    `;
+
+    carte.innerHTML = `
+        <div style="color:#d4af37;font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-bottom:30px;opacity:0.8;">EMMANUEL — DPV</div>
+        <div style="width:40px;height:2px;background:#d4af37;margin-bottom:30px;"></div>
+        <div style="color:#ffffff;font-size:20px;font-weight:900;text-align:center;text-transform:uppercase;letter-spacing:1px;line-height:1.4;margin-bottom:30px;">${titrePartageTemp}</div>
+        <div style="width:40px;height:2px;background:#d4af37;margin-bottom:30px;"></div>
+        <div style="color:#e8e8e8;font-size:13px;line-height:1.9;text-align:center;max-width:440px;">${msgPartageTemp.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#d4af37;">$1</strong>').replace(/\n/g, '<br>')}</div>
+        <div style="margin-top:40px;color:#d4af37;font-size:10px;letter-spacing:2px;opacity:0.7;">emmanuel-dpv.pages.dev</div>
+    `;
+
+    document.body.appendChild(carte);
+
+    html2canvas(carte, { scale: 2, useCORS: true, backgroundColor: null }).then(canvas => {
+        document.body.removeChild(carte);
+        const lien = document.createElement('a');
+        const nomFichier = titrePartageTemp.replace(/[^a-zA-Z0-9\u00C0-\u024F ]/g, '').trim().replace(/\s+/g, '_').slice(0, 50) || 'message';
+        lien.download = `${nomFichier}.png`;
+        lien.href = canvas.toDataURL('image/png');
+        lien.click();
+    }).catch(() => {
+        afficherToast('Erreur lors de la génération de l\'image.');
+    });
+}
+
+let affichageTousActif = false;
+
+function toggleAffichageTous() {
+    affichageTousActif = !affichageTousActif;
+    const btnContainer = document.getElementById('tousLink');
+    const label = document.getElementById('label-tous');
+    const btnArchive = document.getElementById('btn-archive');
+    const archiveSection = document.getElementById('archiveSection');
+    const container = document.getElementById('flux-messages');
+
+    if (affichageTousActif) {
+        // Activer : afficher tous les messages, cacher les boutons du bas
+        btnContainer.classList.add('actif');
+        label.textContent = translations[currentLang].reduireBtn || 'Réduire';
+        btnArchive.style.display = 'none';
+        archiveSection.style.display = 'none';
+        const tous = [...tousLesMessages].sort((a, b) => b.id - a.id);
+        container.innerHTML = tous.map((msg, i) => creerCard(msg, i === 0)).join('');
+    } else {
+        // Désactiver : retour à 3 messages, réafficher les boutons du bas
+        btnContainer.classList.remove('actif');
+        label.textContent = translations[currentLang].tousBtn || 'Tout afficher';
+        btnArchive.style.display = '';
+        afficherAccueil();
+    }
+}
     arreterLectureContinue();
     const container = document.getElementById('flux-messages');
     const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
@@ -804,6 +942,7 @@ let lastScrollY = window.scrollY;
 let scrollTransition = false;
 window.onscroll = function() {
     document.getElementById("scrollTopLink").style.display = window.scrollY > 400 ? "flex" : "none";
+    document.getElementById("tousLink").style.display = window.scrollY > 400 ? "flex" : "none";
     if (lectureContineActive && !scrollTransition && window.scrollY > lastScrollY + 30) {
         arreterLectureContinue();
         afficherAccueil();
@@ -838,5 +977,22 @@ document.addEventListener('DOMContentLoaded', function() {
     if (bubble && labelNotif) {
         bubble.addEventListener('mouseenter', () => { labelNotif.style.opacity = '1'; labelNotif.style.transform = 'translateX(0)'; });
         bubble.addEventListener('mouseleave', () => { labelNotif.style.opacity = '0'; labelNotif.style.transform = 'translateX(6px)'; });
+    }
+
+    // Délégation des clics sur les boutons Partager (data-attributes, robuste avec textes longs)
+    document.body.addEventListener('click', function(e) {
+        const btn = e.target.closest('.copy-btn');
+        if (!btn) return;
+        const titreEnc = btn.getAttribute('data-titre');
+        const texteEnc = btn.getAttribute('data-texte');
+        if (titreEnc && texteEnc) ouvrirMenuPartage(titreEnc, texteEnc);
+    });
+
+    // Label au survol du bouton "Tout afficher"
+    const tousLink = document.getElementById('tousLink');
+    const labelTous = document.getElementById('label-tous');
+    if (tousLink && labelTous) {
+        tousLink.addEventListener('mouseenter', () => { labelTous.style.opacity = '1'; labelTous.style.transform = 'translateX(0)'; });
+        tousLink.addEventListener('mouseleave', () => { labelTous.style.opacity = '0'; labelTous.style.transform = 'translateX(10px)'; });
     }
 });
