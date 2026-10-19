@@ -885,6 +885,8 @@ function toggleAffichageTous() {
         afficherAccueil();
     }
 }
+
+function afficherAccueil() {
     arreterLectureContinue();
     const container = document.getElementById('flux-messages');
     const derniers = [...tousLesMessages].sort((a, b) => b.id - a.id).slice(0, 3);
