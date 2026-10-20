@@ -201,6 +201,10 @@ class _MessageReaderPageState extends State<MessageReaderPage>
           await audioHandler.skipToNext();
         case 'previous':
           await audioHandler.skipToPrevious();
+        case 'loop':
+          // Bascule la boucle sur le message en cours (même logique que le bouton notification)
+          _lastSentState = '';
+          await audioHandler.toggleLoop();
         case 'seek':
           final positionMs = command['positionMs'];
           if (positionMs is! num || !positionMs.isFinite || positionMs < 0) {

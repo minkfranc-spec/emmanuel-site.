@@ -265,6 +265,42 @@ class EmmanuelAudioHandler extends BaseAudioHandler
     onUpdate?.call({'playing': false, 'status': 'Lecture arrêtée.', 'ended': true});
   }
 
+  // Action personnalisée pour le bouton boucle dans la notification
+  static const _loopAction = 'toggle_loop';
+
+  @override
+  Future<void> onCustomAction(String name, dynamic extras) async {
+    if (name == _loopAction) {
+      await toggleLoop();
+    }
+  }
+
+  /// Bascule la boucle sur le message en cours.
+  /// Appelé depuis la notification OU depuis la page via l'action 'loop'.
+  Future<void> toggleLoop() async {
+    final index = _player.currentIndex;
+    final items = queue.value;
+    if (index == null || index < 0 || index >= items.length) return;
+
+    if (_loopMessageId != null) {
+      // Désactive la boucle → lecture continue
+      _loopMessageId = null;
+    } else {
+      // Active la boucle sur le message en cours
+      final currentMessageId = items[index].extras?['messageId'];
+      if (currentMessageId is! String) return;
+      _loopMessageId = currentMessageId;
+      // Trouve le premier index de ce message dans la queue
+      _loopStartIndex = items.indexWhere(
+        (item) => item.extras?['messageId'] == currentMessageId,
+      );
+      if (_loopStartIndex < 0) _loopStartIndex = index;
+    }
+
+    _broadcastState(_player.playbackEvent);
+    _notifyPage();
+  }
+
   void _broadcastState(PlaybackEvent event) {
     const processingStates = {
       ProcessingState.idle: AudioProcessingState.idle,
@@ -274,17 +310,28 @@ class EmmanuelAudioHandler extends BaseAudioHandler
       ProcessingState.completed: AudioProcessingState.completed,
     };
     final playing = _player.playing;
+    final looping = _loopMessageId != null;
     final index = event.currentIndex;
 
+    // Bouton boucle personnalisé — icône change selon l'état actif/inactif
+    final loopControl = MediaControl.custom(
+      androidIcon: looping
+          ? 'drawable/ic_loop_on'
+          : 'drawable/ic_loop_off',
+      label: looping ? 'Désactiver boucle' : 'Activer boucle',
+      name: _loopAction,
+    );
+
     // Boutons de la notification :
-    // [⏮ Précédent] [⏸/▶ Pause/Play] [⏭ Suivant]
-    // androidCompactActionIndices = indices affichés en vue réduite
+    // [⏮ Précédent] [⏸/▶ Pause/Play] [⏭ Suivant] [🔁 Boucle]
+    // androidCompactActionIndices = indices affichés en vue réduite (3 max)
     playbackState.add(
       PlaybackState(
         controls: [
           MediaControl.skipToPrevious,
           playing ? MediaControl.pause : MediaControl.play,
           MediaControl.skipToNext,
+          loopControl,
         ],
         systemActions: const {
           MediaAction.seek,

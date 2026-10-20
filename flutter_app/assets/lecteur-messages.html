@@ -534,6 +534,34 @@
       *, *::before, *::after { scroll-behavior: auto !important; }
     }
 
+    /* Bouton message du jour */
+    #today-btn {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      background: #4a4a4a;
+      cursor: pointer;
+      transition: background .3s, border-color .3s, transform .15s;
+      font-size: .7rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+    }
+    #today-btn.today-yes {
+      background: #22c55e;
+      border-color: rgba(34,197,94,.4);
+      box-shadow: 0 0 6px rgba(34,197,94,.45);
+    }
+    #today-btn.today-no {
+      background: #ef4444;
+      border-color: rgba(239,68,68,.4);
+      box-shadow: 0 0 6px rgba(239,68,68,.35);
+    }
+    #today-btn:active { transform: scale(.88); }
+
     /* Toast commandes */
     #cmd-toast {
       position: fixed;
@@ -562,6 +590,7 @@
 <body>
   <header class="app-header">
     <div class="brand">EMMANUEL<small>emmanuel-dpv · messages</small></div>
+    <button id="today-btn" type="button" aria-label="Message du jour" title="Message du jour" hidden></button>
     <a class="site-link" href="https://emmanuel-dpv.pages.dev/" target="_blank" rel="noopener noreferrer" onclick="if(window.PublicSiteOpener){window.PublicSiteOpener.postMessage('open');return false;}">Voir le site ↗</a>
   </header>
 
@@ -678,6 +707,55 @@
       let nativeDataChunks = [];
       const prefetchAudio = new Audio(); // préchargement silencieux de la piste suivante
       prefetchAudio.preload = 'auto';
+
+      // ── Message du jour ────────────────────────────────────────────────────
+      let todayMessage = null;
+
+      async function checkTodayMessage() {
+        const btn = document.getElementById('today-btn');
+        try {
+          const resp = await fetch(DATA_JSON_URL, {
+            cache: 'no-store', mode: 'cors', credentials: 'omit'
+          });
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const data = await resp.json();
+          const list = Array.isArray(data?.messages) ? data.messages : [];
+          if (!list.length) return;
+
+          const sorted = list
+            .filter((m) => m && typeof m.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(m.date))
+            .sort((a, b) => b.date.localeCompare(a.date));
+          if (!sorted.length) return;
+
+          todayMessage = sorted[0];
+
+          const now = new Date();
+          const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+          const isToday = todayMessage.date === todayStr;
+
+          btn.hidden = false;
+          btn.textContent = '●';
+          btn.className = isToday ? 'today-yes' : 'today-no';
+          btn.title = isToday
+            ? `Message du jour — ${todayMessage.titre || 'ID ' + todayMessage.id}`
+            : `Dernier message : ${todayMessage.date} — ${todayMessage.titre || 'ID ' + todayMessage.id}`;
+        } catch {
+          // Silencieux : si data.json inaccessible, le bouton reste masqué
+        }
+      }
+
+      document.getElementById('today-btn').addEventListener('click', () => {
+        if (!todayMessage) return;
+        const targetId = String(todayMessage.id);
+        loopMode = true;
+        const queueMessages = (visibleMessages.length ? visibleMessages : messages).slice().reverse();
+        startQueue(queueMessages, `Message du jour · ID ${targetId}`, null, {
+          loop: true,
+          startMessageId: targetId
+        });
+        const card = document.getElementById(`message-${Number(targetId) || 0}`);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
 
       // ── Toast de feedback ──────────────────────────────────────────────────
       function showToast(message, type = 'success', durationMs = 3000) {
@@ -1716,6 +1794,8 @@
         document.getElementById('clear-search').hidden = !elements.search.value;
         elements.status.textContent = `Source : data2.json · ${messages.length} messages`;
         renderMessages(findMessages(elements.search.value));
+        // Vérifie le message du jour à chaque chargement réussi
+        checkTodayMessage();
       }
 
       window.receiveMessages = (json, error) => {
