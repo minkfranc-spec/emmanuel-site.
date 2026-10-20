@@ -1427,6 +1427,8 @@
           if (action === 'play') command.loop = loop;
           if (action === 'play' && startMessageId) command.startMessageId = startMessageId;
           if (action === 'seek') command.positionMs = tracks;
+          // sync : notifie le natif que la page est passée à une piste précise
+          if (action === 'sync' && tracks) command.track = tracks;
           window.NativePlayer.postMessage(JSON.stringify(command));
           return true;
         } catch {
@@ -1516,8 +1518,22 @@
         loopMode = state.looping === true;
         updatePlaybackProgress(Number(state.positionMs) || 0, Number(state.durationMs) || 0);
         if (state.track) {
-          trackIndex = playlist.findIndex((track) =>
+          // Cherche d'abord dans la playlist en cours
+          let newIndex = playlist.findIndex((track) =>
             track.id === String(state.track.id) && track.part === Number(state.track.part));
+
+          // Si introuvable (playlist vide ou changée), reconstruit la playlist depuis tous les messages
+          if (newIndex < 0 && messages.length) {
+            const fullTracks = trackListFor(messages.slice().reverse());
+            const fullIndex = fullTracks.findIndex((track) =>
+              track.id === String(state.track.id) && track.part === Number(state.track.part));
+            if (fullIndex >= 0) {
+              playlist = fullTracks;
+              newIndex = fullIndex;
+            }
+          }
+
+          trackIndex = newIndex;
           setPlayerStatus(state.track);
           elements.playerStatus.textContent = `${state.track.title} · ID ${state.track.id}${state.track.part === 2 ? ' · piste 2' : ''}${state.playing ? '' : ' · en pause'}`;
         } else if (state.status) {
@@ -1647,6 +1663,8 @@
         const track = playlist[index];
         updatePlaybackProgress(0, 0);
         setPlayerStatus(track);
+        // Informe le lecteur natif (notification) que la page est passée à cette piste
+        sendToNative('sync', { id: track.id, part: track.part });
         await requestWakeLock();
 
         // Attendre que l'audio soit suffisamment chargé avant de lancer (max 8s)
