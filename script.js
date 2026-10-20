@@ -13,6 +13,13 @@ let scrollCard = null;
 let scrollAudio = null;
 let wakeLock = null;
 let communiqueData = null; // stocke les 3 versions du communiqué
+const NOTIF_SEEN_KEY = 'emmanuel_notif_seen_v1'; // clé localStorage pour mémoriser la notif vue
+
+// Génère une empreinte courte du communiqué (60 premiers caractères normalisés)
+// Si le texte change → empreinte différente → badge "1" réapparaît
+function communiqueEmpreinte(texte) {
+    return String(texte || '').replace(/\s+/g, ' ').trim().slice(0, 60);
+}
 
 const CACHE_KEY = 'emmanuel_data_v3';
 const CACHE_TTL = 15 * 60 * 1000;
@@ -228,7 +235,17 @@ async function chargerMessages() {
             };
             const bubble = document.getElementById('notif-bubble');
             bubble.style.display = 'flex';
-            bubble.innerHTML = '<span style="color:white; font-size:18px;">🔔</span><div class="notif-badge">1</div>';
+            // Remet les icônes à leur position normale (bulle visible)
+            document.body.classList.remove('notif-masquee');
+            // Vérifie si ce communiqué a déjà été vu (mémorisé dans le localStorage)
+            const dejavu = localStorage.getItem(NOTIF_SEEN_KEY);
+            if (dejavu === communiqueEmpreinte(data.communique)) {
+                // Même communiqué → pas de badge, icône visible mais discrète
+                bubble.innerHTML = '<span style="color:white; font-size:18px;">🔔</span>';
+            } else {
+                // Nouveau communiqué → badge "1" visible
+                bubble.innerHTML = '<span style="color:white; font-size:18px;">🔔</span><div class="notif-badge">1</div>';
+            }
             afficherCommunique();
         }
 
@@ -389,12 +406,24 @@ function revenirTheme(th) {
 function ouvrirNotif() {
     const panel = document.getElementById('notif-panel');
     panel.style.display = 'flex';
-    clearTimeout(window._notifTimer);
-    window._notifTimer = setTimeout(() => { toutMasquer(); }, 4000);
+    // Pas de fermeture automatique — l'utilisateur choisit : Masquer ou clic ailleurs
+    // Mémorise ce communiqué comme déjà vu → retire le badge "1"
+    if (communiqueData) {
+        try { localStorage.setItem(NOTIF_SEEN_KEY, communiqueEmpreinte(communiqueData.fr)); } catch {}
+        const bubble = document.getElementById('notif-bubble');
+        bubble.innerHTML = '<span style="color:white; font-size:18px;">🔔</span>';
+    }
+}
+function fermerPanelSeulement() {
+    // Ferme le panneau SANS cacher la bulle (clic ailleurs)
+    document.getElementById('notif-panel').style.display = 'none';
 }
 function toutMasquer() {
+    // Ferme panneau ET bulle (bouton "Masquer" uniquement)
     document.getElementById('notif-panel').style.display = 'none';
     document.getElementById('notif-bubble').style.display = 'none';
+    // Les icônes du dessous remontent pour combler le vide
+    document.body.classList.add('notif-masquee');
 }
 
 function mettreAJourBoutonsFavoris() {
@@ -993,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const panel = document.getElementById('notif-panel');
         const bubble = document.getElementById('notif-bubble');
         if (panel.style.display === 'flex' && !panel.contains(e.target) && !bubble.contains(e.target)) {
-            panel.style.display = 'none';
+            fermerPanelSeulement(); // ferme le panneau, la bulle reste visible
         }
     });
 });

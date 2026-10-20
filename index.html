@@ -39,12 +39,12 @@
 
     <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
 
-    <div id="notif-bubble" onclick="ouvrirNotif()" aria-label="Notifications">
+    <div id="notif-bubble" onclick="ouvrirNotif(); event.stopPropagation();" aria-label="Notifications">
         <span style="color:white; font-size:18px;">🔔</span>
     </div>
     <span class="notif-bubble-label" id="label-notif">Notifications</span>
 
-    <div id="notif-panel">
+    <div id="notif-panel" onclick="event.stopPropagation();">
         <div id="notif-title" style="font-family:'Montserrat'; font-weight:900; font-size:10px; color:#d4af37; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">📢 COMMUNICATIONS</div>
         <div id="notif-list"></div>
         <span id="notif-hide-btn" class="close-notif" onclick="toutMasquer()">Masquer</span>
