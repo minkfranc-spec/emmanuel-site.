@@ -1,6 +1,9 @@
 # Application Android EMMANUEL
 
-Cette application Flutter affiche le site [emmanuel-dpv.pages.dev](https://emmanuel-dpv.pages.dev).
+Cette application Flutter affiche le site en ligne
+[emmanuel-dpv.pages.dev](https://emmanuel-dpv.pages.dev). Elle ne compile pas une
+copie locale de `index.html` : les mises à jour du site doivent être publiées
+sur le site en ligne pour apparaître dans l'application.
 Les liens vers d'autres sites, WhatsApp, les e-mails et les numéros de téléphone
 s'ouvrent dans l'application correspondante sur le téléphone.
 
@@ -39,10 +42,11 @@ ou suivant. Les commandes sont aussi disponibles sur l'écran verrouillé et les
 accessoires Bluetooth. Android peut toujours interrompre une lecture pour un
 appel, une perte de focus ou une action de l'utilisateur.
 
-Après modification de `../lecteur-messages.html`, recopiez-le dans
-`assets/lecteur-messages.html`, puis construisez l'APK :
+Avant chaque compilation après modification de `../lecteur-messages.html`,
+synchronisez la page embarquée, puis construisez l'APK :
 
 ```sh
+cp ../lecteur-messages.html assets/lecteur-messages.html
 flutter build apk --flavor lecteur -t lib/lecteur.dart --release
 ```
 

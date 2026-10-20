@@ -173,9 +173,8 @@ class _MessageReaderPageState extends State<MessageReaderPage>
           if (rawStartMessageId != null && rawStartMessageId is! String) {
             throw const FormatException('Message de départ invalide.');
           }
-          final startMessageId = rawStartMessageId is String
-              ? rawStartMessageId
-              : null;
+          final startMessageId =
+              rawStartMessageId is String ? rawStartMessageId : null;
           // Réinitialise le dernier état envoyé pour forcer la synchro
           _lastSentState = '';
           await audioHandler.playTracks(
@@ -248,6 +247,20 @@ class _MessageReaderPageState extends State<MessageReaderPage>
 
   Future<void> _sendMessagesToPage(String json) async {
     const chunkSize = 48 * 1024;
+    await _controller.runJavaScript('''
+      window.__nativeMessageChunks = [];
+      window.beginNativeMessages = () => {
+        window.__nativeMessageChunks = [];
+      };
+      window.appendNativeMessagesChunk = (chunk) => {
+        window.__nativeMessageChunks.push(chunk);
+      };
+      window.finishNativeMessages = () => {
+        const data = window.__nativeMessageChunks.join('');
+        window.__nativeMessageChunks = [];
+        window.receiveMessages(data);
+      };
+    ''');
     await _controller.runJavaScript('window.beginNativeMessages();');
 
     var start = 0;

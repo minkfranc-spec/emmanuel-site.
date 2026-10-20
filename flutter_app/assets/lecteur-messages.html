@@ -459,6 +459,7 @@
     }
 
     .native-audio #audio-player { display: none !important; }
+    .native-audio #cmd-hint { display: none !important; }
 
     .playback-progress {
       display: grid;
@@ -530,6 +531,63 @@
       .player-controls button { font-size: .7rem; }
     }
 
+    /* Rappel commandes */
+    .cmd-hint {
+      margin-top: 4px;
+      padding: 5px 10px;
+      border: 1px solid rgba(225,189,81,.25);
+      border-radius: 8px;
+      background: rgba(225,189,81,.06);
+      color: var(--muted);
+      font-size: .68rem;
+      line-height: 1.5;
+    }
+    .cmd-hint code {
+      color: var(--gold);
+      font-family: monospace;
+      font-size: .75rem;
+    }
+
+    /* Toast de feedback commande */
+    #cmd-toast {
+      position: fixed;
+      top: 54px;
+      left: 50%;
+      z-index: 99;
+      transform: translateX(-50%) translateY(-8px);
+      max-width: min(92vw, 420px);
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: var(--panel-raised);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: .82rem;
+      font-weight: 600;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s, transform .22s;
+    }
+    #cmd-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    #cmd-toast.success { border-color: var(--gold); color: var(--gold); }
+    #cmd-toast.error   { border-color: var(--danger); color: var(--danger); }
+
+    /* Badge boucle active */
+    .loop-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #171717;
+      font-size: .65rem;
+      font-weight: 800;
+      vertical-align: middle;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; }
     }
@@ -561,31 +619,7 @@
       box-shadow: 0 0 6px rgba(239,68,68,.35);
     }
     #today-btn:active { transform: scale(.88); }
-
-    /* Toast commandes */
-    #cmd-toast {
-      position: fixed;
-      top: 54px;
-      left: 50%;
-      z-index: 99;
-      transform: translateX(-50%) translateY(-8px);
-      max-width: min(92vw, 420px);
-      padding: 8px 14px;
-      border-radius: 10px;
-      background: var(--panel-raised);
-      border: 1px solid var(--line);
-      color: var(--text);
-      font-size: .82rem;
-      font-weight: 600;
-      text-align: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .22s, transform .22s;
-    }
-    #cmd-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    #cmd-toast.success { border-color: var(--gold); color: var(--gold); }
-    #cmd-toast.error   { border-color: var(--danger); color: var(--danger); }
-    </style>
+  </style>
 </head>
 <body>
   <header class="app-header">
@@ -614,6 +648,10 @@
         <button id="clear-search" type="button" aria-label="Effacer la recherche" title="Effacer" hidden>×</button>
       </div>
       <div id="search-summary" role="status" aria-live="polite"></div>
+      <div class="cmd-hint" id="cmd-hint">
+        💡 Commandes : <code>boucle</code> — répéter le message en cours &nbsp;·&nbsp;
+        <code>id:X-id:Y</code> — échanger deux messages (ex: <code>id:5-id:12</code>)
+      </div>
       <section id="favorite-panel" hidden aria-label="Messages favoris">
         <div id="favorite-list"></div>
       </section>
@@ -628,6 +666,7 @@
   </main>
 
   <button id="back-to-top" class="back-to-top" type="button" aria-label="Retour en haut" title="Retour en haut" hidden>↑</button>
+
   <div id="cmd-toast" role="alert" aria-live="assertive"></div>
 
   <section class="player" aria-label="Lecteur audio">
@@ -656,6 +695,8 @@
       'use strict';
 
       const DATA_URL = 'https://raw.githubusercontent.com/minkfranc-spec/emmanuel-site./main/data2.json';
+      const DATA_JSON_URL = 'https://emmanuel-dpv.pages.dev/data.json';
+      const FAVORIS_URL = 'https://emmanuel-dpv.pages.dev/favoris.json';
       const elements = {
         status: document.getElementById('load-status'),
         search: document.getElementById('search'),
@@ -674,7 +715,8 @@
         playbackSeek: document.getElementById('playback-seek'),
         playbackTime: document.getElementById('playback-time'),
         backToTop: document.getElementById('back-to-top'),
-        cmdToast: document.getElementById('cmd-toast')
+        cmdToast: document.getElementById('cmd-toast'),
+        cmdHint: document.getElementById('cmd-hint')
       };
       elements.playerStatus.addEventListener('click', jumpToCurrentMessage);
 
@@ -701,14 +743,13 @@
       let loopMode = false;
       let searchTimer;
       let toastTimer;
-      let suggestionTimer;
       let wakeLock;
       let nativePlayback = false;
-      let nativeDataChunks = [];
-      const prefetchAudio = new Audio(); // préchargement silencieux de la piste suivante
+      const prefetchAudio = new Audio();
       prefetchAudio.preload = 'auto';
 
       // ── Message du jour ────────────────────────────────────────────────────
+      // todayMessage : le message le plus récent de data.json (null si non chargé)
       let todayMessage = null;
 
       async function checkTodayMessage() {
@@ -722,6 +763,7 @@
           const list = Array.isArray(data?.messages) ? data.messages : [];
           if (!list.length) return;
 
+          // Trouve le message avec la date la plus récente
           const sorted = list
             .filter((m) => m && typeof m.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(m.date))
             .sort((a, b) => b.date.localeCompare(a.date));
@@ -729,11 +771,12 @@
 
           todayMessage = sorted[0];
 
+          // Compare avec la date du jour (format YYYY-MM-DD local)
           const now = new Date();
           const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
           const isToday = todayMessage.date === todayStr;
 
-          btn.textContent = '●';
+          btn.textContent = isToday ? '●' : '●';
           btn.className = isToday ? 'today-yes' : 'today-no';
           btn.title = isToday
             ? `Message du jour — ${todayMessage.titre || 'ID ' + todayMessage.id}`
@@ -743,23 +786,38 @@
         }
       }
 
+      // Clic sur le bouton → lecture en boucle du message du jour
       document.getElementById('today-btn').addEventListener('click', () => {
         if (!todayMessage) return;
         const targetId = String(todayMessage.id);
+
+        // Si le message est dans la liste visible, on le trouve ; sinon on cherche dans tous les messages
+        let msg = visibleMessages.find((m) => String(m.id) === targetId)
+               || messages.find((m) => String(m.id) === targetId);
+
+        if (!msg) {
+          // Message pas encore chargé dans data2 — on utilise directement todayMessage
+          msg = todayMessage;
+        }
+
+        // Lance la lecture en boucle (même comportement que 1er clic sur le message)
         loopMode = true;
         const queueMessages = (visibleMessages.length ? visibleMessages : messages).slice().reverse();
         startQueue(queueMessages, `Message du jour · ID ${targetId}`, null, {
           loop: true,
           startMessageId: targetId
         });
+
+        // Scroll vers la carte du message si elle est visible
         const card = document.getElementById(`message-${Number(targetId) || 0}`);
-        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       });
 
       // ── Toast de feedback ──────────────────────────────────────────────────
       function showToast(message, type = 'success', durationMs = 3000) {
         const toast = elements.cmdToast;
-        if (!toast) return;
         clearTimeout(toastTimer);
         toast.textContent = message;
         toast.className = `show ${type}`;
@@ -779,13 +837,14 @@
       // MOTEUR DE RECHERCHE — index pré-calculé, correction auto, intra-mot
       // ════════════════════════════════════════════════════════════════════
 
+      // ── Synonymes enrichis (vocabulaire chrétien complet) ─────────────────
       const synonymGroups = [
         ['foi', 'confiance', 'faith', 'trust', 'croire', 'croyance', 'believe', 'belief'],
         ['peur', 'crainte', 'angoisse', 'fear', 'inquietude', 'anxiete', 'anxiety', 'terreur'],
         ['priere', 'oraison', 'prayer', 'intercession', 'supplication', 'implorer'],
         ['amour', 'charite', 'love', 'tendresse', 'affection', 'dilection'],
-        ['espoir', 'esperance', 'hope', 'attente', 'promesse'],
-        ['joie', 'bonheur', 'joy', 'allegresse', 'jubile'],
+        ['espoir', 'esperance', 'hope', 'attente', 'confiance', 'promesse'],
+        ['joie', 'bonheur', 'joy', 'allegresse', 'jubile', 'allégresse'],
         ['paix', 'serenite', 'peace', 'tranquillite', 'repos', 'quietude', 'shalom'],
         ['epreuve', 'difficulte', 'trial', 'souffrance', 'tribulation', 'adversite', 'tempete'],
         ['guerison', 'restauration', 'healing', 'delivrance', 'liberation', 'salut', 'deliverance'],
@@ -797,11 +856,11 @@
         ['lumiere', 'clarte', 'light', 'illumination', 'revelation', 'verite'],
         ['chemin', 'voie', 'way', 'path', 'route', 'direction', 'guidance'],
         ['victoire', 'triumph', 'victory', 'conquete', 'succes', 'reussite'],
-        ['resurrection', 'vie', 'life', 'eternite', 'eternity', 'salvation'],
+        ['resurrection', 'vie', 'life', 'eternite', 'eternity', 'salut', 'salvation'],
         ['prophetie', 'vision', 'prophecy', 'revelation', 'parole', 'word'],
         ['sanctification', 'saintete', 'holiness', 'purete', 'purity', 'consecration'],
         ['humilite', 'humility', 'obeissance', 'obedience', 'soumission', 'submission'],
-        ['desert', 'wilderness', 'traversee', 'pelerinage', 'journey'],
+        ['desert', 'epreuve', 'wilderness', 'traversee', 'pelerinage', 'journey'],
         ['alliance', 'covenant', 'promesse', 'promise', 'engagement', 'serment'],
         ['protection', 'garde', 'shield', 'bouclier', 'refuge', 'forteresse', 'fortress'],
         ['benediction', 'blessing', 'faveur', 'favor', 'prosperite', 'abondance'],
@@ -820,19 +879,27 @@
         }
       }
 
+      // ── Texte indexable ───────────────────────────────────────────────────
       function searchableText(message) {
         return normalize([
-          message.id, message.date,
-          message.titre, message.titre_en,
-          message.categorie, message.categorie_en,
-          message.theme, message.theme_en,
-          message.texte, message.texte_en
+          message.id,
+          message.date,
+          message.titre,
+          message.titre_en,
+          message.categorie,
+          message.categorie_en,
+          message.theme,
+          message.theme_en,
+          message.texte,
+          message.texte_en
         ].join(' '));
       }
 
-      // Index global (construit une seule fois dans displayMessages)
-      let prefixMap   = new Map();
-      let corpusWords = new Set();
+      // ── Index global (construit une seule fois dans displayMessages) ──────
+      // prefixMap  : Map<prefix2chars, Set<word>>  — lookup O(1) par bigramme
+      // corpusWords: Set<word>                     — tous les mots du corpus (pour correction)
+      let prefixMap   = new Map();   // bigramme → Set de mots
+      let corpusWords = new Set();   // tous les mots distincts du corpus
 
       function buildPrefixMap(index) {
         prefixMap   = new Map();
@@ -840,6 +907,7 @@
         for (const entry of index) {
           for (const word of entry.words) {
             corpusWords.add(word);
+            // Indexe les 2 premiers caractères → lookup rapide pour intra-mot
             const key2 = word.slice(0, 2);
             if (!prefixMap.has(key2)) prefixMap.set(key2, new Set());
             prefixMap.get(key2).add(word);
@@ -847,10 +915,11 @@
         }
       }
 
-      // Distance de Levenshtein bornée — O(n) grâce à la coupure précoce
+      // ── Distance de Levenshtein bornée (max 2) — O(n) en pratique ────────
       function levenshtein(a, b, maxDist = 2) {
         if (Math.abs(a.length - b.length) > maxDist) return maxDist + 1;
         const la = a.length, lb = b.length;
+        // Utilise deux lignes seulement pour économiser la mémoire
         let prev = new Uint8Array(lb + 1);
         let curr = new Uint8Array(lb + 1);
         for (let j = 0; j <= lb; j++) prev[j] = j;
@@ -862,27 +931,41 @@
             curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
             if (curr[j] < rowMin) rowMin = curr[j];
           }
-          if (rowMin > maxDist) return maxDist + 1;
+          if (rowMin > maxDist) return maxDist + 1; // coupe tôt
           [prev, curr] = [curr, prev];
         }
         return prev[lb];
       }
 
+      // ── Correction automatique : trouve le mot du corpus le plus proche ──
+      // Ne cherche que parmi les mots de longueur similaire (±2)
+      // Retourne { word, dist } ou null
       function findClosestWord(term) {
-        if (term.length < 3) return null;
+        if (term.length < 3) return null; // trop court → pas de correction
         const maxDist = term.length <= 5 ? 1 : 2;
-        let best = null, bestDist = maxDist + 1;
+        let best = null;
+        let bestDist = maxDist + 1;
+
+        // Optimisation : ne compare qu'avec des mots de longueur proche
         for (const word of corpusWords) {
           if (Math.abs(word.length - term.length) > maxDist) continue;
-          if (word === term) return null;
+          if (word === term) return null; // déjà exact
           const d = levenshtein(term, word, maxDist);
-          if (d > 0 && d < bestDist) { bestDist = d; best = word; }
+          if (d > 0 && d < bestDist) {
+            bestDist = d;
+            best = word;
+          }
         }
         return best ? { word: best, dist: bestDist } : null;
       }
 
+      // ── Vérification si un terme matche (exact, préfixe, intra-mot, synonyme) ─
+      // Retourne : 'exact' | 'prefix' | 'infix' | 'synonym' | null
       function termMatchType(term, entry) {
+        // 1. Exact
         if (entry.words.has(term)) return 'exact';
+
+        // 2. Préfixe (mot commence par le terme, min 2 chars)
         if (term.length >= 2) {
           const key2 = term.slice(0, 2);
           const candidates = prefixMap.get(key2);
@@ -892,20 +975,27 @@
             }
           }
         }
+
+        // 3. Intra-mot (terme contenu dans un mot, min 3 chars)
         if (term.length >= 3) {
           for (const word of entry.words) {
             if (word.length > term.length && word.includes(term)) return 'infix';
           }
         }
+
+        // 4. Synonyme
         const syns = synonymIndex.get(term);
         if (syns && syns.some((s) => entry.words.has(s))) return 'synonym';
+
         return null;
       }
 
+      // ── Moteur principal ─────────────────────────────────────────────────
       function findMessages(query) {
         const normalizedQuery = normalize(query);
         if (!normalizedQuery) return messages;
 
+        // Recherche par ID/numéro direct
         const numericId = parseInt(normalizedQuery, 10);
         if (!isNaN(numericId) && String(numericId) === normalizedQuery) {
           const exact = messages.filter((m) => Number(m.id) === numericId);
@@ -913,11 +1003,15 @@
         }
 
         const terms = normalizedQuery.split(' ').filter(Boolean);
+
         const scored = searchIndex.map((entry) => {
           const paddedText     = ` ${entry.text} `;
           const paddedTitle    = ` ${entry.title} `;
           const paddedCategory = ` ${entry.category} `;
-          let score = 0, allMatched = true;
+
+          let score = 0;
+          let allMatched = true;
+
           for (const term of terms) {
             const matchType = termMatchType(term, entry);
             if (!matchType) { allMatched = false; break; }
@@ -926,13 +1020,20 @@
             else if (matchType === 'infix')   score += 30;
             else if (matchType === 'synonym') score += 40;
           }
+
           if (!allMatched) return { message: entry.message, score: 0 };
+
+          // Bonus phrase exacte
           if (paddedText.includes(` ${normalizedQuery} `))     score += 500;
           if (paddedTitle.includes(` ${normalizedQuery} `))    score += 200;
           if (paddedCategory.includes(` ${normalizedQuery} `)) score += 160;
+
+          // Bonus ID / date exact
           if (entry.id === normalizedQuery || entry.date === normalizedQuery) score += 1000;
+
           return { message: entry.message, score };
         });
+
         return scored
           .filter((e) => e.score > 0)
           .sort((a, b) => b.score - a.score || Number(b.message.id) - Number(a.message.id))
@@ -940,57 +1041,100 @@
       }
 
       // ── Suggestions de correction ─────────────────────────────────────────
+      // Appelée après un délai, seulement si la recherche donne 0 résultat
+      let suggestionTimer = null;
+
       function showSuggestion(query) {
         const el = elements.searchSummary;
         const normalizedQuery = normalize(query);
         if (!normalizedQuery || normalizedQuery.length < 3) return;
+
         const terms = normalizedQuery.split(' ').filter(Boolean);
         const corrections = [];
+
         for (const term of terms) {
+          // Saute si le terme matche déjà quelque chose dans le corpus
           if (corpusWords.has(term)) continue;
           const closest = findClosestWord(term);
           if (closest) corrections.push({ original: term, suggestion: closest.word });
         }
+
         if (!corrections.length) return;
+
+        // Reconstruit la requête corrigée
         let correctedQuery = query;
         for (const { original, suggestion } of corrections) {
-          correctedQuery = correctedQuery.replace(new RegExp(original, 'gi'), suggestion);
+          // Remplace le terme normalisé par la suggestion (sans accent, minuscule)
+          const re = new RegExp(original, 'gi');
+          correctedQuery = correctedQuery.replace(re, suggestion);
         }
+
         const suggestionText = corrections.map((c) => `"${c.suggestion}"`).join(', ');
         el.innerHTML = `Vouliez-vous dire : <button class="suggestion-btn" data-query="${correctedQuery.replace(/"/g, '&quot;')}">${suggestionText}</button> ?`;
       }
 
-      // Styles du bouton suggestion (injecté une seule fois)
-      (function() {
-        const s = document.createElement('style');
-        s.textContent = `.suggestion-btn{display:inline;padding:1px 8px;border:1px solid rgba(225,189,81,.6);border-radius:6px;background:transparent;color:var(--gold);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit}.suggestion-btn:hover{background:rgba(225,189,81,.12)}`;
-        document.head.appendChild(s);
+      // ── Styles pour le bouton de suggestion ─────────────────────────────
+      // (injecté une seule fois)
+      (function injectSuggestionStyle() {
+        const style = document.createElement('style');
+        style.textContent = `
+          .suggestion-btn {
+            display: inline;
+            padding: 1px 8px;
+            border: 1px solid rgba(225,189,81,.6);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--gold);
+            font-size: .72rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+          }
+          .suggestion-btn:hover { background: rgba(225,189,81,.12); }
+        `;
+        document.head.appendChild(style);
       })();
 
-      const FAVORIS_URL = 'https://emmanuel-dpv.pages.dev/favoris.json';
+      // Clic sur une suggestion → applique la correction
+      elements.searchSummary.addEventListener('click', (e) => {
+        const btn = e.target.closest('.suggestion-btn');
+        if (!btn) return;
+        const q = btn.dataset.query;
+        elements.search.value = q;
+        document.getElementById('clear-search').hidden = false;
+        elements.searchSummary.textContent = '';
+        renderMessages(findMessages(q));
+      });
 
+      // ── Favoris — chargement depuis favoris.json (GitHub) puis localStorage ──
       async function loadFavorites() {
         let remoteIds = null;
-        if (!window.NativeDataReader) {
-          try {
-            const resp = await fetch(FAVORIS_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' });
-            if (resp.ok) {
-              const json = await resp.json();
-              if (Array.isArray(json.favoris)) {
-                remoteIds = json.favoris.filter((id) => Number.isSafeInteger(id) && id > 0);
-              }
+        try {
+          const resp = await fetch(FAVORIS_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' });
+          if (resp.ok) {
+            const json = await resp.json();
+            if (Array.isArray(json.favoris)) {
+              remoteIds = json.favoris.filter((id) => Number.isSafeInteger(id) && id > 0);
             }
-          } catch {}
+          }
+        } catch {
+          // silencieux — on tombera sur le localStorage
         }
+
         if (remoteIds !== null) {
           favoriteIds = new Set(remoteIds);
+          // Synchronise le localStorage avec la source distante
           try { localStorage.setItem('emmanuel_favorite_messages_v1', JSON.stringify(remoteIds)); } catch {}
         } else {
+          // Fallback localStorage si favoris.json inaccessible
           try {
             const saved = JSON.parse(localStorage.getItem('emmanuel_favorite_messages_v1') || '[]');
-            if (!Array.isArray(saved)) throw new Error('Format invalide');
+            if (!Array.isArray(saved)) throw new Error('Format favoris invalide.');
             favoriteIds = new Set(saved.filter((id) => Number.isSafeInteger(id) && id > 0));
-          } catch { favoriteIds = new Set(); }
+          } catch (error) {
+            console.error('Impossible de charger les favoris.', error);
+            favoriteIds = new Set();
+          }
         }
         updateFavoriteButtons();
       }
@@ -1058,14 +1202,26 @@
         if (wasFavorite) favoriteIds.delete(messageId);
         else favoriteIds.add(messageId);
 
+        const ids = [...favoriteIds];
+
+        // Sauvegarde localStorage (toujours)
         try {
-          localStorage.setItem('emmanuel_favorite_messages_v1', JSON.stringify([...favoriteIds]));
+          localStorage.setItem('emmanuel_favorite_messages_v1', JSON.stringify(ids));
         } catch (error) {
           if (wasFavorite) favoriteIds.add(messageId);
           else favoriteIds.delete(messageId);
-          console.error('Impossible d’enregistrer les favoris.', error);
-          elements.searchSummary.textContent = 'Impossible d’enregistrer les favoris sur cet appareil.';
+          console.error('Impossible d\'enregistrer les favoris.', error);
+          elements.searchSummary.textContent = 'Impossible d\'enregistrer les favoris sur cet appareil.';
+          return;
         }
+
+        // Sauvegarde favoris.json via pont natif si disponible
+        if (window.NativeFavorisWriter) {
+          try {
+            window.NativeFavorisWriter.postMessage(JSON.stringify({ favoris: ids }));
+          } catch {}
+        }
+
         updateFavoriteButtons();
         if (!elements.favoritePanel.hidden) renderFavorites();
       }
@@ -1122,6 +1278,25 @@
         }
       }
 
+      // Valide un lien image : doit être HTTPS ET suivre le pattern i.ibb.co
+      // Pattern attendu : https://i.ibb.co/<code>/<nom>.<ext>
+      const IMAGE_URL_PATTERN = /^https:\/\/i\.ibb\.co\/[A-Za-z0-9]+\/[^/]+\.(jpg|jpeg|png|webp|gif)$/i;
+
+      function validImageUrl(value) {
+        if (!value || typeof value !== 'string') return '';
+        const href = validMediaUrl(value);
+        if (!href) return '';
+        return IMAGE_URL_PATTERN.test(href) ? href : '';
+      }
+
+      function imageUrlIssue(value) {
+        if (!value || value === '') return null; // champ absent = pas d'erreur ici (géré ailleurs)
+        const href = validMediaUrl(value);
+        if (!href) return 'image : URL invalide ou non HTTPS.';
+        if (!IMAGE_URL_PATTERN.test(href)) return `image : URL non conforme au format i.ibb.co (reçu : ${href}).`;
+        return null;
+      }
+
       function auditMessageFormat(source) {
         const idCounts = new Map();
         for (const message of source) {
@@ -1172,6 +1347,14 @@
             if (message[field] != null && message[field] !== '' && !validMediaUrl(message[field])) {
               issues.push(`${labels[field]} URL HTTPS invalide.`);
             }
+          }
+
+          // Vérification image : champ obligatoire + pattern i.ibb.co
+          if (!message.image || typeof message.image !== 'string' || !message.image.trim()) {
+            issues.push('image : champ absent ou vide.');
+          } else {
+            const imgIssue = imageUrlIssue(message.image);
+            if (imgIssue) issues.push(imgIssue);
           }
 
           return { message, issues };
@@ -1239,7 +1422,7 @@
           article.append(category);
         }
 
-        const imageUrl = validMediaUrl(message.image);
+        const imageUrl = validImageUrl(message.image);
         if (imageUrl) {
           const image = document.createElement('img');
           image.className = 'message-image';
@@ -1625,6 +1808,7 @@
         stopAfterTrack = true;
         loopMode = false;
         loopStartIndex = 0;
+        loopEndIndex = 0;
         playlist = [];
         trackIndex = -1;
         elements.audio.pause();
@@ -1659,7 +1843,122 @@
         if ('mediaSession' in navigator && trackIndex >= 0) navigator.mediaSession.playbackState = 'paused';
       });
 
+      // ── Gestion commandes + recherche ─────────────────────────────────────
 
+      // Commande : id:X-id:Y — échange le contenu de deux messages
+      async function cmdSwapIds(rawA, rawB) {
+        const idA = parseInt(rawA, 10);
+        const idB = parseInt(rawB, 10);
+        if (!Number.isSafeInteger(idA) || !Number.isSafeInteger(idB) || idA < 1 || idB < 1) {
+          showToast('IDs invalides. Exemple : id:5-id:12', 'error');
+          return;
+        }
+        if (idA === idB) {
+          showToast('Les deux IDs sont identiques — rien à échanger.', 'error');
+          return;
+        }
+
+        showToast('Échange en cours…', 'success', 8000);
+
+        // Charge data2.json et data.json depuis GitHub
+        let d2, d1;
+        try {
+          const [r2, r1] = await Promise.all([
+            fetch(DATA_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' }),
+            fetch(DATA_JSON_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' })
+          ]);
+          if (!r2.ok) throw new Error(`data2.json HTTP ${r2.status}`);
+          if (!r1.ok) throw new Error(`data.json HTTP ${r1.status}`);
+          d2 = await r2.json();
+          d1 = await r1.json();
+        } catch (err) {
+          showToast(`Impossible de charger les fichiers : ${err.message}`, 'error', 6000);
+          return;
+        }
+
+        // Trouve les deux messages dans data2.json
+        const msgA2 = d2.messages?.find((m) => Number(m.id) === idA);
+        const msgB2 = d2.messages?.find((m) => Number(m.id) === idB);
+        if (!msgA2) { showToast(`Message ID ${idA} introuvable dans data2.json`, 'error'); return; }
+        if (!msgB2) { showToast(`Message ID ${idB} introuvable dans data2.json`, 'error'); return; }
+
+        // Champs à échanger (tout sauf id et date)
+        const swapFields = ['titre', 'titre_en', 'categorie', 'categorie_en',
+          'theme', 'theme_en', 'texte', 'texte_en', 'audio', 'audio2', 'image'];
+
+        function swapContent(objA, objB) {
+          for (const field of swapFields) {
+            const tmp = objA[field];
+            objA[field] = objB[field];
+            objB[field] = tmp;
+          }
+        }
+
+        swapContent(msgA2, msgB2);
+
+        // Même chose dans data.json si les deux IDs y sont présents
+        const msgA1 = d1.messages?.find((m) => Number(m.id) === idA);
+        const msgB1 = d1.messages?.find((m) => Number(m.id) === idB);
+        if (msgA1 && msgB1) swapContent(msgA1, msgB1);
+
+        // Envoie les fichiers modifiés via pont natif si disponible
+        if (window.NativeFileWriter) {
+          try {
+            window.NativeFileWriter.postMessage(JSON.stringify({
+              files: [
+                { name: 'data2.json', content: JSON.stringify(d2, null, 4) },
+                { name: 'data.json',  content: JSON.stringify(d1,  null, 4) }
+              ]
+            }));
+            showToast(`✅ ID ${idA} ↔ ID ${idB} échangés dans data2.json${(msgA1 && msgB1) ? ' et data.json' : ''}`, 'success', 5000);
+          } catch (err) {
+            showToast("Erreur lors de l'écriture des fichiers.", 'error', 5000);
+          }
+        } else {
+          // Fallback : propose le téléchargement des fichiers modifiés
+          function downloadJson(data, filename) {
+            const blob = new Blob([JSON.stringify(data, null, 4)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+          }
+          downloadJson(d2, 'data2.json');
+          if (msgA1 && msgB1) downloadJson(d1, 'data.json');
+          showToast(`✅ ID ${idA} ↔ ID ${idB} échangés — fichiers téléchargés`, 'success', 6000);
+        }
+
+        // Recharge les messages affichés
+        await loadMessages();
+        elements.search.value = '';
+        document.getElementById('clear-search').hidden = true;
+      }
+
+      function handleSearchCommand() {
+        const raw = elements.search.value.trim().toLowerCase();
+        const swapMatch = raw.match(/^id:(\d+)-id:(\d+)$/);
+        if (swapMatch) {
+          elements.search.value = '';
+          document.getElementById('clear-search').hidden = true;
+          cmdSwapIds(swapMatch[1], swapMatch[2]);
+          return true;
+        }
+        return false;
+      }
+
+      elements.search.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+        if (handleSearchCommand()) { event.preventDefault(); event.stopPropagation(); }
+      });
+
+      // Loupe Android + Firefox submit
+      elements.search.addEventListener('search', () => { handleSearchCommand(); });
+
+      // Clavier Android : certains claviers envoient keyup avec key='Enter' ou 'Go'
+      elements.search.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter' || event.key === 'Go') { handleSearchCommand(); }
+      });
 
       elements.search.addEventListener('input', () => {
         const val = elements.search.value;
@@ -1667,17 +1966,26 @@
         elements.favoritePanel.hidden = true;
         elements.favoritesToggle.setAttribute('aria-expanded', 'false');
         elements.returnFavorites.hidden = true;
+
+        // Annule les timers précédents
         clearTimeout(searchTimer);
         clearTimeout(suggestionTimer);
+
+        // Si vide : réinitialise immédiatement sans délai
         if (!val.trim()) {
           elements.searchSummary.textContent = '';
           renderMessages(messages);
           return;
         }
+
+        // Debounce adaptatif : court pour 1-3 chars (frappe rapide), plus long après
         const delay = normalize(val).length <= 3 ? 80 : 120;
+
         searchTimer = setTimeout(() => {
           const results = findMessages(val);
           renderMessages(results);
+
+          // Suggestions uniquement si 0 résultat et requête non vide
           if (results.length === 0 && normalize(val).length >= 3) {
             suggestionTimer = setTimeout(() => showSuggestion(val), 300);
           } else {
@@ -1693,18 +2001,6 @@
         elements.searchSummary.textContent = '';
         renderMessages(findMessages(''));
         elements.search.focus();
-      });
-
-
-      // Clic sur suggestion de correction
-      elements.searchSummary.addEventListener('click', (e) => {
-        const btn = e.target.closest('.suggestion-btn');
-        if (!btn) return;
-        const q = btn.dataset.query;
-        elements.search.value = q;
-        document.getElementById('clear-search').hidden = false;
-        elements.searchSummary.textContent = '';
-        renderMessages(findMessages(q));
       });
 
       document.getElementById('play-all').addEventListener('click', (event) =>
@@ -1727,7 +2023,7 @@
           try {
             await elements.audio.play();
           } catch {
-            elements.playerStatus.textContent = 'La lecture n’a pas pu reprendre.';
+            elements.playerStatus.textContent = 'La lecture n\'a pas pu reprendre.';
           }
         } else if (!elements.audio.paused) {
           elements.audio.pause();
@@ -1787,6 +2083,7 @@
             wordList: [...words]
           };
         });
+        // Construit l'index de préfixes et le corpus une seule fois
         buildPrefixMap(searchIndex);
         elements.search.disabled = false;
         loadFavorites();
@@ -1800,7 +2097,6 @@
       window.receiveMessages = (json, error) => {
         document.getElementById('refresh-data').disabled = false;
         if (error) {
-          nativeDataChunks = [];
           elements.status.textContent = `Chargement du data2.json en ligne impossible : ${error}. Vérifie ta connexion puis actualise.`;
           elements.resultCount.textContent = 'Aucun message chargé';
           elements.list.replaceChildren();
@@ -1813,18 +2109,6 @@
           elements.resultCount.textContent = 'Aucun message chargé';
           elements.list.replaceChildren();
         }
-      };
-
-      window.beginNativeMessages = () => {
-        nativeDataChunks = [];
-      };
-      window.appendNativeMessagesChunk = (chunk) => {
-        nativeDataChunks.push(chunk);
-      };
-      window.finishNativeMessages = () => {
-        const json = nativeDataChunks.join('');
-        nativeDataChunks = [];
-        window.receiveMessages(json);
       };
 
       async function loadMessages() {

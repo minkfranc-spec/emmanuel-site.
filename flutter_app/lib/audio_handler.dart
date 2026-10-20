@@ -269,7 +269,10 @@ class EmmanuelAudioHandler extends BaseAudioHandler
   static const _loopAction = 'toggle_loop';
 
   @override
-  Future<void> onCustomAction(String name, dynamic extras) async {
+  Future<dynamic> customAction(
+    String name, [
+    Map<String, dynamic>? extras,
+  ]) async {
     if (name == _loopAction) {
       await toggleLoop();
     }
