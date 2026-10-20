@@ -590,7 +590,7 @@
 <body>
   <header class="app-header">
     <div class="brand">EMMANUEL<small>emmanuel-dpv · messages</small></div>
-    <button id="today-btn" type="button" aria-label="Message du jour" title="Message du jour" hidden></button>
+    <button id="today-btn" type="button" aria-label="Message du jour" title="Message du jour" class="today-no"></button>
     <a class="site-link" href="https://emmanuel-dpv.pages.dev/" target="_blank" rel="noopener noreferrer" onclick="if(window.PublicSiteOpener){window.PublicSiteOpener.postMessage('open');return false;}">Voir le site ↗</a>
   </header>
 
@@ -733,7 +733,6 @@
           const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
           const isToday = todayMessage.date === todayStr;
 
-          btn.hidden = false;
           btn.textContent = '●';
           btn.className = isToday ? 'today-yes' : 'today-no';
           btn.title = isToday

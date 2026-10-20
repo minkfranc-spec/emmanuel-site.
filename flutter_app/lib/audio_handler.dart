@@ -323,7 +323,8 @@ class EmmanuelAudioHandler extends BaseAudioHandler
     );
 
     // Boutons de la notification :
-    // [⏮ Précédent] [⏸/▶ Pause/Play] [⏭ Suivant] [🔁 Boucle]
+    // [⏸/▶ Pause/Play] [⏭ Suivant] [🔁 Boucle] — vue compacte
+    // [⏮ Précédent] [⏸/▶ Pause/Play] [⏭ Suivant] [🔁 Boucle] — vue étendue
     // androidCompactActionIndices = indices affichés en vue réduite (3 max)
     playbackState.add(
       PlaybackState(
@@ -338,7 +339,7 @@ class EmmanuelAudioHandler extends BaseAudioHandler
           MediaAction.seekForward,
           MediaAction.seekBackward,
         },
-        androidCompactActionIndices: const [0, 1, 2],
+        androidCompactActionIndices: const [1, 2, 3],
         processingState: processingStates[_player.processingState]!,
         playing: playing,
         updatePosition: _player.position,
