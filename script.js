@@ -962,7 +962,7 @@ function flashLabel(labelId) {
     label._flashTimer = setTimeout(() => {
         label.style.opacity = '0';
         label.style.transform = 'translateX(10px)';
-    }, 1500);
+    }, 1000);
 }
 
 function afficherAccueil() {
