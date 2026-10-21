@@ -46,38 +46,43 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       min-height: 44px;
-      padding: 6px max(12px, env(safe-area-inset-left));
+      padding: 6px max(10px, env(safe-area-inset-left));
       background: rgba(16, 20, 29, .96);
       border-bottom: 1px solid var(--line);
       backdrop-filter: blur(14px);
     }
 
     .brand {
+      flex: 1 1 0;
       min-width: 0;
       font-weight: 800;
-      font-size: .9rem;
-      letter-spacing: .08em;
+      font-size: .88rem;
+      letter-spacing: .06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .brand small {
       display: block;
       color: var(--muted);
-      font-size: .62rem;
+      font-size: .6rem;
       font-weight: 500;
       letter-spacing: .02em;
     }
 
     .site-link {
       flex: 0 0 auto;
-      padding: 5px 10px;
+      padding: 5px 9px;
       border: 1px solid rgba(225,189,81,.55);
       border-radius: 999px;
       color: var(--gold);
-      font-size: .75rem;
+      font-size: .72rem;
       font-weight: 700;
       text-decoration: none;
+      white-space: nowrap;
     }
 
     main {
@@ -98,25 +103,33 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 5px;
+      flex-wrap: wrap;
     }
 
     .search-label {
+      flex: 1 1 0;
+      min-width: 0;
       color: var(--muted);
-      font-size: .72rem;
+      font-size: .7rem;
       font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .search-actions button {
+      flex: 0 0 auto;
       min-height: 32px;
       padding: 5px 9px;
       border: 1px solid rgba(225,189,81,.55);
       border-radius: 8px;
       background: var(--panel);
       color: var(--gold);
-      font-size: .75rem;
+      font-size: .73rem;
       font-weight: 700;
+      white-space: nowrap;
     }
 
     .search-input-wrap { position: relative; }
@@ -199,13 +212,17 @@
       align-items: center;
       justify-content: flex-end;
       flex-wrap: wrap;
-      gap: 6px;
-      margin: 2px 0 2px;
+      gap: 5px;
+      margin: 4px 0 2px;
       color: var(--muted);
       font-size: .68rem;
     }
 
-    .data-toolbar span { margin-right: auto; }
+    .data-toolbar span {
+      flex: 1 1 auto;
+      margin-right: auto;
+      font-size: .7rem;
+    }
 
     #refresh-data, #format-audit {
       min-height: 28px;
@@ -324,11 +341,20 @@
 
     .message-text {
       margin: 0;
-      font-size: .93rem;
+      font-size: .95rem;
       color: #e5e8ee;
-      white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
+
+    .message-text p {
+      margin: 0 0 .9em;
+      text-align: justify;
+      text-align-last: left;
+      line-height: 1.75;
+      hyphens: auto;
+    }
+
+    .message-text p:last-child { margin-bottom: 0; }
 
     .message-text strong { color: #fff1bd; }
 
@@ -356,7 +382,7 @@
       position: fixed;
       inset: auto 0 0;
       z-index: 10;
-      padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+      padding: 7px 10px calc(7px + env(safe-area-inset-bottom));
       border-top: 1px solid var(--line);
       background: rgba(25,31,43,.98);
       box-shadow: 0 -6px 20px rgba(0,0,0,.25);
@@ -373,32 +399,28 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      margin-bottom: 5px;
-      font-size: .75rem;
+      margin-bottom: 4px;
+      font-size: .72rem;
     }
 
-    .player-heading strong { font-size: .75rem; color: var(--muted); font-weight: 600; }
+    .player-heading strong { font-size: .72rem; color: var(--muted); font-weight: 600; }
 
     #player-status {
+      flex: 1 1 0;
       min-width: 0;
       padding: 0;
       border: 0;
       background: transparent;
       overflow: hidden;
       color: var(--gold);
-      font-size: .72rem;
+      font-size: .7rem;
       text-overflow: ellipsis;
       white-space: nowrap;
       text-align: right;
     }
 
-    #player-status:enabled {
-      cursor: pointer;
-    }
-
-    #player-status:disabled {
-      cursor: default;
-    }
+    #player-status:enabled { cursor: pointer; }
+    #player-status:disabled { cursor: default; }
 
     #player-status:focus-visible {
       outline: 2px solid var(--gold);
@@ -412,13 +434,13 @@
     }
 
     .player-controls button {
-      min-height: 38px;
-      padding: 6px 5px;
+      min-height: 40px;
+      padding: 7px 5px;
       border: 1px solid var(--line);
       border-radius: 10px;
       background: var(--panel-raised);
       color: var(--text);
-      font-size: .78rem;
+      font-size: .8rem;
       font-weight: 700;
     }
 
@@ -459,7 +481,6 @@
     }
 
     .native-audio #audio-player { display: none !important; }
-    .native-audio #cmd-hint { display: none !important; }
 
     .playback-progress {
       display: grid;
@@ -486,7 +507,7 @@
     .back-to-top {
       position: fixed;
       right: max(12px, env(safe-area-inset-right));
-      bottom: calc(158px + env(safe-area-inset-bottom));
+      bottom: calc(206px + env(safe-area-inset-bottom));
       z-index: 11;
       display: grid;
       place-items: center;
@@ -505,6 +526,28 @@
 
     .back-to-top[hidden] { display: none; }
 
+    .go-to-bottom {
+      position: fixed;
+      right: max(12px, env(safe-area-inset-right));
+      bottom: calc(158px + env(safe-area-inset-bottom));
+      z-index: 11;
+      display: grid;
+      place-items: center;
+      width: 40px;
+      aspect-ratio: 1;
+      padding: 0;
+      border: 1px solid rgba(225,189,81,.7);
+      border-radius: 50%;
+      background: var(--panel-raised);
+      color: var(--gold);
+      box-shadow: 0 4px 16px rgba(0,0,0,.35);
+      font-size: 1.3rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .go-to-bottom[hidden] { display: none; }
+
     .sr-only {
       position: absolute;
       width: 1px;
@@ -517,63 +560,69 @@
       border: 0;
     }
 
-    @media (min-width: 700px) {
-      body { padding-bottom: 148px; }
-      main { padding: 20px 20px 36px; }
-      .message { padding: 16px; }
-      .player { padding-right: 20px; padding-left: 20px; }
-    }
-
-    @media (max-width: 360px) {
+    /* ── Responsive — 320px (très petit mobile) ── */
+    @media (max-width: 359px) {
+      .app-header { gap: 4px; }
+      .site-link { font-size: .65rem; padding: 4px 7px; }
       main { padding-right: 8px; padding-left: 8px; }
-      .message { padding: 10px; }
+      .message { padding: 9px 10px; }
+      .message h2 { font-size: .95rem; }
+      .message-text p { font-size: .88rem; }
       .player-controls { gap: 4px; }
-      .player-controls button { font-size: .7rem; }
+      .player-controls button { min-height: 38px; font-size: .72rem; }
+      .search-label { display: none; }
     }
 
-    /* Rappel commandes */
-    .cmd-hint {
-      margin-top: 4px;
-      padding: 5px 10px;
-      border: 1px solid rgba(225,189,81,.25);
-      border-radius: 8px;
-      background: rgba(225,189,81,.06);
-      color: var(--muted);
-      font-size: .68rem;
-      line-height: 1.5;
-    }
-    .cmd-hint code {
-      color: var(--gold);
-      font-family: monospace;
-      font-size: .75rem;
+    /* ── Responsive — 360px → 479px (mobile standard) ── */
+    @media (min-width: 360px) and (max-width: 479px) {
+      main { padding: 6px 10px 16px; }
+      .message { padding: 10px 11px; }
+      .message h2 { font-size: 1rem; }
     }
 
-    /* Toast de feedback commande */
-    #cmd-toast {
-      position: fixed;
-      top: 54px;
-      left: 50%;
-      z-index: 99;
-      transform: translateX(-50%) translateY(-8px);
-      max-width: min(92vw, 420px);
-      padding: 8px 14px;
-      border-radius: 10px;
-      background: var(--panel-raised);
-      border: 1px solid var(--line);
-      color: var(--text);
-      font-size: .82rem;
-      font-weight: 600;
-      text-align: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .22s, transform .22s;
+    /* ── Responsive — 480px → 599px (grand mobile / petite tablette) ── */
+    @media (min-width: 480px) and (max-width: 599px) {
+      main { padding: 8px 14px 20px; }
+      .message { padding: 12px 14px; }
+      .player-controls button { font-size: .82rem; }
+      .search-label { white-space: normal; }
     }
-    #cmd-toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
+
+    /* ── Responsive — 600px → 759px (tablette portrait) ── */
+    @media (min-width: 600px) and (max-width: 759px) {
+      main { padding: 12px 18px 28px; }
+      .message { padding: 14px 16px; }
+      .player { padding-left: 16px; padding-right: 16px; }
+      .player-controls { grid-template-columns: repeat(4, minmax(0,1fr)); }
+      .message-image { max-height: 340px; }
     }
-    #cmd-toast.success { border-color: var(--gold); color: var(--gold); }
-    #cmd-toast.error   { border-color: var(--danger); color: var(--danger); }
+
+    /* ── Responsive — 760px+ (desktop / tablette paysage) ── */
+    @media (min-width: 760px) {
+      body { padding-bottom: 140px; }
+      main { padding: 20px 24px 40px; }
+      .message { padding: 18px 20px; }
+      .message h2 { font-size: 1.12rem; }
+      .message-text p { font-size: .97rem; line-height: 1.8; }
+      .player { padding-left: 24px; padding-right: 24px; }
+      .player-controls { grid-template-columns: repeat(4, minmax(0,1fr)); }
+      .player-controls button { min-height: 42px; font-size: .82rem; }
+      .message-image { max-height: 380px; border-radius: 12px; }
+      .search-box { top: 48px; }
+      .message, .message h2 { scroll-margin-top: 120px; }
+      #search { font-size: 1rem; }
+    }
+
+    /* ── Responsive — 1024px+ (grand écran) ── */
+    @media (min-width: 1024px) {
+      main { padding: 28px 0 48px; }
+      .message { padding: 22px 24px; border-radius: 16px; }
+      .message h2 { font-size: 1.18rem; }
+      .message-text p { font-size: 1rem; line-height: 1.85; }
+      #message-list { gap: 12px; }
+      .message-image { max-height: 420px; }
+      .message, .message h2 { scroll-margin-top: 130px; }
+    }
 
     /* Badge boucle active */
     .loop-badge {
@@ -631,12 +680,6 @@
   <main>
     <p id="load-status" role="status" aria-live="polite" style="margin:4px 2px 0;color:var(--muted);font-size:.72rem;">Chargement…</p>
 
-    <div class="data-toolbar">
-      <span id="audit-count" role="status" aria-live="polite"></span>
-      <button id="format-audit" type="button" aria-pressed="false">Vérifier le format</button>
-      <button id="refresh-data" type="button">Actualiser</button>
-    </div>
-
     <div class="search-box">
       <div class="search-actions">
         <label class="search-label" for="search">Recherche par date, ID, titre, thème ou contenu</label>
@@ -647,11 +690,12 @@
         <input id="search" type="search" placeholder="Date, ID, titre, mot ou thème…" autocomplete="off" disabled>
         <button id="clear-search" type="button" aria-label="Effacer la recherche" title="Effacer" hidden>×</button>
       </div>
-      <div id="search-summary" role="status" aria-live="polite"></div>
-      <div class="cmd-hint" id="cmd-hint">
-        💡 Commandes : <code>boucle</code> — répéter le message en cours &nbsp;·&nbsp;
-        <code>id:X-id:Y</code> — échanger deux messages (ex: <code>id:5-id:12</code>)
+      <div class="data-toolbar">
+        <span id="audit-count" role="status" aria-live="polite"></span>
+        <button id="format-audit" type="button" aria-pressed="false">Format</button>
+        <button id="refresh-data" type="button">Actualiser</button>
       </div>
+      <div id="search-summary" role="status" aria-live="polite"></div>
       <section id="favorite-panel" hidden aria-label="Messages favoris">
         <div id="favorite-list"></div>
       </section>
@@ -666,8 +710,7 @@
   </main>
 
   <button id="back-to-top" class="back-to-top" type="button" aria-label="Retour en haut" title="Retour en haut" hidden>↑</button>
-
-  <div id="cmd-toast" role="alert" aria-live="assertive"></div>
+  <button id="go-to-bottom" class="go-to-bottom" type="button" aria-label="Aller en bas" title="Aller en bas" hidden>↓</button>
 
   <section class="player" aria-label="Lecteur audio">
     <div class="player-inner">
@@ -715,16 +758,21 @@
         playbackSeek: document.getElementById('playback-seek'),
         playbackTime: document.getElementById('playback-time'),
         backToTop: document.getElementById('back-to-top'),
-        cmdToast: document.getElementById('cmd-toast'),
-        cmdHint: document.getElementById('cmd-hint')
+        goToBottom: document.getElementById('go-to-bottom'),
       };
       elements.playerStatus.addEventListener('click', jumpToCurrentMessage);
 
       window.addEventListener('scroll', () => {
-        elements.backToTop.hidden = window.scrollY <= 240;
+        const atTop = window.scrollY <= 240;
+        const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 80;
+        elements.backToTop.hidden = atTop;
+        elements.goToBottom.hidden = atBottom;
       }, { passive: true });
       elements.backToTop.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      elements.goToBottom.addEventListener('click', () => {
+        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
       });
 
       let messages = [];
@@ -742,7 +790,6 @@
       let stopAfterTrack = false;
       let loopMode = false;
       let searchTimer;
-      let toastTimer;
       let wakeLock;
       let nativePlayback = false;
       const prefetchAudio = new Audio();
@@ -814,15 +861,6 @@
           card.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
-
-      // ── Toast de feedback ──────────────────────────────────────────────────
-      function showToast(message, type = 'success', durationMs = 3000) {
-        const toast = elements.cmdToast;
-        clearTimeout(toastTimer);
-        toast.textContent = message;
-        toast.className = `show ${type}`;
-        toastTimer = setTimeout(() => { toast.className = ''; }, durationMs);
-      }
 
       function normalize(value) {
         return String(value ?? '')
@@ -1253,19 +1291,20 @@
       }
 
       function appendFormattedText(container, value) {
-        const paragraphs = String(value ?? '').split(/\n+/);
-        paragraphs.forEach((paragraph, index) => {
-          if (index) container.append(document.createElement('br'), document.createElement('br'));
+        const paragraphs = String(value ?? '').split(/\n+/).filter((p) => p.trim());
+        paragraphs.forEach((paragraph) => {
+          const p = document.createElement('p');
           const parts = paragraph.split(/(\*\*[^*]+\*\*)/g);
           parts.forEach((part) => {
             if (part.startsWith('**') && part.endsWith('**')) {
               const strong = document.createElement('strong');
               strong.textContent = part.slice(2, -2);
-              container.append(strong);
+              p.append(strong);
             } else {
-              container.append(document.createTextNode(part));
+              p.append(document.createTextNode(part));
             }
           });
+          container.append(p);
         });
       }
 
@@ -1278,9 +1317,24 @@
         }
       }
 
-      // Valide un lien image : doit être HTTPS ET suivre le pattern i.ibb.co
-      // Pattern attendu : https://i.ibb.co/<code>/<nom>.<ext>
-      const IMAGE_URL_PATTERN = /^https:\/\/i\.ibb\.co\/[A-Za-z0-9]+\/[^/]+\.(jpg|jpeg|png|webp|gif)$/i;
+      // ── Hébergeurs autorisés ─────────────────────────────────────────────
+      // Image : i.ibb.co  ou  i.postimg.cc
+      //   https://i.ibb.co/<code>/<nom>.<ext>
+      //   https://i.postimg.cc/<code>/<nom>.<ext>
+      const IMAGE_URL_PATTERN = /^https:\/\/(i\.ibb\.co|i\.postimg\.cc)\/[A-Za-z0-9]+\/[^/]+\.(jpg|jpeg|png|webp|gif)$/i;
+
+      // Audio : leopard.hosting.pecon.us  ou  files.catbox.moe
+      //   https://leopard.hosting.pecon.us/dl/<5lettres>/<nom>.mp3
+      //   https://files.catbox.moe/<6chars>.mp3
+      const AUDIO_URL_PATTERN = /^https:\/\/(leopard\.hosting\.pecon\.us\/dl\/[a-z]{5}\/[^/]+|files\.catbox\.moe\/[A-Za-z0-9]+)\.mp3$/i;
+
+      // Détecte rapidement les faux liens placeholders ("lien audio", "lien image", etc.)
+      // avant même d'essayer de parser l'URL — économise du temps et donne un message clair.
+      function isPlaceholderLink(value) {
+        if (typeof value !== 'string') return false;
+        const v = value.trim().toLowerCase();
+        return v === 'lien audio' || v === 'lien image' || v === 'lien' || (!v.startsWith('http') && v.length > 0);
+      }
 
       function validImageUrl(value) {
         if (!value || typeof value !== 'string') return '';
@@ -1291,9 +1345,19 @@
 
       function imageUrlIssue(value) {
         if (!value || value === '') return null; // champ absent = pas d'erreur ici (géré ailleurs)
+        if (isPlaceholderLink(value)) return `image : lien placeholder détecté ("${value.trim()}") — remplacer par une vraie URL.`;
         const href = validMediaUrl(value);
         if (!href) return 'image : URL invalide ou non HTTPS.';
-        if (!IMAGE_URL_PATTERN.test(href)) return `image : URL non conforme au format i.ibb.co (reçu : ${href}).`;
+        if (!IMAGE_URL_PATTERN.test(href)) return `image : hébergeur non reconnu (attendu : i.ibb.co ou i.postimg.cc — reçu : ${href}).`;
+        return null;
+      }
+
+      function audioUrlIssue(value) {
+        if (!value || value === '') return null; // champ absent = géré ailleurs
+        if (isPlaceholderLink(value)) return `audio : lien placeholder détecté ("${value.trim()}") — remplacer par une vraie URL.`;
+        const href = validMediaUrl(value);
+        if (!href) return 'audio : URL invalide ou non HTTPS.';
+        if (!AUDIO_URL_PATTERN.test(href)) return `audio : hébergeur non reconnu (attendu : leopard.hosting.pecon.us ou files.catbox.moe — reçu : ${href}).`;
         return null;
       }
 
@@ -1341,15 +1405,18 @@
           }
 
           for (const field of mediaFields) {
-            if (!validMediaUrl(message[field])) issues.push(`${labels[field]} absent ou URL HTTPS invalide.`);
+            const audioIssue = audioUrlIssue(message[field]);
+            if (audioIssue) issues.push(audioIssue);
+            else if (!validMediaUrl(message[field])) issues.push(`${labels[field]} absent ou URL HTTPS invalide.`);
           }
           for (const field of optionalMediaFields) {
-            if (message[field] != null && message[field] !== '' && !validMediaUrl(message[field])) {
-              issues.push(`${labels[field]} URL HTTPS invalide.`);
+            if (message[field] != null && message[field] !== '') {
+              const audioIssue2 = audioUrlIssue(message[field]);
+              if (audioIssue2) issues.push(audioIssue2);
             }
           }
 
-          // Vérification image : champ obligatoire + pattern i.ibb.co
+          // Vérification image : champ obligatoire + hébergeur reconnu (i.ibb.co ou i.postimg.cc)
           if (!message.image || typeof message.image !== 'string' || !message.image.trim()) {
             issues.push('image : champ absent ou vide.');
           } else {
@@ -1843,122 +1910,7 @@
         if ('mediaSession' in navigator && trackIndex >= 0) navigator.mediaSession.playbackState = 'paused';
       });
 
-      // ── Gestion commandes + recherche ─────────────────────────────────────
-
-      // Commande : id:X-id:Y — échange le contenu de deux messages
-      async function cmdSwapIds(rawA, rawB) {
-        const idA = parseInt(rawA, 10);
-        const idB = parseInt(rawB, 10);
-        if (!Number.isSafeInteger(idA) || !Number.isSafeInteger(idB) || idA < 1 || idB < 1) {
-          showToast('IDs invalides. Exemple : id:5-id:12', 'error');
-          return;
-        }
-        if (idA === idB) {
-          showToast('Les deux IDs sont identiques — rien à échanger.', 'error');
-          return;
-        }
-
-        showToast('Échange en cours…', 'success', 8000);
-
-        // Charge data2.json et data.json depuis GitHub
-        let d2, d1;
-        try {
-          const [r2, r1] = await Promise.all([
-            fetch(DATA_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' }),
-            fetch(DATA_JSON_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' })
-          ]);
-          if (!r2.ok) throw new Error(`data2.json HTTP ${r2.status}`);
-          if (!r1.ok) throw new Error(`data.json HTTP ${r1.status}`);
-          d2 = await r2.json();
-          d1 = await r1.json();
-        } catch (err) {
-          showToast(`Impossible de charger les fichiers : ${err.message}`, 'error', 6000);
-          return;
-        }
-
-        // Trouve les deux messages dans data2.json
-        const msgA2 = d2.messages?.find((m) => Number(m.id) === idA);
-        const msgB2 = d2.messages?.find((m) => Number(m.id) === idB);
-        if (!msgA2) { showToast(`Message ID ${idA} introuvable dans data2.json`, 'error'); return; }
-        if (!msgB2) { showToast(`Message ID ${idB} introuvable dans data2.json`, 'error'); return; }
-
-        // Champs à échanger (tout sauf id et date)
-        const swapFields = ['titre', 'titre_en', 'categorie', 'categorie_en',
-          'theme', 'theme_en', 'texte', 'texte_en', 'audio', 'audio2', 'image'];
-
-        function swapContent(objA, objB) {
-          for (const field of swapFields) {
-            const tmp = objA[field];
-            objA[field] = objB[field];
-            objB[field] = tmp;
-          }
-        }
-
-        swapContent(msgA2, msgB2);
-
-        // Même chose dans data.json si les deux IDs y sont présents
-        const msgA1 = d1.messages?.find((m) => Number(m.id) === idA);
-        const msgB1 = d1.messages?.find((m) => Number(m.id) === idB);
-        if (msgA1 && msgB1) swapContent(msgA1, msgB1);
-
-        // Envoie les fichiers modifiés via pont natif si disponible
-        if (window.NativeFileWriter) {
-          try {
-            window.NativeFileWriter.postMessage(JSON.stringify({
-              files: [
-                { name: 'data2.json', content: JSON.stringify(d2, null, 4) },
-                { name: 'data.json',  content: JSON.stringify(d1,  null, 4) }
-              ]
-            }));
-            showToast(`✅ ID ${idA} ↔ ID ${idB} échangés dans data2.json${(msgA1 && msgB1) ? ' et data.json' : ''}`, 'success', 5000);
-          } catch (err) {
-            showToast("Erreur lors de l'écriture des fichiers.", 'error', 5000);
-          }
-        } else {
-          // Fallback : propose le téléchargement des fichiers modifiés
-          function downloadJson(data, filename) {
-            const blob = new Blob([JSON.stringify(data, null, 4)], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = filename;
-            a.click();
-            setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-          }
-          downloadJson(d2, 'data2.json');
-          if (msgA1 && msgB1) downloadJson(d1, 'data.json');
-          showToast(`✅ ID ${idA} ↔ ID ${idB} échangés — fichiers téléchargés`, 'success', 6000);
-        }
-
-        // Recharge les messages affichés
-        await loadMessages();
-        elements.search.value = '';
-        document.getElementById('clear-search').hidden = true;
-      }
-
-      function handleSearchCommand() {
-        const raw = elements.search.value.trim().toLowerCase();
-        const swapMatch = raw.match(/^id:(\d+)-id:(\d+)$/);
-        if (swapMatch) {
-          elements.search.value = '';
-          document.getElementById('clear-search').hidden = true;
-          cmdSwapIds(swapMatch[1], swapMatch[2]);
-          return true;
-        }
-        return false;
-      }
-
-      elements.search.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') return;
-        if (handleSearchCommand()) { event.preventDefault(); event.stopPropagation(); }
-      });
-
-      // Loupe Android + Firefox submit
-      elements.search.addEventListener('search', () => { handleSearchCommand(); });
-
-      // Clavier Android : certains claviers envoient keyup avec key='Enter' ou 'Go'
-      elements.search.addEventListener('keyup', (event) => {
-        if (event.key === 'Enter' || event.key === 'Go') { handleSearchCommand(); }
-      });
+      // ── Recherche ──────────────────────────────────────────────────────────
 
       elements.search.addEventListener('input', () => {
         const val = elements.search.value;

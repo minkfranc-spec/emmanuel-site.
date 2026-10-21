@@ -624,50 +624,6 @@
       .message, .message h2 { scroll-margin-top: 130px; }
     }
 
-    /* Rappel commandes */
-    .cmd-hint {
-      margin-top: 4px;
-      padding: 5px 10px;
-      border: 1px solid rgba(225,189,81,.25);
-      border-radius: 8px;
-      background: rgba(225,189,81,.06);
-      color: var(--muted);
-      font-size: .68rem;
-      line-height: 1.5;
-    }
-    .cmd-hint code {
-      color: var(--gold);
-      font-family: monospace;
-      font-size: .75rem;
-    }
-
-    /* Toast de feedback commande */
-    #cmd-toast {
-      position: fixed;
-      top: 54px;
-      left: 50%;
-      z-index: 99;
-      transform: translateX(-50%) translateY(-8px);
-      max-width: min(92vw, 420px);
-      padding: 8px 14px;
-      border-radius: 10px;
-      background: var(--panel-raised);
-      border: 1px solid var(--line);
-      color: var(--text);
-      font-size: .82rem;
-      font-weight: 600;
-      text-align: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .22s, transform .22s;
-    }
-    #cmd-toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    #cmd-toast.success { border-color: var(--gold); color: var(--gold); }
-    #cmd-toast.error   { border-color: var(--danger); color: var(--danger); }
-
     /* Badge boucle active */
     .loop-badge {
       display: inline-block;
@@ -740,9 +696,6 @@
         <button id="refresh-data" type="button">Actualiser</button>
       </div>
       <div id="search-summary" role="status" aria-live="polite"></div>
-      <div class="cmd-hint" id="cmd-hint">
-        💡 Commande : <code>id:X-id:Y</code> — échanger deux messages (ex: <code>id:5-id:12</code>)
-      </div>
       <section id="favorite-panel" hidden aria-label="Messages favoris">
         <div id="favorite-list"></div>
       </section>
@@ -758,8 +711,6 @@
 
   <button id="back-to-top" class="back-to-top" type="button" aria-label="Retour en haut" title="Retour en haut" hidden>↑</button>
   <button id="go-to-bottom" class="go-to-bottom" type="button" aria-label="Aller en bas" title="Aller en bas" hidden>↓</button>
-
-  <div id="cmd-toast" role="alert" aria-live="assertive"></div>
 
   <section class="player" aria-label="Lecteur audio">
     <div class="player-inner">
@@ -808,8 +759,6 @@
         playbackTime: document.getElementById('playback-time'),
         backToTop: document.getElementById('back-to-top'),
         goToBottom: document.getElementById('go-to-bottom'),
-        cmdToast: document.getElementById('cmd-toast'),
-        cmdHint: document.getElementById('cmd-hint')
       };
       elements.playerStatus.addEventListener('click', jumpToCurrentMessage);
 
@@ -841,7 +790,6 @@
       let stopAfterTrack = false;
       let loopMode = false;
       let searchTimer;
-      let toastTimer;
       let wakeLock;
       let nativePlayback = false;
       const prefetchAudio = new Audio();
@@ -913,15 +861,6 @@
           card.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
-
-      // ── Toast de feedback ──────────────────────────────────────────────────
-      function showToast(message, type = 'success', durationMs = 3000) {
-        const toast = elements.cmdToast;
-        clearTimeout(toastTimer);
-        toast.textContent = message;
-        toast.className = `show ${type}`;
-        toastTimer = setTimeout(() => { toast.className = ''; }, durationMs);
-      }
 
       function normalize(value) {
         return String(value ?? '')
@@ -1971,122 +1910,7 @@
         if ('mediaSession' in navigator && trackIndex >= 0) navigator.mediaSession.playbackState = 'paused';
       });
 
-      // ── Gestion commandes + recherche ─────────────────────────────────────
-
-      // Commande : id:X-id:Y — échange le contenu de deux messages
-      async function cmdSwapIds(rawA, rawB) {
-        const idA = parseInt(rawA, 10);
-        const idB = parseInt(rawB, 10);
-        if (!Number.isSafeInteger(idA) || !Number.isSafeInteger(idB) || idA < 1 || idB < 1) {
-          showToast('IDs invalides. Exemple : id:5-id:12', 'error');
-          return;
-        }
-        if (idA === idB) {
-          showToast('Les deux IDs sont identiques — rien à échanger.', 'error');
-          return;
-        }
-
-        showToast('Échange en cours…', 'success', 8000);
-
-        // Charge data2.json et data.json depuis GitHub
-        let d2, d1;
-        try {
-          const [r2, r1] = await Promise.all([
-            fetch(DATA_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' }),
-            fetch(DATA_JSON_URL, { cache: 'no-store', mode: 'cors', credentials: 'omit' })
-          ]);
-          if (!r2.ok) throw new Error(`data2.json HTTP ${r2.status}`);
-          if (!r1.ok) throw new Error(`data.json HTTP ${r1.status}`);
-          d2 = await r2.json();
-          d1 = await r1.json();
-        } catch (err) {
-          showToast(`Impossible de charger les fichiers : ${err.message}`, 'error', 6000);
-          return;
-        }
-
-        // Trouve les deux messages dans data2.json
-        const msgA2 = d2.messages?.find((m) => Number(m.id) === idA);
-        const msgB2 = d2.messages?.find((m) => Number(m.id) === idB);
-        if (!msgA2) { showToast(`Message ID ${idA} introuvable dans data2.json`, 'error'); return; }
-        if (!msgB2) { showToast(`Message ID ${idB} introuvable dans data2.json`, 'error'); return; }
-
-        // Champs à échanger (tout sauf id et date)
-        const swapFields = ['titre', 'titre_en', 'categorie', 'categorie_en',
-          'theme', 'theme_en', 'texte', 'texte_en', 'audio', 'audio2', 'image'];
-
-        function swapContent(objA, objB) {
-          for (const field of swapFields) {
-            const tmp = objA[field];
-            objA[field] = objB[field];
-            objB[field] = tmp;
-          }
-        }
-
-        swapContent(msgA2, msgB2);
-
-        // Même chose dans data.json si les deux IDs y sont présents
-        const msgA1 = d1.messages?.find((m) => Number(m.id) === idA);
-        const msgB1 = d1.messages?.find((m) => Number(m.id) === idB);
-        if (msgA1 && msgB1) swapContent(msgA1, msgB1);
-
-        // Envoie les fichiers modifiés via pont natif si disponible
-        if (window.NativeFileWriter) {
-          try {
-            window.NativeFileWriter.postMessage(JSON.stringify({
-              files: [
-                { name: 'data2.json', content: JSON.stringify(d2, null, 4) },
-                { name: 'data.json',  content: JSON.stringify(d1,  null, 4) }
-              ]
-            }));
-            showToast(`✅ ID ${idA} ↔ ID ${idB} échangés dans data2.json${(msgA1 && msgB1) ? ' et data.json' : ''}`, 'success', 5000);
-          } catch (err) {
-            showToast("Erreur lors de l'écriture des fichiers.", 'error', 5000);
-          }
-        } else {
-          // Fallback : propose le téléchargement des fichiers modifiés
-          function downloadJson(data, filename) {
-            const blob = new Blob([JSON.stringify(data, null, 4)], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = filename;
-            a.click();
-            setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-          }
-          downloadJson(d2, 'data2.json');
-          if (msgA1 && msgB1) downloadJson(d1, 'data.json');
-          showToast(`✅ ID ${idA} ↔ ID ${idB} échangés — fichiers téléchargés`, 'success', 6000);
-        }
-
-        // Recharge les messages affichés
-        await loadMessages();
-        elements.search.value = '';
-        document.getElementById('clear-search').hidden = true;
-      }
-
-      function handleSearchCommand() {
-        const raw = elements.search.value.trim().toLowerCase();
-        const swapMatch = raw.match(/^id:(\d+)-id:(\d+)$/);
-        if (swapMatch) {
-          elements.search.value = '';
-          document.getElementById('clear-search').hidden = true;
-          cmdSwapIds(swapMatch[1], swapMatch[2]);
-          return true;
-        }
-        return false;
-      }
-
-      elements.search.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') return;
-        if (handleSearchCommand()) { event.preventDefault(); event.stopPropagation(); }
-      });
-
-      // Loupe Android + Firefox submit
-      elements.search.addEventListener('search', () => { handleSearchCommand(); });
-
-      // Clavier Android : certains claviers envoient keyup avec key='Enter' ou 'Go'
-      elements.search.addEventListener('keyup', (event) => {
-        if (event.key === 'Enter' || event.key === 'Go') { handleSearchCommand(); }
-      });
+      // ── Recherche ──────────────────────────────────────────────────────────
 
       elements.search.addEventListener('input', () => {
         const val = elements.search.value;
