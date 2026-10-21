@@ -953,6 +953,18 @@ function toggleAffichageTous() {
     }, 4000);
 }
 
+function flashLabel(labelId) {
+    const label = document.getElementById(labelId);
+    if (!label) return;
+    label.style.opacity = '1';
+    label.style.transform = 'translateX(0)';
+    clearTimeout(label._flashTimer);
+    label._flashTimer = setTimeout(() => {
+        label.style.opacity = '0';
+        label.style.transform = 'translateX(10px)';
+    }, 1500);
+}
+
 function afficherAccueil() {
     arreterLectureContinue();
     const container = document.getElementById('flux-messages');

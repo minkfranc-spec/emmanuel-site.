@@ -50,7 +50,7 @@
         <span id="notif-hide-btn" class="close-notif" onclick="toutMasquer()">Masquer</span>
     </div>
 
-    <a href="javascript:void(0)" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="floating-container scroll-link" id="scrollTopLink" aria-label="Retour en haut">
+    <a href="javascript:void(0)" onclick="window.scrollTo({top:0,behavior:'smooth'}); flashLabel('label-top')" class="floating-container scroll-link" id="scrollTopLink" aria-label="Retour en haut">
         <span class="btn-label" id="label-top">Retour en haut</span>
         <button class="scroll-btn">↑</button>
     </a>
@@ -60,7 +60,7 @@
         <button class="scroll-btn" id="btn-tous">☰</button>
     </div>
 
-    <a href="javascript:void(0)" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})" class="floating-container scroll-link scroll-down-link" id="scrollBottomLink" aria-label="Aller en bas">
+    <a href="javascript:void(0)" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); flashLabel('label-bottom')" class="floating-container scroll-link scroll-down-link" id="scrollBottomLink" aria-label="Aller en bas">
         <span class="btn-label" id="label-bottom">Aller en bas</span>
         <button class="scroll-btn">↓</button>
     </a>
