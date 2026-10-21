@@ -60,6 +60,11 @@
         <button class="scroll-btn" id="btn-tous">☰</button>
     </div>
 
+    <a href="javascript:void(0)" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})" class="floating-container scroll-link scroll-down-link" id="scrollBottomLink" aria-label="Aller en bas">
+        <span class="btn-label" id="label-bottom">Aller en bas</span>
+        <button class="scroll-btn">↓</button>
+    </a>
+
     <!-- Bouton Contact discret -->
     <button class="contact-btn" id="contact-btn" onclick="toggleContact()" aria-label="Nous contacter">✉</button>
     <span class="contact-btn-label" id="label-contact">Contacts</span>

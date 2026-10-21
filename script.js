@@ -46,6 +46,7 @@ const translations = {
         statSub: "✨ Lecteurs par pays et vues ✨",
         backList: "⬅ Retour",
         scrollTop: "Retour en haut",
+        scrollBottom: "Aller en bas",
         help: "Besoin d'aide ?",
         update: "Le compteur s'actualise toutes les 15 min",
         selectTheme: "Choisir une thématique...",
@@ -87,6 +88,7 @@ const translations = {
         statSub: "✨ Readers by country and views ✨",
         backList: "⬅ Back",
         scrollTop: "Back to top",
+        scrollBottom: "Go to bottom",
         help: "Need help?",
         update: "The counter updates every 15 min",
         selectTheme: "Choose a theme...",
@@ -128,6 +130,7 @@ const translations = {
         statSub: "✨ Lectores por país y vistas ✨",
         backList: "⬅ Volver",
         scrollTop: "Volver arriba",
+        scrollBottom: "Ir abajo",
         help: "¿Necesitas ayuda?",
         update: "El contador se actualiza cada 15 min",
         selectTheme: "Elegir un tema...",
@@ -299,6 +302,7 @@ function setLanguage(lang) {
     document.getElementById('stat-title').innerText = translations[lang].statTitle;
     document.getElementById('stat-sub').innerText = translations[lang].statSub;
     document.getElementById('label-top').innerText = translations[lang].scrollTop;
+    document.getElementById('label-bottom').innerText = translations[lang].scrollBottom;
     document.getElementById('update-txt').innerHTML = translations[lang].update;
     document.getElementById('searchInput').placeholder = translations[lang].searchPlaceholder;
     document.getElementById('btn-archive').innerText = translations[lang].archiveBtn;
@@ -1006,13 +1010,16 @@ function filtrerMessages() {
 let lastScrollY = window.scrollY;
 let scrollTransition = false;
 window.onscroll = function() {
-    document.getElementById("scrollTopLink").style.display = window.scrollY > 400 ? "flex" : "none";
-    document.getElementById("tousLink").style.display = window.scrollY > 400 ? "flex" : "none";
-    if (lectureContineActive && !scrollTransition && window.scrollY > lastScrollY + 30) {
+    const scrollY = window.scrollY;
+    const atBottom = (window.innerHeight + scrollY) >= document.body.scrollHeight - 50;
+    document.getElementById("scrollTopLink").style.display = scrollY > 400 ? "flex" : "none";
+    document.getElementById("tousLink").style.display = scrollY > 400 ? "flex" : "none";
+    document.getElementById("scrollBottomLink").style.display = (scrollY > 400 && !atBottom) ? "flex" : "none";
+    if (lectureContineActive && !scrollTransition && scrollY > lastScrollY + 30) {
         arreterLectureContinue();
         afficherAccueil();
     }
-    lastScrollY = window.scrollY;
+    lastScrollY = scrollY;
 };
 
 document.addEventListener('DOMContentLoaded', () => {
