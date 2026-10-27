@@ -314,6 +314,24 @@
       color: var(--danger);
     }
 
+    .review-toggle {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      border: 1px solid rgba(100,180,255,.55);
+      border-radius: 50%;
+      background: transparent;
+      color: #64b4ff;
+      cursor: pointer;
+      font-size: .9rem;
+    }
+
+    .review-toggle.is-review {
+      border-color: #64b4ff;
+      background: rgba(100,180,255,.15);
+      color: #64b4ff;
+    }
+
     .message h2 {
       margin: 6px 0 5px;
       font-size: 1.05rem;
@@ -684,6 +702,7 @@
       <div class="search-actions">
         <label class="search-label" for="search">Recherche par date, ID, titre, thème ou contenu</label>
         <button id="favorites-toggle" type="button" aria-expanded="false">⭐ Favoris <span id="favorite-count">0</span></button>
+        <button id="review-toggle" type="button" aria-expanded="false">✏️ À revoir <span id="review-count">0</span></button>
       </div>
       <div class="search-input-wrap">
         <label class="sr-only" for="search">Rechercher les messages</label>
@@ -699,6 +718,9 @@
       <section id="favorite-panel" hidden aria-label="Messages favoris">
         <div id="favorite-list"></div>
       </section>
+      <section id="review-panel" hidden aria-label="Messages à revoir">
+        <div id="review-list"></div>
+      </section>
     </div>
 
     <div class="list-summary">
@@ -706,6 +728,7 @@
       <span id="sort-label">ID décroissant</span>
     </div>
     <button id="return-favorites" type="button" hidden>← Retour aux favoris</button>
+    <button id="return-review" type="button" hidden>← Retour à la liste</button>
     <section id="message-list" aria-label="Messages"></section>
   </main>
 
@@ -751,6 +774,11 @@
         favoritePanel: document.getElementById('favorite-panel'),
         favoriteList: document.getElementById('favorite-list'),
         returnFavorites: document.getElementById('return-favorites'),
+        reviewToggle: document.getElementById('review-toggle'),
+        reviewCount: document.getElementById('review-count'),
+        reviewPanel: document.getElementById('review-panel'),
+        reviewList: document.getElementById('review-list'),
+        returnReview: document.getElementById('return-review'),
         auditButton: document.getElementById('format-audit'),
         auditCount: document.getElementById('audit-count'),
         playerStatus: document.getElementById('player-status'),
@@ -779,6 +807,7 @@
       let sourceMessages = [];
       let searchIndex = [];
       let favoriteIds = new Set();
+      let reviewIds = new Set();
       let auditItems = [];
       let auditMode = false;
       let visibleMessages = [];
@@ -1187,6 +1216,9 @@
         elements.favoritePanel.hidden = !opening;
         elements.favoritesToggle.setAttribute('aria-expanded', String(opening));
         elements.returnFavorites.hidden = true;
+        // Ferme le panneau à revoir si ouvert
+        elements.reviewPanel.hidden = true;
+        elements.reviewToggle.setAttribute('aria-expanded', 'false');
         if (opening) {
           elements.searchSummary.textContent = `${favoriteIds.size} message${favoriteIds.size === 1 ? '' : 's'} favori${favoriteIds.size === 1 ? '' : 's'}`;
           renderFavorites();
@@ -1287,6 +1319,127 @@
           details.textContent = `${message.date || 'Date inconnue'} · ID ${message.id}`;
           button.append(title, details);
           elements.favoriteList.append(button);
+        }
+      }
+
+      // ── À revoir — chargement depuis localStorage ──
+      function loadReviewIds() {
+        try {
+          const saved = JSON.parse(localStorage.getItem('emmanuel_review_messages_v1') || '[]');
+          if (!Array.isArray(saved)) throw new Error('Format invalide.');
+          reviewIds = new Set(saved.filter((id) => Number.isSafeInteger(id) && id > 0));
+        } catch (error) {
+          console.error('Impossible de charger la liste à revoir.', error);
+          reviewIds = new Set();
+        }
+        updateReviewButtons();
+      }
+
+      elements.list.addEventListener('click', (event) => {
+        const button = event.target.closest('.review-toggle[data-review-id]');
+        if (button) toggleReview(button.dataset.reviewId);
+      });
+
+      elements.reviewToggle.addEventListener('click', () => {
+        const opening = elements.reviewPanel.hidden;
+        elements.reviewPanel.hidden = !opening;
+        elements.reviewToggle.setAttribute('aria-expanded', String(opening));
+        elements.returnReview.hidden = true;
+        // Ferme le panneau favoris si ouvert
+        elements.favoritePanel.hidden = true;
+        elements.favoritesToggle.setAttribute('aria-expanded', 'false');
+        if (opening) {
+          elements.searchSummary.textContent = `${reviewIds.size} message${reviewIds.size === 1 ? '' : 's'} à revoir`;
+          renderReviewList();
+        } else {
+          renderMessages(findMessages(elements.search.value));
+        }
+      });
+
+      elements.reviewList.addEventListener('click', (event) => {
+        const button = event.target.closest('.favorite-item[data-id]');
+        if (!button) return;
+        const message = messages.find((item) => String(item.id) === button.dataset.id);
+        if (!message) return;
+        elements.reviewPanel.hidden = true;
+        elements.reviewToggle.setAttribute('aria-expanded', 'false');
+        elements.returnReview.hidden = false;
+        elements.search.value = '';
+        document.getElementById('clear-search').hidden = true;
+        renderMessages([message]);
+        elements.searchSummary.textContent = `À revoir : ${message.titre || 'Message sans titre'}`;
+        document.getElementById(`message-${Number(message.id) || 0}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      elements.returnReview.addEventListener('click', () => {
+        elements.returnReview.hidden = true;
+        elements.reviewPanel.hidden = false;
+        elements.reviewToggle.setAttribute('aria-expanded', 'true');
+        renderReviewList();
+        renderMessages(findMessages(elements.search.value));
+        elements.searchSummary.textContent = `${reviewIds.size} message${reviewIds.size === 1 ? '' : 's'} à revoir`;
+      });
+
+      function updateReviewButtons() {
+        document.querySelectorAll('.review-toggle[data-review-id]').forEach((button) => {
+          const isReview = reviewIds.has(Number(button.dataset.reviewId));
+          const label = isReview ? 'Retirer de la liste à revoir' : 'Marquer à revoir';
+          button.classList.toggle('is-review', isReview);
+          button.setAttribute('aria-pressed', String(isReview));
+          button.setAttribute('aria-label', label);
+          button.title = label;
+          button.textContent = isReview ? '✏️' : '📝';
+        });
+        elements.reviewCount.textContent = String(reviewIds.size);
+      }
+
+      function toggleReview(id) {
+        const messageId = Number(id);
+        if (!Number.isSafeInteger(messageId) || messageId < 1) return;
+
+        const wasReview = reviewIds.has(messageId);
+        if (wasReview) reviewIds.delete(messageId);
+        else reviewIds.add(messageId);
+
+        const ids = [...reviewIds];
+
+        try {
+          localStorage.setItem('emmanuel_review_messages_v1', JSON.stringify(ids));
+        } catch (error) {
+          if (wasReview) reviewIds.add(messageId);
+          else reviewIds.delete(messageId);
+          console.error('Impossible d\'enregistrer la liste à revoir.', error);
+          elements.searchSummary.textContent = 'Impossible d\'enregistrer sur cet appareil.';
+          return;
+        }
+
+        updateReviewButtons();
+        if (!elements.reviewPanel.hidden) renderReviewList();
+      }
+
+      function renderReviewList() {
+        const reviewMessages = messages
+          .filter((message) => reviewIds.has(Number(message.id)))
+          .sort((a, b) => Number(b.id) - Number(a.id));
+        elements.reviewList.replaceChildren();
+        if (!reviewMessages.length) {
+          const empty = document.createElement('p');
+          empty.className = 'empty-state';
+          empty.textContent = 'Aucun message à revoir pour le moment.';
+          elements.reviewList.append(empty);
+          return;
+        }
+        for (const message of reviewMessages) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'favorite-item';
+          button.dataset.id = String(message.id);
+          const title = document.createElement('strong');
+          title.textContent = message.titre || 'Message sans titre';
+          const details = document.createElement('span');
+          details.textContent = `${message.date || 'Date inconnue'} · ID ${message.id}`;
+          button.append(title, details);
+          elements.reviewList.append(button);
         }
       }
 
@@ -1476,6 +1629,18 @@
           favorite.setAttribute('aria-label', label);
           favorite.title = label;
           meta.append(favorite);
+
+          const review = document.createElement('button');
+          review.className = 'review-toggle';
+          review.type = 'button';
+          review.dataset.reviewId = String(message.id);
+          const isReview = reviewIds.has(Number(message.id));
+          const reviewLabel = isReview ? 'Retirer de la liste à revoir' : 'Marquer à revoir';
+          review.textContent = isReview ? '✏️' : '📝';
+          review.setAttribute('aria-pressed', String(isReview));
+          review.setAttribute('aria-label', reviewLabel);
+          review.title = reviewLabel;
+          meta.append(review);
         }
 
         const title = document.createElement('h2');
@@ -1602,6 +1767,12 @@
 
       function updateMediaSession(track) {
         if (!('mediaSession' in navigator)) return;
+        // En mode natif, l'app Android gère la notification — on désactive celle du navigateur
+        if (nativePlayback) {
+          navigator.mediaSession.metadata = null;
+          navigator.mediaSession.playbackState = 'none';
+          return;
+        }
         if (!track) {
           navigator.mediaSession.metadata = null;
           navigator.mediaSession.playbackState = 'none';
@@ -1903,11 +2074,11 @@
       });
 
       elements.audio.addEventListener('play', () => {
-        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+        if (!nativePlayback && 'mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
       });
 
       elements.audio.addEventListener('pause', () => {
-        if ('mediaSession' in navigator && trackIndex >= 0) navigator.mediaSession.playbackState = 'paused';
+        if (!nativePlayback && 'mediaSession' in navigator && trackIndex >= 0) navigator.mediaSession.playbackState = 'paused';
       });
 
       // ── Recherche ──────────────────────────────────────────────────────────
@@ -2039,6 +2210,7 @@
         buildPrefixMap(searchIndex);
         elements.search.disabled = false;
         loadFavorites();
+        loadReviewIds();
         document.getElementById('clear-search').hidden = !elements.search.value;
         elements.status.textContent = `Source : data2.json · ${messages.length} messages`;
         renderMessages(findMessages(elements.search.value));
