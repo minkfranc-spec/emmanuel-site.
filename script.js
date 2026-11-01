@@ -26,6 +26,10 @@ const CACHE_TTL = 15 * 60 * 1000;
 const FAVORITES_KEY = 'emmanuel_favorite_messages_v1';
 let messagesFavoris = new Set();
 
+function dateAujourdhuiWAT(date = new Date()) {
+    return date.toLocaleDateString('sv-SE', { timeZone: 'Africa/Lagos' });
+}
+
 const moisNoms = {
     fr: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
     en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -212,11 +216,11 @@ function chargerFavoris() {
 }
 
 async function fetchData() {
-    const aujourdhui = new Date().toISOString().split('T')[0];
+    const aujourdhui = dateAujourdhuiWAT();
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
         const { ts, data } = JSON.parse(cached);
-        const dateCache = new Date(ts).toISOString().split('T')[0];
+        const dateCache = dateAujourdhuiWAT(new Date(ts));
         if (Date.now() - ts < CACHE_TTL && dateCache === aujourdhui) return data;
     }
     const res = await fetch('data.json?v=' + Date.now(), { cache: 'no-store' });
@@ -258,7 +262,7 @@ async function chargerMessages() {
         }
 
         const listeBrute = data.messages || [];
-        const aujourdhui = new Date().toISOString().split('T')[0];
+        const aujourdhui = dateAujourdhuiWAT();
         tousLesMessages = listeBrute.filter(msg => msg.date <= aujourdhui);
 
         const syslang = (navigator.language || navigator.userLanguage || 'fr').toLowerCase();
@@ -502,7 +506,7 @@ function creerCard(msg, isPremiere = false) {
     const categorie = t(msg, 'categorie');
     const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-    const imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img" loading="lazy" alt="${titre}">` : '';
+    const imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img" loading="lazy" alt="${titre}" onerror="this.onerror=null;this.src=this.src+(this.src.includes('?')?'&':'?')+'retry='+Date.now()">` : '';
     let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls preload="auto" style="width:100%;height:35px;margin:15px 0;border-radius:8px;" class="${isPremiere ? 'audio-premiere audio-invite' : ''}"></audio>` : '';
     if (msg.audio2) audioHtml += `<audio src="${msg.audio2}" controls preload="auto" style="width:100%;height:35px;margin:5px 0 15px 0;border-radius:8px;"></audio>`;
 
