@@ -34,3 +34,8 @@ jobs:
             git commit -m "Message du $(TZ="Africa/Lagos" date "+%Y-%m-%d")"
             git push
           fi
+
+      - name: Déclencher le redéploiement Cloudflare Pages
+        run: |
+          curl -s -X POST "${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}"
+          echo "✅ Redéploiement Cloudflare déclenché"
