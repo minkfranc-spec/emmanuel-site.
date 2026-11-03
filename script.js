@@ -818,7 +818,28 @@ function actionPartage(type) {
     fermerPartage();
 }
 
-function telechargerPDF() {
+// ── Chargement dynamique des librairies PDF / Image (uniquement au besoin) ──
+const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+const HTML2CANVAS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+
+function chargerScript(url) {
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${url}"]`)) { resolve(); return; }
+        const s = document.createElement('script');
+        s.src = url;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+    });
+}
+
+async function telechargerPDF() {
+    try {
+        await chargerScript(JSPDF_URL);
+    } catch {
+        afficherToast('Impossible de charger la librairie PDF. Vérifie ta connexion.');
+        return;
+    }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const margeG = 20, margeD = 20, largeur = 210 - margeG - margeD;
@@ -888,6 +909,7 @@ function telechargerPDF() {
 }
 
 function telechargerImage() {
+    chargerScript(HTML2CANVAS_URL).then(() => {
     // Créer une carte visuelle hors écran
     const carte = document.createElement('div');
     carte.style.cssText = `
@@ -918,6 +940,9 @@ function telechargerImage() {
         lien.click();
     }).catch(() => {
         afficherToast('Erreur lors de la génération de l\'image.');
+    });
+    }).catch(() => {
+        afficherToast('Impossible de charger la librairie Image. Vérifie ta connexion.');
     });
 }
 
