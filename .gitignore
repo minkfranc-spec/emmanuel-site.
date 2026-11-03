@@ -1,0 +1,9 @@
+# Secrets MCP — ne jamais committer
+.kiro/settings/mcp.json
+
+# Dépendances
+node_modules/
+
+# Fichiers système
+.DS_Store
+*.log
