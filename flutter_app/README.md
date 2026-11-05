@@ -1,9 +1,11 @@
 # Application Android EMMANUEL
 
-Cette application Flutter affiche le site en ligne
-[emmanuel-dpv.pages.dev](https://emmanuel-dpv.pages.dev). Elle ne compile pas une
-copie locale de `index.html` : les mises à jour du site doivent être publiées
-sur le site en ligne pour apparaître dans l'application.
+Cette application Flutter embarque une copie locale de `index.html`, `styles.css`
+et `script.js`. Elle charge toutefois les données et les médias depuis
+[emmanuel-dpv.pages.dev](https://emmanuel-dpv.pages.dev). Pour intégrer des
+corrections du site dans l'APK sans les publier, recopiez ces trois fichiers dans
+`assets/site-index.html`, `assets/site-styles.css` et `assets/site-script.js`,
+puis reconstruisez l'APK.
 Les liens vers d'autres sites, WhatsApp, les e-mails et les numéros de téléphone
 s'ouvrent dans l'application correspondante sur le téléphone.
 

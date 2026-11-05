@@ -96,7 +96,23 @@ class _SitePageState extends State<SitePage> {
           onNavigationRequest: _handleNavigationRequest,
         ),
       );
-    unawaited(_controller.loadRequest(Uri.parse(siteUrl)));
+    unawaited(_loadSitePage());
+  }
+
+  Future<void> _loadSitePage() async {
+    final html = await rootBundle.loadString('assets/site-index.html');
+    final styles = await rootBundle.loadString('assets/site-styles.css');
+    final script = await rootBundle.loadString('assets/site-script.js');
+    const stylesheetTag = '<link rel="stylesheet" href="styles.css">';
+    const scriptTag = '<script src="script.js"></script>';
+    if (!html.contains(stylesheetTag) || !html.contains(scriptTag)) {
+      throw StateError('The bundled site page is missing a resource tag.');
+    }
+
+    final page = html
+        .replaceFirst(stylesheetTag, '<style>\n$styles\n</style>')
+        .replaceFirst(scriptTag, '<script>\n$script\n</script>');
+    await _controller.loadHtmlString(page, baseUrl: '$siteUrl/');
   }
 
   Future<NavigationDecision> _handleNavigationRequest(

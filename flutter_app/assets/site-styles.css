@@ -1,0 +1,350 @@
+* { box-sizing: border-box; scroll-behavior: smooth; }
+html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #1a1a1a; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+#loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-in-out; }
+.welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; animation: welcomeEntry 2s forwards; opacity: 0; }
+
+@keyframes welcomeEntry { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes blockDance { 0% { opacity: 0; transform: scale(0.95) translateY(30px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
+@keyframes lightPulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); } 100% { transform: scale(1); } }
+@keyframes slideInNotif { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.lang-selector { margin: 10px 0 10px 16px; display: inline-flex; background: #f1f1f1; padding: 4px; border-radius: 30px; border: 1px solid #eee; float: left; clear: both; }
+.lang-btn { font-family: 'Montserrat', sans-serif; font-weight: 700; padding: 8px 18px; border-radius: 25px; border: none; cursor: pointer; transition: all 0.4s ease; background: transparent; color: #95a5a6; font-size: 10px; letter-spacing: 1px; }
+.lang-btn.active { background: #fff; color: #e74c3c; border: 1px solid #d4af37; box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.6), 0 0 10px rgba(212, 175, 55, 0.3); text-shadow: 0 0 2px rgba(212, 175, 55, 0.2); }
+
+h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 4px 0 12px; clear: both; }
+.intro-text { width: 85%; margin: 0 auto 10px; font-size: 1.1em; color: #95a5a6; font-style: italic; }
+
+.search-container { position: relative; width: 85%; max-width: 400px; margin: 0 auto 25px; }
+.search-input { width: 100%; padding: 12px 40px 12px 20px; border-radius: 30px; border: 1px solid #eee; font-family: 'Montserrat', sans-serif; font-size: 0.85em; transition: 0.3s; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+.search-input:focus { border-color: #d4af37; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15); }
+.search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #d4af37; font-size: 1.1em; pointer-events: none; }
+
+.message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
+.msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
+.msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
+.msg-content { text-align: justify; line-height: 1.6; font-size: 1.05em; white-space: pre-line; color: #1a1a1a; font-weight: 400; }
+.scroll-actif .msg-content { max-height: 320px; overflow-y: auto; scroll-behavior: auto; padding-right: 6px; }
+.msg-content strong { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000000; }
+
+.copy-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 700; text-transform: uppercase; margin: 20px 0; transition: 0.3s; animation: pulseGold 2s infinite; }
+.message-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 8px 0 12px; }
+.message-actions .lecture-controls { margin: 0; }
+.favorite-toggle { flex: 0 0 34px; width: 34px; height: 34px; margin-left: auto; padding: 0; border: 1.5px solid #d4af37; border-radius: 50%; background: transparent; color: #8a6d13; font-size: 15px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.favorite-toggle.is-favorite { background: #fff6f5; border-color: #e74c3c; color: #c0392b; }
+.favorites-section { display: none; width: 92%; max-width: 540px; margin: 22px auto; scroll-margin-top: 20px; }
+.favorites-section h2 { font-family: 'Montserrat', sans-serif; font-size: 1.1em; text-transform: uppercase; }
+.favorites-list { display: grid; gap: 8px; }
+.favorite-item { width: 100%; }
+.favorites-empty { padding: 18px; border: 1px dashed #d4af37; border-radius: 10px; color: #777; font-family: 'Montserrat', sans-serif; font-size: 0.9em; }
+.published-date { display: block; text-align: right; color: #d4af37; font-size: 0.85em; font-weight: 700; font-style: italic; margin-top: 10px; }
+
+#notif-panel { display: none; position: fixed; top: 75px; right: 20px; width: 280px; max-height: 70vh; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 2100; padding: 15px; text-align: left; animation: slideInNotif 0.3s ease-out; border-top: 4px solid #d4af37; flex-direction: column; }
+#notif-list { overflow-y: auto; flex-grow: 1; margin-bottom: 10px; padding-right: 5px; }
+.notif-item { font-family: 'Montserrat'; font-size: 13px; font-weight: 500; color: #333; line-height: 1.6; white-space: pre-wrap; text-align: justify; }
+.close-notif { display: block; text-align: center; color: #e74c3c; font-family: 'Montserrat'; font-weight: 900; font-size: 10px; text-transform: uppercase; cursor: pointer; padding-top: 10px; border-top: 1px solid #eee; margin-top: auto; }
+#notif-bubble { position: fixed; top: 20px; right: 20px; width: 45px; height: 45px; background: #d4af37; border-radius: 50%; display: none; justify-content: center; align-items: center; cursor: pointer; z-index: 2100; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); animation: lightPulse 2s infinite; border: 2px solid #fff; }
+.notif-badge { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; font-family: 'Montserrat'; font-weight: 900; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); border: 1px solid #fff; }
+
+.archive-section { display: none; width: 92%; max-width: 500px; margin: 20px auto; padding-bottom: 40px; }
+.archive-nav-btns { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+.nav-btn { font-family: 'Montserrat', sans-serif; background: white; border: 2px solid #d4af37; color: #d4af37; padding: 10px 15px; border-radius: 30px; cursor: pointer; font-weight: 900; font-size: 11px; text-transform: uppercase; transition: 0.3s; }
+.nav-btn.active { background: #d4af37; color: white; }
+.month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+.month-btn { font-family: 'Montserrat', sans-serif; background: white; border: 1px solid #d4af37; color: #d4af37; padding: 12px 5px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 700; }
+.month-btn.active { background: #d4af37; color: white; }
+.theme-select-container { margin-bottom: 20px; padding: 0 10px; }
+.theme-dropdown { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #d4af37; background: white; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; color: #1a1a1a; outline: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23d4af37%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px center; }
+.titre-archive-item { background: #fff; border: 1px solid #eee; padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.85em; font-weight: 700; text-align: left; animation: blockDance 0.5s ease-out; }
+.archive-main-btn { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: 700; display: block; margin: 20px auto; text-transform: uppercase; max-width: 280px; }
+
+.floating-container { position: fixed; right: 20px; z-index: 1500; display: none; align-items: center; text-decoration: none; }
+.scroll-link { bottom: 170px; }
+.tous-link { bottom: 105px; cursor: pointer; }
+.tous-link.actif .scroll-btn { background: #d4af37; color: #1a1a1a; }
+.scroll-down-link { bottom: 40px; }
+.btn-label { font-family: 'Montserrat', sans-serif; background: #1a1a1a; color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; margin-right: 10px; opacity: 0; transform: translateX(10px); transition: 0.3s; }
+.floating-container:hover .btn-label { opacity: 1; transform: translateX(0); }
+.scroll-btn { background: #1a1a1a; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+/* --- Bouton Contact discret --- */
+.contact-btn { position: fixed; top: 75px; right: 20px; width: 45px; height: 45px; border-radius: 50%; background: #1a1a1a; color: #d4af37; border: 1.5px solid #d4af37; font-size: 17px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.18); transition: background 0.2s, transform 0.2s; display: flex; align-items: center; justify-content: center; }
+.contact-btn:hover { background: #d4af37; color: #1a1a1a; transform: scale(1.08); }
+.contact-btn-label { position: fixed; top: 78px; right: 72px; background: #1a1a1a; color: white; padding: 6px 12px; border-radius: 16px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; transform: translateX(6px); z-index: 1499; }
+.contact-btn:hover + .contact-btn-label,
+.contact-btn-label:hover { opacity: 1; transform: translateX(0); }
+.favorites-float-btn { position: fixed; top: 130px; right: 20px; width: 45px; height: 45px; border-radius: 50%; background: #1a1a1a; color: #d4af37; border: 1.5px solid #d4af37; font-size: 17px; cursor: pointer; z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.18); transition: background 0.2s, transform 0.2s; display: flex; align-items: center; justify-content: center; }
+.favorites-float-btn:hover { background: #d4af37; color: #1a1a1a; transform: scale(1.08); }
+.favorites-float-btn span { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 50%; background: #e74c3c; color: white; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 900; line-height: 18px; text-align: center; }
+.favorites-float-label { position: fixed; top: 133px; right: 72px; background: #1a1a1a; color: white; padding: 6px 12px; border-radius: 16px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; transform: translateX(6px); z-index: 1499; }
+.favorites-float-btn:hover + .favorites-float-label,
+.favorites-float-label:hover { opacity: 1; transform: translateX(0); }
+.notif-bubble-label { position: fixed; top: 23px; right: 72px; background: #1a1a1a; color: white; padding: 6px 12px; border-radius: 16px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; transform: translateX(6px); z-index: 1499; }
+#notif-bubble:hover ~ .notif-bubble-label { opacity: 1; transform: translateX(0); }
+
+/* Remontée des icônes quand la bulle de notification est masquée */
+.contact-btn { transition: top 0.3s ease, background 0.2s, transform 0.2s; }
+.contact-btn-label { transition: top 0.3s ease, opacity 0.2s, transform 0.2s; }
+.favorites-float-btn { transition: top 0.3s ease, background 0.2s, transform 0.2s; }
+.favorites-float-label { transition: top 0.3s ease, opacity 0.2s, transform 0.2s; }
+
+.notif-masquee .contact-btn { top: 20px; }
+.notif-masquee .contact-btn-label { top: 23px; }
+.notif-masquee .favorites-float-btn { top: 75px; }
+.notif-masquee .favorites-float-label { top: 78px; }
+
+/* --- Overlay contact --- */
+#contact-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 2000; }
+#contact-overlay.open { display: block; }
+
+/* --- Panneau Contact --- */
+#contact-panel { display: none; position: fixed; top: 130px; right: 20px; width: 280px; background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); z-index: 2100; padding: 22px 20px 16px; border-top: 4px solid #d4af37; animation: slideUpContact 0.25s ease-out; }
+#contact-panel.open { display: block; }
+@keyframes slideUpContact { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+.contact-panel-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 13px; color: #d4af37; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.contact-panel-subtitle { font-family: 'Lora', serif; font-style: italic; font-size: 12px; color: #888; margin-bottom: 16px; }
+.contact-items { display: flex; flex-direction: column; gap: 10px; }
+.contact-item { display: flex; align-items: center; gap: 10px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: #1a1a1a; text-decoration: none; padding: 9px 12px; border-radius: 10px; background: #f9f6ef; transition: background 0.2s; }
+.contact-item:hover { background: #f0e8d0; }
+.contact-icon { font-size: 16px; min-width: 20px; text-align: center; }
+.contact-close { display: block; margin: 14px auto 0; background: none; border: 1px solid #ddd; color: #999; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; padding: 6px 20px; border-radius: 20px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: color 0.2s, border-color 0.2s; }
+.contact-close:hover { color: #1a1a1a; border-color: #1a1a1a; }
+
+.flag-counter-box { background: white; padding: 35px 20px; border-radius: 20px; margin: 40px auto; width: 92%; max-width: 500px; border: 1px solid #f0f0f0; box-shadow: 0 10px 40px rgba(0,0,0,0.03); }
+.stat-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.1em; color: #1a1a1a; }
+.stat-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #d4af37; letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
+.update-notice { font-family: 'Montserrat', sans-serif; font-size: 0.7em; font-weight: 700; color: #95a5a6; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
+
+.modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2500; }
+#shareModal { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: white; z-index: 3000; padding: 30px 20px; border-radius: 30px 30px 0 0; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); animation: slideUp 0.3s ease-out; text-align: center; }
+.share-options { display: flex; justify-content: space-around; margin: 25px auto 0; max-width: 400px; }
+.share-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: #1a1a1a; text-decoration: none; }
+.share-icon { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; color: white; font-size: 24px; }
+.bg-wa { background: #25D366; }
+.bg-fb { background: #1877F2; }
+.bg-mail { background: #E74C3C; }
+.bg-copy { background: #34495E; }
+.bg-pdf { background: #C0392B; }
+.bg-img { background: #8E44AD; }
+.close-modal { margin-top: 25px; color: #95a5a6; font-family: 'Montserrat', sans-serif; font-size: 12px; text-transform: uppercase; cursor: pointer; font-weight: 900; }
+
+#toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a1a; color: #d4af37; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; padding: 12px 24px; border-radius: 30px; opacity: 0; transition: opacity 0.3s, transform 0.3s; z-index: 4000; pointer-events: none; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.lecture-controls { display: flex; justify-content: flex-start; gap: 10px; margin: 8px 0 12px; }
+.btn-boucle, .btn-continue, .btn-scroll { background: transparent; border: 1.5px solid #d4af37; color: #d4af37; border-radius: 50%; width: 34px; height: 34px; font-size: 14px; cursor: pointer; transition: all 0.3s; opacity: 0.6; display: flex; align-items: center; justify-content: center; }
+.btn-boucle:hover, .btn-continue:hover, .btn-scroll:hover { opacity: 1; }
+.btn-boucle.actif, .btn-continue.actif, .btn-scroll.actif { background: #d4af37; color: white; opacity: 1; box-shadow: 0 0 10px rgba(212,175,55,0.5); }
+[data-tip] { position: relative; }
+[data-tip]::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #1a1a1a; color: #d4af37; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; white-space: nowrap; padding: 5px 10px; border-radius: 20px; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 10; }
+[data-tip]:hover::after, [data-tip]:focus::after { opacity: 1; }
+
+@keyframes invitePlay { 0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.0); } 50% { box-shadow: 0 0 0 6px rgba(212,175,55,0.35); } }
+.audio-invite { border-radius: 8px; animation: invitePlay 2s ease-in-out 3; }
+
+@keyframes sortieHaut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-60px); } }
+@keyframes montePlace { from { opacity: 0.6; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+.card-sortie-haut { animation: sortieHaut 0.5s ease-in forwards; pointer-events: none; }
+.card-monte { animation: montePlace 0.5s ease-out forwards; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.audio-chargement { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; color: #d4af37; text-align: center; padding: 6px 0; letter-spacing: 1px; opacity: 0.8; animation: pulseGold 1.2s infinite; }
+.barre-chargement { width: 100%; height: 3px; background: rgba(212,175,55,0.15); border-radius: 10px; margin: 6px 0; overflow: hidden; }
+.barre-remplissage { height: 100%; width: 0%; background: linear-gradient(90deg, #d4af37, #f5e07a, #d4af37); background-size: 200% 100%; border-radius: 10px; transition: width 0.3s ease; animation: shimmerGold 1.5s infinite; }
+@keyframes shimmerGold { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.skeleton { border-radius: 16px; width: 92%; max-width: 540px; margin: 25px auto; height: 300px; animation: shimmer 1.5s infinite; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* === CORRECTIONS MOBILE === */
+
+/* Point 1 — intro-text: centré avec marges symétriques pour éviter les icônes */
+@media (max-width: 600px) {
+    .intro-text { padding-left: 60px; padding-right: 60px; box-sizing: border-box; text-align: center; }
+}
+
+/* Point 2 — supprimer la sélection bleue sur tous les boutons flottants (tous appareils) */
+.floating-container,
+.floating-container *,
+.notif-bubble,
+.contact-btn,
+.favorites-float-btn,
+.scroll-btn,
+.copy-btn,
+.share-item,
+.btn-boucle,
+.btn-continue,
+.btn-scroll {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ================================================================
+   RESPONSIVE COMPLET — tous appareils
+   Breakpoints : <360px · 360-479px · 480-599px · 600-759px · 760-1023px · 1024px+
+   ================================================================ */
+
+/* ── Base : panneaux fixes fluides sur tous les écrans ── */
+#notif-panel,
+#contact-panel {
+  max-width: calc(100vw - 40px);
+  box-sizing: border-box;
+}
+
+/* ── Share options : wrap sur petit écran ── */
+.share-options {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ── Panneaux fixes : sécurité de dépassement ── */
+#notif-panel,
+#contact-panel {
+  right: max(10px, env(safe-area-inset-right));
+}
+
+/* ================================================================
+   < 360px — très petit mobile (iPhone SE old, Android entrée gamme)
+   ================================================================ */
+@media (max-width: 359px) {
+  .welcome-text {
+    font-size: 1.1em;
+    letter-spacing: 2px;
+    padding: 14px 18px;
+  }
+  h1 { font-size: 1.3em; }
+  .intro-text {
+    font-size: 0.88em;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  .message-card { padding: 18px 14px; }
+  .msg-title { font-size: 0.95em; }
+  .msg-content { font-size: 0.92em; }
+  .search-container { width: 92%; }
+  .month-grid { grid-template-columns: repeat(2, 1fr); }
+  .share-options { justify-content: center; }
+  .share-icon { width: 46px; height: 46px; font-size: 20px; }
+  .scroll-btn { width: 44px; height: 44px; font-size: 20px; }
+  #notif-panel { width: calc(100vw - 20px); right: 10px; }
+  #contact-panel { width: calc(100vw - 20px); right: 10px; }
+  .archive-nav-btns { flex-direction: column; align-items: center; }
+  .nav-btn { width: 85%; }
+}
+
+/* ================================================================
+   360px → 479px — mobile standard
+   ================================================================ */
+@media (min-width: 360px) and (max-width: 479px) {
+  .welcome-text {
+    font-size: 1.2em;
+    letter-spacing: 3px;
+    padding: 16px 24px;
+  }
+  h1 { font-size: 1.5em; }
+  .intro-text { font-size: 0.95em; }
+  .message-card { padding: 22px 16px; }
+  .msg-title { font-size: 1em; }
+  .msg-content { font-size: 0.97em; }
+  .month-grid { grid-template-columns: repeat(2, 1fr); }
+  .share-options { justify-content: center; }
+  .scroll-btn { width: 48px; height: 48px; font-size: 21px; }
+}
+
+/* ================================================================
+   480px → 599px — grand mobile / petite tablette
+   ================================================================ */
+@media (min-width: 480px) and (max-width: 599px) {
+  .welcome-text { font-size: 1.35em; letter-spacing: 4px; }
+  h1 { font-size: 1.6em; }
+  .msg-title { font-size: 1.05em; }
+  .month-grid { grid-template-columns: repeat(2, 1fr); }
+  .share-options { justify-content: center; }
+}
+
+/* ================================================================
+   600px → 759px — tablette portrait
+   ================================================================ */
+@media (min-width: 600px) and (max-width: 759px) {
+  .message-card { max-width: 600px; padding: 28px 24px; }
+  .msg-title { font-size: 1.1em; }
+  .flag-counter-box { max-width: 600px; }
+  .archive-section { max-width: 580px; }
+  .month-grid { grid-template-columns: repeat(3, 1fr); }
+  .share-options { justify-content: space-around; }
+}
+
+/* ================================================================
+   760px → 1023px — tablette paysage / petit desktop
+   ================================================================ */
+@media (min-width: 760px) and (max-width: 1023px) {
+  h1 { font-size: 2em; }
+  .intro-text { font-size: 1.15em; max-width: 600px; }
+  .search-container { max-width: 500px; }
+  .message-card { max-width: 640px; padding: 32px 28px; }
+  .msg-title { font-size: 1.2em; }
+  .msg-content { font-size: 1.08em; }
+  .flag-counter-box { max-width: 640px; }
+  .archive-section { max-width: 640px; }
+  .month-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ================================================================
+   1024px+ — desktop / grand écran
+   ================================================================ */
+@media (min-width: 1024px) {
+  h1 { font-size: 2.4em; margin: 8px 0 18px; }
+  .intro-text { font-size: 1.2em; max-width: 700px; }
+  .search-container { max-width: 560px; }
+  .message-card { max-width: 680px; padding: 36px 32px; }
+  .msg-title { font-size: 1.25em; }
+  .msg-content { font-size: 1.1em; line-height: 1.75; }
+  .flag-counter-box { max-width: 680px; }
+  .archive-section { max-width: 680px; }
+  .favorites-section { max-width: 680px; }
+  .month-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .nav-btn { font-size: 12px; padding: 12px 20px; }
+  #contact-panel { top: 75px; }
+}
+
+/* ================================================================
+   Très grand écran (1440px+)
+   ================================================================ */
+@media (min-width: 1440px) {
+  h1 { font-size: 2.8em; }
+  .message-card { max-width: 760px; }
+  .intro-text { max-width: 800px; }
+  .search-container { max-width: 620px; }
+  .flag-counter-box,
+  .archive-section,
+  .favorites-section { max-width: 760px; }
+}
+
+/* ================================================================
+   Orientation paysage sur mobile (hauteur réduite)
+   ================================================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .floating-container.scroll-link    { bottom: 120px; }
+  .floating-container.tous-link      { bottom: 65px; }
+  .floating-container.scroll-down-link { bottom: 10px; }
+  .scroll-btn { width: 40px; height: 40px; font-size: 18px; }
+  .message-card { padding: 16px 14px; }
+}
+
+/* ================================================================
+   Réduction de mouvement (accessibilité)
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

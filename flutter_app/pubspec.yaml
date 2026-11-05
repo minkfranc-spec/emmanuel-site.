@@ -66,6 +66,9 @@ flutter:
   assets:
     - assets/gestion-franc.html
     - assets/lecteur-messages.html
+    - assets/site-index.html
+    - assets/site-styles.css
+    - assets/site-script.js
 
   # To add assets to your application, add an assets section, like this:
   # assets:

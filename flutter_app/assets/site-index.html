@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <script>
+      (function() {
+        if (window.location.hostname.includes("vercel.app")) {
+          window.location.replace("https://emmanuel-dpv.pages.dev" + window.location.pathname + window.location.search);
+        }
+      })();
+    </script>
+
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="description" content="EMMANUEL - Un sanctuaire numérique pour la transformation de l'âme, l'onction de prospérité et la liberté spirituelle par la Parole.">
+    <meta name="keywords" content="Pasteur Emmanuel, foi, onction, prospérité, bible, pardon, succès, sagesse divine, ministère">
+    <meta name="author" content="Pasteur Emmanuel">
+
+    <meta property="og:title" content="EMMANUEL | La Voix de la Vérité">
+    <meta property="og:description" content="Accédez à vos clés spirituelles pour une vie de victoire.">
+    <meta property="og:image" content="https://i.postimg.cc/cCXq2khG/Lancement.png">
+    <meta property="og:url" content="https://emmanuel-dpv.pages.dev">
+    <meta property="og:type" content="website">
+
+    <title>EMMANUEL | La Voix de la Vérité</title>
+
+    <link rel="canonical" href="https://emmanuel-dpv.pages.dev">
+    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/RCwdK4zr/jesus2.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="loading-screen"><div class="welcome-text" id="welcome-txt">Bienvenue à EMMANUEL</div></div>
+
+    <div id="notif-bubble" onclick="ouvrirNotif(); event.stopPropagation();" aria-label="Notifications">
+        <span style="color:white; font-size:18px;">🔔</span>
+    </div>
+    <span class="notif-bubble-label" id="label-notif">Notifications</span>
+
+    <div id="notif-panel" onclick="event.stopPropagation();">
+        <div id="notif-title" style="font-family:'Montserrat'; font-weight:900; font-size:10px; color:#d4af37; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">📢 COMMUNICATIONS</div>
+        <div id="notif-list"></div>
+        <span id="notif-hide-btn" class="close-notif" onclick="toutMasquer()">Masquer</span>
+    </div>
+
+    <a href="javascript:void(0)" onclick="window.scrollTo({top:0,behavior:'smooth'}); flashLabel('label-top')" class="floating-container scroll-link" id="scrollTopLink" aria-label="Retour en haut">
+        <span class="btn-label" id="label-top">Retour en haut</span>
+        <button class="scroll-btn">↑</button>
+    </a>
+
+    <div class="floating-container tous-link" id="tousLink" onclick="toggleAffichageTous()" aria-label="Tout afficher">
+        <span class="btn-label" id="label-tous">Tout afficher</span>
+        <button class="scroll-btn" id="btn-tous">☰</button>
+    </div>
+
+    <a href="javascript:void(0)" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); flashLabel('label-bottom')" class="floating-container scroll-link scroll-down-link" id="scrollBottomLink" aria-label="Aller en bas">
+        <span class="btn-label" id="label-bottom">Aller en bas</span>
+        <button class="scroll-btn">↓</button>
+    </a>
+
+    <!-- Bouton Contact discret -->
+    <button class="contact-btn" id="contact-btn" onclick="toggleContact()" aria-label="Nous contacter">✉</button>
+    <span class="contact-btn-label" id="label-contact">Contacts</span>
+    <button class="favorites-float-btn" id="favorites-float-btn" onclick="afficherFavoris()" aria-label="Mes favoris">
+        ⭐<span id="favorites-count">0</span>
+    </button>
+    <span class="favorites-float-label" id="label-favorites">Mes favoris</span>
+
+    <!-- Panneau Contact -->
+    <div id="contact-panel">
+        <div class="contact-panel-title" id="contact-title">Nous contacter</div>
+        <div class="contact-panel-subtitle" id="contact-subtitle">La porte est toujours ouverte.</div>
+        <div class="contact-items">
+            <a href="mailto:minkfranc@gmail.com" class="contact-item">
+                <span class="contact-icon">✉</span>
+                <span>minkfranc@gmail.com</span>
+            </a>
+            <a href="https://wa.me/237678356844" target="_blank" class="contact-item">
+                <span class="contact-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" fill="#25D366"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.827.736 5.476 2.027 7.785L0 32l8.418-2.005A15.934 15.934 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 0 1-6.784-1.858l-.486-.29-5.003 1.192 1.23-4.87-.318-.5A13.268 13.268 0 0 1 2.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.274-9.878c-.398-.199-2.354-1.162-2.719-1.294-.365-.133-.631-.199-.897.199-.266.398-1.03 1.294-1.263 1.56-.232.266-.465.299-.863.1-.398-.199-1.681-.62-3.202-1.977-1.183-1.056-1.982-2.36-2.214-2.758-.232-.398-.025-.614.175-.812.18-.178.398-.465.597-.698.199-.232.266-.398.398-.664.133-.266.066-.498-.033-.697-.1-.199-.897-2.162-1.23-2.96-.324-.777-.654-.672-.897-.684l-.764-.013c-.266 0-.697.1-1.063.498-.365.398-1.395 1.362-1.395 3.325s1.428 3.857 1.627 4.123c.199.266 2.81 4.29 6.808 6.017.952.411 1.694.656 2.272.839.954.304 1.823.261 2.51.158.766-.114 2.354-.963 2.686-1.893.332-.93.332-1.727.232-1.893-.099-.166-.365-.266-.763-.465z"/></svg>
+                </span>
+                <span id="contact-wa-label">+237 678 356 844</span>
+            </a>
+            <a href="tel:+237678356844" class="contact-item">
+                <span class="contact-icon">📞</span>
+                <span>+237 678 356 844</span>
+            </a>
+        </div>
+        <button class="contact-close" onclick="toggleContact()" id="contact-close-btn">Fermer</button>
+    </div>
+    <div id="contact-overlay" onclick="toggleContact()"></div>
+
+    <div class="lang-selector">
+        <button id="btn-fr" class="lang-btn active" onclick="setLanguage('fr')">FR</button>
+        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
+        <button id="btn-es" class="lang-btn" onclick="setLanguage('es')">ES</button>
+    </div>
+
+    <h1>EMMANUEL</h1>
+    <div class="intro-text" id="intro-txt">La Lumière qui éclaire chaque pas sur le chemin de la Vie.</div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un message..." oninput="filtrerMessages()">
+        <span class="search-icon">🔍</span>
+    </div>
+
+    <div id="flux-messages"><div class="skeleton"></div><div class="skeleton"></div></div>
+
+    <section id="favoritesSection" class="favorites-section">
+        <h2 id="favorites-title"></h2>
+        <div id="favorites-list" class="favorites-list"></div>
+        <div id="favorite-detail"></div>
+    </section>
+
+    <button class="archive-main-btn" id="btn-archive" onclick="toggleArchives()">📂 Consulter les Archives</button>
+
+    <div id="archiveSection" class="archive-section">
+        <div class="archive-nav-btns">
+            <button id="nav-chrono" class="nav-btn active" onclick="switchArchiveView('chrono')">📅 Chronologie</button>
+            <button id="nav-theme" class="nav-btn" onclick="switchArchiveView('theme')">📂 Thématiques</button>
+        </div>
+        <div id="view-chrono"><div class="month-grid" id="monthGrid"></div></div>
+        <div id="view-theme" style="display:none;">
+            <div class="theme-select-container">
+                <select id="themeDropdown" class="theme-dropdown" onchange="choisirThemeViaDropdown(this.value)"></select>
+            </div>
+        </div>
+        <div id="titres-liste"></div>
+        <div id="message-detail"></div>
+    </div>
+
+    <div class="flag-counter-box">
+        <div class="stat-title" id="stat-title">COMMUNAUTÉ EMMANUEL</div>
+        <div class="stat-subtitle" id="stat-sub">✨ Lecteurs par pays et vues ✨</div>
+        <a href="https://info.flagcounter.com/ivJp" target="_blank">
+            <img src="https://s01.flagcounter.com/count2/ivJp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_12/viewers_3/labels_1/pageviews_1/flags_0/percent_0/?cache_refresh=1" alt="Statistiques" border="0" style="margin-top:20px; max-width:100%;">
+        </a>
+        <div class="update-notice" id="update-txt">Le compteur s'actualise toutes les 15 min<br><span style="font-weight:400; font-style:italic; opacity:0.8;">The counter updates every 15 min</span></div>
+    </div>
+
+    <div id="toast"></div>
+    <div id="modalOverlay" class="modal-overlay" onclick="fermerPartage()"></div>
+    <div id="shareModal">
+        <div id="share-modal-title" style="font-family:'Montserrat',sans-serif; font-weight:900; color:#d4af37; text-transform:uppercase;">Partager la Parole</div>
+        <div class="share-options">
+            <div class="share-item" onclick="actionPartage('wa')"><div class="share-icon bg-wa">💬</div>WhatsApp</div>
+            <div class="share-item" onclick="actionPartage('fb')"><div class="share-icon bg-fb">🔵</div>Facebook</div>
+            <div class="share-item" onclick="actionPartage('mail')"><div class="share-icon bg-mail">✉</div>Email</div>
+            <div class="share-item" onclick="actionPartage('copy')"><div class="share-icon bg-copy">🔗</div>Lien</div>
+            <div class="share-item" onclick="actionPartage('pdf')"><div class="share-icon bg-pdf">📄</div><span id="share-pdf-label">PDF</span></div>
+            <div class="share-item" onclick="actionPartage('image')"><div class="share-icon bg-img">🖼</div><span id="share-img-label">Image</span></div>
+        </div>
+        <div id="share-cancel-btn" class="close-modal" onclick="fermerPartage()">Annuler</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

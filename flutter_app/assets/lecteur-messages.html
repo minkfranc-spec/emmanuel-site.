@@ -117,6 +117,12 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      /* Masqué sur petit écran pour gagner de la hauteur */
+      display: none;
+    }
+
+    @media (min-width: 480px) {
+      .search-label { display: block; }
     }
 
     .search-actions button {
@@ -217,6 +223,35 @@
       color: var(--muted);
       font-size: .68rem;
     }
+
+    /* Toolbar : plus de mécanisme is-collapsed — Format toujours visible */
+
+    #toolbar-toggle {
+      flex: 0 0 auto;
+      min-height: 28px;
+      min-width: 28px;
+      padding: 3px 7px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    #toolbar-toggle[aria-expanded="true"] {
+      border-color: rgba(225,189,81,.4);
+      color: var(--gold);
+    }
+
+    #toolbar-extra {
+      display: flex;
+      gap: 5px;
+    }
+
+    #toolbar-extra[hidden] { display: none; }
 
     .data-toolbar span {
       flex: 1 1 auto;
@@ -709,10 +744,13 @@
         <input id="search" type="search" placeholder="Date, ID, titre, mot ou thème…" autocomplete="off" disabled>
         <button id="clear-search" type="button" aria-label="Effacer la recherche" title="Effacer" hidden>×</button>
       </div>
-      <div class="data-toolbar">
+      <div class="data-toolbar" id="data-toolbar">
         <span id="audit-count" role="status" aria-live="polite"></span>
         <button id="format-audit" type="button" aria-pressed="false">Format</button>
-        <button id="refresh-data" type="button">Actualiser</button>
+        <button id="toolbar-toggle" type="button" aria-expanded="false" aria-controls="toolbar-extra" title="Plus d'options">⚙️</button>
+        <div id="toolbar-extra" hidden>
+          <button id="refresh-data" type="button">Actualiser</button>
+        </div>
       </div>
       <div id="search-summary" role="status" aria-live="polite"></div>
       <section id="favorite-panel" hidden aria-label="Messages favoris">
@@ -763,6 +801,31 @@
       const DATA_URL = 'https://raw.githubusercontent.com/minkfranc-spec/emmanuel-site./main/data2.json';
       const DATA_JSON_URL = 'https://emmanuel-dpv.pages.dev/data.json';
       const FAVORIS_URL = 'https://emmanuel-dpv.pages.dev/favoris.json';
+
+      // ── Cache localStorage pour data2.json (5 minutes) ───────────────────
+      const DATA2_CACHE_KEY = 'emmanuel_data2_v1';
+      const DATA2_CACHE_TTL = 5 * 60 * 1000; // 5 minutes en ms
+
+      function getCachedData2() {
+        try {
+          const raw = localStorage.getItem(DATA2_CACHE_KEY);
+          if (!raw) return null;
+          const { ts, data } = JSON.parse(raw);
+          if (Date.now() - ts < DATA2_CACHE_TTL) return data;
+          localStorage.removeItem(DATA2_CACHE_KEY);
+          return null;
+        } catch {
+          return null;
+        }
+      }
+
+      function setCachedData2(data) {
+        try {
+          localStorage.setItem(DATA2_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+        } catch {
+          // localStorage plein ou indisponible — on continue sans cache
+        }
+      }
       const elements = {
         status: document.getElementById('load-status'),
         search: document.getElementById('search'),
@@ -828,14 +891,32 @@
       // todayMessage : le message le plus récent de data.json (null si non chargé)
       let todayMessage = null;
 
+      // ── Cache localStorage pour data.json / message du jour (5 minutes) ──
+      const TODAY_CACHE_KEY = 'emmanuel_today_v1';
+      const TODAY_CACHE_TTL = 5 * 60 * 1000;
+
       async function checkTodayMessage() {
         const btn = document.getElementById('today-btn');
         try {
-          const resp = await fetch(DATA_JSON_URL, {
-            cache: 'no-store', mode: 'cors', credentials: 'omit'
-          });
-          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-          const data = await resp.json();
+          // Utilise le cache si disponible
+          let data = null;
+          try {
+            const raw = localStorage.getItem(TODAY_CACHE_KEY);
+            if (raw) {
+              const { ts, payload } = JSON.parse(raw);
+              if (Date.now() - ts < TODAY_CACHE_TTL) data = payload;
+            }
+          } catch {}
+
+          if (!data) {
+            const resp = await fetch(DATA_JSON_URL, {
+              cache: 'no-store', mode: 'cors', credentials: 'omit'
+            });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            data = await resp.json();
+            try { localStorage.setItem(TODAY_CACHE_KEY, JSON.stringify({ ts: Date.now(), payload: data })); } catch {}
+          }
+
           const list = Array.isArray(data?.messages) ? data.messages : [];
           if (!list.length) return;
 
@@ -1582,9 +1663,26 @@
       }
 
       function renderAuditMessages() {
+        auditMode = true;
         visibleMessages = auditItems.map((entry) => entry.message).filter(Boolean);
+
+        if (!auditItems.length) {
+          const empty = document.createElement('p');
+          empty.className = 'empty-state';
+          empty.textContent = 'Tous les messages respectent le format attendu.';
+          elements.list.replaceChildren(empty);
+          elements.resultCount.textContent = '0 anomalie';
+          return;
+        }
+
+        // Réutilise la pagination existante (PAGE_SIZE = 20)
+        const page = arguments[0] || 1;
+        const end = page * PAGE_SIZE;
+        const slice = auditItems.slice(0, end);
+        const remaining = auditItems.length - end;
+
         const fragment = document.createDocumentFragment();
-        for (const entry of auditItems) {
+        for (const entry of slice) {
           const card = createMessageCard(entry.message || {});
           const issues = document.createElement('p');
           issues.className = 'audit-issues';
@@ -1592,12 +1690,18 @@
           card.append(issues);
           fragment.append(card);
         }
-        if (!auditItems.length) {
-          const empty = document.createElement('p');
-          empty.className = 'empty-state';
-          empty.textContent = 'Tous les messages respectent le format attendu.';
-          fragment.append(empty);
+
+        // Bouton "Charger plus" si anomalies restantes
+        if (remaining > 0) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'message-play';
+          btn.style.cssText = 'width:100%;margin-top:4px;';
+          btn.textContent = `Charger ${Math.min(remaining, PAGE_SIZE)} anomalies de plus (${remaining} restantes)`;
+          btn.addEventListener('click', () => renderAuditMessages(page + 1));
+          fragment.append(btn);
         }
+
         elements.list.replaceChildren(fragment);
         elements.resultCount.textContent = `${auditItems.length} message${auditItems.length > 1 ? 's' : ''} à vérifier`;
       }
@@ -1717,16 +1821,49 @@
         return article;
       }
 
-      function renderMessages(list) {
-        auditMode = false;
-        elements.auditButton.setAttribute('aria-pressed', 'false');
-        visibleMessages = list;
+      // ── Pagination ────────────────────────────────────────────────────────
+      const PAGE_SIZE = 20;
+      let currentPage = 1;
+      let currentList = [];
+
+      function renderPage(list, page) {
+        const start = 0;
+        const end = page * PAGE_SIZE;
+        const slice = list.slice(start, end);
         const fragment = document.createDocumentFragment();
-        for (const message of list) fragment.append(createMessageCard(message));
+        for (const message of slice) fragment.append(createMessageCard(message));
+
+        // Bouton "Charger plus" si des messages restent
+        const remaining = list.length - end;
+        if (remaining > 0) {
+          const btn = document.createElement('button');
+          btn.id = 'load-more-btn';
+          btn.type = 'button';
+          btn.className = 'message-play'; // réutilise le style existant
+          btn.style.cssText = 'width:100%;margin-top:4px;';
+          btn.textContent = `Charger ${Math.min(remaining, PAGE_SIZE)} messages de plus (${remaining} restants)`;
+          btn.addEventListener('click', () => {
+            currentPage += 1;
+            renderMessages(currentList, true);
+          });
+          fragment.append(btn);
+        }
+
         elements.list.replaceChildren(fragment);
         elements.resultCount.textContent = elements.search.value.trim()
           ? `${list.length} résultat${list.length > 1 ? 's' : ''} sur ${messages.length}`
           : `${list.length} message${list.length > 1 ? 's' : ''}`;
+      }
+
+      function renderMessages(list, keepScroll = false) {
+        auditMode = false;
+        elements.auditButton.setAttribute('aria-pressed', 'false');
+        visibleMessages = list;
+        currentList = list;
+        currentPage = keepScroll ? currentPage : 1;
+        const scrollY = keepScroll ? window.scrollY : 0;
+        renderPage(list, currentPage);
+        if (keepScroll) window.scrollTo({ top: scrollY, behavior: 'instant' });
       }
 
       function trackListFor(list) {
@@ -1989,6 +2126,52 @@
         await playTrack(trackIndex);
       }
 
+      // ── Détection qualité réseau ──────────────────────────────────────────
+      // Retourne true si la connexion semble lente (2G / Save-Data / downlink < 1 Mbps)
+      function isSlowNetwork() {
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (!conn) return false;
+        if (conn.saveData) return true;
+        if (conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g') return true;
+        if (typeof conn.downlink === 'number' && conn.downlink < 1) return true;
+        return false;
+      }
+
+      // ── Gestion buffering audio (faible débit) ────────────────────────────
+      // Quand l'audio se bloque en cours de lecture, on attend que le buffer
+      // soit assez rempli avant de reprendre automatiquement.
+      let _bufferingTimer = null;
+
+      function attachBufferingHandler(audio) {
+        // Retire les anciens listeners pour éviter les doublons
+        audio.removeEventListener('waiting', _onAudioWaiting);
+        audio.removeEventListener('canplay', _onAudioCanPlay);
+        audio.addEventListener('waiting', _onAudioWaiting);
+        audio.addEventListener('canplay', _onAudioCanPlay);
+      }
+
+      function _onAudioWaiting() {
+        // L'audio s'est mis en pause pour buffering
+        clearTimeout(_bufferingTimer);
+        elements.playerStatus.textContent = '⏳ Chargement audio…';
+        // Sur réseau lent, on attend 3s de plus avant de tenter la reprise
+        const delay = isSlowNetwork() ? 3000 : 1000;
+        _bufferingTimer = setTimeout(() => {
+          if (elements.audio.paused && !stopAfterTrack && !nativePlayback) {
+            elements.audio.play().catch(() => {});
+          }
+        }, delay);
+      }
+
+      function _onAudioCanPlay() {
+        clearTimeout(_bufferingTimer);
+        // Restaure le statut normal si on était en mode buffering
+        const track = playlist[trackIndex];
+        if (track) {
+          elements.playerStatus.textContent = `${track.title} · ID ${track.id}${track.part === 2 ? ' · piste 2' : ''}`;
+        }
+      }
+
       async function playTrack(index) {
         if (index < 0 || index >= playlist.length) {
           stopPlayback('Lecture terminée.');
@@ -2002,10 +2185,18 @@
         sendToNative('sync', { id: track.id, part: track.part });
         await requestWakeLock();
 
-        // Attendre que l'audio soit suffisamment chargé avant de lancer (max 8s)
+        // Sur réseau lent, on étend le timeout d'attente à 20s
+        const slow = isSlowNetwork();
+        const waitTimeout = slow ? 20000 : 8000;
+        if (slow) {
+          elements.playerStatus.textContent = '⏳ Connexion lente — chargement audio…';
+        }
+
+        // Attendre que l'audio soit suffisamment chargé avant de lancer
         await new Promise((resolve) => {
           const audio = elements.audio;
           audio.src = track.source;
+          // Sur réseau lent : preload=auto pour remplir le buffer dès le départ
           audio.preload = 'auto';
           audio.load();
 
@@ -2021,18 +2212,26 @@
           audio.addEventListener('canplaythrough', onReady, { once: true });
           audio.addEventListener('error', onError, { once: true });
 
-          // Timeout 8 secondes → on tente quand même
-          setTimeout(done, 8000);
+          setTimeout(done, waitTimeout);
         });
+
+        // Attache le handler de buffering avant de lancer la lecture
+        attachBufferingHandler(elements.audio);
 
         try {
           await elements.audio.play();
           // Précharge silencieusement la piste suivante
+          // Sur réseau lent : on attend 5s avant de précharger pour ne pas saturer
           const next = playlist[index + 1];
           if (next && next.source !== prefetchAudio.src) {
-            prefetchAudio.src = next.source;
-            prefetchAudio.preload = 'auto';
-            prefetchAudio.load();
+            const prefetchDelay = slow ? 5000 : 0;
+            setTimeout(() => {
+              if (playlist[trackIndex] === track) { // on est toujours sur la même piste
+                prefetchAudio.src = next.source;
+                prefetchAudio.preload = 'auto';
+                prefetchAudio.load();
+              }
+            }, prefetchDelay);
           }
         } catch {
           elements.playerStatus.textContent = 'Audio indisponible · passage au suivant…';
@@ -2049,6 +2248,9 @@
         loopEndIndex = 0;
         playlist = [];
         trackIndex = -1;
+        clearTimeout(_bufferingTimer);
+        elements.audio.removeEventListener('waiting', _onAudioWaiting);
+        elements.audio.removeEventListener('canplay', _onAudioCanPlay);
         elements.audio.pause();
         elements.audio.removeAttribute('src');
         elements.audio.load();
@@ -2206,8 +2408,14 @@
             wordList: [...words]
           };
         });
-        // Construit l'index de préfixes et le corpus une seule fois
-        buildPrefixMap(searchIndex);
+        // Construit l'index de préfixes et le corpus après l'affichage
+        // requestIdleCallback : différé quand le navigateur est libre (fallback setTimeout 60ms)
+        const buildIndex = () => buildPrefixMap(searchIndex);
+        if (typeof requestIdleCallback === 'function') {
+          requestIdleCallback(buildIndex, { timeout: 2000 });
+        } else {
+          setTimeout(buildIndex, 60);
+        }
         elements.search.disabled = false;
         loadFavorites();
         loadReviewIds();
@@ -2227,7 +2435,10 @@
           return;
         }
         try {
-          displayMessages(typeof json === 'string' ? JSON.parse(json) : json);
+          const data = typeof json === 'string' ? JSON.parse(json) : json;
+          // Mise en cache pour les prochaines visites (cohérence avec loadMessages)
+          setCachedData2(data);
+          displayMessages(data);
         } catch (exception) {
           elements.status.textContent = `data2.json invalide : ${exception.message}`;
           elements.resultCount.textContent = 'Aucun message chargé';
@@ -2238,6 +2449,22 @@
       async function loadMessages() {
         const refreshButton = document.getElementById('refresh-data');
         refreshButton.disabled = true;
+
+        // Essai depuis le cache localStorage d'abord
+        const cached = getCachedData2();
+        if (cached) {
+          elements.status.textContent = 'Depuis le cache local…';
+          try {
+            displayMessages(cached);
+            elements.status.textContent = `Source : cache local · ${messages.length} messages`;
+            refreshButton.disabled = false;
+            return;
+          } catch {
+            // Cache corrompu — on continue vers le réseau
+            localStorage.removeItem(DATA2_CACHE_KEY);
+          }
+        }
+
         elements.status.textContent = 'Lecture du data2.json en ligne…';
         if (window.NativeDataReader) {
           window.NativeDataReader.postMessage('load');
@@ -2250,7 +2477,9 @@
             credentials: 'omit'
           });
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          displayMessages(await response.json());
+          const data = await response.json();
+          setCachedData2(data);
+          displayMessages(data);
         } catch (error) {
           elements.status.textContent = `Chargement du data2.json en ligne impossible : ${error.message}. Vérifie ta connexion puis actualise.`;
           elements.resultCount.textContent = 'Aucun message chargé';
@@ -2260,7 +2489,20 @@
         }
       }
 
-      document.getElementById('refresh-data').addEventListener('click', loadMessages);
+      // ── Toolbar toggle ⚙️ ────────────────────────────────────────────────
+      document.getElementById('toolbar-toggle').addEventListener('click', () => {
+        const extra = document.getElementById('toolbar-extra');
+        const btn = document.getElementById('toolbar-toggle');
+        const wasHidden = extra.hidden;
+        extra.hidden = !wasHidden;
+        btn.setAttribute('aria-expanded', String(wasHidden));
+      });
+
+      document.getElementById('refresh-data').addEventListener('click', () => {
+        // Vide le cache pour forcer un rechargement depuis le réseau
+        localStorage.removeItem(DATA2_CACHE_KEY);
+        loadMessages();
+      });
       elements.auditButton.addEventListener('click', () => {
         auditMode = !auditMode;
         elements.auditButton.setAttribute('aria-pressed', String(auditMode));
