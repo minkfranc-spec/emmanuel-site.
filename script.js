@@ -15,6 +15,38 @@ let wakeLock = null;
 let communiqueData = null; // stocke les 3 versions du communiqué
 const NOTIF_SEEN_KEY = 'emmanuel_notif_seen_v1'; // clé localStorage pour mémoriser la notif vue
 
+// ── Image fallback + retry automatique (toutes les 15 min) ──
+const IMG_RETRY_MS = 15 * 60 * 1000; // 15 minutes
+const IMG_FALLBACK = "data:image/svg+xml," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">' +
+    '<rect width="800" height="450" fill="#1a1a1a"/>' +
+    '<text x="400" y="180" text-anchor="middle" font-family="serif" font-size="60" fill="#d4af37">✝</text>' +
+    '<text x="400" y="240" text-anchor="middle" font-family="serif" font-size="18" fill="#d4af37" opacity="0.8">Image en cours de chargement…</text>' +
+    '<text x="400" y="270" text-anchor="middle" font-family="serif" font-size="14" fill="#d4af37" opacity="0.5">Actualisation automatique en cours</text>' +
+    '</svg>'
+);
+
+function handleImageError(img) {
+    // Sauvegarde l'URL originale (une seule fois)
+    if (!img.dataset.originalSrc) img.dataset.originalSrc = img.src;
+    // Affiche l'image de remplacement
+    img.src = IMG_FALLBACK;
+    // Ne pas relancer un timer s'il en existe déjà un
+    if (img.dataset.retryId) return;
+    // Réessaye toutes les 15 minutes
+    const retryId = setInterval(() => {
+        const test = new Image();
+        test.onload = () => {
+            img.src = img.dataset.originalSrc;
+            clearInterval(Number(img.dataset.retryId));
+            delete img.dataset.retryId;
+        };
+        // En cas d'échec, on ne fait rien — le prochain intervalle réessayera
+        test.src = img.dataset.originalSrc + (img.dataset.originalSrc.includes('?') ? '&' : '?') + 'retry=' + Date.now();
+    }, IMG_RETRY_MS);
+    img.dataset.retryId = retryId;
+}
+
 // Génère une empreinte courte du communiqué (60 premiers caractères normalisés)
 // Si le texte change → empreinte différente → badge "1" réapparaît
 function communiqueEmpreinte(texte) {
@@ -506,7 +538,7 @@ function creerCard(msg, isPremiere = false) {
     const categorie = t(msg, 'categorie');
     const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-    const imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img" loading="${isPremiere ? 'eager' : 'lazy'}" fetchpriority="${isPremiere ? 'high' : 'auto'}" alt="${titre}" onerror="this.onerror=null;this.src=this.src+(this.src.includes('?')?'&':'?')+'retry='+Date.now()">` : '';
+    const imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img" loading="${isPremiere ? 'eager' : 'lazy'}" fetchpriority="${isPremiere ? 'high' : 'auto'}" alt="${titre}" data-original-src="${msg.image}" onerror="handleImageError(this)">` : '';
     let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls preload="auto" style="width:100%;height:35px;margin:15px 0;border-radius:8px;" class="${isPremiere ? 'audio-premiere audio-invite' : ''}"></audio>` : '';
     if (msg.audio2) audioHtml += `<audio src="${msg.audio2}" controls preload="auto" style="width:100%;height:35px;margin:5px 0 15px 0;border-radius:8px;"></audio>`;
 
