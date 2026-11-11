@@ -959,7 +959,7 @@
 
         // Lance la lecture en boucle (même comportement que 1er clic sur le message)
         loopMode = true;
-        const queueMessages = (visibleMessages.length ? visibleMessages : messages).slice().reverse();
+        const queueMessages = (visibleMessages.length ? visibleMessages : messages);
         startQueue(queueMessages, `Message du jour · ID ${targetId}`, null, {
           loop: true,
           startMessageId: targetId
@@ -1777,7 +1777,7 @@
                 return;
               }
               const messageIndex = visibleMessages.findIndex((item) => String(item.id) === String(message.id));
-              const sourceQueue = messageIndex < 0 ? [message] : visibleMessages.slice(0, messageIndex + 1).reverse();
+              const sourceQueue = messageIndex < 0 ? [message] : visibleMessages.slice(messageIndex);
               const newTracks = trackListFor(sourceQueue);
               if (newTracks.length) {
                 const currentTrack = playlist[trackIndex];
@@ -1792,7 +1792,7 @@
             } else {
               // Répète ce message, tout en gardant la file complète pour les commandes Android.
               loopMode = true;
-              const queueMessages = visibleMessages.slice().reverse();
+              const queueMessages = (visibleMessages.length ? visibleMessages : messages);
               startQueue(queueMessages, `Message ${message.id}`, null, {
                 loop: true,
                 startMessageId: String(message.id)
@@ -1940,18 +1940,27 @@
         }
       }
 
+      let currentPlayingId = null;
+
       window.onNativePlayback = (state) => {
         nativePlayback = true;
         loopMode = state.looping === true;
         updatePlaybackProgress(Number(state.positionMs) || 0, Number(state.durationMs) || 0);
+
+        const toggleBtn = document.getElementById('toggle-play');
+        if (toggleBtn) {
+          toggleBtn.textContent = state.playing ? '⏸ Pause' : '▶ Reprendre';
+        }
+
         if (state.track) {
           // Cherche d'abord dans la playlist en cours
           let newIndex = playlist.findIndex((track) =>
             track.id === String(state.track.id) && track.part === Number(state.track.part));
 
-          // Si introuvable (playlist vide ou changée), reconstruit la playlist depuis tous les messages
+          // Si introuvable (playlist vide ou changée), reconstruit la playlist depuis la liste courante
           if (newIndex < 0 && messages.length) {
-            const fullTracks = trackListFor(messages.slice().reverse());
+            const listSource = visibleMessages.length ? visibleMessages : messages;
+            const fullTracks = trackListFor(listSource);
             const fullIndex = fullTracks.findIndex((track) =>
               track.id === String(state.track.id) && track.part === Number(state.track.part));
             if (fullIndex >= 0) {
@@ -1963,17 +1972,29 @@
           trackIndex = newIndex;
           setPlayerStatus(state.track);
           elements.playerStatus.textContent = `${state.track.title} · ID ${state.track.id}${state.track.part === 2 ? ' · piste 2' : ''}${state.playing ? '' : ' · en pause'}`;
+
+          // Synchronisation visuelle : défile vers le message actif dès qu'il change
+          if (String(state.track.id) !== currentPlayingId) {
+            currentPlayingId = String(state.track.id);
+            const card = document.getElementById(`message-${Number(state.track.id) || 0}`);
+            if (card) {
+              card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }
         } else if (state.status) {
+          currentPlayingId = null;
           delete elements.playerStatus.dataset.messageId;
           elements.playerStatus.disabled = true;
           elements.playerStatus.textContent = state.status;
         }
         if (state.ended) {
+          currentPlayingId = null;
           playlist = [];
           trackIndex = -1;
           setActiveModeButton(null);
           updatePlaybackProgress(0, 0);
           setPlayerMode('idle');
+          if (toggleBtn) toggleBtn.textContent = '⏸ Pause';
         }
       };
 
@@ -1982,7 +2003,10 @@
         return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, '0')}`;
       }
 
+      let _isSeeking = false;
+
       function updatePlaybackProgress(positionMs, durationMs) {
+        if (_isSeeking) return;
         const duration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : 0;
         const position = Number.isFinite(positionMs) && positionMs > 0 ? positionMs : 0;
         elements.playbackSeek.disabled = duration === 0;
@@ -2016,7 +2040,12 @@
         });
       }
 
+      elements.playbackSeek.addEventListener('input', () => {
+        _isSeeking = true;
+      });
+
       elements.playbackSeek.addEventListener('change', () => {
+        _isSeeking = false;
         if (elements.playbackSeek.disabled) return;
         if (nativePlayback) {
           const positionMs = Math.round(Number(elements.playbackSeek.value) / 1000 * (Number(elements.playbackTime.dataset.durationMs) || 0));

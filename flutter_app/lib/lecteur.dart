@@ -213,6 +213,9 @@ class _MessageReaderPageState extends State<MessageReaderPage>
         case 'stop':
           _lastSentState = '';
           await audioHandler.stop();
+        case 'sync':
+          // Pas d'action requise : simple confirmation de synchronisation
+          break;
         default:
           throw const FormatException('Action du lecteur inconnue.');
       }

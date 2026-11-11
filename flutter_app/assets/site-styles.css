@@ -1,5 +1,5 @@
 * { box-sizing: border-box; scroll-behavior: smooth; }
-html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #1a1a1a; font-family: 'Lora', serif; text-align: center; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #1a1a1a; font-family: 'Lora', serif; text-align: center; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease-in-out; }
 .welcome-text { font-family: 'Montserrat', sans-serif; font-size: 1.6em; font-weight: 700; color: #d4af37; letter-spacing: 6px; text-transform: uppercase; border-top: 2px solid #d4af37; border-bottom: 2px solid #d4af37; padding: 20px 40px; animation: welcomeEntry 2s forwards; opacity: 0; }
@@ -16,17 +16,17 @@ html, body { margin: 0; padding: 0; width: 100%; background: #fdfdfd; color: #1a
 .lang-btn.active { background: #fff; color: #e74c3c; border: 1px solid #d4af37; box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.6), 0 0 10px rgba(212, 175, 55, 0.3); text-shadow: 0 0 2px rgba(212, 175, 55, 0.2); }
 
 h1 { font-family: 'Montserrat', sans-serif; color: #1a1a1a; text-transform: uppercase; font-weight: 900; font-size: 1.8em; margin: 4px 0 12px; clear: both; }
-.intro-text { width: 85%; margin: 0 auto 10px; font-size: 1.1em; color: #95a5a6; font-style: italic; }
+.intro-text { width: 85%; margin: 0 auto 10px; font-size: 1.1em; color: #95a5a6; font-style: italic; overflow-wrap: anywhere; }
 
 .search-container { position: relative; width: 85%; max-width: 400px; margin: 0 auto 25px; }
 .search-input { width: 100%; padding: 12px 40px 12px 20px; border-radius: 30px; border: 1px solid #eee; font-family: 'Montserrat', sans-serif; font-size: 0.85em; transition: 0.3s; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
 .search-input:focus { border-color: #d4af37; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15); }
 .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #d4af37; font-size: 1.1em; pointer-events: none; }
 
-.message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; }
+.message-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 92%; max-width: 540px; margin: 25px auto; text-align: left; border-top: 6px solid #d4af37; animation: blockDance 0.8s ease-out forwards; overflow-wrap: anywhere; }
 .msg-img { width: 100%; border-radius: 10px; margin-bottom: 20px; display: block; }
-.msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; }
-.msg-content { text-align: justify; line-height: 1.6; font-size: 1.05em; white-space: pre-line; color: #1a1a1a; font-weight: 400; }
+.msg-title { font-family: 'Montserrat', sans-serif; text-align: center; margin: 10px 0 15px; color: #1a1a1a; font-size: 1.15em; font-weight: 900; line-height: 1.3; text-transform: uppercase; overflow-wrap: anywhere; hyphens: auto; }
+.msg-content { text-align: justify; text-align-last: left; line-height: 1.6; font-size: 1.05em; white-space: pre-line; color: #1a1a1a; font-weight: 400; overflow-wrap: anywhere; hyphens: auto; }
 .scroll-actif .msg-content { max-height: 320px; overflow-y: auto; scroll-behavior: auto; padding-right: 6px; }
 .msg-content strong { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000000; }
 
