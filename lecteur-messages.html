@@ -1675,31 +1675,14 @@
           return;
         }
 
-        // Réutilise la pagination existante (PAGE_SIZE = 20)
-        const page = arguments[0] || 1;
-        const end = page * PAGE_SIZE;
-        const slice = auditItems.slice(0, end);
-        const remaining = auditItems.length - end;
-
         const fragment = document.createDocumentFragment();
-        for (const entry of slice) {
+        for (const entry of auditItems) {
           const card = createMessageCard(entry.message || {});
           const issues = document.createElement('p');
           issues.className = 'audit-issues';
           issues.textContent = `À corriger : ${entry.issues.join(' · ')}`;
           card.append(issues);
           fragment.append(card);
-        }
-
-        // Bouton "Charger plus" si anomalies restantes
-        if (remaining > 0) {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'message-play';
-          btn.style.cssText = 'width:100%;margin-top:4px;';
-          btn.textContent = `Charger ${Math.min(remaining, PAGE_SIZE)} anomalies de plus (${remaining} restantes)`;
-          btn.addEventListener('click', () => renderAuditMessages(page + 1));
-          fragment.append(btn);
         }
 
         elements.list.replaceChildren(fragment);
@@ -1821,48 +1804,20 @@
         return article;
       }
 
-      // ── Pagination ────────────────────────────────────────────────────────
-      const PAGE_SIZE = 20;
-      let currentPage = 1;
-      let currentList = [];
+      function renderMessages(list, keepScroll = false) {
+        auditMode = false;
+        elements.auditButton.setAttribute('aria-pressed', 'false');
+        visibleMessages = list;
+        const scrollY = keepScroll ? window.scrollY : 0;
 
-      function renderPage(list, page) {
-        const start = 0;
-        const end = page * PAGE_SIZE;
-        const slice = list.slice(start, end);
         const fragment = document.createDocumentFragment();
-        for (const message of slice) fragment.append(createMessageCard(message));
-
-        // Bouton "Charger plus" si des messages restent
-        const remaining = list.length - end;
-        if (remaining > 0) {
-          const btn = document.createElement('button');
-          btn.id = 'load-more-btn';
-          btn.type = 'button';
-          btn.className = 'message-play'; // réutilise le style existant
-          btn.style.cssText = 'width:100%;margin-top:4px;';
-          btn.textContent = `Charger ${Math.min(remaining, PAGE_SIZE)} messages de plus (${remaining} restants)`;
-          btn.addEventListener('click', () => {
-            currentPage += 1;
-            renderMessages(currentList, true);
-          });
-          fragment.append(btn);
-        }
+        for (const message of list) fragment.append(createMessageCard(message));
 
         elements.list.replaceChildren(fragment);
         elements.resultCount.textContent = elements.search.value.trim()
           ? `${list.length} résultat${list.length > 1 ? 's' : ''} sur ${messages.length}`
           : `${list.length} message${list.length > 1 ? 's' : ''}`;
-      }
 
-      function renderMessages(list, keepScroll = false) {
-        auditMode = false;
-        elements.auditButton.setAttribute('aria-pressed', 'false');
-        visibleMessages = list;
-        currentList = list;
-        currentPage = keepScroll ? currentPage : 1;
-        const scrollY = keepScroll ? window.scrollY : 0;
-        renderPage(list, currentPage);
         if (keepScroll) window.scrollTo({ top: scrollY, behavior: 'instant' });
       }
 
