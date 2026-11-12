@@ -887,8 +887,13 @@
       const prefetchAudio = new Audio();
       prefetchAudio.preload = 'auto';
 
+      // ── Date du jour (WAT / Africa/Lagos — aligné avec l'accueil et GitHub Actions) ──
+      function dateAujourdhuiWAT(date = new Date()) {
+        return date.toLocaleDateString('sv-SE', { timeZone: 'Africa/Lagos' });
+      }
+
       // ── Message du jour ────────────────────────────────────────────────────
-      // todayMessage : le message le plus récent de data.json (null si non chargé)
+      // todayMessage : le message désigné pour aujourd'hui (null si non chargé)
       let todayMessage = null;
 
       // ── Cache localStorage pour data.json / message du jour (5 minutes) ──
@@ -897,50 +902,77 @@
 
       async function checkTodayMessage() {
         const btn = document.getElementById('today-btn');
+        const todayStr = dateAujourdhuiWAT();
+
+        // 1. Recherche d'abord dans messages (chargés depuis data2.json)
+        const allAvailable = Array.isArray(messages) && messages.length ? messages : [];
+        let candidate = allAvailable.find((m) => m && m.date === todayStr);
+
+        // Si aucun message n'a la date exacte du jour, prendre le plus récent <= aujourd'hui
+        if (!candidate && allAvailable.length) {
+          const eligible = allAvailable
+            .filter((m) => m && typeof m.date === 'string' && m.date <= todayStr)
+            .sort((a, b) => b.date.localeCompare(a.date));
+          if (eligible.length) candidate = eligible[0];
+        }
+
+        // 2. Vérification réseau avec data.json (anti-cache ?v=...)
         try {
-          // Utilise le cache si disponible
           let data = null;
           try {
             const raw = localStorage.getItem(TODAY_CACHE_KEY);
             if (raw) {
-              const { ts, payload } = JSON.parse(raw);
-              if (Date.now() - ts < TODAY_CACHE_TTL) data = payload;
+              const { ts, payload, dateCache } = JSON.parse(raw);
+              if (Date.now() - ts < TODAY_CACHE_TTL && dateCache === todayStr) {
+                data = payload;
+              }
             }
           } catch {}
 
           if (!data) {
-            const resp = await fetch(DATA_JSON_URL, {
+            const resp = await fetch(DATA_JSON_URL + '?v=' + Date.now(), {
               cache: 'no-store', mode: 'cors', credentials: 'omit'
             });
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            data = await resp.json();
-            try { localStorage.setItem(TODAY_CACHE_KEY, JSON.stringify({ ts: Date.now(), payload: data })); } catch {}
+            if (resp.ok) {
+              data = await resp.json();
+              try {
+                localStorage.setItem(TODAY_CACHE_KEY, JSON.stringify({
+                  ts: Date.now(),
+                  payload: data,
+                  dateCache: todayStr
+                }));
+              } catch {}
+            }
           }
 
           const list = Array.isArray(data?.messages) ? data.messages : [];
-          if (!list.length) return;
-
-          // Trouve le message avec la date la plus récente
-          const sorted = list
-            .filter((m) => m && typeof m.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(m.date))
-            .sort((a, b) => b.date.localeCompare(a.date));
-          if (!sorted.length) return;
-
-          todayMessage = sorted[0];
-
-          // Compare avec la date du jour (format YYYY-MM-DD local)
-          const now = new Date();
-          const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-          const isToday = todayMessage.date === todayStr;
-
-          btn.textContent = isToday ? '●' : '●';
-          btn.className = isToday ? 'today-yes' : 'today-no';
-          btn.title = isToday
-            ? `Message du jour — ${todayMessage.titre || 'ID ' + todayMessage.id}`
-            : `Dernier message : ${todayMessage.date} — ${todayMessage.titre || 'ID ' + todayMessage.id}`;
+          if (list.length) {
+            const sorted = list
+              .filter((m) => m && typeof m.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(m.date))
+              .sort((a, b) => b.date.localeCompare(a.date));
+            if (sorted.length) {
+              const todayFromData = sorted.find((m) => m.date === todayStr);
+              if (todayFromData) {
+                candidate = todayFromData;
+              } else if (!candidate) {
+                candidate = sorted[0];
+              }
+            }
+          }
         } catch {
-          // Silencieux : si data.json inaccessible, le bouton reste masqué
+          // Silencieux : si data.json inaccessible, candidate issu de data2.json reste utilisé
         }
+
+        if (!candidate) return;
+
+        todayMessage = candidate;
+        const isToday = todayMessage.date === todayStr;
+
+        btn.textContent = '●';
+        btn.className = isToday ? 'today-yes' : 'today-no';
+        btn.title = isToday
+          ? `Message du jour — ${todayMessage.titre || 'ID ' + todayMessage.id}`
+          : `Dernier message : ${todayMessage.date} — ${todayMessage.titre || 'ID ' + todayMessage.id}`;
       }
 
       // Clic sur le bouton → lecture en boucle du message du jour
@@ -957,6 +989,15 @@
           msg = todayMessage;
         }
 
+        // Si la recherche filtrait le message, réinitialiser pour qu'il soit affiché
+        let card = document.getElementById(`message-${Number(targetId) || 0}`);
+        if (!card && elements.search.value) {
+          elements.search.value = '';
+          document.getElementById('clear-search').hidden = true;
+          renderMessages(messages);
+          card = document.getElementById(`message-${Number(targetId) || 0}`);
+        }
+
         // Lance la lecture en boucle (même comportement que 1er clic sur le message)
         loopMode = true;
         const queueMessages = (visibleMessages.length ? visibleMessages : messages);
@@ -965,10 +1006,10 @@
           startMessageId: targetId
         });
 
-        // Scroll vers la carte du message si elle est visible
-        const card = document.getElementById(`message-${Number(targetId) || 0}`);
+        // Scroll vers le titre (h2) du message
         if (card) {
-          card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const title = card.querySelector('h2') || card;
+          title.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
 
@@ -1320,7 +1361,8 @@
         document.getElementById('clear-search').hidden = true;
         renderMessages([message]);
         elements.searchSummary.textContent = `Favori ouvert : ${message.titre || 'Message sans titre'}`;
-        document.getElementById(`message-${Number(message.id) || 0}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const favCard = document.getElementById(`message-${Number(message.id) || 0}`);
+        (favCard?.querySelector('h2') || favCard)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
       elements.returnFavorites.addEventListener('click', () => {
@@ -1449,7 +1491,8 @@
         document.getElementById('clear-search').hidden = true;
         renderMessages([message]);
         elements.searchSummary.textContent = `À revoir : ${message.titre || 'Message sans titre'}`;
-        document.getElementById(`message-${Number(message.id) || 0}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const revCard = document.getElementById(`message-${Number(message.id) || 0}`);
+        (revCard?.querySelector('h2') || revCard)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
       elements.returnReview.addEventListener('click', () => {
@@ -1973,12 +2016,13 @@
           setPlayerStatus(state.track);
           elements.playerStatus.textContent = `${state.track.title} · ID ${state.track.id}${state.track.part === 2 ? ' · piste 2' : ''}${state.playing ? '' : ' · en pause'}`;
 
-          // Synchronisation visuelle : défile vers le message actif dès qu'il change
+          // Synchronisation visuelle : défile vers le message actif dès qu'il change (calé sur le titre)
           if (String(state.track.id) !== currentPlayingId) {
             currentPlayingId = String(state.track.id);
             const card = document.getElementById(`message-${Number(state.track.id) || 0}`);
             if (card) {
-              card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              const title = card.querySelector('h2') || card;
+              title.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
           }
         } else if (state.status) {
