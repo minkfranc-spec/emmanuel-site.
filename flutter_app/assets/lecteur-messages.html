@@ -1595,10 +1595,8 @@
       }
 
       // ── Hébergeurs autorisés ─────────────────────────────────────────────
-      // Image : i.ibb.co  ou  i.postimg.cc
-      //   https://i.ibb.co/<code>/<nom>.<ext>
-      //   https://i.postimg.cc/<code>/<nom>.<ext>
-      const IMAGE_URL_PATTERN = /^https:\/\/(i\.ibb\.co|i\.postimg\.cc)\/[A-Za-z0-9]+\/[^/]+\.(jpg|jpeg|png|webp|gif)$/i;
+      // Image : i.ibb.co, i.postimg.cc ou raw.githubusercontent.com
+      const IMAGE_URL_PATTERN = /^https:\/\/(?:(?:i\.ibb\.co|i\.postimg\.cc)\/[A-Za-z0-9]+\/[^/]+|raw\.githubusercontent\.com\/[^?#]+)\.(jpg|jpeg|png|webp|gif)$/i;
 
       // Audio : leopard.hosting.pecon.us  ou  files.catbox.moe
       //   https://leopard.hosting.pecon.us/dl/<5lettres>/<nom>.mp3
@@ -1625,7 +1623,7 @@
         if (isPlaceholderLink(value)) return `image : lien placeholder détecté ("${value.trim()}") — remplacer par une vraie URL.`;
         const href = validMediaUrl(value);
         if (!href) return 'image : URL invalide ou non HTTPS.';
-        if (!IMAGE_URL_PATTERN.test(href)) return `image : hébergeur non reconnu (attendu : i.ibb.co ou i.postimg.cc — reçu : ${href}).`;
+        if (!IMAGE_URL_PATTERN.test(href)) return `image : hébergeur non reconnu (attendu : i.ibb.co, i.postimg.cc ou raw.githubusercontent.com — reçu : ${href}).`;
         return null;
       }
 
@@ -1693,7 +1691,7 @@
             }
           }
 
-          // Vérification image : champ obligatoire + hébergeur reconnu (i.ibb.co ou i.postimg.cc)
+          // Vérification image : champ obligatoire + hébergeur reconnu
           if (!message.image || typeof message.image !== 'string' || !message.image.trim()) {
             issues.push('image : champ absent ou vide.');
           } else {
