@@ -539,8 +539,8 @@ function creerCard(msg, isPremiere = false) {
     const texteFormate = texteOriginal.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
     const imgHtml = msg.image ? `<img src="${msg.image}" class="msg-img" loading="${isPremiere ? 'eager' : 'lazy'}" fetchpriority="${isPremiere ? 'high' : 'auto'}" alt="${titre}" data-original-src="${msg.image}" onerror="handleImageError(this)">` : '';
-    let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls preload="auto" style="width:100%;height:35px;margin:15px 0;border-radius:8px;" class="${isPremiere ? 'audio-premiere audio-invite' : ''}"></audio>` : '';
-    if (msg.audio2) audioHtml += `<audio src="${msg.audio2}" controls preload="auto" style="width:100%;height:35px;margin:5px 0 15px 0;border-radius:8px;"></audio>`;
+    let audioHtml = msg.audio ? `<audio src="${msg.audio}" controls preload="none" style="width:100%;height:35px;margin:15px 0;border-radius:8px;" class="${isPremiere ? 'audio-premiere audio-invite' : ''}"></audio>` : '';
+    if (msg.audio2) audioHtml += `<audio src="${msg.audio2}" controls preload="none" style="width:100%;height:35px;margin:5px 0 15px 0;border-radius:8px;"></audio>`;
 
     const titreEnc = encodeTexte(titre);
     const texteEnc = encodeTexte(texteOriginal);
