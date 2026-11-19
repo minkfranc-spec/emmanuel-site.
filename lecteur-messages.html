@@ -780,12 +780,12 @@
         <button id="player-status" type="button" aria-live="polite" disabled>Prêt</button>
       </div>
       <div class="player-controls">
-        <button id="play-all" type="button" aria-pressed="false">▶▶ Tout lire</button>
-        <button id="play-search" type="button" aria-pressed="false">🔍 Lire recherche</button>
-        <button id="toggle-play" type="button">⏸ Pause</button>
-        <button id="stop-play" type="button">⏹ Arrêter</button>
+        <button id="play-all" type="button" aria-pressed="false" title="Lit tous les messages du plus récent vers le plus ancien (ID 1)">▶▶ Tout lire</button>
+        <button id="play-search" type="button" aria-pressed="false" title="Lit uniquement les messages qui correspondent à ta recherche">🔍 Lire recherche</button>
+        <button id="toggle-play" type="button" title="Pause ou reprendre la lecture en cours">⏸ Pause</button>
+        <button id="stop-play" type="button" title="Arrête la lecture et vide la file">⏹ Arrêter</button>
       </div>
-      <audio id="audio-player" controls preload="auto" aria-label="Piste audio en cours"></audio>
+      <audio id="audio-player" controls preload="none" aria-label="Piste audio en cours"></audio>
       <div class="playback-progress">
         <label class="sr-only" for="playback-seek">Avancement de la lecture</label>
         <input id="playback-seek" type="range" min="0" max="1000" value="0" disabled>
@@ -1804,6 +1804,7 @@
           play.type = 'button';
           play.setAttribute('aria-pressed', 'false');
           play.textContent = '▶ Lire ce message';
+          play.title = '1er clic : boucle sur ce message · 2ème clic : continue vers les messages plus récents ↑';
           play.addEventListener('click', () => {
             const card = document.getElementById(`message-${Number(message.id) || 0}`);
             const isCurrentlyPlaying = card && card.classList.contains('is-playing');
@@ -1818,7 +1819,7 @@
                 return;
               }
               const messageIndex = visibleMessages.findIndex((item) => String(item.id) === String(message.id));
-              const sourceQueue = messageIndex < 0 ? [message] : visibleMessages.slice(messageIndex);
+              const sourceQueue = messageIndex < 0 ? [message] : visibleMessages.slice(0, messageIndex + 1).reverse();
               const newTracks = trackListFor(sourceQueue);
               if (newTracks.length) {
                 const currentTrack = playlist[trackIndex];
