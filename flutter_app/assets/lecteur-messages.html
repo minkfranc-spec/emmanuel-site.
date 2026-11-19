@@ -2222,6 +2222,14 @@
         // Attendre que l'audio soit suffisamment chargé avant de lancer
         await new Promise((resolve) => {
           const audio = elements.audio;
+
+          // Même piste déjà chargée → rembobine sans re-télécharger
+          if (audio.src === track.source && audio.readyState >= 2) {
+            audio.currentTime = 0;
+            resolve();
+            return;
+          }
+
           audio.src = track.source;
           // Sur réseau lent : preload=auto pour remplir le buffer dès le départ
           audio.preload = 'auto';
