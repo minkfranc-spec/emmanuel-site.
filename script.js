@@ -717,7 +717,6 @@ function toggleLectureContinue(cardId, msgId) {
         archiveContext = { type: 'chrono', val: 0 };
         audio.addEventListener('ended', surFinAudio, { once: true });
         audio.currentTime = 0;
-        audio.load();
         audio.play().catch(() => {});
         activerWakeLock();
         demarrerScrollSync(card, audio);
